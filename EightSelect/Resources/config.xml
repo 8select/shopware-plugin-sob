@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/config.xsd">
+    <elements>
+        <!-- MERCHANT ID -->
+        <element type="text" required="false" scope="shop">
+            <name>merchant_id</name>
+            <label lang="de">Händler-Id:</label>
+            <label lang="en">merchant Id:</label>
+            <description lang="de">
+            </description>
+            <description lang="en">
+            </description>
+        </element>
+        <!-- SELECTED DETAIL BLOCK -->
+        <element type="select" scope="shop">
+            <name>selected_detail_block</name>
+            <label lang="de">smarty-Block, in dem das SYS-widget plaziert wird:</label>
+            <label lang="en">smarty block in which the SYS-widget will be placed:</label>
+            <description lang="de">Aktiviert die Protokollierung der Aktionen des Moduls. Sollte nur zur Fehlersuche
+                aktiviert werden.
+            </description>
+            <description lang="en">Activates the logging of actions of the module. Should only be activated for
+                troubleshooting.
+            </description>
+            <store>
+                <option>
+                    <value>frontend_detail_index_header</value>
+                    <label>frontend_detail_index_header</label>
+                </option>
+                <option>
+                    <value>frontend_detail_index_bundle</value>
+                    <label>frontend_detail_index_bundle</label>
+                </option>
+                <option>
+                    <value>frontend_detail_index_detail</value>
+                    <label>frontend_detail_index_detail</label>
+                </option>
+                <option>
+                    <value>frontend_detail_index_tabs_cross_selling</value>
+                    <label>frontend_detail_index_tabs_cross_selling</label>
+                </option>
+            </store>
+        </element>
+        <!-- WIDGET PLACEMENT-->
+        <element type="select" scope="shop">
+            <name>widget_placement</name>
+            <label lang="de">Widget vor oder nach Element einfügen:</label>
+            <label lang="en">attach widget before or after element:</label>
+            <description lang="de">Definieren Sie den Status für Bestellungen, die noch nicht bezahlt wurden.
+            </description>
+            <description lang="en">Define the status for orders which have not been paid yet.</description>
+            <store>
+                <option>
+                    <value>widget_before</value>
+                    <label lang="DE">davor</label>
+                    <label lang="EN">before</label>
+                </option>
+                <option>
+                    <value>widget_after</value>
+                    <label lang="DE">danach</label>
+                    <label lang="EN">after</label>
+                </option>
+            </store>
+        </element>
+        <!-- CUSTOM CSS -->
+        <element type="textarea" required="false" scope="shop">
+            <name>custom_css</name>
+            <label lang="de">Eigenes CSS:</label>
+            <label lang="en">custom CSS:</label>
+            <description lang="de">Geben Sie eigenes CSS an.
+            </description>
+            <description lang="en">Insert custom CSS.
+            </description>
+        </element>
+        <!-- CONTAINER ELEMENT -->
+        <element type="textarea" required="false" scope="shop">
+            <name>html_container_element</name>
+            <label lang="de">HTML container, CSE_SYS wird durch das SYS-Widget ersetzt:</label>
+            <label lang="en">HTML container CSE_SYS will be replaced by the SYS widget:</label>
+            <description lang="de">Geben Sie eine eigene HTML-Struktur an, in die das SYS-widget eingefügt wird. CSE_SYS wird mit dem Widget ausgetauscht.
+            </description>
+            <description lang="en">Define a container structure in which the SYS widget will be inserted. CSE_SYS will be replaced by the widget.
+            </description>
+        </element>
+    </elements>
+</config>
