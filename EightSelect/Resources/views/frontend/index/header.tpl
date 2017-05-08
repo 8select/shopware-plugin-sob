@@ -2,10 +2,9 @@
 
 {block name="frontend_index_header_css_screen"}
     {$smarty.block.parent}
-    {* todo custom css *}
     {if {config name="custom_css"} != ""}
     <style>
-        {include file="string:{config name="custom_css"}"}
+        {include file='string:{config name="custom_css"}'}
     </style>
     {/if}
 {/block}
@@ -39,7 +38,6 @@
                 })(a.document, "script", {/literal}"https://widget.{config name="merchant_id"}.8select.io/eightlytics/eightlytics-queue.js"{literal})
             }(window);
             /*]]>{/literal}*/</script>
-            {debug}
     {/if}
 
 {/block}

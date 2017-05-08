@@ -4,7 +4,7 @@
     {$smarty.block.parent}
     <script type="text/javascript">/*{literal}<![CDATA[*/
         window.eightlytics(
-            'purchase',
+            'purchase', 
             {
                 customerid: {/literal}{$sAddresses.billing.customernumber}{literal},
                 orderid: {/literal}{$sAddresses.billing.orderID}{literal},
