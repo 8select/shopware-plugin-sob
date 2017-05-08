@@ -3,6 +3,7 @@
 namespace EightSelect;
 
 use Shopware\Components\Plugin;
+use Doctrine\Common\Collections\ArrayCollection;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
 
@@ -15,9 +16,26 @@ class EightSelect extends Plugin
     {
         return [
             'Theme_Compiler_Collect_Plugin_Javascript' => 'addJsFiles',
+            'Shopware_Controllers_Widgets_Emotion_AddElement' => 'onEmotionAddElement',
+            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_EightSelect' => 'onGetEightSelectController',
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion' => 'onPostDispatchBackendEmotion',
             'Enlight_Controller_Action_PostDispatchSecure_Frontend' => 'onFrontendPostDispatch',
             'Enlight_Controller_Action_PostDispatch_Frontend_Checkout' => 'onCheckoutConfirm'
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function onGetEightSelectController()
+    {
+        return $this->getPath() . '/Controllers/Frontend/EightSelect.php';
+    }
+
+    public function onEmotionAddElement(\Enlight_Event_EventArgs $args)
+    {
+        $data = $args->getReturn();
+        $args->setReturn($data);
     }
 
     /**
@@ -28,6 +46,9 @@ class EightSelect extends Plugin
         return Shopware()->Db()->query('SELECT version FROM s_core_plugins WHERE name = ?', [$this->getName()])->fetchColumn();
     }
 
+    /**
+     * @param \Enlight_Event_EventArgs $args
+     */
     public function onFrontendPostDispatch(\Enlight_Event_EventArgs $args)
     {
         /** @var \Enlight_Controller_Action $controller */
@@ -41,6 +62,16 @@ class EightSelect extends Plugin
     }
 
     /**
+     * @param \Enlight_Controller_ActionEventArgs $args
+     */
+    public function onPostDispatchBackendEmotion(\Enlight_Controller_ActionEventArgs $args) {
+        $controller = $args->getSubject();
+        $view = $controller->View();
+
+        $view->addTemplateDir($this->getPath() . '/Resources/views/');
+    }
+
+    /**
      * @param \Enlight_Event_EventArgs $args
      */
     public function onCheckoutConfirm(\Enlight_Event_EventArgs $args) {
@@ -51,7 +82,6 @@ class EightSelect extends Plugin
         {
             return;
         }
-        // todo JSON for 8select analytics
         $view->assign('checkoutFinish', true);
     }
 
@@ -60,7 +90,70 @@ class EightSelect extends Plugin
      */
     public function install(InstallContext $context)
     {
+        $this->installWidgets();
         parent::install($context);
+    }
+
+    public function installWidgets() {
+        $installer = $this->container->get('shopware.emotion_component_installer');
+
+        // component SYS-PSV
+        $syspsvElement = $installer->createOrUpdate(
+            $this->getName(),
+            '8select SYS-PSV component',
+            [
+                'name' => 'SYS_PSV_Component',
+                'template' => 'sys_psv',
+                'cls' => '8select--component',
+            ]
+        );
+        $syspsvElement->createTextField(
+            [
+                'name' => 'sys_psv_ordernumber',
+                'fieldLabel' => 'Product Ordernumber',
+                'supportText' => 'Enter a product ordernumber.',
+                'allowBlank' => false
+            ]
+        );
+
+        // component PSP-TLV
+        $psptlvElement = $installer->createOrUpdate(
+            $this->getName(),
+            '8select PSP-TLV component',
+            [
+                'name' => 'PSP-TLV Component',
+                'template' => 'psp_tlv',
+                'cls' => '8select--component',
+            ]
+        );
+        $psptlvElement->createTextField(
+            [
+                'name' => 'psp_tlv_stylefactor',
+                'fieldLabel' => 'Style Factor',
+                'supportText' => 'Enter a style factor.',
+                'allowBlank' => false
+            ]
+        );
+
+        // component PSP-PSV
+        $psppsvElement = $installer->createOrUpdate(
+            $this->getName(),
+            '8select PSP-PSV component',
+            [
+                'name' => 'PSP-PSV Component',
+                'template' => 'psp_psv',
+                'cls' => '8select--component',
+            ]
+        );
+        $psppsvElement->createTextField(
+            [
+                'name' => 'psp_psv_set_id',
+                'fieldLabel' => 'Set-ID',
+                'supportText' => 'Enter a set-id.',
+                'allowBlank' => false
+            ]
+        );
+
     }
 
     /**

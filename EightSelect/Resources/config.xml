@@ -17,12 +17,6 @@
             <name>selected_detail_block</name>
             <label lang="de">smarty-Block, in dem das SYS-widget plaziert wird:</label>
             <label lang="en">smarty block in which the SYS-widget will be placed:</label>
-            <description lang="de">Aktiviert die Protokollierung der Aktionen des Moduls. Sollte nur zur Fehlersuche
-                aktiviert werden.
-            </description>
-            <description lang="en">Activates the logging of actions of the module. Should only be activated for
-                troubleshooting.
-            </description>
             <store>
                 <option>
                     <value>frontend_detail_index_header</value>
@@ -47,9 +41,6 @@
             <name>widget_placement</name>
             <label lang="de">Widget vor oder nach Element einfügen:</label>
             <label lang="en">attach widget before or after element:</label>
-            <description lang="de">Definieren Sie den Status für Bestellungen, die noch nicht bezahlt wurden.
-            </description>
-            <description lang="en">Define the status for orders which have not been paid yet.</description>
             <store>
                 <option>
                     <value>widget_before</value>
@@ -68,20 +59,15 @@
             <name>custom_css</name>
             <label lang="de">Eigenes CSS:</label>
             <label lang="en">custom CSS:</label>
-            <description lang="de">Geben Sie eigenes CSS an.
-            </description>
-            <description lang="en">Insert custom CSS.
-            </description>
         </element>
         <!-- CONTAINER ELEMENT -->
         <element type="textarea" required="false" scope="shop">
             <name>html_container_element</name>
             <label lang="de">HTML container, CSE_SYS wird durch das SYS-Widget ersetzt:</label>
             <label lang="en">HTML container CSE_SYS will be replaced by the SYS widget:</label>
-            <description lang="de">Geben Sie eine eigene HTML-Struktur an, in die das SYS-widget eingefügt wird. CSE_SYS wird mit dem Widget ausgetauscht.
-            </description>
-            <description lang="en">Define a container structure in which the SYS widget will be inserted. CSE_SYS will be replaced by the widget.
-            </description>
+            <value>
+                CSE_SYS
+            </value>
         </element>
     </elements>
 </config>
