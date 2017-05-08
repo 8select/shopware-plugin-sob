@@ -2,16 +2,40 @@
     'use strict';
     $.plugin('8selectCsePlugin', {
         defaults: {
-            defaultValue: 'default'
+            skuSelector: '[itemprop="sku"]'
         },
         init: function () {
-            console.log('INIT 8SELECT CSE PLUGIN');
             var me = this;
             me.applyDataAttributes();
+            me.currentSku = $(me.defaults.skuSelector).text();
+            me.registerEventListeners();
+        },
+        registerEventListeners: function() {
+            var me = this;
+            $.subscribe('plugin/swAjaxVariant/onRequestData', $.proxy(me.onRequestData, me));
+            $.subscribe('plugin/swEmotionLoader/onLoadEmotionFinished', $.proxy(me.onLoadEmotionFinished, me));
+        },
+        onRequestData: function() {
+            var me = this;
+            var newSku = $(me.defaults.skuSelector).text();
+            if (typeof _8select !== "undefined" && _8select.initCSE) {
+                _8select.reinitSys(me.currentSku, newSku);
+            }
+            me.currentSku = newSku;
+        },
+        onLoadEmotionFinished: function() {
+            var me = this;
+            if (typeof _8select !== "undefined" && _8select.initCSE) {
+                _8select.initCSE();
+            }
         },
         destroy: function() {
             var me = this;
             me._destroy();
         }
     });
+
+    StateManager.addPlugin('.product--details', '8selectCsePlugin');
+    StateManager.addPlugin('.content--emotions', '8selectCsePlugin');
+
 })(jQuery, window, StateManager);
