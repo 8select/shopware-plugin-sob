@@ -39,28 +39,6 @@
                 })(a.document, "script", {/literal}"https://widget.{config name="merchant_id"}.8select.io/eightlytics/eightlytics-queue.js"{literal})
             }(window);
             /*]]>{/literal}*/</script>
-            <script type="text/javascript">/*{literal}<![CDATA[*/
-                window.eightlytics(
-                    'purchase',
-                    {
-                        customerid: '1234',
-                        orderid: '1234',
-                        products: [
-                            {
-                              sku: '12345',
-                              amount: 2,
-                              price: 1000
-                            },
-                            {
-                              sku: '456',
-                              amount: 12,
-                              price: 199
-                            }
-                        ]
-                    }
-                );
-            /*]]>{/literal}*/</script>
-
             {debug}
     {/if}
 
