@@ -5,7 +5,13 @@
     <version>1.0.0</version>
     <copyright>Copyright (c) 2017, 8select</copyright>
     <license></license>
-    <link>http://www.1drop.de</link>
-    <description lang="en"></description>
-    <author>Onedrop GmbH &amp; Co. KG</author>
+    <link>https://1drop.de</link>
+    <author>Onedrop GmbH &amp;amp; Co. KG</author>
+    <description>
+        <![CDATA[
+<h2>8select currated shopping engine</h2>
+<p>Innovative software to increase sales.</p>
+<img width="400" src="http://8select.com/wp-content/uploads/2014/03/mockup-final.png" />
+]]>
+    </description>
 </plugin>

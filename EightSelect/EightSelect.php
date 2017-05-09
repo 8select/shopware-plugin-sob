@@ -2,6 +2,7 @@
 
 namespace EightSelect;
 
+use Shopware\Components\Emotion\ComponentInstaller;
 use Shopware\Components\Plugin;
 use Doctrine\Common\Collections\ArrayCollection;
 use Shopware\Components\Plugin\Context\InstallContext;
@@ -69,6 +70,10 @@ class EightSelect extends Plugin
         $view = $controller->View();
 
         $view->addTemplateDir($this->getPath() . '/Resources/views/');
+        $view->extendsTemplate('backend/emotion/model/translations.js');
+        $view->extendsTemplate('backend/emotion/eight_select/view/detail/elements/sys_psv.js');
+        $view->extendsTemplate('backend/emotion/eight_select/view/detail/elements/psp_psv.js');
+        $view->extendsTemplate('backend/emotion/eight_select/view/detail/elements/psp_tlv.js');
     }
 
     /**
@@ -95,6 +100,7 @@ class EightSelect extends Plugin
     }
 
     public function installWidgets() {
+        /** @var ComponentInstaller $installer */
         $installer = $this->container->get('shopware.emotion_component_installer');
 
         // component SYS-PSV
@@ -102,9 +108,10 @@ class EightSelect extends Plugin
             $this->getName(),
             '8select SYS-PSV component',
             [
-                'name' => 'SYS_PSV_Component',
+                'name' => 'SYS-PSV Component',
                 'template' => 'sys_psv',
-                'cls' => '8select--component',
+                'cls' => '8select--element--sys-psv',
+                'xtype' => 'emotion-8select-syspsv-element',
             ]
         );
         $syspsvElement->createTextField(
@@ -123,7 +130,8 @@ class EightSelect extends Plugin
             [
                 'name' => 'PSP-TLV Component',
                 'template' => 'psp_tlv',
-                'cls' => '8select--component',
+                'cls' => '8select--element--psp-tlv',
+                'xtype' => 'emotion-8select-psptlv-element',
             ]
         );
         $psptlvElement->createTextField(
@@ -142,7 +150,8 @@ class EightSelect extends Plugin
             [
                 'name' => 'PSP-PSV Component',
                 'template' => 'psp_psv',
-                'cls' => '8select--component',
+                'cls' => '8select--element--psp-psv',
+                'xtype' => 'emotion-8select-psppsv-element',
             ]
         );
         $psppsvElement->createTextField(

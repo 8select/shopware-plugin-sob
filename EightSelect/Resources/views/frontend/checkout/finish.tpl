@@ -6,14 +6,15 @@
         window.eightlytics(
             'purchase', 
             {
-                customerid: {/literal}{$sAddresses.billing.customernumber}{literal},
-                orderid: {/literal}{$sAddresses.billing.orderID}{literal},
+                customerid: {/literal}'{$sAddresses.billing.customernumber}'{literal},
+                orderid: {/literal}'{$sAddresses.billing.orderID}'{literal},
                 products: [
                     {/literal}{foreach $sBasket.content as $key => $sBasketItem}{literal}
                     {
-                        sku: {/literal}{$sBasketItem.ordernumber}{literal},
+                        sku: '{/literal}{$sBasketItem.ordernumber}{literal}',
                         amount: {/literal}{$sBasketItem.quantity}{literal},
-                        price: {/literal}{$sBasketItem.price}{literal}
+                        // todo: get price as euro cent (integer !!!)
+                        price: {/literal}{math equation="x * 100" x=$sBasketItem.price}{literal}
                     },
                     {/literal}{/foreach}{literal}
                 ]

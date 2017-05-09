@@ -10,16 +10,6 @@
     {/if}
 {/block}
 
-{block name="frontend_detail_index_bundle"}
-    {if {config name="selected_detail_block"} == "frontend_detail_index_bundle" && {config name="widget_placement"}=="widget_before"}
-        {include file="frontend/custom/cse.tpl"}
-    {/if}
-    {$smarty.block.parent}
-    {if {config name="selected_detail_block"} == "frontend_detail_index_bundle" && {config name="widget_placement"}=="widget_after"}
-        {include file="frontend/custom/cse.tpl"}
-    {/if}
-{/block}
-
 {block name="frontend_detail_index_detail"}
     {if {config name="selected_detail_block"} == "frontend_detail_index_detail" && {config name="widget_placement"}=="widget_before"}
         {include file="frontend/custom/cse.tpl"}

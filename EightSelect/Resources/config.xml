@@ -6,51 +6,48 @@
         <element type="text" required="false" scope="shop">
             <name>merchant_id</name>
             <label lang="de">Händler-Id:</label>
-            <label lang="en">merchant Id:</label>
-            <description lang="de">
-            </description>
-            <description lang="en">
-            </description>
+            <label lang="en">Merchant Id:</label>
+            <description lang="de">Ihre Händler-ID erhalten Sie von 8select</description>
+            <description lang="en">Your merchant-ID is provided by 8select</description>
         </element>
         <!-- SELECTED DETAIL BLOCK -->
         <element type="select" scope="shop">
             <name>selected_detail_block</name>
-            <label lang="de">smarty-Block, in dem das SYS-widget plaziert wird:</label>
-            <label lang="en">smarty block in which the SYS-widget will be placed:</label>
+            <label lang="de">Position an der das SYS-widget platziert wird:</label>
+            <label lang="en">Position where SYS-widget will be placed:</label>
             <store>
                 <option>
                     <value>frontend_detail_index_header</value>
-                    <label>frontend_detail_index_header</label>
-                </option>
-                <option>
-                    <value>frontend_detail_index_bundle</value>
-                    <label>frontend_detail_index_bundle</label>
+                    <label lang="de">Produkttitel</label>
+                    <label lang="en">Product title</label>
                 </option>
                 <option>
                     <value>frontend_detail_index_detail</value>
-                    <label>frontend_detail_index_detail</label>
+                    <label lang="de">Produktbeschreibung / Bewertungen</label>
+                    <label lang="en">Product description / Reviews</label>
                 </option>
                 <option>
                     <value>frontend_detail_index_tabs_cross_selling</value>
-                    <label>frontend_detail_index_tabs_cross_selling</label>
+                    <label lang="de">Cross selling</label>
+                    <label lang="en">Cross selling</label>
                 </option>
             </store>
         </element>
         <!-- WIDGET PLACEMENT-->
         <element type="select" scope="shop">
             <name>widget_placement</name>
-            <label lang="de">Widget vor oder nach Element einfügen:</label>
-            <label lang="en">attach widget before or after element:</label>
+            <label lang="de">Widget vor oder nach Block einfügen:</label>
+            <label lang="en">Attach widget before or after block:</label>
             <store>
                 <option>
                     <value>widget_before</value>
-                    <label lang="DE">davor</label>
-                    <label lang="EN">before</label>
+                    <label lang="de">davor</label>
+                    <label lang="en">before</label>
                 </option>
                 <option>
                     <value>widget_after</value>
-                    <label lang="DE">danach</label>
-                    <label lang="EN">after</label>
+                    <label lang="de">danach</label>
+                    <label lang="en">after</label>
                 </option>
             </store>
         </element>
@@ -58,7 +55,7 @@
         <element type="textarea" required="false" scope="shop">
             <name>custom_css</name>
             <label lang="de">Eigenes CSS:</label>
-            <label lang="en">custom CSS:</label>
+            <label lang="en">Custom CSS:</label>
         </element>
         <!-- CONTAINER ELEMENT -->
         <element type="textarea" required="false" scope="shop">
