@@ -18,7 +18,7 @@ Um das Plugin in Shopware zu laden, führen Sie folgende Schritte aus:
 * Navigieren Sie im Plugin Manager zum Menüpunkt **"Installiert"**.
 * Suchen Sie in der Kopfleiste nach dem Button **"Plugin hochladen"**.
 
-![](./Documentation/plugin-upload_de.png =400x)
+![](Documentation/plugin-upload_de.png)
 
 * Wählen Sie die heruntergeladene Zip-Datei aus und laden sie hoch. 
 * Finden Sie das Plugin unter **"Deinstalliert"**, dann gehen Sie wie folgt vor:
@@ -27,7 +27,7 @@ Um das Plugin in Shopware zu laden, führen Sie folgende Schritte aus:
    
 * Wenn sich das Plugin nicht unter **"Deinstalliert"** befindet, sondern unter **"Deaktiviert"**, dann klicken Sie auf das **rote X** in der Spalte **"Aktiviert"**, um das Plugin zu aktivieren.
 
-![](./Documentation/plugin-not-installed_de.png =600x)
+![](Documentation/plugin-not-installed_de.png)
 
 * Wenn das Plugin sowohl installiert als auch aktiviert ist, fahren Sie bei **2.** fort.
 
@@ -64,7 +64,7 @@ Klicken Sie im **Plugin Manager** bei dem 8select Modul auf den **Stift**, um da
 
 Klicken Sie auf **Speichern.** Alle weiteren Einstellungen sind optional.
 
-![](./Documentation/plugin-config_de.png =600x)
+![](Documentation/plugin-config_de.png)
 
 #### 2.1.2 Optionale Einstellungen
 
@@ -93,12 +93,12 @@ Um Einkaufswelten Widgets verwenden zu können, führen Sie folgende Schritte au
 * Wählen Sie die gewünschte Einkaufswelt zur Konfiguration aus, indem Sie auf den **Stift** klicken, oder erstellen Sie eine neue.
 * Es öffnet sich das Fenster **Designer**, in dem verschiedene Widgets platziert werden können.
 
-![](./Documentation/plugin-shoppingworlds-slots_de.png =600x)
+![](Documentation/plugin-shoppingworlds-slots_de.png)
 
 
 * Standardmäßig ist der Reiter **Einstellungen** geöffnet. Wechseln Sie zum Reiter **Elemente** und scrollen Sie zum Abschnitt **Weitere Elemente**
 
-![](./Documentation/plugin-shoppingworlds-components_de.png =400x)
+![](Documentation/plugin-shoppingworlds-components_de.png)
 
 * Hier finden Sie drei Widgets, die vom Modul zur Verfügung gestellt werden:
     * **Set für Produkt** zeigt ein Set für ein bestimmtes Produkt an
@@ -107,7 +107,7 @@ Um Einkaufswelten Widgets verwenden zu können, führen Sie folgende Schritte au
 
 * Ziehen Sie das gewünschte Widget in einen freien Widget-Slot. Drücken Sie nach der Konfiguration (siehe **3.2.**) auf **Einkaufswelt speichern**
 
-![](./Documentation/plugin-shoppingworlds-slots-filled_de.png =600x)
+![](Documentation/plugin-shoppingworlds-slots-filled_de.png)
 
 ### 3.2 Konfiguration der Einkaufswelten-Widgets
 
@@ -116,16 +116,16 @@ Um ein Widget zu konfigurieren, drücken Sie den **Stift** im jeweiligen Widget-
 ### 3.2.1 Element-Einstellungen der Einkaufswelten-Widgets
 
 * **Set für Produkt**: Geben Sie über ein Suchfeld die **Bestellnummer** des Produkts an, für welches ein Set dargestellt werden soll.
-![](./Documentation/plugin-setforproduct_de.png =600x)
+![](Documentation/plugin-setforproduct_de.png)
 
 * **Liste von Sets**: Geben Sie den **Stylefactor** an, über den eine Liste von Sets dargestellt werden soll.
-![](./Documentation/plugin-listofsets_de.png =600x)
+![](Documentation/plugin-listofsets_de.png)
 * **Bestimmtes Set**: Geben Sie die **Set-ID** an, über die ein bestimmtes Set dargestellt werden soll.
-![](./Documentation/plugin-certainset_de.png =600x)
+![](Documentation/plugin-certainset_de.png)
 
 ### 3.2.2 Globale Element-Einstellungen
 
 Für alle Widgets lassen sich noch folgende globale Element-Einstellungen festlegen: 
 
 * **CSS Klasse**: Geben Sie mit Leerzeichen getrennt mehrere Klassennamen an, die hinzugefügt werden sollen.
-![](./Documentation/plugin-globalcss_de.png =600x)
+![](Documentation/plugin-globalcss_de.png)
