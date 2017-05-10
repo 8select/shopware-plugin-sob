@@ -1,8 +1,7 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->in('app/Packages/Plugins/Onedrop.*')
-    ->in('app/Packages/Sites/Onedrop.*')
+    ->in('EightSelect')
 ;
 
 return PhpCsFixer\Config::create()

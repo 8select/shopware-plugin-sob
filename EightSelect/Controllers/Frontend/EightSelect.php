@@ -9,7 +9,6 @@
  */
 class Shopware_Controllers_Frontend_EightSelect extends Enlight_Controller_Action
 {
-
     /**
      * Provides the cart of the current user as JSON API.
      * The API is available at /eight-select/cart
@@ -23,5 +22,4 @@ class Shopware_Controllers_Frontend_EightSelect extends Enlight_Controller_Actio
         );
         Shopware()->Plugins()->Controller()->Json()->setPadding();
     }
-
 }

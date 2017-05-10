@@ -1,5 +1,4 @@
 <?php
-
 namespace EightSelect;
 
 use Shopware\Components\Emotion\ComponentInstaller;
@@ -16,12 +15,12 @@ class EightSelect extends Plugin
     public static function getSubscribedEvents()
     {
         return [
-            'Theme_Compiler_Collect_Plugin_Javascript' => 'addJsFiles',
-            'Shopware_Controllers_Widgets_Emotion_AddElement' => 'onEmotionAddElement',
+            'Theme_Compiler_Collect_Plugin_Javascript'                          => 'addJsFiles',
+            'Shopware_Controllers_Widgets_Emotion_AddElement'                   => 'onEmotionAddElement',
             'Enlight_Controller_Dispatcher_ControllerPath_Frontend_EightSelect' => 'onGetEightSelectController',
-            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion' => 'onPostDispatchBackendEmotion',
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend' => 'onFrontendPostDispatch',
-            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout' => 'onCheckoutConfirm'
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'      => 'onPostDispatchBackendEmotion',
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend'             => 'onFrontendPostDispatch',
+            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'          => 'onCheckoutConfirm',
         ];
     }
 
@@ -147,17 +146,17 @@ class EightSelect extends Plugin
             $this->getName(),
             '8select SYS-PSV component',
             [
-                'name' => 'SYS-PSV Component',
+                'name'     => 'SYS-PSV Component',
                 'template' => 'sys_psv',
-                'cls' => '8select--element--sys-psv',
-                'xtype' => 'emotion-8select-syspsv-element',
+                'cls'      => '8select--element--sys-psv',
+                'xtype'    => 'emotion-8select-syspsv-element',
             ]
         );
         $syspsvElement->createHiddenField(
             [
-                'name' => 'sys_psv_ordernumber',
+                'name'       => 'sys_psv_ordernumber',
                 'fieldLabel' => 'Product Ordernumber',
-                'allowBlank' => false
+                'allowBlank' => false,
             ]
         );
 
@@ -166,17 +165,17 @@ class EightSelect extends Plugin
             $this->getName(),
             '8select PSP-TLV component',
             [
-                'name' => 'PSP-TLV Component',
+                'name'     => 'PSP-TLV Component',
                 'template' => 'psp_tlv',
-                'cls' => '8select--element--psp-tlv',
-                'xtype' => 'emotion-8select-psptlv-element',
+                'cls'      => '8select--element--psp-tlv',
+                'xtype'    => 'emotion-8select-psptlv-element',
             ]
         );
         $psptlvElement->createTextField(
             [
-                'name' => 'psp_tlv_stylefactor',
+                'name'       => 'psp_tlv_stylefactor',
                 'fieldLabel' => 'Stylefactor',
-                'allowBlank' => false
+                'allowBlank' => false,
             ]
         );
 
@@ -185,20 +184,19 @@ class EightSelect extends Plugin
             $this->getName(),
             '8select PSP-PSV component',
             [
-                'name' => 'PSP-PSV Component',
+                'name'     => 'PSP-PSV Component',
                 'template' => 'psp_psv',
-                'cls' => '8select--element--psp-psv',
-                'xtype' => 'emotion-8select-psppsv-element',
+                'cls'      => '8select--element--psp-psv',
+                'xtype'    => 'emotion-8select-psppsv-element',
             ]
         );
         $psppsvElement->createTextField(
             [
-                'name' => 'psp_psv_set_id',
+                'name'       => 'psp_psv_set_id',
                 'fieldLabel' => 'Set-ID',
-                'allowBlank' => false
+                'allowBlank' => false,
             ]
         );
-
     }
 
     /**
@@ -223,5 +221,4 @@ class EightSelect extends Plugin
 
         return new ArrayCollection($jsFiles);
     }
-
 }
