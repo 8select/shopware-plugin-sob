@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/config.xsd">
     <elements>
         <!-- MERCHANT ID -->
-        <element type="text" required="false" scope="shop">
+        <element type="text" required="true" scope="shop">
             <name>merchant_id</name>
             <label lang="de">Händler-Id:</label>
             <label lang="en">Merchant Id:</label>
@@ -11,10 +11,12 @@
             <description lang="en">Your merchant-ID is provided by 8select</description>
         </element>
         <!-- SELECTED DETAIL BLOCK -->
-        <element type="select" scope="shop">
+        <element type="select" required="true" scope="shop">
             <name>selected_detail_block</name>
-            <label lang="de">Position an der das SYS-widget platziert wird:</label>
+            <label lang="de">Position an der das SYS-Widget platziert wird:</label>
             <label lang="en">Position where SYS-widget will be placed:</label>
+            <description lang="de">Geben Sie an, in welchem Block bzw. an welcher Stelle der Produktdetailseite das SYS-Widget platziert werden soll.</description>
+            <description lang="en">Select a block of the product detail page in which the SYS widget will be placed.</description>
             <store>
                 <option>
                     <value>frontend_detail_index_header</value>
@@ -34,20 +36,22 @@
             </store>
         </element>
         <!-- WIDGET PLACEMENT-->
-        <element type="select" scope="shop">
+        <element type="select" required="true" scope="shop">
             <name>widget_placement</name>
-            <label lang="de">Widget vor oder nach Block einfügen:</label>
-            <label lang="en">Attach widget before or after block:</label>
+            <label lang="de">Widget am Block-Anfang oder -Ende einfügen:</label>
+            <label lang="en">Attach widget to the block start or end:</label>
+            <description lang="de">Geben Sie an, ob das Widget am Anfang oder am Ende des ausgewählten Blocks positioniert werden soll.</description>
+            <description lang="en">Choose if the widget should be placed at the start or the end of the selected block.</description>
             <store>
                 <option>
                     <value>widget_before</value>
-                    <label lang="de">davor</label>
-                    <label lang="en">before</label>
+                    <label lang="de">Anfang</label>
+                    <label lang="en">start</label>
                 </option>
                 <option>
                     <value>widget_after</value>
-                    <label lang="de">danach</label>
-                    <label lang="en">after</label>
+                    <label lang="de">Ende</label>
+                    <label lang="en">end</label>
                 </option>
             </store>
         </element>
@@ -58,7 +62,7 @@
             <label lang="en">Custom CSS:</label>
         </element>
         <!-- CONTAINER ELEMENT -->
-        <element type="textarea" required="false" scope="shop">
+        <element type="textarea" required="true" scope="shop">
             <name>html_container_element</name>
             <label lang="de">HTML container, CSE_SYS wird durch das SYS-Widget ersetzt:</label>
             <label lang="en">HTML container CSE_SYS will be replaced by the SYS widget:</label>
