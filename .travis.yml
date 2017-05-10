@@ -1,0 +1,16 @@
+language: php
+sudo: false
+php:
+  - '7.0'
+install: true
+script:
+  - sed -i 's@__VERSION__@'"$TRAVIS_TAG"'@' EightSelect/plugin.xml
+  - zip -r EightSelect_v$TRAVIS_TAG.zip EightSelect
+deploy:
+  provider: releases
+  api_key:
+    secure: 'SET TO YOUR ENCRYPTED API KEY'
+  file: EightSelect_v$TRAVIS_TAG.zip
+  skip_cleanup: true
+  on:
+    tags: true
