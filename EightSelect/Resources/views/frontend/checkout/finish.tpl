@@ -2,23 +2,22 @@
 
 {block name="frontend_index_content"}
     {$smarty.block.parent}
-    <script type="text/javascript">/*{literal}<![CDATA[*/
+    <script type="text/javascript"><![CDATA[*/
         window.eightlytics(
-            'purchase', 
-            {
-                customerid: {/literal}'{$sAddresses.billing.customernumber}'{literal},
-                orderid: {/literal}'{$sAddresses.billing.orderID}'{literal},
+            'purchase',
+            {ldelim}
+                customerid: '{$sAddresses.billing.customernumber}',
+                orderid: '{$sAddresses.billing.orderID}',
                 products: [
-                    {/literal}{foreach $sBasket.content as $key => $sBasketItem}{literal}
-                    {
-                        sku: '{/literal}{$sBasketItem.ordernumber}{literal}',
-                        amount: {/literal}{$sBasketItem.quantity}{literal},
-                        // todo: get price as euro cent (integer !!!)
-                        price: {/literal}{math equation="x * 100" x=$sBasketItem.price}{literal}
-                    },
-                    {/literal}{/foreach}{literal}
+                    {foreach $sBasket.content as $key => $sBasketItem}
+                        {ldelim}
+                            sku: '{$sBasketItem.ordernumber}',
+                            amount: {$sBasketItem.quantity},
+                            price: {$sBasketItem.intprice}
+                        {rdelim},
+                    {/foreach}
                 ]
-            }
+            {rdelim}
         );
-        /*]]>{/literal}*/</script>
+        /*]]>*/</script>
 {/block}

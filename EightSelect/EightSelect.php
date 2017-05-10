@@ -44,7 +44,8 @@ class EightSelect extends Plugin
      */
     public function getVersion()
     {
-        return Shopware()->Db()->query('SELECT version FROM s_core_plugins WHERE name = ?', [$this->getName()])->fetchColumn();
+        return Shopware()->Db()->query('SELECT version FROM s_core_plugins WHERE name = ?',
+            [$this->getName()])->fetchColumn();
     }
 
     /**
@@ -65,7 +66,8 @@ class EightSelect extends Plugin
     /**
      * @param \Enlight_Controller_ActionEventArgs $args
      */
-    public function onPostDispatchBackendEmotion(\Enlight_Controller_ActionEventArgs $args) {
+    public function onPostDispatchBackendEmotion(\Enlight_Controller_ActionEventArgs $args)
+    {
         $controller = $args->getSubject();
         $view = $controller->View();
 
@@ -79,15 +81,51 @@ class EightSelect extends Plugin
     /**
      * @param \Enlight_Event_EventArgs $args
      */
-    public function onCheckoutConfirm(\Enlight_Event_EventArgs $args) {
+    public function onCheckoutConfirm(\Enlight_Event_EventArgs $args)
+    {
         $request = $args->getRequest();
         $controller = $args->get('subject');
         $view = $controller->View();
-        if ($request->getActionName() != "finish")
-        {
+        if ($request->getActionName() != 'finish') {
             return;
         }
+
+        /** @var \Shopware\Models\Shop\Currency $currentCurrency */
+        $currentCurrency = Shopware()->Shop()->getCurrency();
+
+        if ($currentCurrency->getCurrency() == 'EUR' && $currentCurrency->getDefault()) {
+            $factor = $currentCurrency->getFactor();
+        } else {
+            $currencies = Shopware()->Shop()->getCurrencies();
+            /** @var \Shopware\Models\Shop\Currency $loopCurrency */
+            foreach ($currencies as $loopCurrency) {
+                if ($loopCurrency->getCurrency() == 'EUR') {
+                    $factor = $loopCurrency->getFactor();
+                }
+            }
+        }
+
+        $sBasket = $view->sBasket;
+        foreach ($sBasket as &$basketItem) {
+            foreach ($basketItem as &$itemProperty) {
+                if ($itemProperty['price'] != null) {
+                    $itemProperty = $this->calculatePrice($itemProperty, $factor);
+                }
+            }
+        }
+        $view->assign('sBasket', $sBasket);
         $view->assign('checkoutFinish', true);
+    }
+
+    protected function calculatePrice($itemProperty, $factor)
+    {
+        $tempPrice = (strpos($itemProperty['price'], ',') != false) ? str_replace(',', '.',
+            $itemProperty['price']) : $itemProperty['price'];
+        if ($itemProperty['currencyFactor'] > 0) {
+            $tempPrice = $tempPrice / $itemProperty['currencyFactor'];
+        }
+        $itemProperty['intprice'] = round($tempPrice * 100 * $factor);
+        return $itemProperty;
     }
 
     /**
@@ -99,7 +137,8 @@ class EightSelect extends Plugin
         parent::install($context);
     }
 
-    public function installWidgets() {
+    public function installWidgets()
+    {
         /** @var ComponentInstaller $installer */
         $installer = $this->container->get('shopware.emotion_component_installer');
 
