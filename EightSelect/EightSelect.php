@@ -153,11 +153,10 @@ class EightSelect extends Plugin
                 'xtype' => 'emotion-8select-syspsv-element',
             ]
         );
-        $syspsvElement->createTextField(
+        $syspsvElement->createHiddenField(
             [
                 'name' => 'sys_psv_ordernumber',
                 'fieldLabel' => 'Product Ordernumber',
-                'supportText' => 'Enter a product ordernumber.',
                 'allowBlank' => false
             ]
         );
@@ -176,8 +175,7 @@ class EightSelect extends Plugin
         $psptlvElement->createTextField(
             [
                 'name' => 'psp_tlv_stylefactor',
-                'fieldLabel' => 'Style Factor',
-                'supportText' => 'Enter a style factor.',
+                'fieldLabel' => 'Stylefactor',
                 'allowBlank' => false
             ]
         );
@@ -197,7 +195,6 @@ class EightSelect extends Plugin
             [
                 'name' => 'psp_psv_set_id',
                 'fieldLabel' => 'Set-ID',
-                'supportText' => 'Enter a set-id.',
                 'allowBlank' => false
             ]
         );
