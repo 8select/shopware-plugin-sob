@@ -2,7 +2,7 @@
 
 {block name="frontend_index_content"}
     {$smarty.block.parent}
-    <script type="text/javascript"><![CDATA[*/
+    <script type="text/javascript">
         window.eightlytics(
             'purchase',
             {ldelim}
@@ -19,5 +19,5 @@
                 ]
             {rdelim}
         );
-        /*]]>*/</script>
+        </script>
 {/block}
