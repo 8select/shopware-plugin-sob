@@ -2,9 +2,9 @@
 
 {block name="frontend_index_header_css_screen"}
     {$smarty.block.parent}
-    {if {config name="custom_css"} != ""}
+    {if {config name="8s_custom_css"} != ""}
     <style>
-        {include file='string:{config name="custom_css"}'}
+        {include file='string:{config name="8s_custom_css"}'}
     </style>
     {/if}
 {/block}
@@ -16,7 +16,7 @@
             var script = d.createElement(s);
             script.type = 'text/javascript';
             script.async = true;
-            script.src   = {/literal}'//widget.{config name="merchant_id"}.8select.io/loader.js'{literal};
+            script.src   = {/literal}'//widget.{config name="8s_merchant_id"}.8select.io/loader.js'{literal};
             var entry = d.getElementsByTagName(s)[0];
             entry.parentNode.insertBefore(script, entry);
         })(document, 'script');
@@ -35,7 +35,7 @@
                     c.src = d;
                     b = b.getElementsByTagName(a)[0];
                     b.parentNode.insertBefore(c, b)
-                })(a.document, "script", {/literal}"https://widget.{config name="merchant_id"}.8select.io/eightlytics/eightlytics-queue.js"{literal})
+                })(a.document, "script", {/literal}"https://widget.{config name="8s_merchant_id"}.8select.io/eightlytics/eightlytics-queue.js"{literal})
             }(window);
             /*]]>{/literal}*/</script>
     {/if}

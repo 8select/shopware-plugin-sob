@@ -3,14 +3,14 @@
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/config.xsd">
     <elements>
         <element type="boolean" required="true" scope="shop">
-            <name>8select_enabled</name>
+            <name>8s_enabled</name>
             <label lang="de">Aktiviert</label>
             <label lang="en">Enabled</label>
             <value>true</value>
         </element>
         <!-- MERCHANT ID -->
         <element type="text" required="true" scope="shop">
-            <name>merchant_id</name>
+            <name>8s_merchant_id</name>
             <label lang="de">Händler-Id:</label>
             <label lang="en">Merchant Id:</label>
             <description lang="de">Ihre Händler-ID erhalten Sie von 8select</description>
@@ -18,7 +18,7 @@
         </element>
         <!-- SELECTED DETAIL BLOCK -->
         <element type="select" required="true" scope="shop">
-            <name>selected_detail_block</name>
+            <name>8s_selected_detail_block</name>
             <label lang="de">Position an der das SYS-Widget platziert wird:</label>
             <label lang="en">Position where SYS-widget will be placed:</label>
             <description lang="de">Geben Sie an, in welchem Block bzw. an welcher Stelle der Produktdetailseite das SYS-Widget platziert werden soll.</description>
@@ -43,7 +43,7 @@
         </element>
         <!-- WIDGET PLACEMENT-->
         <element type="select" required="true" scope="shop">
-            <name>widget_placement</name>
+            <name>8s_widget_placement</name>
             <label lang="de">Widget am Block-Anfang oder -Ende einfügen:</label>
             <label lang="en">Attach widget to the block start or end:</label>
             <description lang="de">Geben Sie an, ob das Widget am Anfang oder am Ende des ausgewählten Blocks positioniert werden soll.</description>
@@ -63,13 +63,13 @@
         </element>
         <!-- CUSTOM CSS -->
         <element type="textarea" required="false" scope="shop">
-            <name>custom_css</name>
+            <name>8s_custom_css</name>
             <label lang="de">Eigenes CSS:</label>
             <label lang="en">Custom CSS:</label>
         </element>
         <!-- CONTAINER ELEMENT -->
         <element type="textarea" required="true" scope="shop">
-            <name>html_container_element</name>
+            <name>8s_html_container_element</name>
             <label lang="de">HTML container, CSE_SYS wird durch das SYS-Widget ersetzt:</label>
             <label lang="en">HTML container CSE_SYS will be replaced by the SYS widget:</label>
             <value>

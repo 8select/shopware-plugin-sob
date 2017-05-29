@@ -16,7 +16,6 @@ class EightSelect extends Plugin
     {
         return [
             'Theme_Compiler_Collect_Plugin_Javascript'                          => 'addJsFiles',
-            'Shopware_Controllers_Widgets_Emotion_AddElement'                   => 'onEmotionAddElement',
             'Enlight_Controller_Dispatcher_ControllerPath_Frontend_EightSelect' => 'onGetEightSelectController',
             'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'      => 'onPostDispatchBackendEmotion',
             'Enlight_Controller_Action_PostDispatchSecure_Frontend'             => 'onFrontendPostDispatch',
@@ -30,13 +29,6 @@ class EightSelect extends Plugin
     public function onGetEightSelectController()
     {
         return $this->getPath() . '/Controllers/Frontend/EightSelect.php';
-    }
-
-    // TODO: check this
-    public function onEmotionAddElement(\Enlight_Event_EventArgs $args)
-    {
-        $data = $args->getReturn();
-        $args->setReturn($data);
     }
 
     /**
@@ -55,7 +47,7 @@ class EightSelect extends Plugin
     {
         $config = Shopware()->Config();
 
-        if (!$config->get('8select_enabled')) {
+        if (!$config->get('8s_enabled')) {
             return;
         }
 
@@ -64,7 +56,7 @@ class EightSelect extends Plugin
         $view = $controller->View();
         $view->addTemplateDir($this->getPath() . '/Resources/views/');
 
-        $htmlContainer = $config->get('html_container_element');
+        $htmlContainer = $config->get('8s_html_container_element');
         $view->assign('htmlContainer', explode('CSE_SYS', $htmlContainer));
     }
 
@@ -90,7 +82,7 @@ class EightSelect extends Plugin
     {
         $config = Shopware()->Config();
 
-        if (!$config->get('8select_enabled')) {
+        if (!$config->get('8s_enabled')) {
             return;
         }
 
