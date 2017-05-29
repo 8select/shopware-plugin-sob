@@ -32,6 +32,7 @@ class EightSelect extends Plugin
         return $this->getPath() . '/Controllers/Frontend/EightSelect.php';
     }
 
+    // TODO: check this
     public function onEmotionAddElement(\Enlight_Event_EventArgs $args)
     {
         $data = $args->getReturn();
@@ -52,13 +53,18 @@ class EightSelect extends Plugin
      */
     public function onFrontendPostDispatch(\Enlight_Event_EventArgs $args)
     {
+        $config = Shopware()->Config();
+
+        if (!$config->get('8select_enabled')) {
+            return;
+        }
+
         /** @var \Enlight_Controller_Action $controller */
         $controller = $args->get('subject');
         $view = $controller->View();
         $view->addTemplateDir($this->getPath() . '/Resources/views/');
 
-        $this->config = Shopware()->Config();
-        $htmlContainer = $this->config->get('html_container_element');
+        $htmlContainer = $config->get('html_container_element');
         $view->assign('htmlContainer', explode('CSE_SYS', $htmlContainer));
     }
 
@@ -82,6 +88,12 @@ class EightSelect extends Plugin
      */
     public function onCheckoutConfirm(\Enlight_Event_EventArgs $args)
     {
+        $config = Shopware()->Config();
+
+        if (!$config->get('8select_enabled')) {
+            return;
+        }
+
         $request = $args->getRequest();
         $controller = $args->get('subject');
         $view = $controller->View();
@@ -124,6 +136,7 @@ class EightSelect extends Plugin
             $tempPrice = $tempPrice / $itemProperty['currencyFactor'];
         }
         $itemProperty['intprice'] = round($tempPrice * 100 * $factor);
+
         return $itemProperty;
     }
 
