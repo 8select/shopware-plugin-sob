@@ -14,4 +14,8 @@
 <p>Curated Shopping as a Service</p>
 ]]>
     </description>
+    <changelog version="1.0.0">
+        <changes lang="de">Erstveröffentlichung;</changes>
+        <changes lang="en">First release;</changes>
+    </changelog>
 </plugin>
