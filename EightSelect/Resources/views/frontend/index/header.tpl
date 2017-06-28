@@ -12,7 +12,7 @@
 {block name='frontend_index_header_javascript_tracking'}
     {$smarty.block.parent}
     {if !$checkoutFinish}
-        <script async src="//widget.{config name="8s_merchant_id"}.8select.io/loader.js"></script>
+        <script async src="https://widget.{config name="8s_merchant_id"}.8select.io/loader.js"></script>
     {/if}
 
     {if $checkoutFinish}
