@@ -3,14 +3,14 @@
     <label lang="en">8select CSE Plugin</label>
     <label lang="de">8select CSE Plugin</label>
     <version>__VERSION__</version>
-    <copyright>Copyright (c) 2017, 8select</copyright>
+    <copyright>Copyright (c) 2017, 8select Software GmbH</copyright>
     <license></license>
-    <link>https://1drop.de</link>
-    <author>Onedrop GmbH &amp;amp; Co. KG</author>
+    <link>http://8select.com/</link>
+    <author>8select Software GmbH</author>
     <description>
         <![CDATA[
-<h2>8select currated shopping engine</h2>
-<p>Innovative software to increase sales.</p>
+<h2>8select CSE</h2>
+<p>Curated Shopping as a Service</p>
 <img width="400" src="http://8select.com/wp-content/uploads/2014/03/mockup-final.png" />
 ]]>
     </description>
