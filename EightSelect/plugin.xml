@@ -7,6 +7,7 @@
     <license></license>
     <link>http://8select.com/</link>
     <author>8select Software GmbH</author>
+    <compatibility minVersion="5.2.0" />
     <description>
         <![CDATA[
 <h2>8select CSE</h2>
