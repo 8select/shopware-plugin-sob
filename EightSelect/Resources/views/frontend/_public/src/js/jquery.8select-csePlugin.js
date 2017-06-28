@@ -18,13 +18,12 @@
         onRequestData: function() {
             var me = this;
             var newSku = $(me.defaults.skuSelector).text();
-            if (typeof _8select !== "undefined" && _8select.initCSE) {
+            if (me.currentSku !=== newSku && typeof _8select !== "undefined" && _8select.reinitSys) {
                 _8select.reinitSys(me.currentSku, newSku);
             }
             me.currentSku = newSku;
         },
         onLoadEmotionFinished: function() {
-            var me = this;
             if (typeof _8select !== "undefined" && _8select.initCSE) {
                 _8select.initCSE();
             }
