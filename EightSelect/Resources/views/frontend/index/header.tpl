@@ -11,16 +11,9 @@
 
 {block name='frontend_index_header_javascript_tracking'}
     {$smarty.block.parent}
-    <script type="text/javascript">/*{literal}<![CDATA[*/
-        (function(d, s) {
-            var script = d.createElement(s);
-            script.type = 'text/javascript';
-            script.async = true;
-            script.src   = {/literal}'//widget.{config name="8s_merchant_id"}.8select.io/loader.js'{literal};
-            var entry = d.getElementsByTagName(s)[0];
-            entry.parentNode.insertBefore(script, entry);
-        })(document, 'script');
-        /*]]>{/literal}*/</script>
+    {if !$checkoutFinish}
+        <script async src="//widget.{config name="8s_merchant_id"}.8select.io/loader.js"></script>
+    {/if}
 
     {if $checkoutFinish}
         <script type="text/javascript">/*{literal}<![CDATA[*/
