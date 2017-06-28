@@ -3,8 +3,8 @@
     <label lang="en">8select CSE Plugin</label>
     <label lang="de">8select CSE Plugin</label>
     <version>__VERSION__</version>
-    <copyright>Copyright (c) 2017, 8select Software GmbH</copyright>
-    <license></license>
+    <copyright>Copyright (c) 8select Software GmbH</copyright>
+    <license>proprietary</license>
     <link>http://8select.com/</link>
     <author>8select Software GmbH</author>
     <compatibility minVersion="5.2.0" />
