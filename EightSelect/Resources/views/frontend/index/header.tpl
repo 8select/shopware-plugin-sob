@@ -13,8 +13,17 @@
     {$smarty.block.parent}
     {if !$checkoutFinish}
         <script async src="https://widget.{config name="8s_merchant_id"}.8select.io/loader.js"></script>
-    {/if}
 
+        <script type="text/javascript">
+            if (typeof eightselect_shopware === "undefined") {
+                var eightselect_shopware = {}
+            }
+            eightselect_shopware.addToCart = function (sku) {
+                document.getElementById('eightselect_cart_trigger_form_sku').value = sku;
+                document.getElementById('eightselect_cart_trigger_form_submit').click();
+            }
+        </script>
+    {/if}
     {if $checkoutFinish}
         <script type="text/javascript">/*{literal}<![CDATA[*/
             window.eightlytics || function (a) {
