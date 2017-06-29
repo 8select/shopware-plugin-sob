@@ -1,26 +1,16 @@
 # shopware-plugin-sob
 
 ## 1. Installation des 8select CSE Plugins
-Sofern Sie nicht das vorinstallierte Modul verwenden, führen Sie bitte folgende Schritte aus. Andernfalls können Sie den Upload überspringen und bei **4.2** mit dem Installieren des 8Select CSE Pluginsfortfahren.
-
-> #####Hinweise:
-> * Vor Veränderungen an Ihrem Shopsystem empfiehlt es sich immer eine Sicherung des Shops und der Datenbank anzulegen.
-> * Bitte stellen Sie vor Beginn der Installation sicher, dass keine veraltete Version des Moduls installiert ist.
-
-### 1.1. Herunterladen des 8select CSE Plugins über die Webseite
-
-Um 8select CSE in Ihrem Shopsystem nutzen zu können, muss es erst heruntergeladen werden. Das Plugin finden Sie auf der 8select Webseite für Shopware ab Version 5.2.
-
-### 1.2. Installieren und Aktivieren des Moduls
 
 Um das Plugin in Shopware zu laden, führen Sie folgende Schritte aus:
+
 * Öffnen Sie den **Plugin Manager** unter **"Einstellungen -> Plugin Manager".**
 * Navigieren Sie im Plugin Manager zum Menüpunkt **"Installiert"**.
 * Suchen Sie in der Kopfleiste nach dem Button **"Plugin hochladen"**.
 
 ![](Documentation/plugin-upload_de.png)
 
-* Wählen Sie die heruntergeladene Zip-Datei aus und laden sie hoch. 
+* Wählen Sie die Zip-Datei aus und laden sie hoch. Zum Beispiel `8select_CSE_Shopware-5.2_1.0.0.zip`
 * Finden Sie das Plugin unter **"Deinstalliert"**, dann gehen Sie wie folgt vor:
     * Klicken Sie auf das **grüne Pluszeichen** rechts neben dem Modul, um es zu installieren. Sollte rechts davon ein blauer, kreisrunder Pfeil angezeigt werden, klicken Sie diesen vor der Installation, um das Modul upzudaten.    
     * Es öffnet sich ein Modulfenster. Klicken Sie darin auf den Button **"Aktivieren".**
@@ -30,9 +20,6 @@ Um das Plugin in Shopware zu laden, führen Sie folgende Schritte aus:
 ![](Documentation/plugin-not-installed_de.png)
 
 * Wenn das Plugin sowohl installiert als auch aktiviert ist, fahren Sie bei **2.** fort.
-
-> ##### Hinweis:
-> Bei Systemen mit hoher Auslastung oder mehr als 5 Subshops kann es bei der Installation zu Zeitüberschreitungen kommen. Sollte Ihr System davon betroffen sein, zögern Sie nicht den Support zu kontaktieren. Wir helfen Ihnen gerne weiter.
 
 ## 2. Konfiguration
 
@@ -81,6 +68,10 @@ Klicken Sie auf **Speichern.** Alle weiteren Einstellungen sind optional.
     background-color: #ccc;
 }
 ```
+
+#### 2.2 Themes neu kompilieren
+
+Da das Plugin eine JavaScript Datei hinzufügt, müssen sie ggf. den Theme Cache invalidieren und Themes neu kompilieren um das JavaScript Bundling erneut anzustoßen.
 
 ### 3. 8select Einkaufswelten-Widgets
 
