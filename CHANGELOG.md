@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.0.1](https://github.com/8select/shopware-5-plugin/tree/1.0.1) (2017-07-05)
+[Full Changelog](https://github.com/8select/shopware-5-plugin/compare/1.0.0...1.0.1)
+
+**Merged pull requests:**
+
+- PLUG-2 remove extra equal sign [\#2](https://github.com/8select/shopware-5-plugin/pull/2) ([akleiber](https://github.com/akleiber))
+
 ## [1.0.0](https://github.com/8select/shopware-5-plugin/tree/1.0.0) (2017-06-29)
 **Merged pull requests:**
 
