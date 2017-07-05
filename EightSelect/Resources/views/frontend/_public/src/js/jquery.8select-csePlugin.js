@@ -19,7 +19,7 @@
             var me = this;
             var newSku = $(me.defaults.skuSelector).text();
             if (me.currentSku !== newSku && typeof _8select !== "undefined" && _8select.reinitSys) {
-                _8select.reinitSys(me.currentSku, newSku);
+                _8select.reinitSys(newSku, me.currentSku);
             }
             me.currentSku = newSku;
         },
