@@ -18,7 +18,7 @@
         onRequestData: function() {
             var me = this;
             var newSku = $(me.defaults.skuSelector).text();
-            if (me.currentSku !=== newSku && typeof _8select !== "undefined" && _8select.reinitSys) {
+            if (me.currentSku !== newSku && typeof _8select !== "undefined" && _8select.reinitSys) {
                 _8select.reinitSys(me.currentSku, newSku);
             }
             me.currentSku = newSku;
