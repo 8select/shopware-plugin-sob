@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.0.3](https://github.com/8select/shopware-5-plugin/tree/1.0.3) (2017-07-06)
+[Full Changelog](https://github.com/8select/shopware-5-plugin/compare/1.0.2...1.0.3)
+
+**Merged pull requests:**
+
+- PLUG-4 checkout tracking not working [\#4](https://github.com/8select/shopware-5-plugin/pull/4) ([akleiber](https://github.com/akleiber))
+
 ## [1.0.2](https://github.com/8select/shopware-5-plugin/tree/1.0.2) (2017-07-05)
 [Full Changelog](https://github.com/8select/shopware-5-plugin/compare/1.0.1...1.0.2)
 
