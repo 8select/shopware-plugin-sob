@@ -39,6 +39,11 @@
                     <label lang="de">Cross selling</label>
                     <label lang="en">Cross selling</label>
                 </option>
+                <option>
+                    <value>none</value>
+                    <label lang="de">Nicht automatisch einfügen</label>
+                    <label lang="en">Do not insert automatically</label>
+                </option>
             </store>
         </element>
         <!-- WIDGET PLACEMENT-->
