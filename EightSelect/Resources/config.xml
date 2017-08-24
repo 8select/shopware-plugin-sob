@@ -40,6 +40,11 @@
                     <label lang="en">Cross selling</label>
                 </option>
                 <option>
+                    <value>frontend_detail_tabs</value>
+                    <label lang="de">Produkttabs</label>
+                    <label lang="en">Product tabs</label>
+                </option>
+                <option>
                     <value>none</value>
                     <label lang="de">Nicht automatisch einfügen</label>
                     <label lang="en">Do not insert automatically</label>
