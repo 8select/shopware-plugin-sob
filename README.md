@@ -37,6 +37,8 @@ Klicken Sie im **Plugin Manager** bei dem 8select Modul auf den **Stift**, um da
         * bei **Produktbeschreibung / Bewertungen**
         * bei **Produkttitel**
         * bei **Cross selling**
+        * als **Produkttab**
+        * gar nicht
         
     * Wählen Sie bei **"Widget am Block-Anfang oder -Ende einfügen"** aus, ob das Widget am Anfang oder am Ende des ausgewählten Blocks platziert werden soll.
     
