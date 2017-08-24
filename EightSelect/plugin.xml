@@ -9,13 +9,14 @@
     <license>proprietary</license>
     <link>http://8select.com/</link>
     <author>8select Software GmbH</author>
-    <compatibility minVersion="5.2.0" />
     <description>
         <![CDATA[
 <h2>8select CSE</h2>
 <p>Curated Shopping as a Service</p>
 ]]>
     </description>
+    <compatibility minVersion="5.2.11" />
+
     <changelog version="1.0.0">
         <changes lang="de">Erstveröffentlichung;</changes>
         <changes lang="en">First release;</changes>
