@@ -40,7 +40,7 @@
                 {$smarty.block.parent}
             {/if}
             {block name="frontend_detail_tabs_cse"}
-                <a href="#" class="tab--link" title="Dazu passt" data-tabName="cse">Dazu passt</a>
+                <a href="#" class="tab--link" title="Dazu passt" data-tabName="cse" style="display: none;">Dazu passt</a>
             {/block}
             {if {config name="8s_widget_placement"} == "widget_before"}
                 {$smarty.block.parent}
@@ -52,7 +52,7 @@
                 {$smarty.block.parent}
             {/if}
             {block name="frontend_detail_tabs_content_cse"}
-                <div class="tab--container">
+                <div class="tab--container" style="display: none;">
                     {block name="frontend_detail_tabs_content_cse_inner"}
 
                         {block name="frontend_detail_tabs_content_cse_title"}
