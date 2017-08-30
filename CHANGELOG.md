@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.1.0](https://github.com/8select/shopware-5-plugin/tree/1.1.0) (2017-08-30)
+[Full Changelog](https://github.com/8select/shopware-5-plugin/compare/1.0.3...1.1.0)
+
+**Merged pull requests:**
+
+- PLUG-5 manual positioning of sys [\#6](https://github.com/8select/shopware-5-plugin/pull/6) ([akleiber](https://github.com/akleiber))
+- PLUG-6 require Shopware 5.2.11 as minimum version [\#5](https://github.com/8select/shopware-5-plugin/pull/5) ([akleiber](https://github.com/akleiber))
+
 ## [1.0.3](https://github.com/8select/shopware-5-plugin/tree/1.0.3) (2017-07-06)
 [Full Changelog](https://github.com/8select/shopware-5-plugin/compare/1.0.2...1.0.3)
 
