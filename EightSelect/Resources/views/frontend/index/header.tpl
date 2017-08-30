@@ -13,14 +13,15 @@
     {$smarty.block.parent}
     {if !$checkoutFinish}
         <script type="text/javascript">
-            if (typeof eightselect_wgt_cb === "undefined") {
-                var eightselect_wgt_cb = {};
-                eightselect_wgt_cb.sys = function (error) {
-                    if (error) {
-                        eightselect_shopware.hideSys();
-                    } else {
-                        eightselect_shopware.showSys();
-                    }
+            if (typeof _eightselect_config === "undefined") {
+                var _eightselect_config = {};
+            }
+            _eightselect_config.sys = _eightselect_config.sys || {};
+            _eightselect_config.sys.callback = function (error) {
+                if (error) {
+                    eightselect_shopware.hideSys();
+                } else {
+                    eightselect_shopware.showSys();
                 }
             }
         </script>
