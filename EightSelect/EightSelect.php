@@ -164,6 +164,14 @@ class EightSelect extends Plugin
                 'allowBlank' => false,
             ]
         );
+        $syspsvElement->createTextField(
+            [
+                'name'       => 'sys_psv_lazyload_factor',
+                'fieldLabel' => 'Lazy Load Distance Factor',
+                'defaultValue' => 0,
+                'allowBlank' => true,
+            ]
+        );
 
         // component PSP-TLV
         $psptlvElement = $installer->createOrUpdate(
@@ -183,6 +191,14 @@ class EightSelect extends Plugin
                 'allowBlank' => false,
             ]
         );
+        $psptlvElement->createTextField(
+            [
+                'name'       => 'psp_tlv_lazyload_factor',
+                'fieldLabel' => 'Lazy Load Distance Factor',
+                'defaultValue' => 0,
+                'allowBlank' => true,
+            ]
+        );
 
         // component PSP-PSV
         $psppsvElement = $installer->createOrUpdate(
@@ -200,6 +216,14 @@ class EightSelect extends Plugin
                 'name'       => 'psp_psv_set_id',
                 'fieldLabel' => 'Set-ID',
                 'allowBlank' => false,
+            ]
+        );
+        $psppsvElement->createTextField(
+            [
+                'name'       => 'psp_psv_lazyload_factor',
+                'fieldLabel' => 'Lazy Load Distance Factor',
+                'defaultValue' => 0,
+                'allowBlank' => true,
             ]
         );
     }
