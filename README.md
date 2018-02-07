@@ -21,6 +21,10 @@ Um das Plugin in Shopware zu laden, führen Sie folgende Schritte aus:
 
 * Wenn das Plugin sowohl installiert als auch aktiviert ist, fahren Sie bei **2.** fort.
 
+
+### **WICHTIGER HINWEIS:** Änderungen an den Plugin-, als auch Widget-Einstellungen erfordern ein erneutes [Kompilieren der Themes](#22-themes-neu-kompilieren)!
+
+
 ## 2. Konfiguration
 
 Nach erfolgreichem Upload und Installation folgt nun die Konfiguration des 8select CSE Plugins.
