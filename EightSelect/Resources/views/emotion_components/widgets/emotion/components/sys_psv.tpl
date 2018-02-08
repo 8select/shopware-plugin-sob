@@ -4,7 +4,7 @@
             <div 
                 data-sku="{$Data.sys_psv_ordernumber}" 
                 data-8select-widget-id="sys-psv"
-                {if $Data.sys_psv_lazyload_factor && $Data.sys_psv_lazyload_factor >= 0}
+                {if $Data.sys_psv_lazyload_factor|count_characters > 0 && $Data.sys_psv_lazyload_factor >= 0}
                     data-load-distance-factor="{$Data.sys_psv_lazyload_factor}"
                 {/if}
             >

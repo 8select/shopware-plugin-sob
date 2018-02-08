@@ -4,7 +4,7 @@
             <div 
                 data-stylefactor="{$Data.psp_tlv_stylefactor}" 
                 data-8select-widget-id="psp-tlv"
-                {if $Data.psp_tlv_lazyload_factor && $Data.psp_tlv_lazyload_factor >= 0}
+                {if $Data.psp_tlv_lazyload_factor|count_characters > 0 && $Data.psp_tlv_lazyload_factor >= 0}
                     data-load-distance-factor="{$Data.psp_tlv_lazyload_factor}"
                 {/if}
             >
