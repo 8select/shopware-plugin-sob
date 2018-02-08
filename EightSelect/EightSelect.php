@@ -164,7 +164,7 @@ class EightSelect extends Plugin
                 'allowBlank' => false,
             ]
         );
-        $syspsvElement->createTextField(
+        $syspsvElement->createNumberField(
             [
                 'name'       => 'sys_psv_lazyload_factor',
                 'fieldLabel' => 'Lazy Load Distance Factor',
@@ -191,7 +191,7 @@ class EightSelect extends Plugin
                 'allowBlank' => false,
             ]
         );
-        $psptlvElement->createTextField(
+        $psptlvElement->createNumberField(
             [
                 'name'       => 'psp_tlv_lazyload_factor',
                 'fieldLabel' => 'Lazy Load Distance Factor',
@@ -218,7 +218,7 @@ class EightSelect extends Plugin
                 'allowBlank' => false,
             ]
         );
-        $psppsvElement->createTextField(
+        $psppsvElement->createNumberField(
             [
                 'name'       => 'psp_psv_lazyload_factor',
                 'fieldLabel' => 'Lazy Load Distance Factor',
