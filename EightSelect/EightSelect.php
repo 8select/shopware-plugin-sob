@@ -169,6 +169,11 @@ class EightSelect extends Plugin
                 'name'       => 'sys_psv_lazyload_factor',
                 'fieldLabel' => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
+                'helpText' =>   'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
+                                sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
+                                sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
+                                sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
+                                befindet.',
                 'allowBlank' => true,
             ]
         );
@@ -196,6 +201,11 @@ class EightSelect extends Plugin
                 'name'       => 'psp_tlv_lazyload_factor',
                 'fieldLabel' => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
+                'helpText' =>   'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
+                                sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
+                                sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
+                                sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
+                                befindet.',
                 'allowBlank' => true,
             ]
         );
@@ -223,6 +233,11 @@ class EightSelect extends Plugin
                 'name'       => 'psp_psv_lazyload_factor',
                 'fieldLabel' => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
+                'helpText' =>   'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
+                                sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
+                                sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
+                                sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
+                                befindet.',
                 'allowBlank' => true,
             ]
         );
