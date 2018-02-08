@@ -124,5 +124,14 @@ Um ein Widget zu konfigurieren, drücken Sie den **Stift** im jeweiligen Widget-
 
 Für alle Widgets lassen sich noch folgende globale Element-Einstellungen festlegen: 
 
+* **Lazy Loading Distance Factor**: Definieren Si einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). 
+
+**Beispiel:** 
+
+* 0 = Laden, sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet
+* 1 = Laden, sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereich befindet
+
+![](Documentation/plugin-lazyloaddistance_de.png)
+
 * **CSS Klasse**: Geben Sie mit Leerzeichen getrennt mehrere Klassennamen an, die hinzugefügt werden sollen.
 ![](Documentation/plugin-globalcss_de.png)
