@@ -22,7 +22,7 @@ Um das Plugin in Shopware zu laden, führen Sie folgende Schritte aus:
 * Wenn das Plugin sowohl installiert als auch aktiviert ist, fahren Sie bei **2.** fort.
 
 
-### **WICHTIGER HINWEIS:** Änderungen an den Plugin-, als auch Widget-Einstellungen erfordern ein erneutes [Kompilieren der Themes](#22-themes-neu-kompilieren)!
+### **WICHTIGER HINWEIS:** Die Installation oder das Update des Plugins erfordern ein erneutes [Kompilieren der Themes](#22-themes-neu-kompilieren)!
 
 
 ## 2. Konfiguration
@@ -77,7 +77,13 @@ Klicken Sie auf **Speichern.** Alle weiteren Einstellungen sind optional.
 
 #### 2.2 Themes neu kompilieren
 
-Da das Plugin eine JavaScript Datei hinzufügt, müssen sie ggf. den Theme Cache invalidieren und Themes neu kompilieren um das JavaScript Bundling erneut anzustoßen.
+Da das Plugin eine JavaScript Datei hinzufügt, müssen Sie ggf. den Theme Cache invalidieren und Themes neu kompilieren um das JavaScript Bundling erneut anzustoßen.
+
+#### 2.3 Template-Cache leeren
+
+Damit Änderungen an Element-Einstellungen im Frontend Ihres Shops wirksam werden, müssen Sie ggf. den Template-Cache des Shops leeren. Sie finden diese Einstellung in Ihrem Showpare-Backend unter Einstellungen >> Caches / Performance (Sub-Menü) >> Caches / Performance (Menü-Link) >> Cache (Tab).
+
+![](Documentation/plugin-template-cache_de.png)
 
 ### 3. 8select Einkaufswelten-Widgets
 
@@ -135,3 +141,5 @@ Für alle Widgets lassen sich noch folgende globale Element-Einstellungen festle
 
 * **CSS Klasse**: Geben Sie mit Leerzeichen getrennt mehrere Klassennamen an, die hinzugefügt werden sollen.
 ![](Documentation/plugin-globalcss_de.png)
+
+### **WICHTIGER HINWEIS:** Zur wirksamen Übernahme von gewünschten Änderungen in den Element-Einstellungen ist das [Ausleeren des Template-Caches](#23-template-cache-leeren) erforderlich!
