@@ -1,5 +1,23 @@
 # Change Log
 
+## [1.2.0](https://github.com/8select/shopware-5-plugin/tree/1.2.0) (2018-02-20)
+[Full Changelog](https://github.com/8select/shopware-5-plugin/compare/5.2.5-1.0.0...1.2.0)
+
+**Implemented features:**
+
+- CSE-11 enable lazy loading [\#9](https://github.com/8select/shopware-5-plugin/pull/9) ([voodoods](https://github.com/voodoods))
+
+**Merged pull requests:**
+
+- 5.2.11 [\#10](https://github.com/8select/shopware-5-plugin/pull/10) ([akleiber](https://github.com/akleiber))
+
+## [5.2.5-1.0.0](https://github.com/8select/shopware-5-plugin/tree/5.2.5-1.0.0) (2017-08-30)
+[Full Changelog](https://github.com/8select/shopware-5-plugin/compare/1.1.0...5.2.5-1.0.0)
+
+**Merged pull requests:**
+
+- PLUG-7 make it compatible to shopware 5.2.5 [\#7](https://github.com/8select/shopware-5-plugin/pull/7) ([akleiber](https://github.com/akleiber))
+
 ## [1.1.0](https://github.com/8select/shopware-5-plugin/tree/1.1.0) (2017-08-30)
 [Full Changelog](https://github.com/8select/shopware-5-plugin/compare/1.0.3...1.1.0)
 
@@ -11,21 +29,21 @@
 ## [1.0.3](https://github.com/8select/shopware-5-plugin/tree/1.0.3) (2017-07-06)
 [Full Changelog](https://github.com/8select/shopware-5-plugin/compare/1.0.2...1.0.3)
 
-**Merged pull requests:**
+**Fixed bugs:**
 
 - PLUG-4 checkout tracking not working [\#4](https://github.com/8select/shopware-5-plugin/pull/4) ([akleiber](https://github.com/akleiber))
 
 ## [1.0.2](https://github.com/8select/shopware-5-plugin/tree/1.0.2) (2017-07-05)
 [Full Changelog](https://github.com/8select/shopware-5-plugin/compare/1.0.1...1.0.2)
 
-**Merged pull requests:**
+**Fixed bugs:**
 
 - PLUG-3 fix reinitSys\(\) parameter order [\#3](https://github.com/8select/shopware-5-plugin/pull/3) ([akleiber](https://github.com/akleiber))
 
 ## [1.0.1](https://github.com/8select/shopware-5-plugin/tree/1.0.1) (2017-07-05)
 [Full Changelog](https://github.com/8select/shopware-5-plugin/compare/1.0.0...1.0.1)
 
-**Merged pull requests:**
+**Fixed bugs:**
 
 - PLUG-2 remove extra equal sign [\#2](https://github.com/8select/shopware-5-plugin/pull/2) ([akleiber](https://github.com/akleiber))
 
