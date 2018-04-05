@@ -1,0 +1,21 @@
+{
+  "name": "onedrop/eightselect",
+  "license": "MIT",
+  "type": "shopware-plugin",
+  "extra": {
+    "installer-name": "EightSelect"
+  },
+  "authors": [
+    {
+      "name": "Hans Höchtl",
+      "email": "hhoechtl@1drop.de"
+    },
+    {
+      "name": "Hans Höchtl",
+      "email": "hhoechtl@1drop.de"
+    }
+  ],
+  "require": {
+    "aws/aws-sdk-php": "^3.54.0"
+  }
+}

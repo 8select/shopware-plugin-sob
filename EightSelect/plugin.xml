@@ -17,6 +17,10 @@
     </description>
     <compatibility minVersion="5.2.11" />
 
+    <changelog version="1.1.0">
+        <changes lang="de">Erweiterung um Selfonboarding;</changes>
+        <changes lang="en">Add selfonboarding functionality;</changes>
+    </changelog>
     <changelog version="1.0.0">
         <changes lang="de">Erstveröffentlichung;</changes>
         <changes lang="en">First release;</changes>
