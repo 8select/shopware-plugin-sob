@@ -82,9 +82,39 @@
             <name>8s_html_container_element</name>
             <label lang="de">HTML container, CSE_SYS wird durch das SYS-Widget ersetzt:</label>
             <label lang="en">HTML container CSE_SYS will be replaced by the SYS widget:</label>
-            <value>
-                CSE_SYS
-            </value>
+            <value>CSE_SYS</value>
+        </element>
+        <!-- AWS SERVER -->
+        <element type="text" required="true" scope="shop">
+            <name>8s_aws_server</name>
+            <label lang="de">AWS Server:</label>
+            <label lang="en">AWS server:</label>
+            <value>s3.amazonaws.com</value>
+        </element>
+        <!-- AWS PORT -->
+        <element type="text" required="true" scope="shop">
+            <name>8s_aws_port</name>
+            <label lang="de">AWS Port:</label>
+            <label lang="en">AWS port:</label>
+            <value>443</value>
+        </element>
+        <!-- AWS ACCESS KEY -->
+        <element type="text" required="false" scope="shop">
+            <name>8s_aws_access_key</name>
+            <label lang="de">AWS Access Key:</label>
+            <label lang="en">AWS access key:</label>
+        </element>
+        <!-- AWS SECRET KEY -->
+        <element type="text" required="false" scope="shop">
+            <name>8s_aws_secret_key</name>
+            <label lang="de">AWS Secret Key:</label>
+            <label lang="en">AWS secret key:</label>
+        </element>
+        <!-- AWS PREFIX -->
+        <element type="text" required="false" scope="shop">
+            <name>8s_aws_prefix</name>
+            <label lang="de">AWS Präfix:</label>
+            <label lang="en">AWS prefix:</label>
         </element>
     </elements>
 </config>
