@@ -7,5 +7,7 @@
             <argument>%eight_select.plugin_dir%</argument>
             <tag name="shopware.event_subscriber" />
         </service>
+        <service id="eight_select.article_export" class="EightSelect\Components\ArticleExport">
+        </service>
     </services>
 </container>

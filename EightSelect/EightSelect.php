@@ -1,6 +1,7 @@
 <?php
 namespace EightSelect;
 
+use EightSelect\Service\DateService;
 use Shopware\Components\Emotion\ComponentInstaller;
 use Shopware\Components\Plugin;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,6 +29,7 @@ class EightSelect extends Plugin
             'Enlight_Controller_Action_PostDispatchSecure_Frontend'             => 'onFrontendPostDispatch',
             'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'          => 'onCheckoutConfirm',
             'Shopware_Console_Add_Command'                                      => 'onStartDispatch',
+            'Shopware_CronJob_EightSelectArticleExport'                         => 'eightSelectArticleExport'
         ];
     }
 
@@ -172,6 +174,8 @@ class EightSelect extends Plugin
      */
     public function install(InstallContext $context)
     {
+        $this->installWidgets();
+        $this->addExportCron();
         parent::install($context);
         $this->installWidgets();
         $this->createDatabase();
@@ -313,6 +317,7 @@ class EightSelect extends Plugin
      */
     public function uninstall(UninstallContext $context)
     {
+        $this->removeExportCron();
         $this->removeDatabase();
         parent::uninstall($context);
     }
@@ -350,6 +355,11 @@ class EightSelect extends Plugin
         ];
     }
 
+    public function eightSelectArticleExport(\Shopware_Components_Cron_CronJob $job)
+    {
+        Shopware()->Container()->get('eight_select.article_export')->doCron();
+    }
+
     /**
      * Provide the file collection for js files
      *
@@ -370,151 +380,151 @@ class EightSelect extends Plugin
         $attributeList = [
             [
                 'eightSelectAttribute' => 'sku',
-                'shopwareAttribute'    => 's_articles_details.ordernumber',
+                'shopwareAttribute' => 's_articles_details.ordernumber',
             ],
             [
                 'eightSelectAttribute' => 'mastersku',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'warenkorb_id',
-                'shopwareAttribute'    => 's_articles_details.ordernumber',
+                'shopwareAttribute' => 's_articles_details.ordernumber',
             ],
             [
                 'eightSelectAttribute' => 'ean',
-                'shopwareAttribute'    => 's_articles_details.ean',
+                'shopwareAttribute' => 's_articles_details.ean',
             ],
             [
                 'eightSelectAttribute' => 'name1',
-                'shopwareAttribute'    => 's_articles.name',
+                'shopwareAttribute' => 's_articles.name',
             ],
             [
                 'eightSelectAttribute' => 'name2',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'groesse',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'bereich',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'rubrik',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'abteilung',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'kiko',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'typ',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'farbe',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'farbspektrum',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'absatzhoehe',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'muster',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'aermellaenge',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'kragenform',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'obermaterial',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'passform',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'schnitt',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'waschung',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'stil',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'sportart',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'detail',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'auspraegung',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'baukasten',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'eigenschaft',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'fuellmenge',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'funktion',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'gruppe',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'material',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'saison',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'serie',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
             [
                 'eightSelectAttribute' => 'beschreibung',
-                'shopwareAttribute'    => 's_articles.description',
+                'shopwareAttribute' => 's_articles.description',
             ],
             [
                 'eightSelectAttribute' => 'beschreibung1',
-                'shopwareAttribute'    => 's_articles.description_long',
+                'shopwareAttribute' => 's_articles.description_long',
             ],
             [
                 'eightSelectAttribute' => 'beschreibung2',
-                'shopwareAttribute'    => '-',
+                'shopwareAttribute' => '-',
             ],
         ];
 
@@ -525,5 +535,37 @@ class EightSelect extends Plugin
                 [$attributeEntry['eightSelectAttribute'], $attributeEntry['shopwareAttribute']]
             );
         }
+    }
+
+    /**
+     * add cron job for exporting all products
+     */
+    public function addExportCron()
+    {
+        $connection = $this->container->get('dbal_connection');
+        $connection->insert(
+            's_crontab',
+            [
+                'name'             => 'EightSelectArticleExport',
+                'action'           => 'EightSelectArticleExport',
+                'next'             => DateService::getNextMidnight(),
+                'start'            => null,
+                '`interval`'       => '86400',
+                'active'           => 1,
+                'end'              => new \DateTime(),
+                'pluginID'         => null
+            ],
+            [
+                'next' => 'datetime',
+                'end'  => 'datetime',
+            ]
+        );
+    }
+
+    public function removeExportCron()
+    {
+        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `name` = ?', [
+            'EightSelectArticleExport'
+        ]);
     }
 }
