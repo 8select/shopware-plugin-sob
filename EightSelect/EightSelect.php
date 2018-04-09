@@ -10,7 +10,7 @@ use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
 use Shopware\Components\Model\ModelManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use EightSelect\Models\Attribute;
+use EightSelect\Models\EightSelectAttribute;
 
 class EightSelect extends Plugin
 {
@@ -322,7 +322,7 @@ class EightSelect extends Plugin
     private function getClasses(ModelManager $modelManager)
     {
         return [
-            $modelManager->getClassMetadata(Attribute::class)
+            $modelManager->getClassMetadata(EightSelectAttribute::class)
         ];
     }
 

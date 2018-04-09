@@ -1,11 +1,11 @@
 <?php
 
-use EightSelect\Models\Attribute;
+use EightSelect\Models\EightSelectAttribute;
 
 class Shopware_Controllers_Backend_EightSelect extends \Shopware_Controllers_Backend_Application
 {
-    protected $model = Attribute::class;
-    protected $alias = 'attribute';
+    protected $model = EightSelectAttribute::class;
+    protected $alias = 'eightSelectAttribute';
 
     public function getAttributeListAction()
     {
@@ -19,18 +19,18 @@ class Shopware_Controllers_Backend_EightSelect extends \Shopware_Controllers_Bac
             'data' => [
                 [
                     'eightSelectAttribute' => 'ean',
-                    'shopwareAttibuteName' => 'Attribute',
-                    'shopwareAttibute'     => 'attr1'
+                    'shopwareAttibuteName' => 'ean',
+                    'shopwareAttibute'     => 'ean'
                 ],
                 [
                     'eightSelectAttribute' => 'name1',
-                    'shopwareAttibuteName' => 'Attribute',
-                    'shopwareAttibute'     => 'attr1'
+                    'shopwareAttibuteName' => 'articleName',
+                    'shopwareAttibute'     => 'articleName'
                 ],
                 [
                     'eightSelectAttribute' => 'name2',
-                    'shopwareAttibuteName' => 'Attribute',
-                    'shopwareAttibute'     => 'attr1'
+                    'shopwareAttibuteName' => '',
+                    'shopwareAttibute'     => ''
                 ],
                 [
                     'eightSelectAttribute' => 'kategorie1',
@@ -49,13 +49,13 @@ class Shopware_Controllers_Backend_EightSelect extends \Shopware_Controllers_Bac
                 ],
                 [
                     'eightSelectAttribute' => 'streich_preis',
-                    'shopwareAttibuteName' => 'Attribute',
-                    'shopwareAttibute'     => 'attr1'
+                    'shopwareAttibuteName' => '',
+                    'shopwareAttibute'     => ''
                 ],
                 [
                     'eightSelectAttribute' => 'angebots_preis',
-                    'shopwareAttibuteName' => 'Attribute',
-                    'shopwareAttibute'     => 'attr1'
+                    'shopwareAttibuteName' => '',
+                    'shopwareAttibute'     => ''
                 ],
                 [
                     'eightSelectAttribute' => 'groesse',
@@ -64,13 +64,13 @@ class Shopware_Controllers_Backend_EightSelect extends \Shopware_Controllers_Bac
                 ],
                 [
                     'eightSelectAttribute' => 'marke',
-                    'shopwareAttibuteName' => 'Attribute',
-                    'shopwareAttibute'     => 'attr1'
+                    'shopwareAttibuteName' => 'Herstellername',
+                    'shopwareAttibute'     => 'supplierName'
                 ],
                 [
                     'eightSelectAttribute' => 'bereich',
-                    'shopwareAttibuteName' => 'Attribute',
-                    'shopwareAttibute'     => 'attr1'
+                    'shopwareAttibuteName' => '',
+                    'shopwareAttibute'     => ''
                 ],
                 [
                     'eightSelectAttribute' => 'rubrik',
@@ -174,8 +174,8 @@ class Shopware_Controllers_Backend_EightSelect extends \Shopware_Controllers_Bac
                 ],
                 [
                     'eightSelectAttribute' => 'fuellmenge',
-                    'shopwareAttibuteName' => 'Attribute',
-                    'shopwareAttibute'     => 'attr1'
+                    'shopwareAttibuteName' => 'weight',
+                    'shopwareAttibute'     => 'weight'
                 ],
                 [
                     'eightSelectAttribute' => 'funktion',
@@ -204,13 +204,13 @@ class Shopware_Controllers_Backend_EightSelect extends \Shopware_Controllers_Bac
                 ],
                 [
                     'eightSelectAttribute' => 'beschreibung',
-                    'shopwareAttibuteName' => 'Attribute',
-                    'shopwareAttibute'     => 'attr1'
+                    'shopwareAttibuteName' => 'description',
+                    'shopwareAttibute'     => 'description'
                 ],
                 [
                     'eightSelectAttribute' => 'beschreibung1',
-                    'shopwareAttibuteName' => '',
-                    'shopwareAttibute'     => ''
+                    'shopwareAttibuteName' => 'description_long',
+                    'shopwareAttibute'     => 'description_long'
                 ],
                 [
                     'eightSelectAttribute' => 'beschreibung2',

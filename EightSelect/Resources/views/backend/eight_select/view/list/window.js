@@ -6,8 +6,8 @@ Ext.define('Shopware.apps.EightSelect.view.list.Window', {
 
     configure: function() {
         return {
-            listingGrid: 'Shopware.apps.EightSelect.view.list.Attribute',
-            listingStore: 'Shopware.apps.EightSelect.store.Attribute'
+            listingGrid: 'Shopware.apps.EightSelect.view.list.EightSelectAttribute',
+            listingStore: 'Shopware.apps.EightSelect.store.EightSelectAttribute'
         };
     }
 });

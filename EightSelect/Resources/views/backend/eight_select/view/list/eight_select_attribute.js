@@ -1,4 +1,4 @@
-Ext.define('Shopware.apps.EightSelect.view.list.Attribute', {
+Ext.define('Shopware.apps.EightSelect.view.list.EightSelectAttribute', {
     extend: 'Shopware.grid.Panel',
     alias:  'widget.8select-attributes-grid',
     region: 'center',
@@ -9,11 +9,11 @@ Ext.define('Shopware.apps.EightSelect.view.list.Attribute', {
             rowEditing: true,
             columns: {
                 eightSelectAttribute: {
-                    header: 'eightSelectAttribute',
+                    header: '8Select Attribute',
                     editable: false
                 },
-                shopwareAttibuteName: {
-                    header: 'shopwareAttibuteName',
+                shopwareAttributeName: {
+                    header: 'Shopware Attribute Name',
                     editor: {
                         xtype: 'combobox',
                         allowBlank: false,

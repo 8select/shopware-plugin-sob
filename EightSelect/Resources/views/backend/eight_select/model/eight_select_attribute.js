@@ -1,4 +1,4 @@
-Ext.define('Shopware.apps.EightSelect.model.Attribute', {
+Ext.define('Shopware.apps.EightSelect.model.EightSelectAttribute', {
 
     extend: 'Ext.data.Model',
 

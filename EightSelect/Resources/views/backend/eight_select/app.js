@@ -10,11 +10,11 @@ Ext.define('Shopware.apps.EightSelect', {
 
     views: [
         'list.Window',
-        'list.Attribute',
+        'list.EightSelectAttribute',
     ],
 
-    models: [ 'Attribute' ],
-    stores: [ 'Attribute' ],
+    models: [ 'EightSelectAttribute' ],
+    stores: [ 'EightSelectAttribute' ],
 
     launch: function() {
         return this.getController('Main').mainWindow;
