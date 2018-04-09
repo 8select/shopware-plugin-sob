@@ -1,11 +1,16 @@
 <?php
+
 namespace EightSelect;
 
 use Shopware\Components\Emotion\ComponentInstaller;
 use Shopware\Components\Plugin;
 use Doctrine\Common\Collections\ArrayCollection;
+use Shopware\Components\Plugin\Context\ActivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
+use Shopware\Components\Model\ModelManager;
+use Doctrine\ORM\Tools\SchemaTool;
+use EightSelect\Models\Attribute;
 
 class EightSelect extends Plugin
 {
@@ -15,19 +20,34 @@ class EightSelect extends Plugin
     public static function getSubscribedEvents()
     {
         return [
-            'Theme_Compiler_Collect_Plugin_Javascript'                          => 'addJsFiles',
-            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_EightSelect' => 'onGetEightSelectController',
-            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'      => 'onPostDispatchBackendEmotion',
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend'             => 'onFrontendPostDispatch',
-            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'          => 'onCheckoutConfirm',
-            'Shopware_Console_Add_Command'                                      => 'onStartDispatch',
+            'Enlight_Controller_Action_PreDispatch' => 'onPreDispatch',
+            'Theme_Compiler_Collect_Plugin_Javascript' => 'addJsFiles',
+            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_EightSelect' => 'onGetFrontendEightSelectController',
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_EightSelect' => 'onGetBackendEightSelectController',
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion' => 'onPostDispatchBackendEmotion',
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend' => 'onFrontendPostDispatch',
+            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout' => 'onCheckoutConfirm',
+            'Shopware_Console_Add_Command' => 'onStartDispatch',
         ];
+    }
+
+    public function onPreDispatch()
+    {
+        Shopware()->Template()->addTemplateDir($this->getPath() . '/Resources/views/');
     }
 
     /**
      * @return string
      */
-    public function onGetEightSelectController()
+    public function onGetBackendEightSelectController()
+    {
+        return $this->getPath() . '/Controllers/Backend/EightSelect.php';
+    }
+
+    /**
+     * @return string
+     */
+    public function onGetFrontendEightSelectController()
     {
         return $this->getPath() . '/Controllers/Frontend/EightSelect.php';
     }
@@ -64,7 +84,6 @@ class EightSelect extends Plugin
         /** @var \Enlight_Controller_Action $controller */
         $controller = $args->get('subject');
         $view = $controller->View();
-        $view->addTemplateDir($this->getPath() . '/Resources/views/');
 
         $htmlContainer = $config->get('8s_html_container_element');
         $view->assign('htmlContainer', explode('CSE_SYS', $htmlContainer));
@@ -151,7 +170,16 @@ class EightSelect extends Plugin
     public function install(InstallContext $context)
     {
         $this->installWidgets();
+        $this->createDatabase();
         parent::install($context);
+    }
+
+    /**
+     * @param ActivateContext $context
+     */
+    public function activate(ActivateContext $activateContext)
+    {
+        $activateContext->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
 
     public function installWidgets()
@@ -164,25 +192,25 @@ class EightSelect extends Plugin
             $this->getName(),
             '8select SYS-PSV component',
             [
-                'name'     => 'SYS-PSV Component',
+                'name' => 'SYS-PSV Component',
                 'template' => 'sys_psv',
-                'cls'      => '8select--element--sys-psv',
-                'xtype'    => 'emotion-8select-syspsv-element',
+                'cls' => '8select--element--sys-psv',
+                'xtype' => 'emotion-8select-syspsv-element',
             ]
         );
         $syspsvElement->createHiddenField(
             [
-                'name'       => 'sys_psv_ordernumber',
+                'name' => 'sys_psv_ordernumber',
                 'fieldLabel' => 'Product Ordernumber',
                 'allowBlank' => false,
             ]
         );
         $syspsvElement->createNumberField(
             [
-                'name'         => 'sys_psv_lazyload_factor',
-                'fieldLabel'   => 'Lazy Load Distance Factor',
+                'name' => 'sys_psv_lazyload_factor',
+                'fieldLabel' => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText'     => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
+                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
                                 sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
@@ -196,25 +224,25 @@ class EightSelect extends Plugin
             $this->getName(),
             '8select PSP-TLV component',
             [
-                'name'     => 'PSP-TLV Component',
+                'name' => 'PSP-TLV Component',
                 'template' => 'psp_tlv',
-                'cls'      => '8select--element--psp-tlv',
-                'xtype'    => 'emotion-8select-psptlv-element',
+                'cls' => '8select--element--psp-tlv',
+                'xtype' => 'emotion-8select-psptlv-element',
             ]
         );
         $psptlvElement->createTextField(
             [
-                'name'       => 'psp_tlv_stylefactor',
+                'name' => 'psp_tlv_stylefactor',
                 'fieldLabel' => 'Stylefactor',
                 'allowBlank' => false,
             ]
         );
         $psptlvElement->createNumberField(
             [
-                'name'         => 'psp_tlv_lazyload_factor',
-                'fieldLabel'   => 'Lazy Load Distance Factor',
+                'name' => 'psp_tlv_lazyload_factor',
+                'fieldLabel' => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText'     => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
+                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
                                 sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
@@ -228,25 +256,25 @@ class EightSelect extends Plugin
             $this->getName(),
             '8select PSP-PSV component',
             [
-                'name'     => 'PSP-PSV Component',
+                'name' => 'PSP-PSV Component',
                 'template' => 'psp_psv',
-                'cls'      => '8select--element--psp-psv',
-                'xtype'    => 'emotion-8select-psppsv-element',
+                'cls' => '8select--element--psp-psv',
+                'xtype' => 'emotion-8select-psppsv-element',
             ]
         );
         $psppsvElement->createTextField(
             [
-                'name'       => 'psp_psv_set_id',
+                'name' => 'psp_psv_set_id',
                 'fieldLabel' => 'Set-ID',
                 'allowBlank' => false,
             ]
         );
         $psppsvElement->createNumberField(
             [
-                'name'         => 'psp_psv_lazyload_factor',
-                'fieldLabel'   => 'Lazy Load Distance Factor',
+                'name' => 'psp_psv_lazyload_factor',
+                'fieldLabel' => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText'     => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
+                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
                                 sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
@@ -261,7 +289,41 @@ class EightSelect extends Plugin
      */
     public function uninstall(UninstallContext $context)
     {
+        if (!$context->keepUserData()) {
+            $this->removeDatabase();
+        }
         parent::uninstall($context);
+    }
+
+    private function createDatabase()
+    {
+        $modelManager = $this->container->get('models');
+        $tool = new SchemaTool($modelManager);
+
+        $classes = $this->getClasses($modelManager);
+
+        $tool->updateSchema($classes, true); // make sure to use the save mode
+    }
+
+    private function removeDatabase()
+    {
+        $modelManager = $this->container->get('models');
+        $tool = new SchemaTool($modelManager);
+
+        $classes = $this->getClasses($modelManager);
+
+        $tool->dropSchema($classes);
+    }
+
+    /**
+     * @param ModelManager $modelManager
+     * @return array
+     */
+    private function getClasses(ModelManager $modelManager)
+    {
+        return [
+            $modelManager->getClassMetadata(Attribute::class)
+        ];
     }
 
     /**
