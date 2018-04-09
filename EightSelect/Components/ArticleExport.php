@@ -1,6 +1,7 @@
 <?php
 namespace EightSelect\Components;
 
+use Aws\S3\S3Client;
 use Shopware\Models\Article\Article;
 use Shopware\Models\Article\Detail;
 
@@ -57,6 +58,25 @@ class ArticleExport {
         'beschreibung2'      => 'beschreibung2',
     ];
 
+    protected function uploadToAWS($filename) {
+        // Instantiate an Amazon S3 client.
+        $s3 = new S3Client([
+            'version' => 'latest',
+            'region'  => 'eu-central-1'
+        ]);
+
+        try {
+            $s3->putObject([
+                'Bucket' => '8sdemo.1drop.de',
+                'Key'    => 'my-object',
+                'Body'   => fopen($filename, 'r'),
+                'ACL'    => 'public-read',
+            ]);
+        } catch (Aws\S3\Exception\S3Exception $e) {
+            echo "There was an error uploading the file.\n";
+        }
+    }
+
     public function doCron() {
         $date = strtotime(date('Y-m-d'));
 
@@ -69,7 +89,8 @@ class ArticleExport {
             mkdir(self::STORAGE, 775, true);
         }
 
-        $fp = fopen(self::STORAGE . 'products_full_' . date('Ymdhi') . '.csv', 'a');
+        $filename = self::STORAGE . 'products_full_' . date('Ymdhi') . '.csv';
+        $fp = fopen($filename, 'a');
 
         $header = [];
         foreach ($this->fields as $key => $field) {
