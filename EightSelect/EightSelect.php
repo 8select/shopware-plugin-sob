@@ -20,7 +20,7 @@ class EightSelect extends Plugin
             'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'      => 'onPostDispatchBackendEmotion',
             'Enlight_Controller_Action_PostDispatchSecure_Frontend'             => 'onFrontendPostDispatch',
             'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'          => 'onCheckoutConfirm',
-            'Shopware_Console_Add_Command'                                      => 'onStartDispatch'
+            'Shopware_Console_Add_Command'                                      => 'onStartDispatch',
         ];
     }
 
@@ -37,10 +37,11 @@ class EightSelect extends Plugin
      */
     public function getVersion()
     {
-        return Shopware()->Db()->query('SELECT version FROM s_core_plugins WHERE name = ?',
-            [$this->getName()])->fetchColumn();
+        return Shopware()->Db()->query(
+            'SELECT version FROM s_core_plugins WHERE name = ?',
+            [$this->getName()]
+        )->fetchColumn();
     }
-
 
     public function onStartDispatch()
     {
@@ -131,8 +132,11 @@ class EightSelect extends Plugin
 
     protected function calculatePrice($itemProperty, $factor)
     {
-        $tempPrice = (strpos($itemProperty['price'], ',') != false) ? str_replace(',', '.',
-            $itemProperty['price']) : $itemProperty['price'];
+        $tempPrice = (strpos($itemProperty['price'], ',') != false) ? str_replace(
+            ',',
+            '.',
+            $itemProperty['price']
+        ) : $itemProperty['price'];
         if ($itemProperty['currencyFactor'] > 0) {
             $tempPrice = $tempPrice / $itemProperty['currencyFactor'];
         }
@@ -175,10 +179,10 @@ class EightSelect extends Plugin
         );
         $syspsvElement->createNumberField(
             [
-                'name'       => 'sys_psv_lazyload_factor',
-                'fieldLabel' => 'Lazy Load Distance Factor',
+                'name'         => 'sys_psv_lazyload_factor',
+                'fieldLabel'   => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText' =>   'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
+                'helpText'     => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
                                 sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
@@ -207,10 +211,10 @@ class EightSelect extends Plugin
         );
         $psptlvElement->createNumberField(
             [
-                'name'       => 'psp_tlv_lazyload_factor',
-                'fieldLabel' => 'Lazy Load Distance Factor',
+                'name'         => 'psp_tlv_lazyload_factor',
+                'fieldLabel'   => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText' =>   'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
+                'helpText'     => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
                                 sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
@@ -239,10 +243,10 @@ class EightSelect extends Plugin
         );
         $psppsvElement->createNumberField(
             [
-                'name'       => 'psp_psv_lazyload_factor',
-                'fieldLabel' => 'Lazy Load Distance Factor',
+                'name'         => 'psp_psv_lazyload_factor',
+                'fieldLabel'   => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText' =>   'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
+                'helpText'     => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
                                 sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
