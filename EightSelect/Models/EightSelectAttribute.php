@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="s_attribute")
+ * @ORM\Table(name="es_attribute_mapping")
  */
 class EightSelectAttribute extends ModelEntity
 {
@@ -33,13 +33,6 @@ class EightSelectAttribute extends ModelEntity
      * @ORM\Column(type="text", nullable=true)
      */
     private $shopwareAttribute;
-
-    /**
-     * @var string $shopwareAttributeName
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $shopwareAttributeName;
 
     /**
      * @return int
@@ -71,21 +64,5 @@ class EightSelectAttribute extends ModelEntity
     public function getShopwareAttribute()
     {
         return $this->shopwareAttribute;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setShopwareAttributeName($name)
-    {
-        $this->shopwareAttributeName = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getShopwareAttributeName()
-    {
-        return $this->shopwareAttributeName;
     }
 }

@@ -6,20 +6,25 @@ Ext.define('Shopware.apps.EightSelect.view.list.EightSelectAttribute', {
     configure: function() {
         return {
             actionColumn: false,
+            addButton: false,
+            deleteButton: false,
             rowEditing: true,
+            pagingbar: false,
             columns: {
                 eightSelectAttribute: {
                     header: '8Select Attribute',
-                    editable: false
+                    editor: {
+                        editable: false
+                    }
                 },
-                shopwareAttributeName: {
-                    header: 'Shopware Attribute Name',
+                shopwareAttribute: {
+                    header: 'Shopware Attribute',
                     editor: {
                         xtype: 'combobox',
                         allowBlank: false,
-                        valueField: 'id',
-                        displayField: 'description',
-                        store : '',
+                        valueField: 'column_name',
+                        displayField: 'label',
+                        store : Ext.create('Shopware.apps.EightSelect.store.ShopwareAttribute'),
                         editable: false
                     }
                 }

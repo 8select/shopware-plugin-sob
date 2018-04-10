@@ -1,11 +1,11 @@
-Ext.define('Shopware.apps.EightSelect.model.EightSelectAttribute', {
+Ext.define('Shopware.apps.EightSelect.model.ShopwareAttribute', {
 
     extend: 'Ext.data.Model',
 
     fields: [
-        { name : 'id', type: 'int' },
-        { name : 'eightSelectAttribute', type: 'string' },
-        { name : 'shopwareAttribute', type: 'string' }
+        { name : 'column_name', type: 'string' },
+        { name : 'label', type: 'string' },
+
     ],
 
     proxy: {
@@ -17,8 +17,7 @@ Ext.define('Shopware.apps.EightSelect.model.EightSelectAttribute', {
          * @object
          */
         api: {
-            read: '{url controller=EightSelect action=list}',
-            update: '{url controller=EightSelect action=update}'
+            read: '{url controller=EightSelect action=getArticleAttributes}'
         },
         /**
          * Configure the data reader

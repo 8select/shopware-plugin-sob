@@ -4,5 +4,15 @@ Ext.define('Shopware.apps.EightSelect.controller.Main', {
     init: function() {
         var me = this;
         me.mainWindow = me.getView('list.Window').create({ }).show();
+
+        me.control({
+            '8select-attributes-grid': {
+                'edit': me.editRow
+            }
+        });
+    },
+
+    editRow: function(event, context) {
+        context.record.save();
     }
 });

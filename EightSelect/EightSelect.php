@@ -11,6 +11,7 @@ use Shopware\Components\Plugin\Context\UninstallContext;
 use Shopware\Components\Model\ModelManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use EightSelect\Models\EightSelectAttribute;
+use Shopware\Components\Plugin\Context\UpdateContext;
 
 class EightSelect extends Plugin
 {
@@ -54,6 +55,8 @@ class EightSelect extends Plugin
 
     /**
      * @return string
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
      */
     public function getVersion()
     {
@@ -106,6 +109,7 @@ class EightSelect extends Plugin
 
     /**
      * @param \Enlight_Event_EventArgs $args
+     * @throws \Enlight_Exception
      */
     public function onCheckoutConfirm(\Enlight_Event_EventArgs $args)
     {
@@ -169,17 +173,38 @@ class EightSelect extends Plugin
      */
     public function install(InstallContext $context)
     {
+        parent::install($context);
         $this->installWidgets();
         $this->createDatabase();
-        parent::install($context);
     }
 
     /**
-     * @param ActivateContext $context
+     * @param ActivateContext $activateContext
      */
     public function activate(ActivateContext $activateContext)
     {
         $activateContext->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
+    }
+
+    /**
+     * @param UpdateContext $context
+     */
+    public function update(UpdateContext $context)
+    {
+        parent::update($context);
+
+        switch ($context->getCurrentVersion()) {
+            case '1.0.0':
+                $this->update_101();
+        }
+    }
+
+    /**
+     * Update to Version 1.0.1
+     */
+    private function update_101()
+    {
+        $this->createDatabase();
     }
 
     public function installWidgets()
@@ -289,9 +314,7 @@ class EightSelect extends Plugin
      */
     public function uninstall(UninstallContext $context)
     {
-        if (!$context->keepUserData()) {
-            $this->removeDatabase();
-        }
+        $this->removeDatabase();
         parent::uninstall($context);
     }
 
@@ -303,6 +326,8 @@ class EightSelect extends Plugin
         $classes = $this->getClasses($modelManager);
 
         $tool->updateSchema($classes, true); // make sure to use the save mode
+
+        $this->initAttributes();
     }
 
     private function removeDatabase()
@@ -339,5 +364,165 @@ class EightSelect extends Plugin
         ];
 
         return new ArrayCollection($jsFiles);
+    }
+
+    private function initAttributes()
+    {
+        $attributeList = [
+            [
+                'eightSelectAttribute' => 'sku',
+                'shopwareAttribute' => 's_articles_details.ordernumber'
+            ],
+            [
+                'eightSelectAttribute' => 'mastersku',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'warenkorb_id',
+                'shopwareAttribute' => 's_articles_details.ordernumber'
+            ],
+            [
+                'eightSelectAttribute' => 'ean',
+                'shopwareAttribute' => 's_articles_details.ean',
+            ],
+            [
+                'eightSelectAttribute' => 'name1',
+                'shopwareAttribute' => 's_articles.name'
+            ],
+            [
+                'eightSelectAttribute' => 'name2',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'groesse',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'bereich',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'rubrik',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'abteilung',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'kiko',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'typ',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'farbe',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'farbspektrum',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'absatzhoehe',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'muster',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'aermellaenge',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'kragenform',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'obermaterial',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'passform',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'schnitt',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'waschung',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'stil',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'sportart',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'detail',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'auspraegung',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'baukasten',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'eigenschaft',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'fuellmenge',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'funktion',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'gruppe',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'material',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'saison',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'serie',
+                'shopwareAttribute' => '-'
+            ],
+            [
+                'eightSelectAttribute' => 'beschreibung',
+                'shopwareAttribute' => 's_articles.description',
+            ],
+            [
+                'eightSelectAttribute' => 'beschreibung1',
+                'shopwareAttribute' => 's_articles.description_long',
+            ],
+            [
+                'eightSelectAttribute' => 'beschreibung2',
+                'shopwareAttribute' => '-',
+            ]
+        ];
+
+        foreach ($attributeList as $attributeEntry) {
+            $sql = 'INSERT INTO es_attribute_mapping (eightSelectAttribute, shopwareAttribute) VALUES (?, ?)';
+            Shopware()->Db()->query($sql,
+                [$attributeEntry['eightSelectAttribute'], $attributeEntry['shopwareAttribute']]);
+        }
     }
 }
