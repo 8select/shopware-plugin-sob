@@ -194,14 +194,14 @@ class EightSelect extends Plugin
 
         switch ($context->getCurrentVersion()) {
             case '1.0.0':
-                $this->update_101();
+                $this->update_110();
         }
     }
 
     /**
-     * Update to Version 1.0.1
+     * Update to Version 1.1.0
      */
-    private function update_101()
+    private function update_110()
     {
         $this->createDatabase();
     }
