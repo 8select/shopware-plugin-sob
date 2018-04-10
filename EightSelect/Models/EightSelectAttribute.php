@@ -1,5 +1,4 @@
 <?php
-
 namespace EightSelect\Models;
 
 use Shopware\Components\Model\ModelEntity;
@@ -12,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class EightSelectAttribute extends ModelEntity
 {
     /**
-     * @var integer $id
+     * @var int $id
      *
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -55,7 +54,7 @@ class EightSelectAttribute extends ModelEntity
      */
     public function setShopwareAttribute($name)
     {
-        $this->shopwareAttribute= $name;
+        $this->shopwareAttribute = $name;
     }
 
     /**

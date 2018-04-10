@@ -7,7 +7,8 @@ class Shopware_Controllers_Backend_EightSelect extends \Shopware_Controllers_Bac
     protected $model = EightSelectAttribute::class;
     protected $alias = 'eightSelectAttribute';
 
-    public function getArticleAttributesAction() {
+    public function getArticleAttributesAction()
+    {
         $this->View()->assign($this->getArticleAttributes());
     }
     
@@ -17,12 +18,12 @@ class Shopware_Controllers_Backend_EightSelect extends \Shopware_Controllers_Bac
     }
 
     /**
-     * @return array
      * @throws Zend_Db_Adapter_Exception
      * @throws Zend_Db_Statement_Exception
+     * @return array
      */
-    protected function getArticleAttributes() {
-
+    protected function getArticleAttributes()
+    {
         $fixedAttributes = [
             // articles attributes
             ['column_name' => '-', 'label' => '-'],
@@ -41,14 +42,14 @@ class Shopware_Controllers_Backend_EightSelect extends \Shopware_Controllers_Bac
         ];
 
         $attributeData = Shopware()->Db()->query('SELECT `column_name`, label FROM s_attribute_configuration WHERE table_name = "s_articles_attributes"')->fetchAll();
-        foreach($attributeData as &$attributeDatum) {
+        foreach ($attributeData as &$attributeDatum) {
             $attributeDatum['column_name'] = 's_articles_attributes.' . $attributeDatum['column_name'];
         }
 
         $attributesComplete = array_merge($fixedAttributes, $attributeData);
         return [
             'success' => true,
-            'data' => $attributesComplete
+            'data'    => $attributesComplete,
         ];
     }
 }

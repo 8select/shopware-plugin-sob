@@ -1,5 +1,4 @@
 <?php
-
 namespace EightSelect;
 
 use Shopware\Components\Emotion\ComponentInstaller;
@@ -21,14 +20,14 @@ class EightSelect extends Plugin
     public static function getSubscribedEvents()
     {
         return [
-            'Enlight_Controller_Action_PreDispatch' => 'onPreDispatch',
-            'Theme_Compiler_Collect_Plugin_Javascript' => 'addJsFiles',
+            'Enlight_Controller_Action_PreDispatch'                             => 'onPreDispatch',
+            'Theme_Compiler_Collect_Plugin_Javascript'                          => 'addJsFiles',
             'Enlight_Controller_Dispatcher_ControllerPath_Frontend_EightSelect' => 'onGetFrontendEightSelectController',
-            'Enlight_Controller_Dispatcher_ControllerPath_Backend_EightSelect' => 'onGetBackendEightSelectController',
-            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion' => 'onPostDispatchBackendEmotion',
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend' => 'onFrontendPostDispatch',
-            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout' => 'onCheckoutConfirm',
-            'Shopware_Console_Add_Command' => 'onStartDispatch',
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_EightSelect'  => 'onGetBackendEightSelectController',
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'      => 'onPostDispatchBackendEmotion',
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend'             => 'onFrontendPostDispatch',
+            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'          => 'onCheckoutConfirm',
+            'Shopware_Console_Add_Command'                                      => 'onStartDispatch',
         ];
     }
 
@@ -54,9 +53,9 @@ class EightSelect extends Plugin
     }
 
     /**
-     * @return string
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @return string
      */
     public function getVersion()
     {
@@ -108,7 +107,7 @@ class EightSelect extends Plugin
     }
 
     /**
-     * @param \Enlight_Event_EventArgs $args
+     * @param  \Enlight_Event_EventArgs $args
      * @throws \Enlight_Exception
      */
     public function onCheckoutConfirm(\Enlight_Event_EventArgs $args)
@@ -217,25 +216,25 @@ class EightSelect extends Plugin
             $this->getName(),
             '8select SYS-PSV component',
             [
-                'name' => 'SYS-PSV Component',
+                'name'     => 'SYS-PSV Component',
                 'template' => 'sys_psv',
-                'cls' => '8select--element--sys-psv',
-                'xtype' => 'emotion-8select-syspsv-element',
+                'cls'      => '8select--element--sys-psv',
+                'xtype'    => 'emotion-8select-syspsv-element',
             ]
         );
         $syspsvElement->createHiddenField(
             [
-                'name' => 'sys_psv_ordernumber',
+                'name'       => 'sys_psv_ordernumber',
                 'fieldLabel' => 'Product Ordernumber',
                 'allowBlank' => false,
             ]
         );
         $syspsvElement->createNumberField(
             [
-                'name' => 'sys_psv_lazyload_factor',
-                'fieldLabel' => 'Lazy Load Distance Factor',
+                'name'         => 'sys_psv_lazyload_factor',
+                'fieldLabel'   => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
+                'helpText'     => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des 
                                 sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
@@ -249,25 +248,25 @@ class EightSelect extends Plugin
             $this->getName(),
             '8select PSP-TLV component',
             [
-                'name' => 'PSP-TLV Component',
+                'name'     => 'PSP-TLV Component',
                 'template' => 'psp_tlv',
-                'cls' => '8select--element--psp-tlv',
-                'xtype' => 'emotion-8select-psptlv-element',
+                'cls'      => '8select--element--psp-tlv',
+                'xtype'    => 'emotion-8select-psptlv-element',
             ]
         );
         $psptlvElement->createTextField(
             [
-                'name' => 'psp_tlv_stylefactor',
+                'name'       => 'psp_tlv_stylefactor',
                 'fieldLabel' => 'Stylefactor',
                 'allowBlank' => false,
             ]
         );
         $psptlvElement->createNumberField(
             [
-                'name' => 'psp_tlv_lazyload_factor',
-                'fieldLabel' => 'Lazy Load Distance Factor',
+                'name'         => 'psp_tlv_lazyload_factor',
+                'fieldLabel'   => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
+                'helpText'     => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
                                 sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
@@ -281,25 +280,25 @@ class EightSelect extends Plugin
             $this->getName(),
             '8select PSP-PSV component',
             [
-                'name' => 'PSP-PSV Component',
+                'name'     => 'PSP-PSV Component',
                 'template' => 'psp_psv',
-                'cls' => '8select--element--psp-psv',
-                'xtype' => 'emotion-8select-psppsv-element',
+                'cls'      => '8select--element--psp-psv',
+                'xtype'    => 'emotion-8select-psppsv-element',
             ]
         );
         $psppsvElement->createTextField(
             [
-                'name' => 'psp_psv_set_id',
+                'name'       => 'psp_psv_set_id',
                 'fieldLabel' => 'Set-ID',
                 'allowBlank' => false,
             ]
         );
         $psppsvElement->createNumberField(
             [
-                'name' => 'psp_psv_lazyload_factor',
-                'fieldLabel' => 'Lazy Load Distance Factor',
+                'name'         => 'psp_psv_lazyload_factor',
+                'fieldLabel'   => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
+                'helpText'     => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
                                 sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden, 
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden, 
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches 
@@ -341,13 +340,13 @@ class EightSelect extends Plugin
     }
 
     /**
-     * @param ModelManager $modelManager
+     * @param  ModelManager $modelManager
      * @return array
      */
     private function getClasses(ModelManager $modelManager)
     {
         return [
-            $modelManager->getClassMetadata(EightSelectAttribute::class)
+            $modelManager->getClassMetadata(EightSelectAttribute::class),
         ];
     }
 
@@ -371,158 +370,160 @@ class EightSelect extends Plugin
         $attributeList = [
             [
                 'eightSelectAttribute' => 'sku',
-                'shopwareAttribute' => 's_articles_details.ordernumber'
+                'shopwareAttribute'    => 's_articles_details.ordernumber',
             ],
             [
                 'eightSelectAttribute' => 'mastersku',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'warenkorb_id',
-                'shopwareAttribute' => 's_articles_details.ordernumber'
+                'shopwareAttribute'    => 's_articles_details.ordernumber',
             ],
             [
                 'eightSelectAttribute' => 'ean',
-                'shopwareAttribute' => 's_articles_details.ean',
+                'shopwareAttribute'    => 's_articles_details.ean',
             ],
             [
                 'eightSelectAttribute' => 'name1',
-                'shopwareAttribute' => 's_articles.name'
+                'shopwareAttribute'    => 's_articles.name',
             ],
             [
                 'eightSelectAttribute' => 'name2',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'groesse',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'bereich',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'rubrik',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'abteilung',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'kiko',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'typ',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'farbe',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'farbspektrum',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'absatzhoehe',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'muster',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'aermellaenge',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'kragenform',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'obermaterial',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'passform',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'schnitt',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'waschung',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'stil',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'sportart',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'detail',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'auspraegung',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'baukasten',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'eigenschaft',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'fuellmenge',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'funktion',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'gruppe',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'material',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'saison',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'serie',
-                'shopwareAttribute' => '-'
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'beschreibung',
-                'shopwareAttribute' => 's_articles.description',
+                'shopwareAttribute'    => 's_articles.description',
             ],
             [
                 'eightSelectAttribute' => 'beschreibung1',
-                'shopwareAttribute' => 's_articles.description_long',
+                'shopwareAttribute'    => 's_articles.description_long',
             ],
             [
                 'eightSelectAttribute' => 'beschreibung2',
-                'shopwareAttribute' => '-',
-            ]
+                'shopwareAttribute'    => '-',
+            ],
         ];
 
         foreach ($attributeList as $attributeEntry) {
             $sql = 'INSERT INTO es_attribute_mapping (eightSelectAttribute, shopwareAttribute) VALUES (?, ?)';
-            Shopware()->Db()->query($sql,
-                [$attributeEntry['eightSelectAttribute'], $attributeEntry['shopwareAttribute']]);
+            Shopware()->Db()->query(
+                $sql,
+                [$attributeEntry['eightSelectAttribute'], $attributeEntry['shopwareAttribute']]
+            );
         }
     }
 }
