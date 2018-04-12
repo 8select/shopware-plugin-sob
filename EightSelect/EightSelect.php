@@ -638,24 +638,22 @@ class EightSelect extends Plugin
                   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
                   PRIMARY KEY (`id`)
                 ) COLLATE=\'utf8_unicode_ci\' ENGINE=InnoDB DEFAULT CHARSET=utf8;',
-            'DELIMITER $$
-                DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer` $$',
+            'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
             'CREATE TRIGGER `8s_articles_details_change_queue_writer` AFTER UPDATE on `s_articles_details`
                   FOR EACH ROW
                   BEGIN
                     IF (NEW.instock != OLD.instock OR NEW.active != OLD.active) THEN
                       INSERT INTO 8s_articles_details_change_queue (s_articles_details_id) VALUES (NEW.id);
                     END IF;
-                  END$$',
-            'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer` $$',
+                  END',
+            'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
             'CREATE TRIGGER `8s_s_articles_prices_change_queue_writer` AFTER UPDATE on `s_articles_prices`
                   FOR EACH ROW
                   BEGIN
                     IF (NEW.price != OLD.price OR NEW.pseudoprice != OLD.pseudoprice) THEN
                       INSERT INTO 8s_articles_details_change_queue (s_articles_details_id) VALUES (NEW.articleDetailsID);
                     END IF;
-                  END$$',
-            'DELIMITER ;',
+                  END',
         ];
 
         foreach ($triggerSqls as $triggerSql) {
