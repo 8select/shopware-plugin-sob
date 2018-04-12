@@ -29,6 +29,7 @@ class EightSelect extends Plugin
             'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'          => 'onCheckoutConfirm',
             'Shopware_Console_Add_Command'                                      => 'onStartDispatch',
             'Shopware_CronJob_EightSelectArticleExport'                         => 'eightSelectArticleExport',
+            'Shopware_CronJob_EightSelectQuickUpdate'                           => 'eightSelectQuickUpdate',
         ];
     }
 
@@ -178,11 +179,11 @@ class EightSelect extends Plugin
      */
     public function install(InstallContext $context)
     {
-        $this->installWidgets();
         $this->addExportCron();
-        parent::install($context);
+        $this->addUpdateCron();
         $this->installWidgets();
         $this->createDatabase();
+        parent::install($context);
     }
 
     /**
@@ -325,6 +326,7 @@ class EightSelect extends Plugin
     public function uninstall(UninstallContext $context)
     {
         $this->removeExportCron();
+        $this->removeUpdateCron();
         $this->removeDatabase();
         parent::uninstall($context);
     }
@@ -371,6 +373,14 @@ class EightSelect extends Plugin
     }
 
     /**
+     * @param \Shopware_Components_Cron_CronJob $job
+     */
+    public function eightSelectQuickUpdate(\Shopware_Components_Cron_CronJob $job)
+    {
+        $this->container->get('eight_select.quick_update')->doCron();
+    }
+
+    /**
      * Provide the file collection for js files
      *
      * @return ArrayCollection
@@ -414,6 +424,38 @@ class EightSelect extends Plugin
     {
         $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
             'Shopware_CronJob_EightSelectArticleExport',
+        ]);
+    }
+
+    /**
+     * add cron job for exporting all products
+     */
+    public function addUpdateCron()
+    {
+        $connection = $this->container->get('dbal_connection');
+        $connection->insert(
+            's_crontab',
+            [
+                'name'             => 'EightSelect quick product update',
+                'action'           => 'Shopware_CronJob_EightSelectQuickUpdate',
+                'next'             => null,
+                'start'            => null,
+                '`interval`'       => '60',
+                'active'           => 1,
+                'end'              => new \DateTime(),
+                'pluginID'         => $this->container->get('shopware.plugin_manager')->getPluginByName($this->getName())->getId(),
+            ],
+            [
+                'next' => 'datetime',
+                'end'  => 'datetime',
+            ]
+        );
+    }
+
+    public function removeUpdateCron()
+    {
+        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
+            'Shopware_CronJob_EightSelectQuickUpdate',
         ]);
     }
 
