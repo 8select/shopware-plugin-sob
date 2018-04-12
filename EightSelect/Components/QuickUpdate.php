@@ -29,6 +29,7 @@ class QuickUpdate
 
         if (count($articles)) {
             $this->writeFile($articles);
+            $this->emptyTable();
         }
     }
 
@@ -42,16 +43,17 @@ class QuickUpdate
         $mapping = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightSelectAttribute)) as resultMapping FROM 8s_attribute_mapping WHERE shopwareAttribute != "-"';
         $resultMapping = Shopware()->Db()->query($mapping)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
 
-        $sql = 'SELECT ' . $resultMapping . ',
+        $sql = 'SELECT DISTINCT ' . $resultMapping . ',
                 s_articles.id as articleID,
                 s_articles_details.kind AS mastersku,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
-                s_articles_details.active AS status,
+                s_articles_details.active AS status
                 FROM s_articles
                 INNER JOIN s_articles_details ON s_articles.main_detail_id = s_articles_details.id
                 INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
                 INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id
+                INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id
                 ORDER BY s_articles.id';
 
         return Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
@@ -86,6 +88,13 @@ class QuickUpdate
         fclose($fp);
 
         AWSUploader::upload($filename, self::STORAGE);
+    }
+
+    protected function emptyTable()
+    {
+        $sql = 'DELETE FROM 8s_articles_details_change_queue';
+
+        Shopware()->Db()->query($sql);
     }
 
     /**
