@@ -545,14 +545,14 @@ class EightSelect extends Plugin
         $connection->insert(
             's_crontab',
             [
-                'name'             => 'EightSelectArticleExport',
-                'action'           => 'EightSelectArticleExport',
+                'name'             => 'EightSelect article export',
+                'action'           => 'Shopware_CronJob_EightSelectArticleExport',
                 'next'             => $this->getNextMidnight(),
                 'start'            => null,
                 '`interval`'       => '86400',
                 'active'           => 1,
                 'end'              => new \DateTime(),
-                'pluginID'         => null,
+                'pluginID'         => $this->container->get('shopware.plugin_manager')->getPluginByName($this->getName())->getId(),
             ],
             [
                 'next' => 'datetime',
@@ -563,8 +563,8 @@ class EightSelect extends Plugin
 
     public function removeExportCron()
     {
-        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `name` = ?', [
-            'EightSelectArticleExport',
+        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
+            'Shopware_CronJob_EightSelectArticleExport',
         ]);
     }
 
