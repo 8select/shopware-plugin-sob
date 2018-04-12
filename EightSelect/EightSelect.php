@@ -153,6 +153,11 @@ class EightSelect extends Plugin
         $view->assign('checkoutFinish', true);
     }
 
+    /**
+     * @param $itemProperty
+     * @param $factor
+     * @return mixed
+     */
     protected function calculatePrice($itemProperty, $factor)
     {
         $tempPrice = (strpos($itemProperty['price'], ',') != false) ? str_replace(
@@ -209,6 +214,9 @@ class EightSelect extends Plugin
         $this->createDatabase();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function installWidgets()
     {
         /** @var ComponentInstaller $installer */
@@ -354,9 +362,12 @@ class EightSelect extends Plugin
         ];
     }
 
+    /**
+     * @param \Shopware_Components_Cron_CronJob $job
+     */
     public function eightSelectArticleExport(\Shopware_Components_Cron_CronJob $job)
     {
-        Shopware()->Container()->get('eight_select.article_export')->doCron();
+        $this->container->get('eight_select.article_export')->doCron();
     }
 
     /**
@@ -374,6 +385,41 @@ class EightSelect extends Plugin
         return new ArrayCollection($jsFiles);
     }
 
+    /**
+     * add cron job for exporting all products
+     */
+    public function addExportCron()
+    {
+        $connection = $this->container->get('dbal_connection');
+        $connection->insert(
+            's_crontab',
+            [
+                'name'             => 'EightSelect article export',
+                'action'           => 'Shopware_CronJob_EightSelectArticleExport',
+                'next'             => $this->getNextMidnight(),
+                'start'            => null,
+                '`interval`'       => '86400',
+                'active'           => 1,
+                'end'              => new \DateTime(),
+                'pluginID'         => $this->container->get('shopware.plugin_manager')->getPluginByName($this->getName())->getId(),
+            ],
+            [
+                'next' => 'datetime',
+                'end'  => 'datetime',
+            ]
+        );
+    }
+
+    public function removeExportCron()
+    {
+        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
+            'Shopware_CronJob_EightSelectArticleExport',
+        ]);
+    }
+
+    /**
+     * @throws \Zend_Db_Adapter_Exception
+     */
     private function initAttributes()
     {
         $attributeList = [
@@ -537,37 +583,9 @@ class EightSelect extends Plugin
     }
 
     /**
-     * add cron job for exporting all products
+     * @throws \Exception
+     * @return \DateTime
      */
-    public function addExportCron()
-    {
-        $connection = $this->container->get('dbal_connection');
-        $connection->insert(
-            's_crontab',
-            [
-                'name'             => 'EightSelect article export',
-                'action'           => 'Shopware_CronJob_EightSelectArticleExport',
-                'next'             => $this->getNextMidnight(),
-                'start'            => null,
-                '`interval`'       => '86400',
-                'active'           => 1,
-                'end'              => new \DateTime(),
-                'pluginID'         => $this->container->get('shopware.plugin_manager')->getPluginByName($this->getName())->getId(),
-            ],
-            [
-                'next' => 'datetime',
-                'end'  => 'datetime',
-            ]
-        );
-    }
-
-    public function removeExportCron()
-    {
-        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
-            'Shopware_CronJob_EightSelectArticleExport',
-        ]);
-    }
-
     private function getNextMidnight()
     {
         $date = new \DateTime();

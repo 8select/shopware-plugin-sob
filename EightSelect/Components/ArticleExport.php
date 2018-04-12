@@ -4,13 +4,18 @@ namespace EightSelect\Components;
 use Aws\S3\S3Client;
 use Shopware\Bundle\MediaBundle\MediaService;
 use Shopware\Models\Article\Article;
-use Shopware\Models\Article\Detail;
 use Shopware\Models\Article\Image;
 
 class ArticleExport
 {
+    /**
+     *
+     */
     const STORAGE = 'files/export/';
 
+    /**
+     * @var array
+     */
     public $fields = [
         'sku',
         'mastersku',
@@ -65,8 +70,15 @@ class ArticleExport
      */
     protected $repository;
 
+    /**
+     * @param $filename
+     */
     protected function uploadToAWS($filename)
     {
+        $config = Shopware()->Config();
+
+        $config->get('8s_aws_port');
+
         // Instantiate an Amazon S3 client.
         $s3 = new S3Client([
             'version' => 'latest',
@@ -85,6 +97,10 @@ class ArticleExport
         }
     }
 
+    /**
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
     public function doCron()
     {
         if (!is_dir(self::STORAGE)) {
@@ -138,13 +154,19 @@ class ArticleExport
         return Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @param $article
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     * @throws \Exception
+     * @return array
+     */
     private function getLine($article)
     {
         $line = [];
 
-        /** @var array $articleData */
-        $articleData = Shopware()->Modules()->Articles()->sGetPromotionById('fix', 0, $article['articleID'], true);
-        $categories = $this->getCategories($articleData);
+        /** @var array $categories */
+        $categories = $this->getCategories($article['articleID']);
 
         foreach ($this->fields as $field) {
             switch ($field) {
@@ -165,10 +187,10 @@ class ArticleExport
                     }
                     break;
                 case 'produkt_url':
-                    $line[] = $this->getUrl($articleData);
+                    $line[] = $this->getUrl($article['articleID']);
                     break;
                 case 'bilder':
-                    $line[] = $this->getImages($articleData);
+                    $line[] = $this->getImages($article['articleID']);
                     break;
                 default:
                     $value = $article[$field];
@@ -184,17 +206,18 @@ class ArticleExport
     }
 
     /**
-     * @param $articleData
+     * @param $articleId
+     * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      * @return array
      */
-    private function getCategories($articleData)
+    private function getCategories($articleId)
     {
-        $categoryIDs = Shopware()->Db()->query('SELECT categoryID FROM s_articles_categories WHERE articleID = ?', [$articleData['articleID']])->fetchAll();
+        $categoryIDs = Shopware()->Db()->query('SELECT categoryID FROM s_articles_categories WHERE articleID = ?', [$articleId])->fetchAll();
         $categoriesList = [];
         foreach ($categoryIDs as $categorieID) {
-            $categoryPathResults = array_reverse(Shopware()->Modules()->Categories()->sGetCategoriesByParent((int) $categorieID['categoryID']));
+            $categoryPathResults = $this->getCategoriesByParent((int) $categorieID['categoryID']);
 
             $categoryNames = [];
             foreach ($categoryPathResults as $categoryPathResult) {
@@ -208,29 +231,55 @@ class ArticleExport
     }
 
     /**
-     * @param  array  $articleData
+     * @param $categoryId
+     * @throws \Doctrine\ORM\ORMException
+     * @return array
+     */
+    private function getCategoriesByParent($categoryId)
+    {
+        $pathCategories = Shopware()->Models()->getRepository('Shopware\Models\Category\Category')->getPathById($categoryId, ['id', 'name', 'blog']);
+
+        $pathCategories = array_reverse($pathCategories);
+
+        $categories = [];
+        foreach ($pathCategories as $category) {
+            if ($category['id'] == $this->baseId) {
+                break;
+            }
+
+            $url = ($category['blog']) ? $this->blogBaseUrl : $this->baseUrl;
+            $category['link'] = $url . $category['id'];
+            $categories[] = $category;
+        }
+
+        return array_reverse($categories);
+    }
+
+    /**
+     * @param  int        $articleId
+     * @throws \Exception
      * @return string
      */
-    private function getUrl($articleData)
+    private function getUrl($articleId)
     {
-        return Shopware()->Front()->Router()->assemble([
+        return Shopware()->Container()->get('router')->assemble([
             'controller' => 'detail',
             'action'     => 'index',
-            'sArticle'   => $articleData['articleID'],
+            'sArticle'   => $articleId,
         ]);
     }
 
     /**
-     * @param  array      $articleData
+     * @param  int        $articleId
      * @throws \Exception
      * @return string
      */
-    private function getImages($articleData)
+    private function getImages($articleId)
     {
         /** @var \Shopware\Components\Model\ModelManager $em */
         $em = Shopware()->Container()->get('models');
         /** @var Article $article */
-        $article = $em->getRepository(Article::class)->find((int) $articleData['articleID']);
+        $article = $em->getRepository(Article::class)->find((int) $articleId);
 
         /** @var MediaService $mediaService */
         $mediaService = Shopware()->Container()->get('shopware_media.media_service');
