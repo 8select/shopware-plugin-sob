@@ -66,30 +66,35 @@ class ArticleExport
     ];
 
     /**
-     * @var \Shopware\Models\Article\Repository
-     */
-    protected $repository;
-
-    /**
      * @param $filename
      */
     protected function uploadToAWS($filename)
     {
         $config = Shopware()->Config();
 
-        $config->get('8s_aws_port');
+        $accessKey = $config->get('8s_aws_access_key');
+        $secretKey = $config->get('8s_aws_secret_key');
+        $bucket = $config->get('8s_aws_bucket');
+        $region = $config->get('8s_aws_region');
+        $prefix = $config->get('8s_aws_prefix');
 
         // Instantiate an Amazon S3 client.
         $s3 = new S3Client([
-            'version' => 'latest',
-            'region'  => 'eu-central-1',
+            'version'     => 'latest',
+            'region'      => $region,
+            'credentials' => [
+                'key'    => $accessKey,
+                'secret' => $secretKey,
+            ],
         ]);
+
+        $key = $prefix ? $prefix . '/' . $filename : $filename;
 
         try {
             $s3->putObject([
-                'Bucket' => '8sdemo.1drop.de',
-                'Key'    => 'my-object',
-                'Body'   => fopen($filename, 'r'),
+                'Bucket' => $bucket,
+                'Key'    => $key,
+                'Body'   => fopen(self::STORAGE . $filename, 'r'),
                 'ACL'    => 'public-read',
             ]);
         } catch (\Aws\S3\Exception\S3Exception $e) {
@@ -107,8 +112,8 @@ class ArticleExport
             mkdir(self::STORAGE, 775, true);
         }
 
-        $filename = self::STORAGE . 'products_full_' . date('YmdHis') . '.csv';
-        $fp = fopen($filename, 'a');
+        $filename = 'products_full_' . date('YmdHis') . '.csv';
+        $fp = fopen(self::STORAGE . $filename, 'a');
 
         $header = [];
         foreach ($this->fields as $field) {
@@ -125,6 +130,8 @@ class ArticleExport
         }
 
         fclose($fp);
+
+        $this->uploadToAWS($filename);
     }
 
     /**
@@ -237,22 +244,18 @@ class ArticleExport
      */
     private function getCategoriesByParent($categoryId)
     {
-        $pathCategories = Shopware()->Models()->getRepository('Shopware\Models\Category\Category')->getPathById($categoryId, ['id', 'name', 'blog']);
-
-        $pathCategories = array_reverse($pathCategories);
-
+        $pathCategories = Shopware()->Models()->getRepository('Shopware\Models\Category\Category')->getPathById($categoryId, ['id', 'name', 'parentId']);
         $categories = [];
+
         foreach ($pathCategories as $category) {
-            if ($category['id'] == $this->baseId) {
-                break;
+            if ($category['parentId'] == 1) {
+                continue;
             }
 
-            $url = ($category['blog']) ? $this->blogBaseUrl : $this->baseUrl;
-            $category['link'] = $url . $category['id'];
             $categories[] = $category;
         }
 
-        return array_reverse($categories);
+        return $categories;
     }
 
     /**
