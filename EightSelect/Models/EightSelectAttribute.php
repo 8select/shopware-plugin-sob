@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="es_attribute_mapping")
+ * @ORM\Table(name="8s_attribute_mapping")
  */
 class EightSelectAttribute extends ModelEntity
 {

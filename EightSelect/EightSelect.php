@@ -341,6 +341,7 @@ class EightSelect extends Plugin
         $tool->updateSchema($classes, true); // make sure to use the save mode
 
         $this->initAttributes();
+        $this->initChangesQueueTable();
     }
 
     private function removeDatabase()
@@ -616,12 +617,50 @@ class EightSelect extends Plugin
         ];
 
         foreach ($attributeList as $attributeEntry) {
-            $sql = 'INSERT INTO es_attribute_mapping (eightSelectAttribute, shopwareAttribute) VALUES (?, ?)';
+            $sql = 'INSERT INTO 8s_attribute_mapping (eightSelectAttribute, shopwareAttribute) VALUES (?, ?)';
             Shopware()->Db()->query(
                 $sql,
                 [$attributeEntry['eightSelectAttribute'], $attributeEntry['shopwareAttribute']]
             );
         }
+    }
+
+    /**
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    private function initChangesQueueTable()
+    {
+        $sql = 'DROP TABLE IF EXISTS `8s_s_articles_details_change_queue`;
+                CREATE TABLE `8s_s_articles_details_change_queue` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `s_articles_details_id` int(11) NOT NULL,
+                  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`id`)
+                ) COLLATE=\'utf8_unicode_ci\' ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                
+                DELIMITER $$
+                
+                DROP TRIGGER IF EXISTS `8s_s_articles_details_change_queue_writer` $$
+                CREATE TRIGGER `8s_s_articles_details_change_queue_writer` AFTER UPDATE on `s_articles_details`
+                  FOR EACH ROW
+                  BEGIN
+                    IF (NEW.instock != OLD.instock OR NEW.active != OLD.active) THEN
+                      INSERT INTO 8s_s_articles_details_change_queue (s_articles_details_id) VALUES (NEW.id);
+                    END IF;
+                  END$$
+                
+                DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer` $$
+                CREATE TRIGGER `8s_s_articles_prices_change_queue_writer` AFTER UPDATE on `s_articles_prices`
+                  FOR EACH ROW
+                  BEGIN
+                    IF (NEW.price != OLD.price OR NEW.pseudoprice != OLD.pseudoprice) THEN
+                      INSERT INTO 8s_s_articles_details_change_queue (s_articles_details_id) VALUES (NEW.articleDetailsID);
+                    END IF;
+                  END$$
+                
+                DELIMITER;';
+
+        Shopware()->Db()->query($sql);
     }
 
     /**
