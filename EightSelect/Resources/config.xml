@@ -84,6 +84,13 @@
             <label lang="en">HTML container CSE_SYS will be replaced by the SYS widget:</label>
             <value>CSE_SYS</value>
         </element>
+        <!-- SYS-ACC WIDGET -->
+        <element type="boolean" required="true" scope="shop">
+            <name>8s_sys_acc_enabled</name>
+            <label lang="de">Zeige SYS-ACC Widget</label>
+            <label lang="en">Display SYS-ACC Widget</label>
+            <value>false</value>
+        </element>
         <!-- AWS ACCESS KEY -->
         <element type="text" required="true" scope="shop">
             <name>8s_aws_access_key</name>
