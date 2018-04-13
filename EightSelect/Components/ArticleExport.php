@@ -10,7 +10,7 @@ class ArticleExport
     /**
      * @const string
      */
-    const STORAGE = 'files/export/';
+    const STORAGE = 'files/8select/';
 
     /**
      * @var array
@@ -72,11 +72,15 @@ class ArticleExport
      */
     public function doCron()
     {
+        $config = Shopware()->Config();
+        $feedId = $config->get('8s_feed_id');
+        $feedType = 'product_feed';
+        $filename = $feedId . '_' . $feedType . '_' . time() . '.csv';
+
         if (!is_dir(self::STORAGE)) {
             mkdir(self::STORAGE, 775, true);
         }
 
-        $filename = 'products_full_' . date('YmdHis') . '.csv';
         $fp = fopen(self::STORAGE . $filename, 'a');
 
         $header = [];
@@ -95,7 +99,7 @@ class ArticleExport
 
         fclose($fp);
 
-        AWSUploader::upload($filename, self::STORAGE);
+        AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
     }
 
     /**

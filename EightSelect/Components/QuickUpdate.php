@@ -6,7 +6,7 @@ class QuickUpdate
     /**
      * @const string
      */
-    const STORAGE = 'files/update/';
+    const STORAGE = 'files/8select/';
 
     /**
      * @var array
@@ -66,11 +66,15 @@ class QuickUpdate
      */
     protected function writeFile($articles)
     {
+        $config = Shopware()->Config();
+        $feedId = $config->get('8s_feed_id');
+        $feedType = 'product_update';
+        $filename = $feedId . '_' . $feedType . '_' . time() . '.csv';
+
         if (!is_dir(self::STORAGE)) {
             mkdir(self::STORAGE, 775, true);
         }
 
-        $filename = 'status_update_' . date('YmdHis') . '.csv';
         $fp = fopen(self::STORAGE . $filename, 'a');
 
         $header = [];
@@ -87,7 +91,7 @@ class QuickUpdate
 
         fclose($fp);
 
-        AWSUploader::upload($filename, self::STORAGE);
+        AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
     }
 
     protected function emptyTable()

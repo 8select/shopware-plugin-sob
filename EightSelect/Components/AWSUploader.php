@@ -8,28 +8,22 @@ class AWSUploader
     /**
      * @param $filename
      * @param mixed $storage
+     * @param mixed $feedId
+     * @param mixed $feedType
      */
-    public static function upload($filename, $storage)
+    public static function upload($filename, $storage, $feedId, $feedType)
     {
-        $config = Shopware()->Config();
-
-        $accessKey = $config->get('8s_aws_access_key');
-        $secretKey = $config->get('8s_aws_secret_key');
-        $bucket = $config->get('8s_aws_bucket');
-        $region = $config->get('8s_aws_region');
-        $prefix = $config->get('8s_aws_prefix');
+        $bucket = 'productfeed.8select.io';
+        $region = 'eu-central-1';
+        $prefix = $feedId . '/' . $feedType . '/' . date('Y') . '/' . date('m') . '/' . date('d');
 
         // Instantiate an Amazon S3 client.
         $s3 = new S3Client([
             'version'     => 'latest',
             'region'      => $region,
-            'credentials' => [
-                'key'    => $accessKey,
-                'secret' => $secretKey,
-            ],
         ]);
 
-        $key = $prefix ? $prefix . '/' . $filename : $filename;
+        $key = $prefix . '/' . $filename;
 
         try {
             $s3->putObject([

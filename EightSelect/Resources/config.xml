@@ -11,10 +11,18 @@
         <!-- MERCHANT ID -->
         <element type="text" required="true" scope="shop">
             <name>8s_merchant_id</name>
-            <label lang="de">Händler-Id:</label>
-            <label lang="en">Merchant Id:</label>
-            <description lang="de">Ihre Händler-ID erhalten Sie von 8select</description>
-            <description lang="en">Your merchant-ID is provided by 8select</description>
+            <label lang="de">API ID:</label>
+            <label lang="en">API ID:</label>
+            <description lang="de">Ihre API ID erhalten Sie von 8select</description>
+            <description lang="en">Your API ID is provided by 8select</description>
+        </element>
+        <!-- FEED ID -->
+        <element type="text" required="true" scope="shop">
+            <name>8s_feed_id</name>
+            <label lang="de">Feed ID:</label>
+            <label lang="en">Feed ID:</label>
+            <description lang="de">Ihre Feed ID erhalten Sie von 8select</description>
+            <description lang="en">Your Feed ID is provided by 8select</description>
         </element>
         <!-- SELECTED DETAIL BLOCK -->
         <element type="select" required="true" scope="shop">
@@ -90,37 +98,6 @@
             <label lang="de">Zeige SYS-ACC Widget</label>
             <label lang="en">Display SYS-ACC Widget</label>
             <value>false</value>
-        </element>
-        <!-- AWS ACCESS KEY -->
-        <element type="text" required="true" scope="shop">
-            <name>8s_aws_access_key</name>
-            <label lang="de">AWS Access Key:</label>
-            <label lang="en">AWS access key:</label>
-        </element>
-        <!-- AWS SECRET KEY -->
-        <element type="text" required="true" scope="shop">
-            <name>8s_aws_secret_key</name>
-            <label lang="de">AWS Secret Key:</label>
-            <label lang="en">AWS secret key:</label>
-        </element>
-        <!-- AWS BUCKET -->
-        <element type="text" required="true" scope="shop">
-            <name>8s_aws_bucket</name>
-            <label lang="de">AWS Bucket:</label>
-            <label lang="en">AWS bucket:</label>
-        </element>
-        <!-- AWS REGION -->
-        <element type="text" required="true" scope="shop">
-            <name>8s_aws_region</name>
-            <label lang="de">AWS Region:</label>
-            <label lang="en">AWS region:</label>
-            <value>eu-central-1</value>
-        </element>
-        <!-- AWS PREFIX -->
-        <element type="text" required="false" scope="shop">
-            <name>8s_aws_prefix</name>
-            <label lang="de">AWS Präfix:</label>
-            <label lang="en">AWS prefix:</label>
         </element>
     </elements>
 </config>
