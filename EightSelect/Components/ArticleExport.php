@@ -19,8 +19,8 @@ class ArticleExport
         'sku',
         'mastersku',
         'status',
-        'warenkorb_id',
         'ean',
+        'model',
         'name1',
         'name2',
         'kategorie1',
@@ -57,11 +57,13 @@ class ArticleExport
         'material',
         'saison',
         'serie',
+        'verschluss',
         'produkt_url',
         'bilder',
         'beschreibung',
         'beschreibung1',
         'beschreibung2',
+        'sonstiges',
     ];
 
     /**

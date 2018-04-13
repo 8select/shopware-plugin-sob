@@ -33,7 +33,7 @@ class AWSUploader
                 'ACL'    => 'public-read',
             ]);
         } catch (\Aws\S3\Exception\S3Exception $e) {
-            echo "There was an error uploading the file.\n";
+            Shopware()->PluginLogger()->error($e->getAwsErrorMessage(), [$e->getAwsErrorCode(), $e->getAwsErrorType()]);
         }
     }
 }

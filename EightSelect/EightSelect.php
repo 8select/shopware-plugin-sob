@@ -475,12 +475,12 @@ class EightSelect extends Plugin
                 'shopwareAttribute'    => '-',
             ],
             [
-                'eightSelectAttribute' => 'warenkorb_id',
-                'shopwareAttribute'    => 's_articles_details.ordernumber',
-            ],
-            [
                 'eightSelectAttribute' => 'ean',
                 'shopwareAttribute'    => 's_articles_details.ean',
+            ],
+            [
+                'eightSelectAttribute' => 'model',
+                'shopwareAttribute'    => '-',
             ],
             [
                 'eightSelectAttribute' => 'name1',
@@ -603,6 +603,10 @@ class EightSelect extends Plugin
                 'shopwareAttribute'    => '-',
             ],
             [
+                'eightSelectAttribute' => 'verschluss',
+                'shopwareAttribute'    => '-',
+            ],
+            [
                 'eightSelectAttribute' => 'beschreibung',
                 'shopwareAttribute'    => 's_articles.description',
             ],
@@ -612,6 +616,10 @@ class EightSelect extends Plugin
             ],
             [
                 'eightSelectAttribute' => 'beschreibung2',
+                'shopwareAttribute'    => '-',
+            ],
+            [
+                'eightSelectAttribute' => 'sonstiges',
                 'shopwareAttribute'    => '-',
             ],
         ];
