@@ -405,7 +405,7 @@ class EightSelect extends Plugin
         $connection->insert(
             's_crontab',
             [
-                'name'       => 'EightSelect article export',
+                'name'       => '8select article export',
                 'action'     => 'Shopware_CronJob_EightSelectArticleExport',
                 'next'       => $this->getNextMidnight(),
                 'start'      => null,
@@ -437,7 +437,7 @@ class EightSelect extends Plugin
         $connection->insert(
             's_crontab',
             [
-                'name'       => 'EightSelect quick product update',
+                'name'       => '8select quick product update',
                 'action'     => 'Shopware_CronJob_EightSelectQuickUpdate',
                 'next'       => null,
                 'start'      => null,

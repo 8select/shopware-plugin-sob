@@ -12,7 +12,7 @@ Ext.define('Shopware.apps.EightSelect.view.list.EightSelectAttribute', {
             pagingbar: false,
             columns: {
                 eightSelectAttribute: {
-                    header: '8Select Attribute',
+                    header: '8select Attribute',
                     editor: {
                         editable: false
                     }

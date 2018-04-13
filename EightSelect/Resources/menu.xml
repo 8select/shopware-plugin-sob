@@ -5,8 +5,8 @@
     <entries>
         <entry>
             <name>EightSelectAttributeConfig</name>
-            <label lang="en">8Select Config</label>
-            <label lang="de">8Select Konfig</label>
+            <label lang="en">8select Export</label>
+            <label lang="de">8select Export</label>
             <controller>EightSelect</controller>
             <action>index</action>
             <class>sprite-application-block</class>
