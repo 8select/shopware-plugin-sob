@@ -19,8 +19,9 @@ class AWSUploader
 
         // Instantiate an Amazon S3 client.
         $s3 = new S3Client([
-            'version'     => 'latest',
+            'version'     => '2006-03-01',
             'region'      => $region,
+            'credentials' => false,
         ]);
 
         $key = $prefix . '/' . $filename;
