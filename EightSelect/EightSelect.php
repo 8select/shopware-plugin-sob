@@ -176,6 +176,7 @@ class EightSelect extends Plugin
 
     /**
      * @param InstallContext $context
+     * @throws \Exception
      */
     public function install(InstallContext $context)
     {
@@ -331,6 +332,9 @@ class EightSelect extends Plugin
         parent::uninstall($context);
     }
 
+    /**
+     * @throws \Zend_Db_Adapter_Exception
+     */
     private function createDatabase()
     {
         $modelManager = $this->container->get('models');
@@ -397,7 +401,7 @@ class EightSelect extends Plugin
     }
 
     /**
-     * add cron job for exporting all products
+     * @throws \Exception
      */
     public function addExportCron()
     {
@@ -439,9 +443,9 @@ class EightSelect extends Plugin
             [
                 'name'       => '8select quick product update',
                 'action'     => 'Shopware_CronJob_EightSelectQuickUpdate',
-                'next'       => null,
+                'next'       => new \DateTime(),
                 'start'      => null,
-                '`interval`' => '60',
+                '`interval`' => '120',
                 'active'     => 1,
                 'end'        => new \DateTime(),
                 'pluginID'   => $this->container->get('shopware.plugin_manager')->getPluginByName($this->getName())->getId(),
