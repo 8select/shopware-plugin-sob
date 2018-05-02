@@ -67,10 +67,7 @@ class ArticleExport
     ];
 
     /**
-
-    /**
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
+     * @throws \Exception
      */
     public function doCron()
     {
@@ -105,9 +102,7 @@ class ArticleExport
     }
 
     /**
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @return array
+     * @return mixed
      */
     protected function getArticles()
     {
@@ -158,8 +153,9 @@ class ArticleExport
                 case 'kategorie3':
                     $line[] = !empty($categories[2]) ? $categories[2] : '';
                     break;
-                case 'streich_preis' || 'angebots_preis':
-                    $line[] = $this->getGrossPrice($article, $field);
+                case 'streich_preis':
+                case 'angebots_preis':
+                    $line[] = PriceHelper::getGrossPrice($article, $field);
                     break;
                 case 'produkt_url':
                     $line[] = $this->getUrl($article['articleID']);
@@ -265,23 +261,5 @@ class ArticleExport
 
         $urlString = implode('|', $urlArray);
         return $urlString;
-    }
-
-    /**
-     * @param $article
-     * @param $field
-     * @return float
-     */
-    private function getGrossPrice($article, $field)
-    {
-        $tax = $article['tax'];
-        $price = $article[$field];
-
-        // if streich_preis isn't set, use angebots_preis
-        if ($price == 0) {
-            $price = $article['angebots_preis'];
-        }
-
-        return $price + $price * $tax / 100;
     }
 }

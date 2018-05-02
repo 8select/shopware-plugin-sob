@@ -20,8 +20,7 @@ class QuickUpdate
     ];
 
     /**
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
+     * @throws \Exception
      */
     public function doCron()
     {
@@ -48,12 +47,14 @@ class QuickUpdate
                 s_articles_details.kind AS mastersku,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
-                s_articles_details.active AS status
+                s_articles_details.active AS status,
+                s_core_tax.tax AS tax
                 FROM s_articles
                 INNER JOIN s_articles_details ON s_articles.main_detail_id = s_articles_details.id
                 INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
                 INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id
                 INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id
+                INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
                 ORDER BY s_articles.id';
 
         return Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
@@ -61,8 +62,7 @@ class QuickUpdate
 
     /**
      * @param $articles
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
+     * @throws \Exception
      */
     protected function writeFile($articles)
     {
@@ -115,11 +115,8 @@ class QuickUpdate
         foreach ($this->fields as $field) {
             switch ($field) {
                 case 'streich_preis':
-                    if ($article[$field] == 0) {
-                        $line[] = $article['angebots_preis'];
-                    } else {
-                        $line[] = $article[$field];
-                    }
+                case 'angebots_preis':
+                    $line[] = PriceHelper::getGrossPrice($article, $field);
                     break;
                 default:
                     $value = $article[$field];
