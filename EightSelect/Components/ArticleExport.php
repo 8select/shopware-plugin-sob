@@ -120,12 +120,14 @@ class ArticleExport
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
                 s_articles_details.active AS status,
-                s_articles_supplier.name as marke
+                s_articles_supplier.name as marke,
+                s_core_tax.tax AS tax
                 FROM s_articles
                 INNER JOIN s_articles_details ON s_articles.main_detail_id = s_articles_details.id
                 INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
                 INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id
                 INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
+                INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
                 ORDER BY s_articles.id';
 
         return Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
@@ -156,12 +158,9 @@ class ArticleExport
                 case 'kategorie3':
                     $line[] = !empty($categories[2]) ? $categories[2] : '';
                     break;
-                case 'streich_preis':
-                    if ($article[$field] == 0) {
-                        $line[] = $article['angebots_preis'];
-                    } else {
-                        $line[] = $article[$field];
-                    }
+                case 'streich_preis' || 'angebots_preis':
+                    $line[] = $this->getGrossPrice($article, $field);
+                    var_dump($this->getGrossPrice($article, $field));
                     break;
                 case 'produkt_url':
                     $line[] = $this->getUrl($article['articleID']);
@@ -267,5 +266,23 @@ class ArticleExport
 
         $urlString = implode('|', $urlArray);
         return $urlString;
+    }
+
+    /**
+     * @param $article
+     * @param $field
+     * @return float
+     */
+    private function getGrossPrice($article, $field) {
+
+        $tax = $article['tax'];
+        $price = $article[$field];
+
+        // if streich_preis isn't set, use angebots_preis
+        if ($price == 0) {
+            $price = $article['angebots_preis'];
+        }
+
+        return $price + $price*$tax/100;
     }
 }
