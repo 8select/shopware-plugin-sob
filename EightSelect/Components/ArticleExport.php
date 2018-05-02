@@ -160,7 +160,6 @@ class ArticleExport
                     break;
                 case 'streich_preis' || 'angebots_preis':
                     $line[] = $this->getGrossPrice($article, $field);
-                    var_dump($this->getGrossPrice($article, $field));
                     break;
                 case 'produkt_url':
                     $line[] = $this->getUrl($article['articleID']);
@@ -273,8 +272,8 @@ class ArticleExport
      * @param $field
      * @return float
      */
-    private function getGrossPrice($article, $field) {
-
+    private function getGrossPrice($article, $field)
+    {
         $tax = $article['tax'];
         $price = $article[$field];
 
@@ -283,6 +282,6 @@ class ArticleExport
             $price = $article['angebots_preis'];
         }
 
-        return $price + $price*$tax/100;
+        return $price + $price * $tax / 100;
     }
 }

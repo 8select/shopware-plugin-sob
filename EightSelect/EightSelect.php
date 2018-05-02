@@ -175,7 +175,7 @@ class EightSelect extends Plugin
     }
 
     /**
-     * @param InstallContext $context
+     * @param  InstallContext $context
      * @throws \Exception
      */
     public function install(InstallContext $context)
