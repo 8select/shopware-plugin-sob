@@ -14,11 +14,19 @@
             <children>
                 <entry>
                     <name>EightSelectAttributeConfig</name>
-                    <label lang="en">Export</label>
-                    <label lang="de">Export</label>
+                    <label lang="en">Export Settings</label>
+                    <label lang="de">Export Einstellungen</label>
                     <controller>EightSelect</controller>
                     <action>index</action>
-                    <class>sprite-wrench</class>
+                    <class>sprite-gear</class>
+                </entry>
+                <entry>
+                    <name>EightSelectStartExport</name>
+                    <label lang="en">Manual Export</label>
+                    <label lang="de">Manueller Export</label>
+                    <controller>EightSelectManualExport</controller>
+                    <action>index</action>
+                    <class>sprite-document-export</class>
                 </entry>
                 <entry>
                     <name>EightSelectManagementConsole</name>
@@ -26,7 +34,7 @@
                     <label lang="de">Management Console</label>
                     <controller>EightSelect</controller>
                     <action>2</action>
-                    <class>sprite-eye</class>
+                    <class>sprite-eye--arrow</class>
                     <onclick><![CDATA[window.open('https://console.8select.io');]]></onclick>
                 </entry>
             </children>
