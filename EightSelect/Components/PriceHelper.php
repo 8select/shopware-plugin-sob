@@ -17,7 +17,8 @@ class PriceHelper
         if ($price == 0) {
             $price = $article['angebots_preis'];
         }
+        $price = $price + $price * $tax / 100;
 
-        return $price + $price * $tax / 100;
+        return number_format($price, 2, '.', '');
     }
 }
