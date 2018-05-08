@@ -99,5 +99,12 @@
             <label lang="en">Display SYS-ACC Widget</label>
             <value>false</value>
         </element>
+        <!-- PREVIEW-MODE -->
+        <element type="boolean" scope="shop">
+            <name>8s_preview_mode_enabled</name>
+            <label lang="de">Vorschau-Modus an</label>
+            <label lang="en">Enable Preview-Mode</label>
+            <value>false</value>
+        </element>
     </elements>
 </config>
