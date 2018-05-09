@@ -1,8 +1,9 @@
 Ext.define('Shopware.apps.EightSelectManualExport.view.detail.Window', {
     extend: 'Enlight.app.Window',
     alias: 'widget.8select-export-window',
-    height: 450,
-    title : '{s name=window_title}Manual Export{/s}',
+    width: 450,
+    height: 200,
+    title : '{s name=window_title}8select Manual Export{/s}',
     layout: 'border',
 
     initComponent: function() {
@@ -14,6 +15,4 @@ Ext.define('Shopware.apps.EightSelectManualExport.view.detail.Window', {
 
         me.callParent(arguments);
     }
-
-
 });

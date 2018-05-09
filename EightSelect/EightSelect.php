@@ -27,7 +27,6 @@ class EightSelect extends Plugin
             'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'      => 'onPostDispatchBackendEmotion',
             'Enlight_Controller_Action_PostDispatchSecure_Frontend'             => 'onFrontendPostDispatch',
             'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'          => 'onCheckoutConfirm',
-            'Shopware_Console_Add_Command'                                      => 'onStartDispatch',
             'Shopware_CronJob_EightSelectArticleExport'                         => 'eightSelectArticleExport',
             'Shopware_CronJob_EightSelectQuickUpdate'                           => 'eightSelectQuickUpdate',
         ];
@@ -65,13 +64,6 @@ class EightSelect extends Plugin
             'SELECT version FROM s_core_plugins WHERE name = ?',
             [$this->getName()]
         )->fetchColumn();
-    }
-
-    public function onStartDispatch()
-    {
-        if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-            require_once __DIR__ . '/vendor/autoload.php';
-        }
     }
 
     /**

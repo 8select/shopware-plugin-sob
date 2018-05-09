@@ -13,6 +13,11 @@ class AWSUploader
      */
     public static function upload($filename, $storage, $feedId, $feedType)
     {
+        // needs to be loaded here, because Shopware and AWS use different versions of Guzzle
+        if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+            require_once __DIR__ . '/../vendor/autoload.php';
+        }
+
         $bucket = 'productfeed.8select.io';
         $region = 'eu-central-1';
         $prefix = $feedId . '/' . $feedType . '/' . date('Y') . '/' . date('m') . '/' . date('d');
