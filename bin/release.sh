@@ -1,13 +1,28 @@
 #!/usr/bin/env bash -e
 
-VERSION=2
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "${SOURCE}" ]; do
+  CURRENT_DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
+  SOURCE="$(readlink "${SOURCE}")"
+  [[ ${SOURCE} != /* ]] && SOURCE="${CURRENT_DIR}/${SOURCE}"
+done
 
-SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+CURRENT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-cp -r $SCRIPTPATH/../EightSelect $SCRIPTPATH/EightSelect
-sed -i '' "s@__VERSION__@${VERSION}@g" $SCRIPTPATH/EightSelect/plugin.xml
-cd $SCRIPTPATH/EightSelect && composer install && cd ..
-zip -r ../dist/8select_CSE_Shopware-5.2_${VERSION}.zip EightSelect
-rm -rf $SCRIPTPATH/EightSelect
-echo "created release ${VERSION} at dist/8select_CSE_Shopware-5.2_${VERSION}.zip"
+VERSION=${1}
 
+DIST_DIR="dist"
+ZIP_NAME="8select_CSE_Shopware-5.2.11_${VERSION}.zip"
+DIST_PATH="${CURRENT_DIR}/../${DIST_DIR}/${ZIP_NAME}"
+BUILD_DIR=`mktemp -d`
+PLUGIN_NAME="EightSelect"
+PLUGIN_DIR="${BUILD_DIR}/${PLUGIN_NAME}"
+
+echo "Build at ${BUILD_DIR}"
+cp -r "${CURRENT_DIR}/../${PLUGIN_NAME}" "${BUILD_DIR}/${PLUGIN_NAME}"
+cd ${PLUGIN_DIR}
+composer install --no-interaction --no-progress --ignore-platform-reqs --no-dev
+cd ${BUILD_DIR}
+sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/plugin.xml
+zip -q -r "${DIST_PATH}" ${PLUGIN_NAME}
+echo "created release ${VERSION} at ${DIST_PATH}"
