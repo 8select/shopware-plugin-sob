@@ -25,7 +25,7 @@
                 }
             }
         </script>
-        <script async src="https://widget.{config name="8s_merchant_id"}.8select.io/loader.js"></script>
+        <script async src="https://wgt.8select.io/{config name="8s_merchant_id"}/loader.js"></script>
 
         <script type="text/javascript">
             if (typeof eightselect_shopware === "undefined") {
@@ -113,7 +113,7 @@
                     var contentNodes = document.querySelectorAll('.tab-menu--product .tab--container-list .tab--container');
                     if (!contentNodes) {
                         return;
-                    } 
+                    }
                     var contentPosition = contentNodes.length - 1;
 
                     navNodes[0].className += " " + "is--active";
