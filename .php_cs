@@ -1,7 +1,7 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->in('EightSelect')
+    ->in('EightselectCSE')
 ;
 
 return PhpCsFixer\Config::create()

@@ -13,11 +13,11 @@ build:
   stage: build
   image: 1drop/php-70-docker-utils
   script:
-  - composer install -ao --no-interaction --no-progress -d EightSelect
-  - sed -i 's@__VERSION__@'"$CI_COMMIT_TAG"'@' EightSelect/plugin.xml
+  - composer install -ao --no-interaction --no-progress -d EightselectCSE
+  - sed -i 's@__VERSION__@'"$CI_COMMIT_TAG"'@' EightselectCSE/plugin.xml
   artifacts:
-    name: "EightSelect-v$CI_COMMIT_TAG"
+    name: "EightselectCSE-v$CI_COMMIT_TAG"
     paths:
-    - EightSelect
+    - EightselectCSE
   only:
   - tags

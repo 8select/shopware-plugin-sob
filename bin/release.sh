@@ -10,12 +10,12 @@ done
 CURRENT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 VERSION=${1}
+PLUGIN_NAME="EightselectCSE"
 
 DIST_DIR="dist"
-ZIP_NAME="8select_CSE_Shopware-5.2.11_${VERSION}.zip"
+ZIP_NAME="${PLUGIN_NAME}_Shopware-5.2.11_${VERSION}.zip"
 DIST_PATH="${CURRENT_DIR}/../${DIST_DIR}/${ZIP_NAME}"
 BUILD_DIR=`mktemp -d`
-PLUGIN_NAME="EightSelect"
 PLUGIN_DIR="${BUILD_DIR}/${PLUGIN_NAME}"
 
 echo "Build at ${BUILD_DIR}"

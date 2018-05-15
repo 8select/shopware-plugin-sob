@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/menu.xsd">
+
+    <entries>
+        <entry>
+            <name>EightselectCSE</name>
+            <label lang="en">8select</label>
+            <label lang="de">8select</label>
+            <controller>EightselectCSE</controller>
+            <action>1</action>
+            <class>sprite-application-block</class>
+            <parent identifiedBy="controller">ConfigurationMenu</parent>
+            <children>
+                <entry>
+                    <name>EightSelectAttributeConfig</name>
+                    <label lang="en">Export Settings</label>
+                    <label lang="de">Export Einstellungen</label>
+                    <controller>EightselectCSE</controller>
+                    <action>index</action>
+                    <class>sprite-gear</class>
+                </entry>
+                <entry>
+                    <name>EightSelectStartExport</name>
+                    <label lang="en">Manual Export</label>
+                    <label lang="de">Manueller Export</label>
+                    <controller>EightSelectManualExport</controller>
+                    <action>index</action>
+                    <class>sprite-document-export</class>
+                </entry>
+                <entry>
+                    <name>EightSelectManagementConsole</name>
+                    <label lang="en">Management Console</label>
+                    <label lang="de">Management Console</label>
+                    <controller>EightselectCSE</controller>
+                    <action>2</action>
+                    <class>sprite-eye--arrow</class>
+                    <onclick><![CDATA[window.open('https://console.8select.io');]]></onclick>
+                </entry>
+            </children>
+        </entry>
+    </entries>
+</menu>
