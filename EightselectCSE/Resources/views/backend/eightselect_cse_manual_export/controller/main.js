@@ -1,4 +1,4 @@
-Ext.define('Shopware.apps.EightSelectManualExport.controller.Main', {
+Ext.define('Shopware.apps.EightselectCSEManualExport.controller.Main', {
     extend: 'Enlight.app.Controller',
 
     init: function() {

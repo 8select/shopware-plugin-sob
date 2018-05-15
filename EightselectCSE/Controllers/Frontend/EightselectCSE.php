@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Class Shopware_Controllers_Frontend_EightSelect
+ * Class Shopware_Controllers_Frontend_EightselectCSE
  * @category    Shopware
  * @package     Shopware_Plugins
  * @subpackage  EightselectCSE
  * @author      Onedrop GmbH & Co KG
  */
-class Shopware_Controllers_Frontend_EightSelect extends Enlight_Controller_Action
+class Shopware_Controllers_Frontend_EightselectCSE extends Enlight_Controller_Action
 {
     /**
      * Provides the cart of the current user as JSON API.

@@ -1,4 +1,4 @@
-Ext.define('Shopware.apps.EightSelectManualExport.view.detail.Window', {
+Ext.define('Shopware.apps.EightselectCSEManualExport.view.detail.Window', {
     extend: 'Enlight.app.Window',
     alias: 'widget.8select-export-window',
     width: 450,
@@ -10,7 +10,7 @@ Ext.define('Shopware.apps.EightSelectManualExport.view.detail.Window', {
         var me = this;
 
         me.items = [
-            Ext.create('Shopware.apps.EightSelectManualExport.view.detail.Export')
+            Ext.create('Shopware.apps.EightselectCSEManualExport.view.detail.Export')
         ];
 
         me.callParent(arguments);

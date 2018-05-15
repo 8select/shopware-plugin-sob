@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="8s_attribute_mapping")
  */
-class EightSelectAttribute extends ModelEntity
+class EightselectCSEAttribute extends ModelEntity
 {
     /**
      * @var int $id
@@ -20,11 +20,11 @@ class EightSelectAttribute extends ModelEntity
     private $id;
 
     /**
-     * @var string $eightSelectAttribute
+     * @var string $eightselectCSEAttribute
      *
      * @ORM\Column(type="text", nullable=false)
      */
-    private $eightSelectAttribute;
+    private $eightselectCSEAttribute;
 
     /**
      * @var string $shopwareAttribute
@@ -44,9 +44,9 @@ class EightSelectAttribute extends ModelEntity
     /**
      * @return string
      */
-    public function getEightSelectAttribute()
+    public function getEightselectCSEAttribute()
     {
-        return $this->eightSelectAttribute;
+        return $this->eightselectCSEAttribute;
     }
 
     /**

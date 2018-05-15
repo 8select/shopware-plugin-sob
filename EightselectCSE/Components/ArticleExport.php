@@ -106,7 +106,7 @@ class ArticleExport
      */
     protected function getArticles()
     {
-        $mapping = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightSelectAttribute)) as resultMapping FROM 8s_attribute_mapping WHERE shopwareAttribute != "-"';
+        $mapping = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectCSEAttribute)) as resultMapping FROM 8s_attribute_mapping WHERE shopwareAttribute != "-"';
         $resultMapping = Shopware()->Db()->query($mapping)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
 
         $sql = 'SELECT ' . $resultMapping . ',

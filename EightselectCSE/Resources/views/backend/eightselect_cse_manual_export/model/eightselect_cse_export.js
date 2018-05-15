@@ -1,4 +1,4 @@
-Ext.define("Shopware.apps.EightselectCSE.model.EightSelectAttribute", {
+Ext.define("Shopware.apps.EightselectCSEManualExport.model.EightselectCSEExport", {
   extend: "Ext.data.Model",
 
   fields: [

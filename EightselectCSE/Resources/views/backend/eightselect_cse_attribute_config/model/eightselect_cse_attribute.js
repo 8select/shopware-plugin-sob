@@ -1,9 +1,9 @@
-Ext.define("Shopware.apps.EightselectCSE.model.EightSelectAttribute", {
+Ext.define("Shopware.apps.EightselectCSEAttributeConfig.model.EightselectCSEAttribute", {
   extend: "Ext.data.Model",
 
   fields: [
     { name: "id", type: "int" },
-    { name: "eightSelectAttribute", type: "string" },
+    { name: "eightselectCSEAttribute", type: "string" },
     { name: "shopwareAttribute", type: "string" }
   ],
 
@@ -16,8 +16,8 @@ Ext.define("Shopware.apps.EightselectCSE.model.EightSelectAttribute", {
      * @object
      */
     api: {
-      read: "{url controller=EightselectCSE action=list}",
-      update: "{url controller=EightselectCSE action=update}"
+      read: "{url controller=EightselectCSEAttributeConfig action=list}",
+      update: "{url controller=EightselectCSEAttributeConfig action=update}"
     },
     /**
      * Configure the data reader

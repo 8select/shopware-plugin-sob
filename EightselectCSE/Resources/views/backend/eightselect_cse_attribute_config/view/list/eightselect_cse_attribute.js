@@ -1,4 +1,4 @@
-Ext.define("Shopware.apps.EightselectCSE.view.list.EightSelectAttribute", {
+Ext.define("Shopware.apps.EightselectCSEAttributeConfig.view.list.EightselectCSEAttribute", {
   extend: "Shopware.grid.Panel",
   alias: "widget.8select-attributes-grid",
   region: "center",
@@ -11,7 +11,7 @@ Ext.define("Shopware.apps.EightselectCSE.view.list.EightSelectAttribute", {
       rowEditing: true,
       pagingbar: false,
       columns: {
-        eightSelectAttribute: {
+        eightselectCSEAttribute: {
           header: "8select Attribute",
           editor: {
             editable: false
@@ -25,7 +25,7 @@ Ext.define("Shopware.apps.EightselectCSE.view.list.EightSelectAttribute", {
             valueField: "column_name",
             displayField: "label",
             store: Ext.create(
-              "Shopware.apps.EightselectCSE.store.ShopwareAttribute"
+              "Shopware.apps.EightselectCSEAttributeConfig.store.ShopwareAttribute"
             ),
             editable: false
           }

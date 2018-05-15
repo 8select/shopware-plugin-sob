@@ -1,7 +1,7 @@
-Ext.define('Shopware.apps.EightSelectManualExport', {
+Ext.define('Shopware.apps.EightselectCSEManualExport', {
     extend: 'Enlight.app.SubApplication',
 
-    name: 'Shopware.apps.EightSelectManualExport',
+    name: 'Shopware.apps.EightselectCSEManualExport',
 
     loadPath: '{url action=load}',
     bulkLoad: true,

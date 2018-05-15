@@ -1,4 +1,4 @@
-Ext.define('Shopware.apps.EightSelectManualExport.view.detail.Export', {
+Ext.define('Shopware.apps.EightselectCSEManualExport.view.detail.Export', {
     extend: 'Ext.container.Container',
     alias: 'widget.8select-export-detail-container',
     padding: 20,
@@ -19,7 +19,7 @@ Ext.define('Shopware.apps.EightSelectManualExport.view.detail.Export', {
 
                 handler: function() {
                     Ext.Ajax.request({
-                        url: '{url controller=EightSelectManualExport action=fullExport}',
+                        url: '{url controller=EightselectCSEManualExport action=fullExport}',
                         success: function(response) {
                             var text = Ext.decode(response.responseText);
                             if (text.success) {
@@ -39,7 +39,7 @@ Ext.define('Shopware.apps.EightSelectManualExport.view.detail.Export', {
 
                 handler: function() {
                     Ext.Ajax.request({
-                        url: '{url controller=EightSelectManualExport action=quickExport}',
+                        url: '{url controller=EightselectCSEManualExport action=quickExport}',
                         success: function(response) {
                             var text = Ext.decode(response.responseText);
                             if (text.success) {
