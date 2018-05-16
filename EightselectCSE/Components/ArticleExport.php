@@ -129,14 +129,13 @@ class ArticleExport
     {
         $sql = 'SELECT ' . $mapping . ',
                 s_articles.id as articleID,
-                s_articles_details.kind AS mastersku,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
                 s_articles_details.active AS status,
                 s_articles_supplier.name as marke,
                 s_core_tax.tax AS tax
-                FROM s_articles
-                INNER JOIN s_articles_details ON s_articles.main_detail_id = s_articles_details.id
+                FROM s_articles_details
+                INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
                 INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
                 INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = \'1\'
                 INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
@@ -154,7 +153,7 @@ class ArticleExport
      */
     protected function getNumArticles()
     {
-        $sql = 'SELECT id FROM s_articles';
+        $sql = 'SELECT id FROM s_articles_details';
         return Shopware()->Db()->query($sql)->rowCount();
     }
 
