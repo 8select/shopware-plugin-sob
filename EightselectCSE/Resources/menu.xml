@@ -4,7 +4,7 @@
 
     <entries>
         <entry>
-            <name>EightselectCSE</name>
+            <name>8select</name>
             <label lang="en">8select</label>
             <label lang="de">8select</label>
             <controller>EightselectCSEAttributeConfig</controller>
@@ -13,7 +13,7 @@
             <parent identifiedBy="controller">ConfigurationMenu</parent>
             <children>
                 <entry>
-                    <name>EightselectCSEAttributeConfig</name>
+                    <name>Export Einstellungen</name>
                     <label lang="en">Export Settings</label>
                     <label lang="de">Export Einstellungen</label>
                     <controller>EightselectCSEAttributeConfig</controller>
@@ -21,7 +21,7 @@
                     <class>sprite-gear</class>
                 </entry>
                 <entry>
-                    <name>EightselectCSEStartExport</name>
+                    <name>Manueller Export</name>
                     <label lang="en">Manual Export</label>
                     <label lang="de">Manueller Export</label>
                     <controller>EightselectCSEManualExport</controller>
@@ -29,7 +29,7 @@
                     <class>sprite-document-export</class>
                 </entry>
                 <entry>
-                    <name>EightselectCSEManagementConsole</name>
+                    <name>Management Console</name>
                     <label lang="en">Management Console</label>
                     <label lang="de">Management Console</label>
                     <controller>EightselectCSEAttributeConfig</controller>
