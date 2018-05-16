@@ -67,7 +67,8 @@ class ArticleExport
     ];
 
     /**
-     * @throws \Exception
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
      */
     public function doCron()
     {
@@ -89,12 +90,7 @@ class ArticleExport
 
         fputcsv($fp, $header, ';');
 
-        $articles = $this->getArticles();
-
-        foreach ($articles as $article) {
-            $line = $this->getLine($article);
-            fputcsv($fp, $line, ';');
-        }
+        $this->writeFile($fp);
 
         fclose($fp);
 
@@ -102,14 +98,36 @@ class ArticleExport
     }
 
     /**
-     * @return mixed
+     * @param $fp
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
      */
-    protected function getArticles()
-    {
-        $mapping = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectCSEAttribute)) as resultMapping FROM 8s_attribute_mapping WHERE shopwareAttribute != "-"';
-        $resultMapping = Shopware()->Db()->query($mapping)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
+    protected function writeFile ($fp) {
+        $mappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectCSEAttribute)) as resultMapping FROM 8s_attribute_mapping WHERE shopwareAttribute != "-"';
+        $mapping = Shopware()->Db()->query($mappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
+        $numArticles = $this->getNumArticles();
+        $batchSize = 20;
 
-        $sql = 'SELECT ' . $resultMapping . ',
+        for ($i = 0; $i < $numArticles; $i+=$batchSize ) {
+            $articles = $this->getArticles($mapping, $i, $batchSize);
+
+            foreach ($articles as $article) {
+                $line = $this->getLine($article);
+                fputcsv($fp, $line, ';');
+            }
+        }
+    }
+
+    /**
+     * @param $number
+     * @param $from
+     * @return array
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    protected function getArticles($mapping, $from, $number)
+    {
+        $sql = 'SELECT ' . $mapping . ',
                 s_articles.id as articleID,
                 s_articles_details.kind AS mastersku,
                 s_articles_prices.price AS angebots_preis,
@@ -120,12 +138,24 @@ class ArticleExport
                 FROM s_articles
                 INNER JOIN s_articles_details ON s_articles.main_detail_id = s_articles_details.id
                 INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
-                INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id
+                INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = \'1\'
                 INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
-                ORDER BY s_articles.id';
+                ORDER BY s_articles.id
+                LIMIT ' . $number . ' OFFSET ' . $from;
 
         return Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @return mixed
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    protected function getNumArticles()
+    {
+        $sql = 'SELECT id FROM s_articles';
+        return Shopware()->Db()->query($sql)->rowCount();
     }
 
     /**
