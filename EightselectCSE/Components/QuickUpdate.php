@@ -52,7 +52,7 @@ class QuickUpdate
                 FROM s_articles
                 INNER JOIN s_articles_details ON s_articles.main_detail_id = s_articles_details.id
                 INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
-                INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id
+                INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = \'1\'
                 INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
                 ORDER BY s_articles.id';
