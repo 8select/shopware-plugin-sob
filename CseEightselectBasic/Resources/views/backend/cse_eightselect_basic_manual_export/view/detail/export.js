@@ -18,6 +18,10 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         width: "100%",
 
         handler: function() {
+          Shopware.Notification.createGrowlMessage(
+              "",
+              "Der 8select Produkt-Export wird ausgeführt!"
+          );
           Ext.Ajax.request({
             url:
               "{url controller=CseEightselectBasicManualExport action=fullExport}",
@@ -26,7 +30,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
               if (text.success) {
                 Shopware.Notification.createGrowlMessage(
                   "",
-                  "Der 8select Produkt-Export wird ausgeführt!"
+                  "Der 8select Produkt-Export wurde abgeschlossen!"
                 );
               } else {
                 Shopware.Notification.createGrowlMessage(
@@ -45,6 +49,10 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         width: "100%",
 
         handler: function() {
+          Shopware.Notification.createGrowlMessage(
+              "",
+              "Der 8select Schnell-Update wird ausgeführt!"
+          );
           Ext.Ajax.request({
             url:
               "{url controller=CseEightselectBasicManualExport action=quickExport}",
@@ -53,7 +61,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
               if (text.success) {
                 Shopware.Notification.createGrowlMessage(
                   "",
-                  "Der 8select Schnell-Update wird ausgeführt!"
+                  "Der 8select Schnell-Update wurde abgeschlossen!"
                 );
               } else {
                 Shopware.Notification.createGrowlMessage(

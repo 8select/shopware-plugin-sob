@@ -2,8 +2,6 @@
 namespace CseEightselectBasic\Components;
 
 use Shopware\Bundle\MediaBundle\MediaService;
-use Shopware\Models\Article\Article;
-use Shopware\Models\Article\Image;
 
 class ArticleExport
 {
@@ -11,6 +9,9 @@ class ArticleExport
      * @const string
      */
     const STORAGE = 'files/8select/';
+
+    /** @var bool  */
+    const DEBUG = false;
 
     /**
      * @var array
@@ -72,6 +73,7 @@ class ArticleExport
      */
     public function doCron()
     {
+        $start = time();
         $config = Shopware()->Config();
         $feedId = $config->get('8s_feed_id');
         $feedType = 'product_feed';
@@ -95,6 +97,10 @@ class ArticleExport
         fclose($fp);
 
         AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
+
+        if ($this::DEBUG) {
+            echo("Process completed in " . (time() - $start) . "s\n");
+        }
     }
 
     /**
@@ -106,10 +112,18 @@ class ArticleExport
         $mappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping FROM 8s_attribute_mapping WHERE shopwareAttribute != "-"';
         $mapping = Shopware()->Db()->query($mappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
         $numArticles = $this->getNumArticles();
-        $batchSize = 20;
+        $batchSize = 100;
 
         for ($i = 0; $i < $numArticles; $i+=$batchSize ) {
             $articles = $this->getArticles($mapping, $i, $batchSize);
+
+            if ($this::DEBUG) {
+                $top = $i + ($batchSize - 1);
+                if ($top > $numArticles) {
+                    $top = $numArticles;
+                }
+                echo("Processing articles " . $i . " to " . $top . "\n");
+            }
 
             foreach ($articles as $article) {
                 $line = $this->getLine($article);
@@ -140,7 +154,6 @@ class ArticleExport
                 INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = \'1\'
                 INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
-                ORDER BY s_articles.id
                 LIMIT ' . $number . ' OFFSET ' . $from;
 
         return Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
@@ -272,19 +285,15 @@ class ArticleExport
      */
     private function getImages($articleId)
     {
-        /** @var \Shopware\Components\Model\ModelManager $em */
-        $em = Shopware()->Container()->get('models');
-        /** @var Article $article */
-        $article = $em->getRepository(Article::class)->find((int) $articleId);
+        $sql = 'SELECT img, extension FROM s_articles_img WHERE articleID = ?';
+        $images = Shopware()->Db()->query($sql, [$articleId])->fetchAll();
 
         /** @var MediaService $mediaService */
         $mediaService = Shopware()->Container()->get('shopware_media.media_service');
-
-        $urlArray = [];
-        /** @var Image $image */
-        foreach ($article->getImages() as $image) {
-            if ($mediaService->has($image->getMedia()->getPath())) {
-                $urlArray[] = $mediaService->getUrl($image->getMedia()->getPath());
+        foreach ($images as $image) {
+            $path = 'media/image/' . $image['img'] . '.' . $image['extension'];
+            if ($mediaService->has($path)) {
+                $urlArray[] = $mediaService->getUrl($path);
             }
         }
 
