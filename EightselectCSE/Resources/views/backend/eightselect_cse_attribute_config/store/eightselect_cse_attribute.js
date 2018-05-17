@@ -1,5 +1,9 @@
-Ext.define("Shopware.apps.EightselectCSEAttributeConfig.store.EightselectCSEAttribute", {
-  extend: "Ext.data.Store",
+Ext.define(
+  "Shopware.apps.EightselectCSEAttributeConfig.store.EightselectAttribute",
+  {
+    extend: "Ext.data.Store",
 
-  model: "Shopware.apps.EightselectCSEAttributeConfig.model.EightselectCSEAttribute"
-});
+    model:
+      "Shopware.apps.EightselectCSEAttributeConfig.model.EightselectAttribute"
+  }
+);

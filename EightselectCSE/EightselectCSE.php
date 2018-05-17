@@ -9,7 +9,7 @@ use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
 use Shopware\Components\Model\ModelManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use EightselectCSE\Models\EightselectCSEAttribute;
+use EightselectCSE\Models\EightselectAttribute;
 use Shopware\Components\Plugin\Context\UpdateContext;
 
 class EightselectCSE extends Plugin
@@ -357,7 +357,7 @@ class EightselectCSE extends Plugin
     private function getClasses(ModelManager $modelManager)
     {
         return [
-            $modelManager->getClassMetadata(EightselectCSEAttribute::class),
+            $modelManager->getClassMetadata(EightselectAttribute::class),
         ];
     }
 
@@ -463,168 +463,168 @@ class EightselectCSE extends Plugin
     {
         $attributeList = [
             [
-                'eightselectCSEAttribute' => 'sku',
+                'eightselectAttribute' => 'sku',
                 'shopwareAttribute'       => 's_articles_details.ordernumber',
             ],
             [
-                'eightselectCSEAttribute' => 'mastersku',
+                'eightselectAttribute' => 'mastersku',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'ean',
+                'eightselectAttribute' => 'ean',
                 'shopwareAttribute'       => 's_articles_details.ean',
             ],
             [
-                'eightselectCSEAttribute' => 'model',
+                'eightselectAttribute' => 'model',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'name1',
+                'eightselectAttribute' => 'name1',
                 'shopwareAttribute'       => 's_articles.name',
             ],
             [
-                'eightselectCSEAttribute' => 'name2',
+                'eightselectAttribute' => 'name2',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'groesse',
+                'eightselectAttribute' => 'groesse',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'bereich',
+                'eightselectAttribute' => 'bereich',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'rubrik',
+                'eightselectAttribute' => 'rubrik',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'abteilung',
+                'eightselectAttribute' => 'abteilung',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'kiko',
+                'eightselectAttribute' => 'kiko',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'typ',
+                'eightselectAttribute' => 'typ',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'farbe',
+                'eightselectAttribute' => 'farbe',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'farbspektrum',
+                'eightselectAttribute' => 'farbspektrum',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'absatzhoehe',
+                'eightselectAttribute' => 'absatzhoehe',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'muster',
+                'eightselectAttribute' => 'muster',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'aermellaenge',
+                'eightselectAttribute' => 'aermellaenge',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'kragenform',
+                'eightselectAttribute' => 'kragenform',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'obermaterial',
+                'eightselectAttribute' => 'obermaterial',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'passform',
+                'eightselectAttribute' => 'passform',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'schnitt',
+                'eightselectAttribute' => 'schnitt',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'waschung',
+                'eightselectAttribute' => 'waschung',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'stil',
+                'eightselectAttribute' => 'stil',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'sportart',
+                'eightselectAttribute' => 'sportart',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'detail',
+                'eightselectAttribute' => 'detail',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'auspraegung',
+                'eightselectAttribute' => 'auspraegung',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'baukasten',
+                'eightselectAttribute' => 'baukasten',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'eigenschaft',
+                'eightselectAttribute' => 'eigenschaft',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'fuellmenge',
+                'eightselectAttribute' => 'fuellmenge',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'funktion',
+                'eightselectAttribute' => 'funktion',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'gruppe',
+                'eightselectAttribute' => 'gruppe',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'material',
+                'eightselectAttribute' => 'material',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'saison',
+                'eightselectAttribute' => 'saison',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'serie',
+                'eightselectAttribute' => 'serie',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'verschluss',
+                'eightselectAttribute' => 'verschluss',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'beschreibung',
+                'eightselectAttribute' => 'beschreibung',
                 'shopwareAttribute'       => 's_articles.description',
             ],
             [
-                'eightselectCSEAttribute' => 'beschreibung1',
+                'eightselectAttribute' => 'beschreibung1',
                 'shopwareAttribute'       => 's_articles.description_long',
             ],
             [
-                'eightselectCSEAttribute' => 'beschreibung2',
+                'eightselectAttribute' => 'beschreibung2',
                 'shopwareAttribute'       => '-',
             ],
             [
-                'eightselectCSEAttribute' => 'sonstiges',
+                'eightselectAttribute' => 'sonstiges',
                 'shopwareAttribute'       => '-',
             ],
         ];
 
         foreach ($attributeList as $attributeEntry) {
-            $sql = 'INSERT INTO 8s_attribute_mapping (eightselectCSEAttribute, shopwareAttribute) VALUES (?, ?)';
+            $sql = 'INSERT INTO 8s_attribute_mapping (eightselectAttribute, shopwareAttribute) VALUES (?, ?)';
             Shopware()->Db()->query(
                 $sql,
-                [$attributeEntry['eightselectCSEAttribute'], $attributeEntry['shopwareAttribute']]
+                [$attributeEntry['eightselectAttribute'], $attributeEntry['shopwareAttribute']]
             );
         }
     }

@@ -103,7 +103,7 @@ class ArticleExport
      * @throws \Zend_Db_Statement_Exception
      */
     protected function writeFile ($fp) {
-        $mappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectCSEAttribute)) as resultMapping FROM 8s_attribute_mapping WHERE shopwareAttribute != "-"';
+        $mappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping FROM 8s_attribute_mapping WHERE shopwareAttribute != "-"';
         $mapping = Shopware()->Db()->query($mappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
         $numArticles = $this->getNumArticles();
         $batchSize = 20;

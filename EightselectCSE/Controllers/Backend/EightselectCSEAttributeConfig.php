@@ -1,11 +1,11 @@
 <?php
 
-use EightselectCSE\Models\EightselectCSEAttribute;
+use EightselectCSE\Models\EightselectAttribute;
 
 class Shopware_Controllers_Backend_EightselectCSEAttributeConfig extends \Shopware_Controllers_Backend_Application
 {
-    protected $model = EightselectCSEAttribute::class;
-    protected $alias = 'eightselectCSEAttribute';
+    protected $model = EightselectAttribute::class;
+    protected $alias = 'eightselectAttribute';
 
     public function getArticleAttributesAction()
     {

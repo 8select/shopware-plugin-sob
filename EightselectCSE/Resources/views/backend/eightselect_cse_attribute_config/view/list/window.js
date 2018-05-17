@@ -7,8 +7,9 @@ Ext.define("Shopware.apps.EightselectCSEAttributeConfig.view.list.Window", {
   configure: function() {
     return {
       listingGrid:
-        "Shopware.apps.EightselectCSEAttributeConfig.view.list.EightselectCSEAttribute",
-      listingStore: "Shopware.apps.EightselectCSEAttributeConfig.store.EightselectCSEAttribute"
+        "Shopware.apps.EightselectCSEAttributeConfig.view.list.EightselectAttribute",
+      listingStore:
+        "Shopware.apps.EightselectCSEAttributeConfig.store.EightselectAttribute"
     };
   }
 });

@@ -8,10 +8,10 @@ Ext.define("Shopware.apps.EightselectCSEAttributeConfig", {
 
   controllers: ["Main"],
 
-  views: ["list.Window", "list.EightselectCSEAttribute"],
+  views: ["list.Window", "list.EightselectAttribute"],
 
-  models: ["EightselectCSEAttribute", "ShopwareAttribute"],
-  stores: ["EightselectCSEAttribute", "ShopwareAttribute"],
+  models: ["EightselectAttribute", "ShopwareAttribute"],
+  stores: ["EightselectAttribute", "ShopwareAttribute"],
 
   launch: function() {
     return this.getController("Main").mainWindow;
