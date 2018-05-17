@@ -36,7 +36,6 @@ class AWSUploader
                 'Bucket' => $bucket,
                 'Key'    => $key,
                 'Body'   => fopen($storage . $filename, 'r'),
-                'ACL'    => 'public-read',
             ]);
         } catch (\Aws\S3\Exception\S3Exception $e) {
             Shopware()->PluginLogger()->error($e->getAwsErrorMessage(), [$e->getAwsErrorCode(), $e->getAwsErrorType()]);
