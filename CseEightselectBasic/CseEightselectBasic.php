@@ -463,14 +463,6 @@ class CseEightselectBasic extends Plugin
     {
         $attributeList = [
             [
-                'eightselectAttribute' => 'sku',
-                'shopwareAttribute'       => 's_articles_details.ordernumber',
-            ],
-            [
-                'eightselectAttribute' => 'mastersku',
-                'shopwareAttribute'       => '-',
-            ],
-            [
                 'eightselectAttribute' => 'ean',
                 'shopwareAttribute'       => 's_articles_details.ean',
             ],

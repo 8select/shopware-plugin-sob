@@ -143,10 +143,12 @@ class ArticleExport
     {
         $sql = 'SELECT ' . $mapping . ',
                 s_articles.id as articleID,
+                s_articles.main_detail_id as mainDetailId,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
                 s_articles_details.active AS status,
                 s_articles_supplier.name as marke,
+                s_articles_details.ordernumber as sku,
                 s_core_tax.tax AS tax
                 FROM s_articles_details
                 INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
@@ -186,6 +188,9 @@ class ArticleExport
 
         foreach ($this->fields as $field) {
             switch ($field) {
+                case 'mastersku':
+                    $line[] = $this->getMasterSku($article['mainDetailId']);
+                    break;
                 case 'kategorie1':
                     $line[] = !empty($categories[0]) ? $categories[0] : '';
                     break;
@@ -299,5 +304,19 @@ class ArticleExport
 
         $urlString = implode('|', $urlArray);
         return $urlString;
+    }
+
+    /**
+     * @param $mainDetailId
+     * @return string
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    private function getMasterSku($mainDetailId)
+    {
+        $sql = 'SELECT ordernumber FROM s_articles_details WHERE articleID = ?';
+        $mainDetail = Shopware()->Db()->query($sql, [$mainDetailId])->fetch();
+
+        return $mainDetail['ordernumber'];
     }
 }
