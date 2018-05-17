@@ -10,7 +10,7 @@ done
 CURRENT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 VERSION=${1}
-PLUGIN_NAME="EightselectCSE"
+PLUGIN_NAME="CseEightselectBasic"
 
 DIST_DIR="dist"
 ZIP_NAME="${PLUGIN_NAME}_Shopware-5.2.11_${VERSION}.zip"
