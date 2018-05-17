@@ -52,11 +52,11 @@
 
                 eightselect_shopware.hideSys = function () {
                     var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
-                    if (!navNodes) {
+                    if (!navNodes || navNodes.length === 0) {
                         return;
                     }
                     var contentNodes = document.querySelectorAll('.tab-menu--product .tab--container-list .tab--container');
-                    if (!contentNodes) {
+                    if (!contentNodes || contentNodes.length === 0) {
                         return;
                     }
 
@@ -71,11 +71,11 @@
 
                 eightselect_shopware.showSys = function () {
                     var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
-                    if (!navNodes) {
+                    if (!navNodes || navNodes.length === 0) {
                         return;
                     }
                     var contentNodes = document.querySelectorAll('.tab-menu--product .tab--container-list .tab--container');
-                    if (!contentNodes) {
+                    if (!contentNodes || contentNodes.length === 0) {
                         return;
                     }
 
@@ -105,13 +105,13 @@
 
                 eightselect_shopware.hideSys = function () {
                     var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
-                    if (!navNodes) {
+                    if (!navNodes || navNodes.length === 0) {
                         return;
                     }
                     var navPosition = navNodes.length - 1;
 
                     var contentNodes = document.querySelectorAll('.tab-menu--product .tab--container-list .tab--container');
-                    if (!contentNodes) {
+                    if (!contentNodes || contentNodes.length === 0) {
                         return;
                     }
                     var contentPosition = contentNodes.length - 1;
@@ -128,13 +128,13 @@
 
                 eightselect_shopware.showSys = function () {
                     var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
-                    if (!navNodes) {
+                    if (!navNodes || navNodes.length === 0) {
                         return;
                     }
                     var navPosition = navNodes.length - 1;
 
                     var contentNodes = document.querySelectorAll('.tab-menu--product .tab--container-list .tab--container');
-                    if (!contentNodes) {
+                    if (!contentNodes || contentNodes.length === 0) {
                         return;
                     }
                     var contentPosition = contentNodes.length - 1;
