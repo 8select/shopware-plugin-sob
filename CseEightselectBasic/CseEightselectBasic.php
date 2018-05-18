@@ -464,150 +464,187 @@ class CseEightselectBasic extends Plugin
         $attributeList = [
             [
                 'eightselectAttribute' => 'ean',
+                'eightselectAttributelabel' => 'EAN Nummer, z.B. "8698272518204"',
                 'shopwareAttribute'       => 's_articles_details.ean',
             ],
             [
                 'eightselectAttribute' => 'model',
+                'eightselectAttributelabel' => 'Nummer des Master-Modelles bei mehreren Farben und Größen z.B. "efw34t63g4h"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'name1',
+                'eightselectAttributelabel' => 'Artikelbezeichnung z.B. "Hemdbluse Sabine"',
                 'shopwareAttribute'       => 's_articles.name',
             ],
             [
                 'eightselectAttribute' => 'name2',
+                'eightselectAttributelabel' => 'Alternative Artikelbezeichnung z.B. "Bluse"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'groesse',
+                'eightselectAttributelabel' => 'Größe z.B. "44", "S/31", etc.',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'bereich',
+                'eightselectAttributelabel' => 'Zugeordneter Bereich z.B. "Outdoor"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'rubrik',
+                'eightselectAttributelabel' => 'Produktkategorie z.B. "Jacken und Mäntel"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'abteilung',
+                'eightselectAttributelabel' => 'Zugeordnete Abteilung z.B. "haka"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'kiko',
+                'eightselectAttributelabel' => 'Spezifikation für Kindergrößen z.B. "mädchen"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'typ',
+                'eightselectAttributelabel' => 'Produkttyp z.B. "Lederjacken"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'farbe',
+                'eightselectAttributelabel' => 'Produktfarbe z.B. "gelb"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'farbspektrum',
+                'eightselectAttributelabel' => 'Farbspektrum z.B. "braun beige"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'absatzhoehe',
+                'eightselectAttributelabel' => 'Absatzhöhe z.B. "5,5 cm"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'muster',
+                'eightselectAttributelabel' => 'Muster z.B. "kariert"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'aermellaenge',
+                'eightselectAttributelabel' => 'Ärmellänge z.B. "extra kurzer Arm"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'kragenform',
+                'eightselectAttributelabel' => 'Kragenform z.B. "Rundhalsausschnitt"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'obermaterial',
+                'eightselectAttributelabel' => 'Obermaterial z.B. "baumwoll-denim"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'passform',
+                'eightselectAttributelabel' => 'Passform z.B. "modern fit", "comfor fit"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'schnitt',
+                'eightselectAttributelabel' => 'Schnitt z.B. "knielang", "7/8"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'waschung',
+                'eightselectAttributelabel' => 'Waschung z.B. "bleached", "destroyed"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'stil',
+                'eightselectAttributelabel' => 'Stil z.B. "Casual", "Business-Hemden"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'sportart',
+                'eightselectAttributelabel' => 'Sportart z.B. "Bergsteigen", "Rennradfahren|Bike - Race"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'detail',
+                'eightselectAttributelabel' => 'Produktdetail z.B. "Brusttasche", "Reißverschlüsse seitlich am Saum"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'auspraegung',
+                'eightselectAttributelabel' => 'Ausprägung z.B. "30-55 Liter", "Rucksackmaße 40 cm x 28 cm x 18 cm"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'baukasten',
+                'eightselectAttributelabel' => 'Baukasten z.B. "100760001"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'eigenschaft',
+                'eightselectAttributelabel' => 'Eigenschaft z.B. "5°C"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'fuellmenge',
+                'eightselectAttributelabel' => 'Füllmenge z.B. "200ml"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'funktion',
+                'eightselectAttributelabel' => 'Funktion z.B. "atmungsaktiv", "schnelltrocknend"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'gruppe',
+                'eightselectAttributelabel' => 'Gruppe z.B. "Baukastenanzug James", "B-All-Mountain"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'material',
+                'eightselectAttributelabel' => 'Material z.B. "100% Nylon (Ripstop) mit Gore-Tex-Membran (PTFE)"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'saison',
+                'eightselectAttributelabel' => 'Saison z.B. "Winter 17", "Sommer 18"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'serie',
+                'eightselectAttributelabel' => 'Serie z.B. "Mountain"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'verschluss',
+                'eightselectAttributelabel' => 'Verschluss z.B. "Knöpfe", "Reisverschluss"',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'beschreibung',
+                'eightselectAttributelabel' => 'HTML-Beschreibungstext z.B. "<p>Federleichte Regenhose! </ br> ...</p>"',
                 'shopwareAttribute'       => 's_articles.description',
             ],
             [
                 'eightselectAttribute' => 'beschreibung1',
+                'eightselectAttributelabel' => 'Beschreibungstext (Reintext) z.B. "Federleichte Regenhose! ..."',
                 'shopwareAttribute'       => 's_articles.description_long',
             ],
             [
                 'eightselectAttribute' => 'beschreibung2',
+                'eightselectAttributelabel' => 'Beschreibung Zusatz z.B. "Gewicht=200g Gewogen=Gr. L/31 ..."',
                 'shopwareAttribute'       => '-',
             ],
             [
                 'eightselectAttribute' => 'sonstiges',
+                'eightselectAttributelabel' => 'Sonstige Beschreibungen / Attribute z.B. "abgenähte Taschen", "Ripstop"',
                 'shopwareAttribute'       => '-',
             ],
         ];
