@@ -650,10 +650,14 @@ class CseEightselectBasic extends Plugin
         ];
 
         foreach ($attributeList as $attributeEntry) {
-            $sql = 'INSERT INTO 8s_attribute_mapping (eightselectAttribute, shopwareAttribute) VALUES (?, ?)';
+            $sql = 'INSERT INTO 8s_attribute_mapping (eightselectAttribute, eightselectAttributelabel, shopwareAttribute) VALUES (?, ?, ?)';
             Shopware()->Db()->query(
                 $sql,
-                [$attributeEntry['eightselectAttribute'], $attributeEntry['shopwareAttribute']]
+                [
+                    $attributeEntry['eightselectAttribute'], 
+                    $attributeEntry['eightselectAttributelabel'],
+                    $attributeEntry['shopwareAttribute']
+                ]
             );
         }
     }
