@@ -13,7 +13,7 @@ Ext.define(
         rowEditing: true,
         pagingbar: false,
         columns: {
-          eightselectAttribute: {
+          eightselectAttributelabel: {
             header: "8select Attribute",
             editor: {
               editable: false
