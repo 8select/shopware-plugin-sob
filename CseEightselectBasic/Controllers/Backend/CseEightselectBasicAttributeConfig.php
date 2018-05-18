@@ -27,7 +27,6 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
             ['column_name' => 's_articles.description_long', 'label' => 'Description long'],
             ['column_name' => 's_articles.keywords', 'label' => 'Keywords'],
             // details attributes
-            ['column_name' => 's_articles_details.ordernumber', 'label' => 'Ordernumber'],
             ['column_name' => 'additionaltext', 'label' => 'Additional text'],
             ['column_name' => 'weight', 'label' => 'Weight'],
             ['column_name' => 'width', 'label' => 'Width'],
