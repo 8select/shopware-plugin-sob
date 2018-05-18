@@ -68,6 +68,7 @@ class ArticleExport
     ];
 
     /**
+     * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
@@ -105,17 +106,23 @@ class ArticleExport
 
     /**
      * @param $fp
+     * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
     protected function writeFile ($fp) {
-        $mappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping FROM 8s_attribute_mapping WHERE shopwareAttribute != "-"';
-        $mapping = Shopware()->Db()->query($mappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
+        $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping 
+                         FROM 8s_attribute_mapping 
+                         WHERE shopwareAttribute != "-"
+                         AND shopwareAttribute NOT LIKE "%id=%"';
+
+        $attributeMapping = Shopware()->Db()->query($attributeMappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
+
         $numArticles = $this->getNumArticles();
         $batchSize = 100;
 
         for ($i = 0; $i < $numArticles; $i+=$batchSize ) {
-            $articles = $this->getArticles($mapping, $i, $batchSize);
+            $articles = $this->getArticles($attributeMapping, $i, $batchSize);
 
             if ($this::DEBUG) {
                 $top = $i + ($batchSize - 1);
@@ -156,8 +163,20 @@ class ArticleExport
                 INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
                 LIMIT ' . $number . ' OFFSET ' . $from;
+        $attributes = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
-        return Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        return $attributes;
+    }
+
+    protected function getConfig($articleId, $groupId) {
+        $sql = 'SELECT s_article_configurator_options.name as name
+                FROM s_article_configurator_options
+                INNER JOIN s_article_configurator_option_relations on s_article_configurator_option_relations.option_id = s_article_configurator_options.id
+                WHERE s_article_configurator_option_relations.article_id = ' . $articleId . '
+                AND s_article_configurator_options.group_id = ' . $groupId;
+        $config = Shopware()->Db()->query($sql)->fetchAll();
+
+        return implode('; ', array_column($config, 'name'));
     }
 
     /**
@@ -173,10 +192,10 @@ class ArticleExport
 
     /**
      * @param $article
+     * @return array
+     * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
-     * @throws \Exception
-     * @return array
      */
     private function getLine($article)
     {
@@ -210,16 +229,39 @@ class ArticleExport
                     $line[] = $this->getImages($article['articleID']);
                     break;
                 default:
-                    $value = $article[$field];
-                    if ($value) {
-                        $line[] = $value;
-                    } else {
-                        $line[] = '';
-                    }
+                    $line[] = $this->getValue($article, $field);
             }
         }
 
         return $line;
+    }
+
+    /**
+     * @param $article
+     * @param $field
+     * @return string
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    protected function getValue($article, $field) {
+        $value = $article[$field];
+        if ($value) {
+            return $value;
+        } else {
+            $query = 'SELECT shopwareAttribute as groupId
+                      FROM 8s_attribute_mapping
+                      WHERE shopwareAttribute LIKE "%id=%"
+                      AND eightselectAttribute = "' . $field . '"';
+            $config = Shopware()->Db()->query($query)->fetchColumn();
+
+            if ($config) {
+                $groupId = explode('id=', $config)[1];
+                if ($groupId) {
+                    return $this->getConfig($article['articleID'], $groupId);
+                }
+            }
+            return '';
+        }
     }
 
     /**
