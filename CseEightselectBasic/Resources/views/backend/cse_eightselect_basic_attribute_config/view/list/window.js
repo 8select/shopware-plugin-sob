@@ -3,7 +3,7 @@ Ext.define(
   {
     extend: "Shopware.window.Listing",
     alias: "widget.8select-attributes-window",
-    height: 450,
+    height: 610,
     title: "{s name=window_title}8select Attribute Mapping{/s}",
 
     configure: function() {
