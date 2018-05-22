@@ -6,7 +6,8 @@ Ext.define(
     fields: [
       { name: "id", type: "int" },
       { name: "eightselectAttribute", type: "string" },
-      { name: "eightselectAttributelabel", type: "string" },
+      { name: "eightselectAttributeLabel", type: "string" },
+      { name: "eightselectAttributeLabelDescr", type: "string" },
       { name: "shopwareAttribute", type: "string" }
     ],
 
