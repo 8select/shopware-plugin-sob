@@ -13,6 +13,8 @@ class ArticleExport
     /** @var bool  */
     const DEBUG = false;
 
+    private $currentProgress = 0;
+
     /**
      * @var array
      */
@@ -72,7 +74,32 @@ class ArticleExport
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    public function doCron()
+    public function checkRunOnce()
+    {
+        $sql = 'SELECT * from 8s_cron_run_once_queue WHERE running = 0';
+        $queue = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (count($queue)) {
+            $id = reset($queue)['id'];
+            $sqls = [
+                'UPDATE 8s_cron_run_once_queue SET running = 1 WHERE id = ' . $id,
+                'DELETE from 8s_cron_run_once_queue WHERE running = 0'
+            ];
+            foreach ($sqls as $sql) {
+                Shopware()->Db()->query($sql);
+            }
+            $this->doCron($id);
+            $this->emptyQueueTable();
+        }
+    }
+
+    /**
+     * @param null $queuId
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    public function doCron($queuId = null)
     {
         $start = time();
         $config = Shopware()->Config();
@@ -93,7 +120,7 @@ class ArticleExport
 
         fputcsv($fp, $header, ';');
 
-        $this->writeFile($fp);
+        $this->writeFile($fp, $queuId);
 
         fclose($fp);
 
@@ -106,11 +133,12 @@ class ArticleExport
 
     /**
      * @param $fp
+     * @param $queueId
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    protected function writeFile ($fp) {
+    protected function writeFile ($fp, $queueId) {
         $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping 
                          FROM 8s_attribute_mapping 
                          WHERE shopwareAttribute != "-"
@@ -122,6 +150,8 @@ class ArticleExport
         $batchSize = 100;
 
         for ($i = 0; $i < $numArticles; $i+=$batchSize ) {
+            $this->updateStatus($numArticles, $i, $queueId);
+
             $articles = $this->getArticles($attributeMapping, $i, $batchSize);
 
             if ($this::DEBUG) {
@@ -359,5 +389,31 @@ class ArticleExport
         $mainDetail = Shopware()->Db()->query($sql, [$articleId])->fetch();
 
         return $mainDetail['ordernumber'];
+    }
+
+    /**
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    private function emptyQueueTable()
+    {
+        $sql = 'DELETE FROM 8s_cron_run_once_queue';
+        Shopware()->Db()->query($sql);
+    }
+
+    /**
+     * @param $numArticles
+     * @param $currentArticle
+     * @param $queueId
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    private function updateStatus($numArticles, $currentArticle, $queueId)
+    {
+        $progress = floor($currentArticle/$numArticles * 100);
+
+        if ($queueId && $progress != $this->currentProgress) {
+            $sql = 'UPDATE 8s_cron_run_once_queue SET progress = ' . $progress . ' WHERE id = ' . $queueId;
+            Shopware()->Db()->query($sql);
+            $this->currentProgress = $progress;
+        }
     }
 }

@@ -28,6 +28,7 @@ class CseEightselectBasic extends Plugin
             'Enlight_Controller_Action_PostDispatchSecure_Frontend'                => 'onFrontendPostDispatch',
             'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'             => 'onCheckoutConfirm',
             'Shopware_CronJob_CseEightselectBasicArticleExport'                         => 'cseEightselectBasicArticleExport',
+            'Shopware_CronJob_CseEightselectBasicArticleExportOnce'                         => 'cseEightselectBasicArticleExportOnce',
             'Shopware_CronJob_CseEightselectBasicQuickUpdate'                           => 'cseEightselectBasicQuickUpdate',
         ];
     }
@@ -173,6 +174,7 @@ class CseEightselectBasic extends Plugin
     public function install(InstallContext $context)
     {
         $this->addExportCron();
+        $this->addExportOnceCron();
         $this->addUpdateCron();
         $this->installWidgets();
         $this->createDatabase();
@@ -319,6 +321,7 @@ class CseEightselectBasic extends Plugin
     public function uninstall(UninstallContext $context)
     {
         $this->removeExportCron();
+        $this->removeExportOnceCron();
         $this->removeUpdateCron();
         $this->removeDatabase();
         parent::uninstall($context);
@@ -338,6 +341,7 @@ class CseEightselectBasic extends Plugin
 
         $this->initAttributes();
         $this->initChangesQueueTable();
+        $this->initRunOnceQueueTable();
     }
 
     private function removeDatabase()
@@ -363,6 +367,9 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param \Shopware_Components_Cron_CronJob $job
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
      */
     public function cseEightselectBasicArticleExport(\Shopware_Components_Cron_CronJob $job)
     {
@@ -371,6 +378,18 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param \Shopware_Components_Cron_CronJob $job
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    public function cseEightselectBasicArticleExportOnce(\Shopware_Components_Cron_CronJob $job)
+    {
+        $this->container->get('cse_eightselect_basic.article_export')->checkRunOnce();
+    }
+
+    /**
+     * @param \Shopware_Components_Cron_CronJob $job
+     * @throws \Exception
      */
     public function cseEightselectBasicQuickUpdate(\Shopware_Components_Cron_CronJob $job)
     {
@@ -421,6 +440,38 @@ class CseEightselectBasic extends Plugin
     {
         $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
             'Shopware_CronJob_CseEightselectBasicArticleExport',
+        ]);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function addExportOnceCron()
+    {
+        $connection = $this->container->get('dbal_connection');
+        $connection->insert(
+            's_crontab',
+            [
+                'name'       => '8select article export once',
+                'action'     => 'Shopware_CronJob_CseEightselectBasicArticleExportOnce',
+                'next'       => new \DateTime(),
+                'start'      => null,
+                '`interval`' => '120',
+                'active'     => 1,
+                'end'        => new \DateTime(),
+                'pluginID'   => $this->container->get('shopware.plugin_manager')->getPluginByName($this->getName())->getId(),
+            ],
+            [
+                'next' => 'datetime',
+                'end'  => 'datetime',
+            ]
+        );
+    }
+
+    public function removeExportOnceCron()
+    {
+        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
+            'Shopware_CronJob_CseEightselectBasicArticleExportOnce',
         ]);
     }
 
@@ -654,6 +705,28 @@ class CseEightselectBasic extends Plugin
 
         foreach ($triggerSqls as $triggerSql) {
             Shopware()->Db()->query($triggerSql);
+        }
+    }
+
+    /**
+     * @throws \Zend_Db_Adapter_Exception
+     */
+    private function initRunOnceQueueTable()
+    {
+        $sqls = [
+            'DROP TABLE IF EXISTS `8s_cron_run_once_queue`;',
+            'CREATE TABLE `8s_cron_run_once_queue` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `cron_name` varchar(255) NOT NULL,
+                  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                  `running` bit DEFAULT 0,
+                  `progress` int(3) DEFAULT 0,
+                  PRIMARY KEY (`id`)
+                ) COLLATE=\'utf8_unicode_ci\' ENGINE=InnoDB DEFAULT CHARSET=utf8;',
+        ];
+
+        foreach ($sqls as $sql) {
+            Shopware()->Db()->query($sql);
         }
     }
 
