@@ -1,7 +1,5 @@
 {extends file="parent:frontend/detail/index.tpl"}
 
-{if {config name="8s_selected_detail_block"} != "none"}
-
     {block name='frontend_detail_index_header'}
         {if {config name="8s_selected_detail_block"} == "frontend_detail_index_header" && {config name="8s_widget_placement"}=="widget_before"}
             {include file="frontend/custom/cse.tpl"}
@@ -33,28 +31,31 @@
         {/if}
     {/block}
 
-    {if {config name="8s_selected_detail_block"} == "frontend_detail_tabs"}
+    {block name="frontend_detail_tabs_navigation_inner"}
+        {if {config name="8s_widget_placement"} == "widget_after"}
+            {$smarty.block.parent}
+        {/if}
 
-        {block name="frontend_detail_tabs_navigation_inner"}
-            {if {config name="8s_widget_placement"} == "widget_after"}
-                {$smarty.block.parent}
-            {/if}
-            {block name="frontend_detail_tabs_cse"}
-                <a href="#" class="tab--link" title="Dazu passt" data-tabName="cse" style="display: none;">Dazu passt</a>
-            {/block}
-            {if {config name="8s_widget_placement"} == "widget_before"}
-                {$smarty.block.parent}
-            {/if}
+        {if {config name="8s_selected_detail_block"} == "frontend_detail_tabs" && {config name="8s_selected_detail_block"} != "none"}
+        {block name="frontend_detail_tabs_cse"}
+            <a href="#" class="tab--link" title="Dazu passt" data-tabName="cse" style="display: none;">Dazu passt</a>
         {/block}
+        {/if}
 
-        {block name="frontend_detail_tabs_content_inner"}
-            {if {config name="8s_widget_placement"} == "widget_after"}
-                {$smarty.block.parent}
-            {/if}
+        {if {config name="8s_widget_placement"} == "widget_before"}
+            {$smarty.block.parent}
+        {/if}
+    {/block}
+
+    {block name="frontend_detail_tabs_content_inner"}
+        {if {config name="8s_widget_placement"} == "widget_after"}
+            {$smarty.block.parent}
+        {/if}
+
+        {if {config name="8s_selected_detail_block"} == "frontend_detail_tabs"}
             {block name="frontend_detail_tabs_content_cse"}
                 <div class="tab--container" style="display: none;">
                     {block name="frontend_detail_tabs_content_cse_inner"}
-
                         {block name="frontend_detail_tabs_content_cse_title"}
                             <div class="tab--header">
                                 {block name="frontend_detail_tabs_content_cse_title_inner"}
@@ -89,10 +90,11 @@
                     {/block}
                 </div>
             {/block}
-            {if {config name="8s_widget_placement"} == "widget_before"}
-                {$smarty.block.parent}
-            {/if}
-        {/block}
+        {/if}
 
-    {/if}
+        {if {config name="8s_widget_placement"} == "widget_before"}
+            {$smarty.block.parent}
+        {/if}
+    {/block}
+
 {/if}
