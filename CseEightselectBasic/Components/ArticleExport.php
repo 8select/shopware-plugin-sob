@@ -169,11 +169,11 @@ class ArticleExport
     }
 
     protected function getConfig($articleId, $groupId) {
-        $sql = 'SELECT s_article_configurator_options.name as name
-                FROM s_article_configurator_options
-                INNER JOIN s_article_configurator_option_relations on s_article_configurator_option_relations.option_id = s_article_configurator_options.id
-                WHERE s_article_configurator_option_relations.article_id = ' . $articleId . '
-                AND s_article_configurator_options.group_id = ' . $groupId;
+        $sql = 'SELECT s_filter_values.value as name
+                FROM s_filter_values
+                INNER JOIN s_filter_articles on s_filter_articles.valueID = s_filter_values.id
+                WHERE s_filter_articles.articleID = ' . $articleId . '
+                AND s_filter_values.optionID = ' . $groupId;
         $config = Shopware()->Db()->query($sql)->fetchAll();
 
         return implode('; ', array_column($config, 'name'));
