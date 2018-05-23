@@ -71,6 +71,7 @@ class ArticleExport
 
     /**
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Enlight_Exception
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
@@ -83,7 +84,7 @@ class ArticleExport
             $id = reset($queue)['id'];
             $sqls = [
                 'UPDATE 8s_cron_run_once_queue SET running = 1 WHERE id = ' . $id,
-                'DELETE from 8s_cron_run_once_queue WHERE running = 0'
+                'DELETE from 8s_cron_run_once_queue WHERE running = 0',
             ];
             foreach ($sqls as $sql) {
                 Shopware()->Db()->query($sql);
@@ -94,8 +95,9 @@ class ArticleExport
     }
 
     /**
-     * @param null $queuId
+     * @param  null                         $queuId
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Enlight_Exception
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
@@ -127,7 +129,7 @@ class ArticleExport
         AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
 
         if ($this::DEBUG) {
-            echo("Process completed in " . (time() - $start) . "s\n");
+            echo('Process completed in ' . (time() - $start) . "s\n");
         }
     }
 
@@ -138,7 +140,8 @@ class ArticleExport
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    protected function writeFile ($fp, $queueId) {
+    protected function writeFile($fp, $queueId)
+    {
         $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping 
                          FROM 8s_attribute_mapping 
                          WHERE shopwareAttribute != "-"
@@ -149,7 +152,7 @@ class ArticleExport
         $numArticles = $this->getNumArticles();
         $batchSize = 100;
 
-        for ($i = 0; $i < $numArticles; $i+=$batchSize ) {
+        for ($i = 0; $i < $numArticles; $i += $batchSize) {
             $this->updateStatus($numArticles, $i, $queueId);
 
             $articles = $this->getArticles($attributeMapping, $i, $batchSize);
@@ -159,7 +162,7 @@ class ArticleExport
                 if ($top > $numArticles) {
                     $top = $numArticles;
                 }
-                echo("Processing articles " . $i . " to " . $top . "\n");
+                echo('Processing articles ' . $i . ' to ' . $top . "\n");
             }
 
             foreach ($articles as $article) {
@@ -172,9 +175,10 @@ class ArticleExport
     /**
      * @param $number
      * @param $from
-     * @return array
+     * @param  mixed                        $mapping
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @return array
      */
     protected function getArticles($mapping, $from, $number)
     {
@@ -198,7 +202,8 @@ class ArticleExport
         return $attributes;
     }
 
-    protected function getConfig($articleId, $groupId) {
+    protected function getConfig($articleId, $groupId)
+    {
         $sql = 'SELECT s_filter_values.value as name
                 FROM s_filter_values
                 INNER JOIN s_filter_articles on s_filter_articles.valueID = s_filter_values.id
@@ -206,13 +211,13 @@ class ArticleExport
                 AND s_filter_values.optionID = ' . $groupId;
         $config = Shopware()->Db()->query($sql)->fetchAll();
 
-        return implode('; ', array_column($config, 'name'));
+        return implode(' | ', array_column($config, 'name'));
     }
 
     /**
-     * @return mixed
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @return mixed
      */
     protected function getNumArticles()
     {
@@ -222,10 +227,10 @@ class ArticleExport
 
     /**
      * @param $article
-     * @return array
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @return array
      */
     private function getLine($article)
     {
@@ -269,29 +274,29 @@ class ArticleExport
     /**
      * @param $article
      * @param $field
-     * @return string
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @return string
      */
-    protected function getValue($article, $field) {
+    protected function getValue($article, $field)
+    {
         $value = $article[$field];
         if ($value) {
             return $value;
-        } else {
-            $query = 'SELECT shopwareAttribute as groupId
+        }
+        $query = 'SELECT shopwareAttribute as groupId
                       FROM 8s_attribute_mapping
                       WHERE shopwareAttribute LIKE "%id=%"
                       AND eightselectAttribute = "' . $field . '"';
-            $config = Shopware()->Db()->query($query)->fetchColumn();
+        $config = Shopware()->Db()->query($query)->fetchColumn();
 
-            if ($config) {
-                $groupId = explode('id=', $config)[1];
-                if ($groupId) {
-                    return $this->getConfig($article['articleID'], $groupId);
-                }
+        if ($config) {
+            $groupId = explode('id=', $config)[1];
+            if ($groupId) {
+                return $this->getConfig($article['articleID'], $groupId);
             }
-            return '';
         }
+        return '';
     }
 
     /**
@@ -379,9 +384,9 @@ class ArticleExport
 
     /**
      * @param $articleId
-     * @return mixed
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @return mixed
      */
     private function getMasterSku($articleId)
     {
@@ -408,7 +413,7 @@ class ArticleExport
      */
     private function updateStatus($numArticles, $currentArticle, $queueId)
     {
-        $progress = floor($currentArticle/$numArticles * 100);
+        $progress = floor($currentArticle / $numArticles * 100);
 
         if ($queueId && $progress != $this->currentProgress) {
             $sql = 'UPDATE 8s_cron_run_once_queue SET progress = ' . $progress . ' WHERE id = ' . $queueId;

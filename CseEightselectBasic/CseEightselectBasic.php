@@ -20,16 +20,16 @@ class CseEightselectBasic extends Plugin
     public static function getSubscribedEvents()
     {
         return [
-            'Enlight_Controller_Action_PreDispatch'                                => 'onPreDispatch',
-            'Theme_Compiler_Collect_Plugin_Javascript'                             => 'addJsFiles',
-            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_CseEightselectBasic' => 'onGetFrontendCseEightselectBasicController',
-            'Enlight_Controller_Dispatcher_ControllerPath_Backend_CseEightselectBasic'  => 'onGetBackendCseEightselectBasicController',
-            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'         => 'onPostDispatchBackendEmotion',
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend'                => 'onFrontendPostDispatch',
-            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'             => 'onCheckoutConfirm',
-            'Shopware_CronJob_CseEightselectBasicArticleExport'                         => 'cseEightselectBasicArticleExport',
+            'Enlight_Controller_Action_PreDispatch'                                         => 'onPreDispatch',
+            'Theme_Compiler_Collect_Plugin_Javascript'                                      => 'addJsFiles',
+            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_CseEightselectBasic'     => 'onGetFrontendCseEightselectBasicController',
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_CseEightselectBasic'      => 'onGetBackendCseEightselectBasicController',
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'                  => 'onPostDispatchBackendEmotion',
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend'                         => 'onFrontendPostDispatch',
+            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'                      => 'onCheckoutConfirm',
+            'Shopware_CronJob_CseEightselectBasicArticleExport'                             => 'cseEightselectBasicArticleExport',
             'Shopware_CronJob_CseEightselectBasicArticleExportOnce'                         => 'cseEightselectBasicArticleExportOnce',
-            'Shopware_CronJob_CseEightselectBasicQuickUpdate'                           => 'cseEightselectBasicQuickUpdate',
+            'Shopware_CronJob_CseEightselectBasicQuickUpdate'                               => 'cseEightselectBasicQuickUpdate',
         ];
     }
 
@@ -366,7 +366,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * @param \Shopware_Components_Cron_CronJob $job
+     * @param  \Shopware_Components_Cron_CronJob $job
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
@@ -377,7 +377,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * @param \Shopware_Components_Cron_CronJob $job
+     * @param  \Shopware_Components_Cron_CronJob $job
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
@@ -388,7 +388,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * @param \Shopware_Components_Cron_CronJob $job
+     * @param  \Shopware_Components_Cron_CronJob $job
      * @throws \Exception
      */
     public function cseEightselectBasicQuickUpdate(\Shopware_Components_Cron_CronJob $job)
@@ -514,226 +514,226 @@ class CseEightselectBasic extends Plugin
     {
         $attributeList = [
             [
-                'eightselectAttribute' => 'ean',
-                'eightselectAttributeLabel' => 'EAN Nummer',
+                'eightselectAttribute'           => 'ean',
+                'eightselectAttributeLabel'      => 'EAN Nummer',
                 'eightselectAttributeLabelDescr' => 'z.B. "8698272518204"',
-                'shopwareAttribute'       => 's_articles_details.ean',
+                'shopwareAttribute'              => 's_articles_details.ean',
             ],
             [
-                'eightselectAttribute' => 'model',
-                'eightselectAttributeLabel' => 'Master-Modell',
+                'eightselectAttribute'           => 'model',
+                'eightselectAttributeLabel'      => 'Master-Modell',
                 'eightselectAttributeLabelDescr' => 'Artnr. Master-Modell bei mehreren Farben und Größen z.B. "efw34t63g4h"',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'name1',
-                'eightselectAttributeLabel' => 'Artikelbezeichnung',
+                'eightselectAttribute'           => 'name1',
+                'eightselectAttributeLabel'      => 'Artikelbezeichnung',
                 'eightselectAttributeLabelDescr' => 'z.B. "Hemdbluse Sabine", "Casual Friday Sakko", etc.',
-                'shopwareAttribute'       => 's_articles.name',
+                'shopwareAttribute'              => 's_articles.name',
             ],
             [
-                'eightselectAttribute' => 'name2',
-                'eightselectAttributeLabel' => 'Alternative Artikelbezeichnung',
+                'eightselectAttribute'           => 'name2',
+                'eightselectAttributeLabel'      => 'Alternative Artikelbezeichnung',
                 'eightselectAttributeLabelDescr' => 'z.B. "Bluse", "Sakko", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'groesse',
-                'eightselectAttributeLabel' => 'Größe',
+                'eightselectAttribute'           => 'groesse',
+                'eightselectAttributeLabel'      => 'Größe',
                 'eightselectAttributeLabelDescr' => 'z.B. "44", "S/31", "XL", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'bereich',
-                'eightselectAttributeLabel' => 'Bereich',
+                'eightselectAttribute'           => 'bereich',
+                'eightselectAttributeLabel'      => 'Bereich',
                 'eightselectAttributeLabelDescr' => 'z.B. "Outdoor", "Mode", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'rubrik',
-                'eightselectAttributeLabel' => 'Produktkategorie',
+                'eightselectAttribute'           => 'rubrik',
+                'eightselectAttributeLabel'      => 'Produktkategorie',
                 'eightselectAttributeLabelDescr' => 'z.B. "Jacken und Mäntel", "Blusen und Tuniken", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'abteilung',
-                'eightselectAttributeLabel' => 'Abteilung',
+                'eightselectAttribute'           => 'abteilung',
+                'eightselectAttributeLabel'      => 'Abteilung',
                 'eightselectAttributeLabelDescr' => 'z.B. "haka", "dob", "kiko", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'kiko',
-                'eightselectAttributeLabel' => 'Kiko',
+                'eightselectAttribute'           => 'kiko',
+                'eightselectAttributeLabel'      => 'Kiko',
                 'eightselectAttributeLabelDescr' => 'Abteilung Kindergrößen z.B. "maedchen", "jungen", "baby", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'typ',
-                'eightselectAttributeLabel' => 'Produkttyp',
+                'eightselectAttribute'           => 'typ',
+                'eightselectAttributeLabel'      => 'Produkttyp',
                 'eightselectAttributeLabelDescr' => 'z.B. "Lederjacken", "Regenhosen", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'farbe',
-                'eightselectAttributeLabel' => 'Produktfarbe',
+                'eightselectAttribute'           => 'farbe',
+                'eightselectAttributeLabel'      => 'Produktfarbe',
                 'eightselectAttributeLabelDescr' => 'z.B. "gelb", "schwarz/blau|rot|grün|Orange-Braun", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'farbspektrum',
-                'eightselectAttributeLabel' => 'Farbspektrum',
+                'eightselectAttribute'           => 'farbspektrum',
+                'eightselectAttributeLabel'      => 'Farbspektrum',
                 'eightselectAttributeLabelDescr' => 'z.B. "Braun Beige", "Schwarz Grau", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'absatzhoehe',
-                'eightselectAttributeLabel' => 'Absatzhöhe',
+                'eightselectAttribute'           => 'absatzhoehe',
+                'eightselectAttributeLabel'      => 'Absatzhöhe',
                 'eightselectAttributeLabelDescr' => 'z.B. "5,5 cm", "Absatzhöhe in mm: 60", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'muster',
-                'eightselectAttributeLabel' => 'Muster',
+                'eightselectAttribute'           => 'muster',
+                'eightselectAttributeLabel'      => 'Muster',
                 'eightselectAttributeLabelDescr' => 'z.B. "kariert", "floral", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'aermellaenge',
-                'eightselectAttributeLabel' => 'Ärmellänge',
+                'eightselectAttribute'           => 'aermellaenge',
+                'eightselectAttributeLabel'      => 'Ärmellänge',
                 'eightselectAttributeLabelDescr' => 'z.B. "extra kurzer Arm", "kurze Ärmel", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'kragenform',
-                'eightselectAttributeLabel' => 'Kragenform',
+                'eightselectAttribute'           => 'kragenform',
+                'eightselectAttributeLabel'      => 'Kragenform',
                 'eightselectAttributeLabelDescr' => 'z.B. "Rundhalsausschnitt", "Blusenkragen", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'obermaterial',
-                'eightselectAttributeLabel' => 'Obermaterial',
+                'eightselectAttribute'           => 'obermaterial',
+                'eightselectAttributeLabel'      => 'Obermaterial',
                 'eightselectAttributeLabelDescr' => 'z.B. "baumwoll-denim", "velourlederoptik", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'passform',
-                'eightselectAttributeLabel' => 'Passform',
+                'eightselectAttribute'           => 'passform',
+                'eightselectAttributeLabel'      => 'Passform',
                 'eightselectAttributeLabelDescr' => 'z.B. "modern fit", "comfort fit", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'schnitt',
-                'eightselectAttributeLabel' => 'Schnitt',
+                'eightselectAttribute'           => 'schnitt',
+                'eightselectAttributeLabel'      => 'Schnitt',
                 'eightselectAttributeLabelDescr' => 'z.B. "knielang", "7/8", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'waschung',
-                'eightselectAttributeLabel' => 'Waschung',
+                'eightselectAttribute'           => 'waschung',
+                'eightselectAttributeLabel'      => 'Waschung',
                 'eightselectAttributeLabelDescr' => 'z.B. "bleached", "destroyed", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'stil',
-                'eightselectAttributeLabel' => 'Stil',
+                'eightselectAttribute'           => 'stil',
+                'eightselectAttributeLabel'      => 'Stil',
                 'eightselectAttributeLabelDescr' => 'z.B. "Casual", "Business-Hemden", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'sportart',
-                'eightselectAttributeLabel' => 'Sportart',
+                'eightselectAttribute'           => 'sportart',
+                'eightselectAttributeLabel'      => 'Sportart',
                 'eightselectAttributeLabelDescr' => 'z.B. "Bergsteigen", "Rennradfahren|Bike - Race", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'detail',
-                'eightselectAttributeLabel' => 'Produktdetail',
+                'eightselectAttribute'           => 'detail',
+                'eightselectAttributeLabel'      => 'Produktdetail',
                 'eightselectAttributeLabelDescr' => 'z.B. "Brusttasche", "Reißverschlüsse seitlich am Saum", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'auspraegung',
-                'eightselectAttributeLabel' => 'Ausprägung',
+                'eightselectAttribute'           => 'auspraegung',
+                'eightselectAttributeLabel'      => 'Ausprägung',
                 'eightselectAttributeLabelDescr' => 'z.B. "30-55 Liter", "Rucksackmaße 40 cm x 28 cm x 18 cm", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'baukasten',
-                'eightselectAttributeLabel' => 'Baukasten',
+                'eightselectAttribute'           => 'baukasten',
+                'eightselectAttributeLabel'      => 'Baukasten',
                 'eightselectAttributeLabelDescr' => 'z.B. "100760001"',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'eigenschaft',
-                'eightselectAttributeLabel' => 'Eigenschaft',
+                'eightselectAttribute'           => 'eigenschaft',
+                'eightselectAttributeLabel'      => 'Eigenschaft',
                 'eightselectAttributeLabelDescr' => 'z.B. "5°C"',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'fuellmenge',
-                'eightselectAttributeLabel' => 'Füllmenge',
+                'eightselectAttribute'           => 'fuellmenge',
+                'eightselectAttributeLabel'      => 'Füllmenge',
                 'eightselectAttributeLabelDescr' => 'z.B. "200ml"',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'funktion',
-                'eightselectAttributeLabel' => 'Funktion',
+                'eightselectAttribute'           => 'funktion',
+                'eightselectAttributeLabel'      => 'Funktion',
                 'eightselectAttributeLabelDescr' => 'z.B. "atmungsaktiv", "schnelltrocknend|trocknet schnell", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'gruppe',
-                'eightselectAttributeLabel' => 'Gruppe',
+                'eightselectAttribute'           => 'gruppe',
+                'eightselectAttributeLabel'      => 'Gruppe',
                 'eightselectAttributeLabelDescr' => 'z.B. "Baukastenanzug James", "B-All-Mountain", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'material',
-                'eightselectAttributeLabel' => 'Material',
+                'eightselectAttribute'           => 'material',
+                'eightselectAttributeLabel'      => 'Material',
                 'eightselectAttributeLabelDescr' => 'z.B. "100% Nylon (Ripstop) mit Gore-Tex-Membran (PTFE)", "100% Baumwolle", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'saison',
-                'eightselectAttributeLabel' => 'Saison',
+                'eightselectAttribute'           => 'saison',
+                'eightselectAttributeLabel'      => 'Saison',
                 'eightselectAttributeLabelDescr' => 'z.B. "Winter 17", "Sommer 18", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'serie',
-                'eightselectAttributeLabel' => 'Serie',
+                'eightselectAttribute'           => 'serie',
+                'eightselectAttributeLabel'      => 'Serie',
                 'eightselectAttributeLabelDescr' => 'z.B. "Mountain"',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'verschluss',
-                'eightselectAttributeLabel' => 'Verschluss',
+                'eightselectAttribute'           => 'verschluss',
+                'eightselectAttributeLabel'      => 'Verschluss',
                 'eightselectAttributeLabelDescr' => 'z.B. "Knöpfe", "Reisverschluss", etc.',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'beschreibung',
-                'eightselectAttributeLabel' => 'Beschreibungstext (HTML)',
+                'eightselectAttribute'           => 'beschreibung',
+                'eightselectAttributeLabel'      => 'Beschreibungstext (HTML)',
                 'eightselectAttributeLabelDescr' => 'z.B. "<p>Federleichte Regenhose! </ br> ...</p>"',
-                'shopwareAttribute'       => 's_articles.description',
+                'shopwareAttribute'              => 's_articles.description',
             ],
             [
-                'eightselectAttribute' => 'beschreibung1',
-                'eightselectAttributeLabel' => 'Beschreibungstext (Text)',
+                'eightselectAttribute'           => 'beschreibung1',
+                'eightselectAttributeLabel'      => 'Beschreibungstext (Text)',
                 'eightselectAttributeLabelDescr' => 'z.B. "Federleichte Regenhose! ..."',
-                'shopwareAttribute'       => 's_articles.description_long',
+                'shopwareAttribute'              => 's_articles.description_long',
             ],
             [
-                'eightselectAttribute' => 'beschreibung2',
-                'eightselectAttributeLabel' => 'Beschreibung Zusatz',
+                'eightselectAttribute'           => 'beschreibung2',
+                'eightselectAttributeLabel'      => 'Beschreibung Zusatz',
                 'eightselectAttributeLabelDescr' => 'z.B. "Gewicht=200g Gewogen=Gr. L/31 ..."',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
             [
-                'eightselectAttribute' => 'sonstiges',
-                'eightselectAttributeLabel' => 'Sonstige Beschreibungen / Attribute',
+                'eightselectAttribute'           => 'sonstiges',
+                'eightselectAttributeLabel'      => 'Sonstige Beschreibungen / Attribute',
                 'eightselectAttributeLabelDescr' => 'z.B. "abgenähte Taschen", "Ripstop"',
-                'shopwareAttribute'       => '-',
+                'shopwareAttribute'              => '-',
             ],
         ];
 
@@ -742,10 +742,10 @@ class CseEightselectBasic extends Plugin
             Shopware()->Db()->query(
                 $sql,
                 [
-                    $attributeEntry['eightselectAttribute'], 
+                    $attributeEntry['eightselectAttribute'],
                     $attributeEntry['eightselectAttributeLabel'],
                     $attributeEntry['eightselectAttributeLabelDescr'],
-                    $attributeEntry['shopwareAttribute']
+                    $attributeEntry['shopwareAttribute'],
                 ]
             );
         }
