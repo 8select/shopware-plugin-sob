@@ -1,6 +1,8 @@
 <?php
 namespace CseEightselectBasic\Components;
 
+use Shopware\Models\Form\Field;
+
 class QuickUpdate
 {
     /**
@@ -85,7 +87,7 @@ class QuickUpdate
         fputcsv($fp, $header, ';');
 
         foreach ($articles as $article) {
-            $line = $this->getLine($article);
+            $line = FieldHelper::getLine($article, $this->fields);
             fputs($fp, implode(';', $line) . "\r\n");
         }
 
@@ -99,31 +101,5 @@ class QuickUpdate
         $sql = 'DELETE FROM 8s_articles_details_change_queue';
 
         Shopware()->Db()->query($sql);
-    }
-
-    /**
-     * @param  mixed $article
-     * @return array
-     */
-    private function getLine($article)
-    {
-        $line = [];
-
-        foreach ($this->fields as $field) {
-            switch ($field) {
-                case 'streich_preis':
-                case 'angebots_preis':
-                    $value = PriceHelper::getGrossPrice($article, $field);
-                    break;
-                default:
-                    $value = $article[$field];
-                    if (!$value) {
-                        $value = '';
-                    }
-            }
-            $line[] = $value;
-        }
-
-        return $line;
     }
 }

@@ -1,8 +1,6 @@
 <?php
 namespace CseEightselectBasic\Components;
 
-use Shopware\Bundle\MediaBundle\MediaService;
-
 class ArticleExport
 {
     /**
@@ -166,7 +164,7 @@ class ArticleExport
             }
 
             foreach ($articles as $article) {
-                $line = $this->getLine($article);
+                $line = FieldHelper::getLine($article, $this->fields);
                 fputs($fp, implode(';', $line) . "\r\n");
             }
         }
@@ -202,18 +200,6 @@ class ArticleExport
         return $attributes;
     }
 
-    protected function getConfig($articleId, $groupId)
-    {
-        $sql = 'SELECT s_filter_values.value as name
-                FROM s_filter_values
-                INNER JOIN s_filter_articles on s_filter_articles.valueID = s_filter_values.id
-                WHERE s_filter_articles.articleID = ' . $articleId . '
-                AND s_filter_values.optionID = ' . $groupId;
-        $config = Shopware()->Db()->query($sql)->fetchAll();
-
-        return implode(' | ', array_column($config, 'name'));
-    }
-
     /**
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
@@ -223,178 +209,6 @@ class ArticleExport
     {
         $sql = 'SELECT id FROM s_articles_details';
         return Shopware()->Db()->query($sql)->rowCount();
-    }
-
-    /**
-     * @param $article
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @return array
-     */
-    private function getLine($article)
-    {
-        $line = [];
-
-        /** @var array $categories */
-        $categories = $this->getCategories($article['articleID']);
-
-        foreach ($this->fields as $field) {
-            switch ($field) {
-                case 'mastersku':
-                    $value = $this->getMasterSku($article['articleID']);
-                    break;
-                case 'kategorie1':
-                    $value = !empty($categories[0]) ? $categories[0] : '';
-                    break;
-                case 'kategorie2':
-                    $value = !empty($categories[1]) ? $categories[1] : '';
-                    break;
-                case 'kategorie3':
-                    $value = !empty($categories[2]) ? $categories[2] : '';
-                    break;
-                case 'streich_preis':
-                case 'angebots_preis':
-                    $value = PriceHelper::getGrossPrice($article, $field);
-                    break;
-                case 'produkt_url':
-                    $value = $this->getUrl($article['articleID']);
-                    break;
-                case 'bilder':
-                    $value = $this->getImages($article['articleID']);
-                    break;
-                default:
-                    $value = $this->getValue($article, $field);
-            }
-            $line[] = StringHelper::formatString($value);
-        }
-
-        return $line;
-    }
-
-    /**
-     * @param $article
-     * @param $field
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @return string
-     */
-    protected function getValue($article, $field)
-    {
-        $value = $article[$field];
-        if ($value) {
-            return $value;
-        }
-        $query = 'SELECT shopwareAttribute as groupId
-                      FROM 8s_attribute_mapping
-                      WHERE shopwareAttribute LIKE "%id=%"
-                      AND eightselectAttribute = "' . $field . '"';
-        $config = Shopware()->Db()->query($query)->fetchColumn();
-
-        if ($config) {
-            $groupId = explode('id=', $config)[1];
-            if ($groupId) {
-                return $this->getConfig($article['articleID'], $groupId);
-            }
-        }
-        return '';
-    }
-
-    /**
-     * @param $articleId
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @return array
-     */
-    private function getCategories($articleId)
-    {
-        $categoryIDs = Shopware()->Db()->query('SELECT categoryID FROM s_articles_categories WHERE articleID = ?', [$articleId])->fetchAll();
-        $categoriesList = [];
-        foreach ($categoryIDs as $categorieID) {
-            $categoryPathResults = $this->getCategoriesByParent((int) $categorieID['categoryID']);
-
-            $categoryNames = [];
-            foreach ($categoryPathResults as $categoryPathResult) {
-                $categoryNames[] = $categoryPathResult['name'];
-            }
-
-            $categoriesList[] = implode(' ', $categoryNames);
-        }
-
-        return $categoriesList;
-    }
-
-    /**
-     * @param $categoryId
-     * @throws \Doctrine\ORM\ORMException
-     * @return array
-     */
-    private function getCategoriesByParent($categoryId)
-    {
-        $pathCategories = Shopware()->Models()->getRepository('Shopware\Models\Category\Category')->getPathById($categoryId, ['id', 'name', 'parentId']);
-        $categories = [];
-
-        foreach ($pathCategories as $category) {
-            if ($category['parentId'] == 1) {
-                continue;
-            }
-
-            $categories[] = $category;
-        }
-
-        return $categories;
-    }
-
-    /**
-     * @param  int        $articleId
-     * @throws \Exception
-     * @return string
-     */
-    private function getUrl($articleId)
-    {
-        return Shopware()->Container()->get('router')->assemble([
-            'controller' => 'detail',
-            'action'     => 'index',
-            'sArticle'   => $articleId,
-        ]);
-    }
-
-    /**
-     * @param  int        $articleId
-     * @throws \Exception
-     * @return string
-     */
-    private function getImages($articleId)
-    {
-        $sql = 'SELECT img, extension FROM s_articles_img WHERE articleID = ?';
-        $images = Shopware()->Db()->query($sql, [$articleId])->fetchAll();
-
-        /** @var MediaService $mediaService */
-        $mediaService = Shopware()->Container()->get('shopware_media.media_service');
-        foreach ($images as $image) {
-            $path = 'media/image/' . $image['img'] . '.' . $image['extension'];
-            if ($mediaService->has($path)) {
-                $urlArray[] = $mediaService->getUrl($path);
-            }
-        }
-
-        $urlString = implode(' | ', $urlArray);
-        return $urlString;
-    }
-
-    /**
-     * @param $articleId
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @return mixed
-     */
-    private function getMasterSku($articleId)
-    {
-        $sql = 'SELECT ordernumber FROM s_articles_details WHERE articleID = ? AND kind = "1"';
-        $mainDetail = Shopware()->Db()->query($sql, [$articleId])->fetch();
-
-        return $mainDetail['ordernumber'];
     }
 
     /**
