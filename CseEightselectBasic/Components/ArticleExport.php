@@ -379,7 +379,7 @@ class ArticleExport
             }
         }
 
-        $urlString = implode('|', $urlArray);
+        $urlString = implode(' | ', $urlArray);
         return $urlString;
     }
 

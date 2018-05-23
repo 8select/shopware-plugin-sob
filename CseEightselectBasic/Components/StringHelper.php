@@ -9,9 +9,14 @@ class StringHelper
      */
     public static function formatString($string)
     {
+        if ($string === '') {
+            return $string;
+        }
+        $string = 'MERINO SOCKS "GAUGE"';
+
         $string = trim(preg_replace('/\s+/', ' ', $string));
         $string = str_replace('\\"', '"', $string);
         $string = str_replace('"', '\"', $string);
-        return '"' . trim($string, '"') . '"';
+        return '"' . $string . '"';
     }
 }
