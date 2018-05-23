@@ -107,7 +107,7 @@ class ArticleExport
         $config = Shopware()->Config();
         $feedId = $config->get('8s_feed_id');
         $feedType = 'product_feed';
-        $filename = $feedId . '_' . $feedType . '_' . time() . '.csv';
+        $filename = $feedId . '_' . $feedType . '_' . time() . '000.csv';
 
         if (!is_dir(self::STORAGE)) {
             mkdir(self::STORAGE, 775, true);
