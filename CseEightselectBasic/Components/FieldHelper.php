@@ -2,6 +2,7 @@
 namespace CseEightselectBasic\Components;
 
 use Shopware\Bundle\MediaBundle\MediaService;
+use Shopware\Models\Shop\Shop;
 
 class FieldHelper
 {
@@ -149,11 +150,17 @@ class FieldHelper
      */
     private static function getUrl($articleId)
     {
-        return Shopware()->Container()->get('router')->assemble([
-            'controller' => 'detail',
-            'action'     => 'index',
-            'sArticle'   => $articleId,
-        ]);
+        $baseUrl = self::getFallbackBaseUrl();
+
+        $router = Shopware()->Container()->get('router');
+        $assembleParams = array(
+            'module' => 'frontend',
+            'sViewport' => 'detail',
+            'sArticle' => $articleId
+        );
+
+        $link = $router->assemble($assembleParams);
+        return str_replace('http://localhost', $baseUrl, $link);
     }
 
     /**
@@ -210,5 +217,32 @@ class FieldHelper
         $config = Shopware()->Db()->query($sql)->fetchAll();
 
         return implode(' | ', array_column($config, 'name'));
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    private static function getFallbackBaseUrl()
+    {
+        $container = Shopware()->Container();
+
+        if ($container->has('Shop')) {
+            /** @var Shop $shop */
+            $shop = $container->get('Shop');
+        } else {
+            /** @var Shop $shop */
+            $shop = $container->get('models')->getRepository(Shop::class)->getActiveDefault();
+        }
+
+        if ($shop->getMain()) {
+            $shop = $shop->getMain();
+        }
+
+        if ($shop->getAlwaysSecure()) {
+            return 'https://' . $shop->getSecureHost() . $shop->getSecureBasePath();
+        } else {
+            return 'http://' . $shop->getHost() . $shop->getBasePath();
+        }
     }
 }
