@@ -19,7 +19,7 @@ class AWSUploader
             require_once __DIR__ . '/../vendor/autoload.php';
         }
 
-        $bucket = '8sdemo.1drop.de';
+        $bucket = 'productfeed.8select.io';
         $region = 'eu-central-1';
         $prefix = $feedId . '/' . $feedType . '/' . date('Y') . '/' . date('m') . '/' . date('d');
 
@@ -27,10 +27,7 @@ class AWSUploader
         $s3 = new S3Client([
             'version'     => '2006-03-01',
             'region'      => $region,
-            'credentials' => [
-                'key'    => 'AKIAIFCYKSLK3NQYSL5A',
-                'secret' => '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',
-            ],
+            'credentials' => false,
         ]);
 
         $key = $prefix . '/' . $filename;
@@ -40,7 +37,6 @@ class AWSUploader
                 'Bucket' => $bucket,
                 'Key'    => $key,
                 'Body'   => fopen($storage . $filename, 'r'),
-                'ACL'    => 'public-read',
             ]);
         } catch (\Aws\S3\Exception\S3Exception $e) {
             Shopware()->PluginLogger()->error($e->getAwsErrorMessage(), [$e->getAwsErrorCode(), $e->getAwsErrorType()]);
