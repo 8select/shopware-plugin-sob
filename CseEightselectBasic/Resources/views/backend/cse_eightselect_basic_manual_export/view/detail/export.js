@@ -11,7 +11,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     var me = this;
     var interval;
     var BTN_TEXT_ENABLED = "Produkt Voll-Export anstoßen";
-    var BTN_TEXT_DISABLED = "Produkt Voll-Export angestoßen";
+    var BTN_TEXT_DISABLED = "Produkt Voll-Export wird ausgeführt";
     var statusCheck = function() {
         Ext.Ajax.request({
             url:
