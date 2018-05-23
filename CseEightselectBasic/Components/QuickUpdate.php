@@ -86,7 +86,7 @@ class QuickUpdate
 
         foreach ($articles as $article) {
             $line = $this->getLine($article);
-            fputcsv($fp, $line, ';');
+            fputs($fp, implode(';', $line) . "\r\n");
         }
 
         fclose($fp);
@@ -102,10 +102,7 @@ class QuickUpdate
     }
 
     /**
-     * @param $article
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @throws \Exception
+     * @param  mixed $article
      * @return array
      */
     private function getLine($article)
@@ -116,16 +113,15 @@ class QuickUpdate
             switch ($field) {
                 case 'streich_preis':
                 case 'angebots_preis':
-                    $line[] = PriceHelper::getGrossPrice($article, $field);
+                    $value = PriceHelper::getGrossPrice($article, $field);
                     break;
                 default:
                     $value = $article[$field];
-                    if ($value) {
-                        $line[] = $value;
-                    } else {
-                        $line[] = '';
+                    if (!$value) {
+                        $value = '';
                     }
             }
+            $line[] = $value;
         }
 
         return $line;

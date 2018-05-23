@@ -167,7 +167,7 @@ class ArticleExport
 
             foreach ($articles as $article) {
                 $line = $this->getLine($article);
-                fputcsv($fp, $line, ';');
+                fputs($fp, implode(';', $line) . "\r\n");
             }
         }
     }
@@ -242,30 +242,31 @@ class ArticleExport
         foreach ($this->fields as $field) {
             switch ($field) {
                 case 'mastersku':
-                    $line[] = $this->getMasterSku($article['articleID']);
+                    $value = $this->getMasterSku($article['articleID']);
                     break;
                 case 'kategorie1':
-                    $line[] = !empty($categories[0]) ? $categories[0] : '';
+                    $value = !empty($categories[0]) ? $categories[0] : '';
                     break;
                 case 'kategorie2':
-                    $line[] = !empty($categories[1]) ? $categories[1] : '';
+                    $value = !empty($categories[1]) ? $categories[1] : '';
                     break;
                 case 'kategorie3':
-                    $line[] = !empty($categories[2]) ? $categories[2] : '';
+                    $value = !empty($categories[2]) ? $categories[2] : '';
                     break;
                 case 'streich_preis':
                 case 'angebots_preis':
-                    $line[] = PriceHelper::getGrossPrice($article, $field);
+                    $value = PriceHelper::getGrossPrice($article, $field);
                     break;
                 case 'produkt_url':
-                    $line[] = $this->getUrl($article['articleID']);
+                    $value = $this->getUrl($article['articleID']);
                     break;
                 case 'bilder':
-                    $line[] = $this->getImages($article['articleID']);
+                    $value = $this->getImages($article['articleID']);
                     break;
                 default:
-                    $line[] = $this->getValue($article, $field);
+                    $value = $this->getValue($article, $field);
             }
+            $line[] = StringHelper::formatString($value);
         }
 
         return $line;
