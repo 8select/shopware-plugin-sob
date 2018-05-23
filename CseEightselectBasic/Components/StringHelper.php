@@ -12,7 +12,6 @@ class StringHelper
         if ($string === '') {
             return $string;
         }
-        $string = 'MERINO SOCKS "GAUGE"';
 
         $string = trim(preg_replace('/\s+/', ' ', $string));
         $string = str_replace('\\"', '"', $string);
