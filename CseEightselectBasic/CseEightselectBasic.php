@@ -30,6 +30,7 @@ class CseEightselectBasic extends Plugin
             'Shopware_CronJob_CseEightselectBasicArticleExport'                             => 'cseEightselectBasicArticleExport',
             'Shopware_CronJob_CseEightselectBasicArticleExportOnce'                         => 'cseEightselectBasicArticleExportOnce',
             'Shopware_CronJob_CseEightselectBasicQuickUpdate'                               => 'cseEightselectBasicQuickUpdate',
+            'Shopware_Controllers_Backend_Config_After_Save_Config_Element'                 => 'onBackendConfigSave',
         ];
     }
 
@@ -819,5 +820,12 @@ class CseEightselectBasic extends Plugin
         $date->setTime(0, 0);
         $date->add(new \DateInterval('P1D'));
         return $date;
+    }
+
+    public function onBackendConfigSave()
+    {
+        /** @var $cacheManager \Shopware\Components\CacheManager */
+        $cacheManager = $this->container->get('shopware.cache_manager');
+        $cacheManager->clearConfigCache();
     }
 }
