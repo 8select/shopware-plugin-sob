@@ -8,6 +8,11 @@ class ArticleExport
      */
     const STORAGE = 'files/8select/';
 
+    /**
+     * @const string
+     */
+    const CRON_NAME = '8select Full Export';
+
     /** @var bool  */
     const DEBUG = false;
 
@@ -75,14 +80,16 @@ class ArticleExport
      */
     public function checkRunOnce()
     {
-        $sql = 'SELECT * from 8s_cron_run_once_queue WHERE running = 0';
-        $queue = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        $queueSql = 'SELECT * from 8s_cron_run_once_queue WHERE running = 0 AND cron_name = "' . self::CRON_NAME . '"';
+        $runningSql = 'SELECT * from 8s_cron_run_once_queue WHERE running = 1 AND cron_name = "' . self::CRON_NAME . '"';
+        $queue = Shopware()->Db()->query($queueSql)->fetchAll(\PDO::FETCH_ASSOC);
+        $running = Shopware()->Db()->query($runningSql)->fetchAll(\PDO::FETCH_ASSOC);
 
-        if (count($queue)) {
+        if (count($queue) && !count($running)) {
             $id = reset($queue)['id'];
             $sqls = [
                 'UPDATE 8s_cron_run_once_queue SET running = 1 WHERE id = ' . $id,
-                'DELETE from 8s_cron_run_once_queue WHERE running = 0',
+                'DELETE from 8s_cron_run_once_queue WHERE running = 0 AND cron_name = "' . self::CRON_NAME . '"',
             ];
             foreach ($sqls as $sql) {
                 Shopware()->Db()->query($sql);
@@ -93,14 +100,21 @@ class ArticleExport
     }
 
     /**
-     * @param  null                         $queuId
+     * @param  null                         $queueId
      * @throws \Doctrine\ORM\ORMException
      * @throws \Enlight_Exception
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    public function doCron($queuId = null)
+    public function doCron($queueId = null)
     {
+        if ($queueId == null) {
+            $connection = Shopware()->Container()->get('dbal_connection');
+            $connection->insert('8s_cron_run_once_queue', ['cron_name' => '8select Full Export']);
+            $this->checkRunOnce();
+            return;
+        }
+
         $start = time();
         $config = Shopware()->Config();
         $feedId = $config->get('8s_feed_id');
@@ -120,7 +134,7 @@ class ArticleExport
 
         fputcsv($fp, $header, ';');
 
-        $this->writeFile($fp, $queuId);
+        $this->writeFile($fp, $queueId);
 
         fclose($fp);
 
@@ -216,7 +230,7 @@ class ArticleExport
      */
     private function emptyQueueTable()
     {
-        $sql = 'DELETE FROM 8s_cron_run_once_queue';
+        $sql = 'DELETE FROM 8s_cron_run_once_queue WHERE cron_name = "' . self::CRON_NAME . '"';
         Shopware()->Db()->query($sql);
     }
 
