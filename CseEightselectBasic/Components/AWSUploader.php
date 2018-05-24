@@ -34,6 +34,7 @@ class AWSUploader
 
         try {
             $s3->putObject([
+                'ACL'    => 'bucket-owner-full-control',
                 'Bucket' => $bucket,
                 'Key'    => $key,
                 'Body'   => fopen($storage . $filename, 'r'),
