@@ -716,7 +716,7 @@ class CseEightselectBasic extends Plugin
                 'eightselectAttribute'           => 'beschreibung',
                 'eightselectAttributeLabel'      => 'Beschreibungstext (HTML)',
                 'eightselectAttributeLabelDescr' => 'z.B. "<p>Federleichte Regenhose! </ br> ...</p>"',
-                'shopwareAttribute'              => 's_articles.description',
+                'shopwareAttribute'              => 's_articles.description_long',
             ],
             [
                 'eightselectAttribute'           => 'beschreibung1',

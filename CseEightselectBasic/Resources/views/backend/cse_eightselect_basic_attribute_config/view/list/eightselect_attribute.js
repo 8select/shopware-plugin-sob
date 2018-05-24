@@ -11,7 +11,7 @@ Ext.define(
         addButton: false,
         deleteButton: false,
         rowEditing: true,
-        pagingbar: false,
+        pagingbar: true,
         columns: {
           eightselectAttributeLabel: {
             header: "8select Attribute",
