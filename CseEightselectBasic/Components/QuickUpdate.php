@@ -44,8 +44,9 @@ class QuickUpdate
 
             $config = Shopware()->Config();
             $feedId = $config->get('8s_feed_id');
-            $filename = $feedId . '_' . $feedType . '_' . time() . '000.csv';
             $feedType = 'status_feed';
+            $timestampInMillis = round(microtime(true) * 1000);
+            $filename = sprintf('%s_%s_%d.csv', $feedId, $feedType, $timestampInMillis);
 
             if (!is_dir(self::STORAGE)) {
                 mkdir(self::STORAGE, 775, true);
