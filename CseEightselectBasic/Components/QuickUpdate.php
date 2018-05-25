@@ -106,7 +106,8 @@ class QuickUpdate
                 s_articles.id as articleID,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
-                s_articles_details.active AS status,
+                s_articles_details.active AS active,
+                s_articles_details.instock AS instock,
                 s_articles_details.ordernumber as sku,
                 s_core_tax.tax AS tax
                 FROM s_articles_details
