@@ -1,16 +1,22 @@
 <?php
 namespace CseEightselectBasic\Components;
 
-use Shopware\Bundle\MediaBundle\MediaService;
-use Shopware\Models\Article\Article;
-use Shopware\Models\Article\Image;
-
 class ArticleExport
 {
     /**
      * @const string
      */
     const STORAGE = 'files/8select/';
+
+    /**
+     * @const string
+     */
+    const CRON_NAME = '8select Full Export';
+
+    /** @var bool  */
+    const DEBUG = false;
+
+    private $currentProgress = 0;
 
     /**
      * @var array
@@ -67,15 +73,54 @@ class ArticleExport
     ];
 
     /**
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Enlight_Exception
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    public function doCron()
+    public function checkRunOnce()
     {
+        $queueSql = 'SELECT * from 8s_cron_run_once_queue WHERE running = 0 AND cron_name = "' . self::CRON_NAME . '"';
+        $runningSql = 'SELECT * from 8s_cron_run_once_queue WHERE running = 1 AND cron_name = "' . self::CRON_NAME . '"';
+        $queue = Shopware()->Db()->query($queueSql)->fetchAll(\PDO::FETCH_ASSOC);
+        $running = Shopware()->Db()->query($runningSql)->fetchAll(\PDO::FETCH_ASSOC);
+
+        if (count($queue) && !count($running)) {
+            $id = reset($queue)['id'];
+            $sqls = [
+                'UPDATE 8s_cron_run_once_queue SET running = 1 WHERE id = ' . $id,
+                'DELETE from 8s_cron_run_once_queue WHERE running = 0 AND cron_name = "' . self::CRON_NAME . '"',
+            ];
+            foreach ($sqls as $sql) {
+                Shopware()->Db()->query($sql);
+            }
+            $this->doCron($id);
+            $this->emptyQueueTable();
+        }
+    }
+
+    /**
+     * @param  null                         $queueId
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Enlight_Exception
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    public function doCron($queueId = null)
+    {
+        if ($queueId == null) {
+            $connection = Shopware()->Container()->get('dbal_connection');
+            $connection->insert('8s_cron_run_once_queue', ['cron_name' => '8select Full Export']);
+            $this->checkRunOnce();
+            return;
+        }
+
+        $start = time();
         $config = Shopware()->Config();
         $feedId = $config->get('8s_feed_id');
         $feedType = 'product_feed';
-        $filename = $feedId . '_' . $feedType . '_' . time() . '.csv';
+        $timestampInMillis = round(microtime(true) * 1000);
+        $filename = sprintf('%s_%s_%d.csv', $feedId, $feedType, $timestampInMillis);
 
         if (!is_dir(self::STORAGE)) {
             mkdir(self::STORAGE, 775, true);
@@ -90,30 +135,52 @@ class ArticleExport
 
         fputcsv($fp, $header, ';');
 
-        $this->writeFile($fp);
+        $this->writeFile($fp, $queueId);
 
         fclose($fp);
 
         AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
+
+        if ($this::DEBUG) {
+            echo('Process completed in ' . (time() - $start) . "s\n");
+        }
     }
 
     /**
      * @param $fp
+     * @param $queueId
+     * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    protected function writeFile ($fp) {
-        $mappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping FROM 8s_attribute_mapping WHERE shopwareAttribute != "-"';
-        $mapping = Shopware()->Db()->query($mappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
-        $numArticles = $this->getNumArticles();
-        $batchSize = 20;
+    protected function writeFile($fp, $queueId)
+    {
+        $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping
+                         FROM 8s_attribute_mapping
+                         WHERE shopwareAttribute != "-"
+                         AND shopwareAttribute NOT LIKE "%id=%"';
 
-        for ($i = 0; $i < $numArticles; $i+=$batchSize ) {
-            $articles = $this->getArticles($mapping, $i, $batchSize);
+        $attributeMapping = Shopware()->Db()->query($attributeMappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
+
+        $numArticles = $this->getNumArticles();
+        $batchSize = 100;
+
+        for ($i = 0; $i < $numArticles; $i += $batchSize) {
+            $this->updateStatus($numArticles, $i, $queueId);
+
+            $articles = $this->getArticles($attributeMapping, $i, $batchSize);
+
+            if ($this::DEBUG) {
+                $top = $i + ($batchSize - 1);
+                if ($top > $numArticles) {
+                    $top = $numArticles;
+                }
+                echo('Processing articles ' . $i . ' to ' . $top . "\n");
+            }
 
             foreach ($articles as $article) {
-                $line = $this->getLine($article);
-                fputcsv($fp, $line, ';');
+                $line = FieldHelper::getLine($article, $this->fields);
+                fputs($fp, implode(';', $line) . "\r\n");
             }
         }
     }
@@ -121,9 +188,10 @@ class ArticleExport
     /**
      * @param $number
      * @param $from
-     * @return array
+     * @param  mixed                        $mapping
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @return array
      */
     protected function getArticles($mapping, $from, $number)
     {
@@ -133,6 +201,7 @@ class ArticleExport
                 s_articles_prices.pseudoprice AS streich_preis,
                 s_articles_details.active AS status,
                 s_articles_supplier.name as marke,
+                s_articles_details.ordernumber as sku,
                 s_core_tax.tax AS tax
                 FROM s_articles_details
                 INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
@@ -140,16 +209,16 @@ class ArticleExport
                 INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = \'1\'
                 INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
-                ORDER BY s_articles.id
                 LIMIT ' . $number . ' OFFSET ' . $from;
+        $attributes = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
-        return Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        return $attributes;
     }
 
     /**
-     * @return mixed
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @return mixed
      */
     protected function getNumArticles()
     {
@@ -158,137 +227,28 @@ class ArticleExport
     }
 
     /**
-     * @param $article
      * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @throws \Exception
-     * @return array
      */
-    private function getLine($article)
+    private function emptyQueueTable()
     {
-        $line = [];
-
-        /** @var array $categories */
-        $categories = $this->getCategories($article['articleID']);
-
-        foreach ($this->fields as $field) {
-            switch ($field) {
-                case 'kategorie1':
-                    $line[] = !empty($categories[0]) ? $categories[0] : '';
-                    break;
-                case 'kategorie2':
-                    $line[] = !empty($categories[1]) ? $categories[1] : '';
-                    break;
-                case 'kategorie3':
-                    $line[] = !empty($categories[2]) ? $categories[2] : '';
-                    break;
-                case 'streich_preis':
-                case 'angebots_preis':
-                    $line[] = PriceHelper::getGrossPrice($article, $field);
-                    break;
-                case 'produkt_url':
-                    $line[] = $this->getUrl($article['articleID']);
-                    break;
-                case 'bilder':
-                    $line[] = $this->getImages($article['articleID']);
-                    break;
-                default:
-                    $value = $article[$field];
-                    if ($value) {
-                        $line[] = $value;
-                    } else {
-                        $line[] = '';
-                    }
-            }
-        }
-
-        return $line;
+        $sql = 'DELETE FROM 8s_cron_run_once_queue WHERE cron_name = "' . self::CRON_NAME . '"';
+        Shopware()->Db()->query($sql);
     }
 
     /**
-     * @param $articleId
-     * @throws \Doctrine\ORM\ORMException
+     * @param $numArticles
+     * @param $currentArticle
+     * @param $queueId
      * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @return array
      */
-    private function getCategories($articleId)
+    private function updateStatus($numArticles, $currentArticle, $queueId)
     {
-        $categoryIDs = Shopware()->Db()->query('SELECT categoryID FROM s_articles_categories WHERE articleID = ?', [$articleId])->fetchAll();
-        $categoriesList = [];
-        foreach ($categoryIDs as $categorieID) {
-            $categoryPathResults = $this->getCategoriesByParent((int) $categorieID['categoryID']);
+        $progress = floor($currentArticle / $numArticles * 100);
 
-            $categoryNames = [];
-            foreach ($categoryPathResults as $categoryPathResult) {
-                $categoryNames[] = $categoryPathResult['name'];
-            }
-
-            $categoriesList[] = implode(' ', $categoryNames);
+        if ($queueId && $progress != $this->currentProgress) {
+            $sql = 'UPDATE 8s_cron_run_once_queue SET progress = ' . $progress . ' WHERE id = ' . $queueId;
+            Shopware()->Db()->query($sql);
+            $this->currentProgress = $progress;
         }
-
-        return $categoriesList;
-    }
-
-    /**
-     * @param $categoryId
-     * @throws \Doctrine\ORM\ORMException
-     * @return array
-     */
-    private function getCategoriesByParent($categoryId)
-    {
-        $pathCategories = Shopware()->Models()->getRepository('Shopware\Models\Category\Category')->getPathById($categoryId, ['id', 'name', 'parentId']);
-        $categories = [];
-
-        foreach ($pathCategories as $category) {
-            if ($category['parentId'] == 1) {
-                continue;
-            }
-
-            $categories[] = $category;
-        }
-
-        return $categories;
-    }
-
-    /**
-     * @param  int        $articleId
-     * @throws \Exception
-     * @return string
-     */
-    private function getUrl($articleId)
-    {
-        return Shopware()->Container()->get('router')->assemble([
-            'controller' => 'detail',
-            'action'     => 'index',
-            'sArticle'   => $articleId,
-        ]);
-    }
-
-    /**
-     * @param  int        $articleId
-     * @throws \Exception
-     * @return string
-     */
-    private function getImages($articleId)
-    {
-        /** @var \Shopware\Components\Model\ModelManager $em */
-        $em = Shopware()->Container()->get('models');
-        /** @var Article $article */
-        $article = $em->getRepository(Article::class)->find((int) $articleId);
-
-        /** @var MediaService $mediaService */
-        $mediaService = Shopware()->Container()->get('shopware_media.media_service');
-
-        $urlArray = [];
-        /** @var Image $image */
-        foreach ($article->getImages() as $image) {
-            if ($mediaService->has($image->getMedia()->getPath())) {
-                $urlArray[] = $mediaService->getUrl($image->getMedia()->getPath());
-            }
-        }
-
-        $urlString = implode('|', $urlArray);
-        return $urlString;
     }
 }

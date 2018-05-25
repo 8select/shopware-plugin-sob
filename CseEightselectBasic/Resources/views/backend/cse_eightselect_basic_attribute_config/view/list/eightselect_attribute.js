@@ -11,10 +11,16 @@ Ext.define(
         addButton: false,
         deleteButton: false,
         rowEditing: true,
-        pagingbar: false,
+        pagingbar: true,
         columns: {
-          eightselectAttribute: {
+          eightselectAttributeLabel: {
             header: "8select Attribute",
+            editor: {
+              editable: false
+            }
+          },
+          eightselectAttributeLabelDescr: {
+            header: "Description",
             editor: {
               editable: false
             }

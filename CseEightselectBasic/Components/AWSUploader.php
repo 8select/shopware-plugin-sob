@@ -6,10 +6,11 @@ use Aws\S3\S3Client;
 class AWSUploader
 {
     /**
-     * @param $filename
-     * @param mixed $storage
-     * @param mixed $feedId
-     * @param mixed $feedType
+     * @param  string             $filename
+     * @param  string             $storage
+     * @param  string             $feedId
+     * @param  string             $feedType
+     * @throws \Enlight_Exception
      */
     public static function upload($filename, $storage, $feedId, $feedType)
     {
@@ -33,6 +34,7 @@ class AWSUploader
 
         try {
             $s3->putObject([
+                'ACL'    => 'bucket-owner-full-control',
                 'Bucket' => $bucket,
                 'Key'    => $key,
                 'Body'   => fopen($storage . $filename, 'r'),

@@ -13,33 +13,33 @@
     {$smarty.block.parent}
     {if !$checkoutFinish}
         <script type="text/javascript">
-            if (typeof _eightselect_config === "undefined") {
-                var _eightselect_config = {};
+            if (typeof _8select_config === "undefined") {
+                var _8select_config = {};
             }
-            _eightselect_config.sys = _eightselect_config.sys || {};
-            _eightselect_config.sys.callback = function (error) {
+            _8select_config.sys = _8select_config.sys || {};
+            _8select_config.sys.callback = function (error) {
                 if (error) {
-                    eightselect_shopware.hideSys();
+                    _8select_plugin.hideSys();
                 } else {
-                    eightselect_shopware.showSys();
+                    _8select_plugin.showSys();
                 }
             }
         </script>
         <script async src="https://wgt.8select.io/{config name="8s_merchant_id"}/loader.js"></script>
 
         <script type="text/javascript">
-            if (typeof eightselect_shopware === "undefined") {
-                var eightselect_shopware = {};
+            if (typeof _8select_plugin === "undefined") {
+                var _8select_plugin = {};
             }
-            eightselect_shopware.addToCart = function (sku) {
+            _8select_plugin.addToCart = function (sku) {
                 document.getElementById('eightselect_cart_trigger_form_sku').value = sku;
                 document.getElementById('eightselect_cart_trigger_form_submit').click();
             };
 
-            eightselect_shopware.showSys = function () {
+            _8select_plugin.showSys = function () {
                 return;
             };
-            eightselect_shopware.hideSys = function () {
+            _8select_plugin.hideSys = function () {
                 return;
             };
         </script>
@@ -50,7 +50,7 @@
         {if {config name="8s_widget_placement"} == "widget_before"}
             <script type="text/javascript">
 
-                eightselect_shopware.hideSys = function () {
+                _8select_plugin.hideSys = function () {
                     var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
                     if (!navNodes || navNodes.length === 0) {
                         return;
@@ -69,7 +69,7 @@
                     contentNodes[0].style.display = "none";
                 };
 
-                eightselect_shopware.showSys = function () {
+                _8select_plugin.showSys = function () {
                     var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
                     if (!navNodes || navNodes.length === 0) {
                         return;
@@ -90,7 +90,7 @@
 
                 var domListener = function () {
                     window.removeEventListener('DOMContentLoaded', domListener);
-                    eightselect_shopware.hideSys();
+                    _8select_plugin.hideSys();
                 };
 
                 if (window.document.readyState !== 'loading') {
@@ -103,7 +103,7 @@
         {if {config name="8s_widget_placement"} == "widget_after"}
             <script type="text/javascript">
 
-                eightselect_shopware.hideSys = function () {
+                _8select_plugin.hideSys = function () {
                     var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
                     if (!navNodes || navNodes.length === 0) {
                         return;
@@ -126,7 +126,7 @@
                     contentNodes[contentPosition].style.display = "none";
                 };
 
-                eightselect_shopware.showSys = function () {
+                _8select_plugin.showSys = function () {
                     var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
                     if (!navNodes || navNodes.length === 0) {
                         return;

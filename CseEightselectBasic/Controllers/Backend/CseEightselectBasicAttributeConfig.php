@@ -27,7 +27,6 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
             ['column_name' => 's_articles.description_long', 'label' => 'Description long'],
             ['column_name' => 's_articles.keywords', 'label' => 'Keywords'],
             // details attributes
-            ['column_name' => 's_articles_details.ordernumber', 'label' => 'Ordernumber'],
             ['column_name' => 'additionaltext', 'label' => 'Additional text'],
             ['column_name' => 'weight', 'label' => 'Weight'],
             ['column_name' => 'width', 'label' => 'Width'],
@@ -36,12 +35,17 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
             ['column_name' => 'ean', 'label' => 'EAN'],
         ];
 
-        $attributeData = Shopware()->Db()->query('SELECT `column_name`, label FROM s_attribute_configuration WHERE table_name = "s_articles_attributes"')->fetchAll();
-        foreach ($attributeData as &$attributeDatum) {
+        $attributeData1 = Shopware()->Db()->query('SELECT `column_name`, label FROM s_attribute_configuration WHERE table_name = "s_articles_attributes"')->fetchAll();
+        foreach ($attributeData1 as &$attributeDatum) {
             $attributeDatum['column_name'] = 's_articles_attributes.' . $attributeDatum['column_name'];
         }
 
-        $attributesComplete = array_merge($fixedAttributes, $attributeData);
+        $attributeData2 = Shopware()->Db()->query('SELECT `id` as `column_name`, `name` as `label` FROM s_filter_options')->fetchAll();
+        foreach ($attributeData2 as &$attributeDatum) {
+            $attributeDatum['column_name'] = 's_filter_options.id=' . $attributeDatum['column_name'];
+        }
+
+        $attributesComplete = array_merge($fixedAttributes, $attributeData1, $attributeData2);
         return [
             'success' => true,
             'data'    => $attributesComplete,
