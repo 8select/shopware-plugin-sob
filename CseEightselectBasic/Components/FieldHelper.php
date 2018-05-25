@@ -82,18 +82,21 @@ class FieldHelper
         if ($value) {
             return $value;
         }
-        $query = 'SELECT shopwareAttribute as groupId
-                      FROM 8s_attribute_mapping
-                      WHERE shopwareAttribute LIKE "%id=%"
-                      AND eightselectAttribute = "' . $field . '"';
-        $config = Shopware()->Db()->query($query)->fetchColumn();
 
-        if ($config) {
-            $groupId = explode('id=', $config)[1];
-            if ($groupId) {
-                return self::getConfig($article['articleID'], $groupId);
-            }
+        $configGroup = self::getGroupOrFilterAttribute('group', $field);
+
+        if ($configGroup) {
+            $groupId = explode('id=', $configGroup)[1];
+            return self::getConfiguratorGroupValue($article['detailID'], $groupId);
         }
+
+        $filterGroup = self::getGroupOrFilterAttribute('filter', $field);
+
+        if ($filterGroup) {
+            $filterId = explode('id=', $filterGroup)[1];
+            return self::getFilterValues($article['articleID'], $filterId);
+        }
+
         return '';
     }
 
@@ -201,22 +204,56 @@ class FieldHelper
     }
 
     /**
+     * @param $type
+     * @param $field
+     * @return string
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    private static function getGroupOrFilterAttribute($type, $field) {
+        $query = 'SELECT shopwareAttribute as groupId
+                      FROM 8s_attribute_mapping
+                      WHERE shopwareAttribute LIKE "%' . $type . '%"
+                      AND eightselectAttribute = "' . $field . '"';
+
+        return Shopware()->Db()->query($query)->fetchColumn();
+    }
+
+    /**
      * @param $articleId
      * @param $groupId
      * @return string
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    private static function getConfig($articleId, $groupId)
+    private static function getConfiguratorGroupValue($detailId, $groupId)
+    {
+        $sql = 'SELECT s_article_configurator_options.name as name
+                FROM s_article_configurator_options
+                INNER JOIN s_article_configurator_option_relations on s_article_configurator_option_relations.option_id = s_article_configurator_options.id
+                WHERE s_article_configurator_option_relations.article_id = ' . $detailId . '
+                AND s_article_configurator_options.group_id = ' . $groupId;
+
+        return Shopware()->Db()->query($sql)->fetchColumn();
+    }
+
+    /**
+     * @param $articleId
+     * @param $filterId
+     * @return string
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    private static function getFilterValues($articleId, $filterId)
     {
         $sql = 'SELECT s_filter_values.value as name
                 FROM s_filter_values
                 INNER JOIN s_filter_articles on s_filter_articles.valueID = s_filter_values.id
                 WHERE s_filter_articles.articleID = ' . $articleId . '
-                AND s_filter_values.optionID = ' . $groupId;
-        $config = Shopware()->Db()->query($sql)->fetchAll();
+                AND s_filter_values.optionID = ' . $filterId;
+        $value = Shopware()->Db()->query($sql)->fetchAll();
 
-        return implode(' | ', array_column($config, 'name'));
+        return implode(' | ', array_column($value, 'name'));
     }
 
     /**
