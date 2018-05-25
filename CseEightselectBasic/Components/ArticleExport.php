@@ -119,7 +119,8 @@ class ArticleExport
         $config = Shopware()->Config();
         $feedId = $config->get('8s_feed_id');
         $feedType = 'product_feed';
-        $filename = $feedId . '_' . $feedType . '_' . time() . '000.csv';
+        $timestampInMillis = round(microtime(true) * 1000);
+        $filename = sprintf('%s_%s_%d.csv', $feedId, $feedType, $timestampInMillis);
 
         if (!is_dir(self::STORAGE)) {
             mkdir(self::STORAGE, 775, true);
@@ -154,8 +155,8 @@ class ArticleExport
      */
     protected function writeFile($fp, $queueId)
     {
-        $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping 
-                         FROM 8s_attribute_mapping 
+        $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping
+                         FROM 8s_attribute_mapping
                          WHERE shopwareAttribute != "-"
                          AND shopwareAttribute NOT LIKE "%id=%"';
 
