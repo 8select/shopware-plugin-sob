@@ -41,6 +41,13 @@ class EightselectAttribute extends ModelEntity
     private $eightselectAttributeLabelDescr;
 
     /**
+     * @var string $eightselectAttributeGroupName
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $eightselectAttributeGroupName;
+
+    /**
      * @var string $shopwareAttribute
      *
      * @ORM\Column(type="text", nullable=true)
@@ -77,6 +84,14 @@ class EightselectAttribute extends ModelEntity
     public function getEightselectAttributeLabelDescr()
     {
         return $this->eightselectAttributeLabelDescr;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEightselectAttributeGroupName()
+    {
+        return $this->eightselectAttributeGroupName;
     }
 
     /**
