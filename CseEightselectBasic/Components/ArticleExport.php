@@ -186,9 +186,9 @@ class ArticleExport
     }
 
     /**
-     * @param $number
-     * @param $from
-     * @param  mixed                        $mapping
+     * @param string $mapping
+     * @param int $number
+     * @param int $from
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      * @return array
@@ -197,6 +197,7 @@ class ArticleExport
     {
         $sql = 'SELECT ' . $mapping . ',
                 s_articles.id as articleID,
+                s_articles.laststock AS laststock,
                 s_articles_details.id as detailID,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
@@ -212,9 +213,9 @@ class ArticleExport
                 INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
                 LIMIT ' . $number . ' OFFSET ' . $from;
-        $attributes = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        $articles = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
-        return $attributes;
+        return $articles;
     }
 
     /**
