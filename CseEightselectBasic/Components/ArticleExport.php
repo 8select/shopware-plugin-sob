@@ -197,6 +197,7 @@ class ArticleExport
     {
         $sql = 'SELECT ' . $mapping . ',
                 s_articles.id as articleID,
+                s_articles_details.id as detailID,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
                 s_articles_details.active AS status,
