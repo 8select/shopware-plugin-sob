@@ -17,6 +17,10 @@
     </description>
     <compatibility minVersion="5.2.11" />
 
+    <changelog version="1.0.1">
+        <changes lang="de">Bugfixes am Produktexport;</changes>
+        <changes lang="en">Bugfixes regarding productexport;</changes>
+    </changelog>
     <changelog version="1.0.0">
         <changes lang="de">Erstveröffentlichung;</changes>
         <changes lang="en">First release;</changes>
