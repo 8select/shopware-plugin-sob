@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../../engine/Shopware/Components/Plugin/schema/config.xsd">
+    <elements>
+        <element type="boolean" required="true" scope="shop">
+            <name>8s_enabled</name>
+            <label lang="de">Aktiviert</label>
+            <label lang="en">Enabled</label>
+            <value>true</value>
+        </element>
+        <!-- MERCHANT ID -->
+        <element type="text" required="true" scope="shop">
+            <name>8s_merchant_id</name>
+            <label lang="de">API ID:</label>
+            <label lang="en">API ID:</label>
+            <description lang="de">Ihre API ID erhalten Sie von 8select</description>
+            <description lang="en">Your API ID is provided by 8select</description>
+        </element>
+        <!-- FEED ID -->
+        <element type="text" required="true" scope="shop">
+            <name>8s_feed_id</name>
+            <label lang="de">Feed ID:</label>
+            <label lang="en">Feed ID:</label>
+            <description lang="de">Ihre Feed ID erhalten Sie von 8select</description>
+            <description lang="en">Your Feed ID is provided by 8select</description>
+        </element>
+        <!-- SELECTED DETAIL BLOCK -->
+        <element type="select" required="true" scope="shop">
+            <name>8s_selected_detail_block</name>
+            <label lang="de">Position an der das SYS-Widget platziert wird:</label>
+            <label lang="en">Position where SYS-widget will be placed:</label>
+            <description lang="de">Geben Sie an, in welchem Block bzw. an welcher Stelle der Produktdetailseite das SYS-Widget platziert werden soll.</description>
+            <description lang="en">Select a block of the product detail page in which the SYS widget will be placed.</description>
+            <store>
+                <option>
+                    <value>frontend_detail_index_header</value>
+                    <label lang="de">Produkttitel</label>
+                    <label lang="en">Product title</label>
+                </option>
+                <option>
+                    <value>frontend_detail_index_detail</value>
+                    <label lang="de">Produktbeschreibung / Bewertungen</label>
+                    <label lang="en">Product description / Reviews</label>
+                </option>
+                <option>
+                    <value>frontend_detail_index_tabs_cross_selling</value>
+                    <label lang="de">Cross selling</label>
+                    <label lang="en">Cross selling</label>
+                </option>
+                <option>
+                    <value>frontend_detail_tabs</value>
+                    <label lang="de">Produkttabs</label>
+                    <label lang="en">Product tabs</label>
+                </option>
+                <option>
+                    <value>none</value>
+                    <label lang="de">Nicht automatisch einfügen</label>
+                    <label lang="en">Do not insert automatically</label>
+                </option>
+            </store>
+        </element>
+        <!-- WIDGET PLACEMENT-->
+        <element type="select" required="true" scope="shop">
+            <name>8s_widget_placement</name>
+            <label lang="de">Widget am Block-Anfang oder -Ende einfügen:</label>
+            <label lang="en">Attach widget to the block start or end:</label>
+            <description lang="de">Geben Sie an, ob das Widget am Anfang oder am Ende des ausgewählten Blocks positioniert werden soll.</description>
+            <description lang="en">Choose if the widget should be placed at the start or the end of the selected block.</description>
+            <store>
+                <option>
+                    <value>widget_before</value>
+                    <label lang="de">Anfang</label>
+                    <label lang="en">start</label>
+                </option>
+                <option>
+                    <value>widget_after</value>
+                    <label lang="de">Ende</label>
+                    <label lang="en">end</label>
+                </option>
+            </store>
+        </element>
+        <!-- CUSTOM CSS -->
+        <element type="textarea" required="false" scope="shop">
+            <name>8s_custom_css</name>
+            <label lang="de">Eigenes CSS:</label>
+            <label lang="en">Custom CSS:</label>
+        </element>
+        <!-- CONTAINER ELEMENT -->
+        <element type="textarea" required="true" scope="shop">
+            <name>8s_html_container_element</name>
+            <label lang="de">HTML container, CSE_SYS wird durch das SYS-Widget ersetzt:</label>
+            <label lang="en">HTML container CSE_SYS will be replaced by the SYS widget:</label>
+            <value>CSE_SYS</value>
+        </element>
+        <!-- SYS-ACC WIDGET -->
+        <element type="boolean" required="true" scope="shop">
+            <name>8s_sys_acc_enabled</name>
+            <label lang="de">Zeige SYS-ACC Widget</label>
+            <label lang="en">Display SYS-ACC Widget</label>
+            <value>false</value>
+        </element>
+        <!-- PREVIEW-MODE -->
+        <element type="boolean" scope="shop">
+            <name>8s_preview_mode_enabled</name>
+            <label lang="de">Vorschau-Modus an</label>
+            <label lang="en">Enable Preview-Mode</label>
+            <description lang="de">Bei aktivem Preview-Modus können Sie über einen zusätzlichen Parameter "?preview=1" an der Shop-Adresse zu Ihrer Produktansicht aktive 8select Widgets testen. Beispiel: http://meinshop.de/fashion/145/mein-produkt?preview=1. Um das Modul SYS-ACC auch in der Preview zu sehen, müssen Sie es in den Plugin-Einstellungen aktivieren.</description>
+            <description lang="en">When the preview-mode is active, you can test the widgets by adding the parameter "?preview=1" to the URL. Example: http://meinshop.de/fashion/145/mein-produkt?preview=1. To also preview the SYS-ACC module, you need to activate it in the plugin-config.
+            </description>
+        </element>
+    </elements>
+</config>

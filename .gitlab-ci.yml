@@ -1,0 +1,23 @@
+
+stages:
+  - test
+  - build
+
+php_codestyle:
+  stage: test
+  image: 1drop/php-70-docker-utils
+  script:
+  - php-cs-fixer fix -v --dry-run --using-cache=no
+
+build:
+  stage: build
+  image: 1drop/php-70-docker-utils
+  script:
+  - composer install -ao --no-interaction --no-progress -d CseEightselectBasic
+  - sed -i 's@__VERSION__@'"$CI_COMMIT_TAG"'@' CseEightselectBasic/plugin.xml
+  artifacts:
+    name: "CseEightselectBasic-v$CI_COMMIT_TAG"
+    paths:
+    - CseEightselectBasic
+  only:
+  - tags
