@@ -44,6 +44,9 @@ class FieldHelper
                 case 'bilder':
                     $value = self::getImages($article['articleID']);
                     break;
+                case 'status':
+                    $value = self::getStatus($article['active'], $article['instock'], $article['laststock']);
+                    break;
                 default:
                     $value = self::getValue($article, $field);
             }
@@ -201,6 +204,14 @@ class FieldHelper
         $mainDetail = Shopware()->Db()->query($sql, [$articleId])->fetch();
 
         return $mainDetail['ordernumber'];
+    }
+
+    private static function getStatus($active, $instock, $laststock) {
+        if ($active && (!$laststock || $instock > 0)) {
+            return '1';
+        }
+
+        return '0';
     }
 
     /**
