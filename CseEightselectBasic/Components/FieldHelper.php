@@ -69,6 +69,7 @@ class FieldHelper
         $string = trim(preg_replace('/\s+/', ' ', $string));
         $string = str_replace('\\"', '"', $string);
         $string = str_replace('"', '\"', $string);
+
         return '"' . $string . '"';
     }
 
@@ -90,6 +91,7 @@ class FieldHelper
 
         if ($configGroup) {
             $groupId = explode('id=', $configGroup)[1];
+
             return self::getConfiguratorGroupValue($article['detailID'], $groupId);
         }
 
@@ -97,6 +99,7 @@ class FieldHelper
 
         if ($filterGroup) {
             $filterId = explode('id=', $filterGroup)[1];
+
             return self::getFilterValues($article['articleID'], $filterId);
         }
 
@@ -115,7 +118,7 @@ class FieldHelper
         $categoryIDs = Shopware()->Db()->query('SELECT categoryID FROM s_articles_categories WHERE articleID = ?', [$articleId])->fetchAll();
         $categoriesList = [];
         foreach ($categoryIDs as $categorieID) {
-            $categoryPathResults = self::getCategoriesByParent((int) $categorieID['categoryID']);
+            $categoryPathResults = self::getCategoriesByParent((int)$categorieID['categoryID']);
 
             $categoryNames = [];
             foreach ($categoryPathResults as $categoryPathResult) {
@@ -135,7 +138,11 @@ class FieldHelper
      */
     private static function getCategoriesByParent($categoryId)
     {
-        $pathCategories = Shopware()->Models()->getRepository('Shopware\Models\Category\Category')->getPathById($categoryId, ['id', 'name', 'parentId']);
+        $pathCategories = Shopware()->Models()->getRepository('Shopware\Models\Category\Category')->getPathById($categoryId, [
+            'id',
+            'name',
+            'parentId'
+        ]);
         $categories = [];
 
         foreach ($pathCategories as $category) {
@@ -150,7 +157,7 @@ class FieldHelper
     }
 
     /**
-     * @param  int        $articleId
+     * @param  int $articleId
      * @throws \Exception
      * @return string
      */
@@ -159,18 +166,19 @@ class FieldHelper
         $baseUrl = self::getFallbackBaseUrl();
 
         $router = Shopware()->Container()->get('router');
-        $assembleParams = array(
+        $assembleParams = [
             'module' => 'frontend',
             'sViewport' => 'detail',
             'sArticle' => $articleId
-        );
+        ];
 
         $link = $router->assemble($assembleParams);
+
         return str_replace('http://localhost', $baseUrl, $link);
     }
 
     /**
-     * @param  int        $articleId
+     * @param  int $articleId
      * @throws \Exception
      * @return string
      */
@@ -189,6 +197,7 @@ class FieldHelper
         }
 
         $urlString = implode(' | ', $urlArray);
+
         return $urlString;
     }
 
@@ -206,7 +215,8 @@ class FieldHelper
         return $mainDetail['ordernumber'];
     }
 
-    private static function getStatus($active, $instock, $laststock) {
+    private static function getStatus($active, $instock, $laststock)
+    {
         if ($active && (!$laststock || $instock > 0)) {
             return '1';
         }
@@ -221,7 +231,8 @@ class FieldHelper
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    private static function getGroupOrFilterAttribute($type, $field) {
+    private static function getGroupOrFilterAttribute($type, $field)
+    {
         $query = 'SELECT shopwareAttribute as groupId
                       FROM 8s_attribute_mapping
                       WHERE shopwareAttribute LIKE "%' . $type . '%"

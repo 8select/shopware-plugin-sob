@@ -27,7 +27,7 @@ class QuickUpdate
     /**
      * @var int
      */
-    private $queueId = Null;
+    private $queueId = null;
 
     /**
      * @var int
@@ -118,6 +118,7 @@ class QuickUpdate
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
                 LIMIT ' . $number . ' OFFSET ' . $from;
         $attributes = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+
         return $attributes;
     }
 
@@ -129,9 +130,9 @@ class QuickUpdate
     protected function getNumArticles()
     {
         $sql = 'SELECT DISTINCT s_articles_details_id FROM 8s_articles_details_change_queue';
+
         return Shopware()->Db()->query($sql)->rowCount();
     }
-
 
     /**
      * @param $numArticles

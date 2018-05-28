@@ -1,8 +1,8 @@
 <?php
 namespace CseEightselectBasic\Models;
 
-use Shopware\Components\Model\ModelEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Shopware\Components\Model\ModelEntity;
 
 /**
  * @ORM\Entity
@@ -12,7 +12,6 @@ class EightselectAttribute extends ModelEntity
 {
     /**
      * @var int $id
-     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -21,28 +20,24 @@ class EightselectAttribute extends ModelEntity
 
     /**
      * @var string $eightselectAttribute
-     *
      * @ORM\Column(type="text", nullable=false)
      */
     private $eightselectAttribute;
 
     /**
      * @var string $eightselectAttributeLabel
-     *
      * @ORM\Column(type="text", nullable=false)
      */
     private $eightselectAttributeLabel;
 
     /**
      * @var string $eightselectAttributeLabelDescr
-     *
      * @ORM\Column(type="text", nullable=false)
      */
     private $eightselectAttributeLabelDescr;
 
     /**
      * @var string $shopwareAttribute
-     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $shopwareAttribute;

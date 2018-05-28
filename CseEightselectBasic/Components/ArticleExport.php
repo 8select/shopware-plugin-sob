@@ -13,7 +13,7 @@ class ArticleExport
      */
     const CRON_NAME = '8select Full Export';
 
-    /** @var bool  */
+    /** @var bool */
     const DEBUG = false;
 
     private $currentProgress = 0;
@@ -100,7 +100,7 @@ class ArticleExport
     }
 
     /**
-     * @param  null                         $queueId
+     * @param  null $queueId
      * @throws \Doctrine\ORM\ORMException
      * @throws \Enlight_Exception
      * @throws \Zend_Db_Adapter_Exception
@@ -112,6 +112,7 @@ class ArticleExport
             $connection = Shopware()->Container()->get('dbal_connection');
             $connection->insert('8s_cron_run_once_queue', ['cron_name' => '8select Full Export']);
             $this->checkRunOnce();
+
             return;
         }
 
@@ -226,6 +227,7 @@ class ArticleExport
     protected function getNumArticles()
     {
         $sql = 'SELECT id FROM s_articles_details';
+
         return Shopware()->Db()->query($sql)->rowCount();
     }
 

@@ -53,6 +53,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
         }
 
         $attributesComplete = array_merge($fixedAttributes, $attributeData1, $attributeData2, $attributeData3);
+
         return [
             'success' => true,
             'data'    => $attributesComplete,

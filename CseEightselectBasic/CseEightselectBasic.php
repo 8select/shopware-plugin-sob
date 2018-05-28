@@ -1,9 +1,12 @@
 <?php
 namespace CseEightselectBasic;
 
-use Shopware\Components\Emotion\ComponentInstaller;
-use Shopware\Components\Plugin;
+use CseEightselectBasic\Models\EightselectAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Tools\SchemaTool;
+use Shopware\Components\Emotion\ComponentInstaller;
+use Shopware\Components\Model\ModelManager;
+use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\ActivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
@@ -21,17 +24,17 @@ class CseEightselectBasic extends Plugin
     public static function getSubscribedEvents()
     {
         return [
-            'Enlight_Controller_Action_PreDispatch'                                         => 'onPreDispatch',
-            'Theme_Compiler_Collect_Plugin_Javascript'                                      => 'addJsFiles',
-            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_CseEightselectBasic'     => 'onGetFrontendCseEightselectBasicController',
-            'Enlight_Controller_Dispatcher_ControllerPath_Backend_CseEightselectBasic'      => 'onGetBackendCseEightselectBasicController',
-            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'                  => 'onPostDispatchBackendEmotion',
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend'                         => 'onFrontendPostDispatch',
-            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'                      => 'onCheckoutConfirm',
-            'Shopware_CronJob_CseEightselectBasicArticleExport'                             => 'cseEightselectBasicArticleExport',
-            'Shopware_CronJob_CseEightselectBasicArticleExportOnce'                         => 'cseEightselectBasicArticleExportOnce',
-            'Shopware_CronJob_CseEightselectBasicQuickUpdate'                               => 'cseEightselectBasicQuickUpdate',
-            'Shopware_Controllers_Backend_Config_After_Save_Config_Element'                 => 'onBackendConfigSave',
+            'Enlight_Controller_Action_PreDispatch'                                     => 'onPreDispatch',
+            'Theme_Compiler_Collect_Plugin_Javascript'                                  => 'addJsFiles',
+            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_CseEightselectBasic' => 'onGetFrontendCseEightselectBasicController',
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_CseEightselectBasic'  => 'onGetBackendCseEightselectBasicController',
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'              => 'onPostDispatchBackendEmotion',
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend'                     => 'onFrontendPostDispatch',
+            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'                  => 'onCheckoutConfirm',
+            'Shopware_CronJob_CseEightselectBasicArticleExport'                         => 'cseEightselectBasicArticleExport',
+            'Shopware_CronJob_CseEightselectBasicArticleExportOnce'                     => 'cseEightselectBasicArticleExportOnce',
+            'Shopware_CronJob_CseEightselectBasicQuickUpdate'                           => 'cseEightselectBasicQuickUpdate',
+            'Shopware_Controllers_Backend_Config_After_Save_Config_Element'             => 'onBackendConfigSave',
         ];
     }
 
@@ -250,7 +253,7 @@ class CseEightselectBasic extends Plugin
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
                                 befindet.',
-                'allowBlank' => true,
+                'allowBlank'   => true,
             ]
         );
 
@@ -282,7 +285,7 @@ class CseEightselectBasic extends Plugin
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
                                 befindet.',
-                'allowBlank' => true,
+                'allowBlank'   => true,
             ]
         );
 
@@ -314,7 +317,7 @@ class CseEightselectBasic extends Plugin
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
                                 befindet.',
-                'allowBlank' => true,
+                'allowBlank'   => true,
             ]
         );
     }
@@ -806,6 +809,7 @@ class CseEightselectBasic extends Plugin
         $date = new \DateTime();
         $date->setTime(0, 0);
         $date->add(new \DateInterval('P1D'));
+
         return $date;
     }
 

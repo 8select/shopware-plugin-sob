@@ -2,6 +2,7 @@
 
 /**
  * Class Shopware_Controllers_Frontend_CseEightselectBasic
+ *
  * @category    Shopware
  * @package     Shopware_Plugins
  * @subpackage  CseEightselectBasic
