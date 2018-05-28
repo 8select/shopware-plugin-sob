@@ -122,10 +122,6 @@ class ArticleExport
         $timestampInMillis = round(microtime(true) * 1000);
         $filename = sprintf('%s_%s_%d.csv', $feedId, $feedType, $timestampInMillis);
 
-        if (!is_dir(self::STORAGE)) {
-            mkdir(self::STORAGE, 775, true);
-        }
-
         $fp = fopen(self::STORAGE . $filename, 'a');
 
         $header = [];

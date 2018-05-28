@@ -10,6 +10,7 @@ use Shopware\Components\Plugin\Context\UninstallContext;
 use Shopware\Components\Model\ModelManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use CseEightselectBasic\Models\EightselectAttribute;
+use CseEightselectBasic\Components\ArticleExport;
 use Shopware\Components\Plugin\Context\UpdateContext;
 
 class CseEightselectBasic extends Plugin
@@ -179,6 +180,7 @@ class CseEightselectBasic extends Plugin
         $this->addUpdateCron();
         $this->installWidgets();
         $this->createDatabase();
+        $this->createExportDir();
         parent::install($context);
     }
 
@@ -198,17 +200,18 @@ class CseEightselectBasic extends Plugin
         parent::update($context);
 
         switch ($context->getCurrentVersion()) {
-            case '1.0.0':
-                $this->update_110();
+            case '1.0.2':
+                $this->update_1_0_2();
         }
     }
 
     /**
-     * Update to Version 1.1.0
+     * Update to Version 1.0.2
      */
-    private function update_110()
+    private function update_1_0_2()
     {
-        $this->createDatabase();
+        $this->deleteExportDir();
+        $this->createExportDir();
     }
 
     /**
@@ -325,6 +328,7 @@ class CseEightselectBasic extends Plugin
         $this->removeExportOnceCron();
         $this->removeUpdateCron();
         $this->removeDatabase();
+        $this->deleteExportDir();
         parent::uninstall($context);
     }
 
@@ -827,5 +831,33 @@ class CseEightselectBasic extends Plugin
         /** @var $cacheManager \Shopware\Components\CacheManager */
         $cacheManager = $this->container->get('shopware.cache_manager');
         $cacheManager->clearConfigCache();
+    }
+
+    private function createExportDir() {
+        if (!is_dir(ArticleExport::STORAGE)) {
+            mkdir(ArticleExport::STORAGE, 0775, true);
+        }
+    }
+
+    private function deleteExportDir() {
+        $this->rrmdir(ArticleExport::STORAGE);
+    }
+
+    private function rrmdir($dir) {
+        if (is_dir($dir)) {
+          $objects = scandir($dir);
+          foreach ($objects as $object) {
+            if ($object === '.' || $object === '..') {
+                continue;
+            }
+
+            if (is_dir($object)) {
+                rrmdir($dir);
+            } else {
+                unlink(sprintf('%s/%s', $dir, $object));
+            }
+          }
+          rmdir($dir);
+        }
     }
 }
