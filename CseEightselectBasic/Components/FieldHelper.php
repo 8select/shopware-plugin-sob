@@ -8,10 +8,11 @@ class FieldHelper
 {
     /**
      * @param $article
+     * @param $fields
+     * @return array
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
-     * @return array
      */
     public static function getLine($article, $fields)
     {
@@ -67,28 +68,10 @@ class FieldHelper
                 default:
                     $value = self::getValue($article, $field);
             }
-            $line[] = self::formatString($value);
+            $line[] = $value;
         }
 
         return $line;
-    }
-
-    /**
-     * @param $string
-     * @return mixed|string
-     */
-    private static function formatString($string)
-    {
-        if ($string === '') {
-            return $string;
-        }
-
-        $string = trim(preg_replace('/\s+/', ' ', $string));
-        $string = str_replace('\\"', '"', $string);
-        $string = str_replace('"', '\"', $string);
-        $string = str_replace(';', '\;', $string);
-
-        return '"' . $string . '"';
     }
 
     /**
@@ -266,7 +249,6 @@ class FieldHelper
     /**
      * @param int $articleId
      * @return array
-     *
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */

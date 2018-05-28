@@ -1,6 +1,8 @@
 <?php
 namespace CseEightselectBasic\Components;
 
+use League\Csv\Writer;
+
 class ArticleExport
 {
     const STORAGE = 'files/8select/';
@@ -98,6 +100,7 @@ class ArticleExport
      * @throws \Enlight_Exception
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @throws \League\Csv\Exception
      */
     public function doCron($queueId = null)
     {
@@ -120,18 +123,18 @@ class ArticleExport
             mkdir(self::STORAGE, 0775, true);
         }
 
-        $fp = fopen(self::STORAGE . $filename, 'a');
-
-        $header = [];
-        foreach ($this->fields as $field) {
-            $header[] = $field;
+        if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+            require_once __DIR__ . '/../vendor/autoload.php';
         }
 
-        fputcsv($fp, $header, ';');
+        $csvWriter = Writer::createFromPath(self::STORAGE . $filename, 'a');
+        $csvWriter->setDelimiter(';');
+        $csvWriter->setNewline("\r\n");
 
-        $this->writeFile($fp, $queueId);
+        // insert header
+        $csvWriter->insertOne($this->fields);
 
-        fclose($fp);
+        $this->writeFile($csvWriter, $queueId);
 
         AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
 
@@ -141,13 +144,14 @@ class ArticleExport
     }
 
     /**
-     * @param $fp
+     * @param Writer $csvWriter
      * @param $queueId
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @throws \League\Csv\CannotInsertRecord
      */
-    protected function writeFile($fp, $queueId)
+    protected function writeFile(Writer $csvWriter, $queueId)
     {
         $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping
                          FROM 8s_attribute_mapping
@@ -174,7 +178,7 @@ class ArticleExport
 
             foreach ($articles as $article) {
                 $line = FieldHelper::getLine($article, $this->fields);
-                fputs($fp, implode(';', $line) . "\r\n");
+                $csvWriter->insertOne($line);
             }
         }
     }

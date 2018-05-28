@@ -8,6 +8,12 @@
   },
   "require": {
     "php": "^7.0",
-    "aws/aws-sdk-php": "^3.54.0"
+    "aws/aws-sdk-php": "^3.54.0",
+    "league/csv": "^9.1"
+  },
+  "config": {
+    "platform": {
+      "php": "7.0"
+    }
   }
 }

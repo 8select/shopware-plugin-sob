@@ -1,6 +1,8 @@
 <?php
 namespace CseEightselectBasic\Components;
 
+use League\Csv\Writer;
+
 class QuickUpdate
 {
     /**
@@ -52,18 +54,22 @@ class QuickUpdate
                 mkdir(self::STORAGE, 775, true);
             }
 
-            $fp = fopen(self::STORAGE . $filename, 'a');
+            if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+                require_once __DIR__ . '/../vendor/autoload.php';
+            }
+
+            $csvWriter = Writer::createFromPath(self::STORAGE . $filename, 'a');
+            $csvWriter->setDelimiter(';');
+            $csvWriter->setNewline("\r\n");
 
             $header = [];
             foreach ($this->fields as $field) {
                 $header[] = $field;
             }
+            $csvWriter->insertOne($header);
 
-            fputcsv($fp, $header, ';');
+            $this->writeFile($csvWriter);
 
-            $this->writeFile($fp);
-
-            fclose($fp);
             AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
         }
 
@@ -71,12 +77,12 @@ class QuickUpdate
     }
 
     /**
-     * @param $fp
+     * @param Writer $csvWriter
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    protected function writeFile($fp)
+    protected function writeFile(Writer $csvWriter)
     {
         $numArticles = $this->getNumArticles();
         $batchSize = 100;
@@ -88,7 +94,7 @@ class QuickUpdate
 
             foreach ($articles as $article) {
                 $line = FieldHelper::getLine($article, $this->fields);
-                fputs($fp, implode(';', $line) . "\r\n");
+                $csvWriter->insertOne($line);
             }
         }
     }
