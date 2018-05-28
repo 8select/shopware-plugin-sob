@@ -27,7 +27,7 @@ Ext.define(
               meta.style = 'white-space: normal;'; 
               meta.tdAttr = 'style="white-space: normal;"';
               return value;      
-           }
+            },
             editor: {
               editable: false
             }
