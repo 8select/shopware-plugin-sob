@@ -184,6 +184,7 @@ class CseEightselectBasic extends Plugin
         $this->installWidgets();
         $this->createDatabase();
         $this->createExportDir();
+        $this->createAttributes();
         parent::install($context);
     }
 
@@ -206,6 +207,30 @@ class CseEightselectBasic extends Plugin
             case '1.0.2':
                 $this->update_1_0_2();
         }
+    }
+
+    /**
+     * Create attributes
+     *
+     * @throws \Exception
+     */
+    private function createAttributes()
+    {
+        /** @var \Shopware\Bundle\AttributeBundle\Service\CrudService $attributeService */
+        $attributeService = Shopware()->Container()->get('shopware_attribute.crud_service');
+
+        $attributeService->update('s_article_configurator_groups_attributes', 'od_cse_eightselect_basic_is_size', 'boolean', [
+            'label'            => 'Definiert Größe',
+            'displayInBackend' => true,
+            'custom'           => false,
+            'translatable'     => false,
+            'position'         => 0,
+        ]);
+
+        /** @var \Doctrine\Common\Cache\ClearableCache $metaDataCache */
+        $metaDataCache = Shopware()->Models()->getConfiguration()->getMetadataCacheImpl();
+        $metaDataCache->deleteAll();
+        Shopware()->Models()->generateAttributeModels(['s_filter_options_attributes']);
     }
 
     /**
@@ -324,6 +349,7 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param UninstallContext $context
+     * @throws \Exception
      */
     public function uninstall(UninstallContext $context)
     {
@@ -332,6 +358,7 @@ class CseEightselectBasic extends Plugin
         $this->removeUpdateCron();
         $this->removeDatabase();
         $this->deleteExportDir();
+        $this->removeAttributes();
         parent::uninstall($context);
     }
 
@@ -360,6 +387,17 @@ class CseEightselectBasic extends Plugin
         $classes = $this->getClasses($modelManager);
 
         $tool->dropSchema($classes);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function removeAttributes()
+    {
+        /** @var \Shopware\Bundle\AttributeBundle\Service\CrudService $attributeService */
+        $attributeService = Shopware()->Container()->get('shopware_attribute.crud_service');
+
+        $attributeService->delete('s_article_configurator_groups_attributes', 'od_cse_eightselect_basic_is_size');
     }
 
     /**

@@ -20,10 +20,21 @@ class FieldHelper
         /** @var array $categories */
         $categories = self::getCategories($article['articleID']);
 
+        $sql = 'SELECT ordernumber, id FROM s_articles_details WHERE articleID = ? AND kind = "1"';
+        $articleDetail = Shopware()->Db()->query($sql, [$article['articleID']])->fetch();
+
+        $options = static::getNonSizeConfiguratorOptionsByArticleDetailId($articleDetail['id']);
+        if (!empty($options)) {
+            $optionsString = str_replace(' ', '-', implode('-', $options));
+        }
+
         foreach ($fields as $field) {
             switch ($field) {
                 case 'mastersku':
-                    $value = self::getMasterSku($article['articleID']);
+                    $value = $articleDetail['ordernumber'];
+                    if (!empty($optionsString)) {
+                        $value .= '-' . $optionsString;
+                    }
                     break;
                 case 'kategorie1':
                     $value = !empty($categories[0]) ? $categories[0] : '';
@@ -47,6 +58,12 @@ class FieldHelper
                 case 'status':
                     $value = self::getStatus($article['active'], $article['instock'], $article['laststock']);
                     break;
+                case 'sku':
+                    $value = self::getValue($article, $field);
+                    if (!empty($optionsString)) {
+                        $value .= '-' . $optionsString;
+                    }
+                    break;
                 default:
                     $value = self::getValue($article, $field);
             }
@@ -69,6 +86,7 @@ class FieldHelper
         $string = trim(preg_replace('/\s+/', ' ', $string));
         $string = str_replace('\\"', '"', $string);
         $string = str_replace('"', '\"', $string);
+        $string = str_replace(';', '\;', $string);
 
         return '"' . $string . '"';
     }
@@ -167,9 +185,9 @@ class FieldHelper
 
         $router = Shopware()->Container()->get('router');
         $assembleParams = [
-            'module' => 'frontend',
+            'module'    => 'frontend',
             'sViewport' => 'detail',
-            'sArticle' => $articleId
+            'sArticle'  => $articleId
         ];
 
         $link = $router->assemble($assembleParams);
@@ -199,20 +217,6 @@ class FieldHelper
         $urlString = implode(' | ', $urlArray);
 
         return $urlString;
-    }
-
-    /**
-     * @param $articleId
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @return mixed
-     */
-    private static function getMasterSku($articleId)
-    {
-        $sql = 'SELECT ordernumber FROM s_articles_details WHERE articleID = ? AND kind = "1"';
-        $mainDetail = Shopware()->Db()->query($sql, [$articleId])->fetch();
-
-        return $mainDetail['ordernumber'];
     }
 
     private static function getStatus($active, $instock, $laststock)
@@ -257,6 +261,38 @@ class FieldHelper
                 AND s_article_configurator_options.group_id = ' . $groupId;
 
         return Shopware()->Db()->query($sql)->fetchColumn();
+    }
+
+    /**
+     * @param int $articleId
+     * @return array
+     *
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    private static function getNonSizeConfiguratorOptionsByArticleDetailId($articleId)
+    {
+        /*
+         * Query Explanation:
+         *
+         * (SELECT) Get all option names
+         *  (JOIN) where the options belongs to the article
+         *  (JOIN) AND the option belongs to a group
+         *  (JOIN) which has an attribute
+         * (WHERE) which is not defined as the basic size
+         * (AND) and the article has a given ID
+         */
+        $sql = <<<SQL
+SELECT s_article_configurator_options.name as value
+FROM s_article_configurator_options
+	INNER JOIN s_article_configurator_option_relations ON s_article_configurator_options.id = s_article_configurator_option_relations.option_id
+	INNER JOIN s_article_configurator_groups ON s_article_configurator_groups.id = s_article_configurator_options.group_id
+	LEFT JOIN s_article_configurator_groups_attributes on s_article_configurator_groups.id = s_article_configurator_groups_attributes.groupID
+WHERE (s_article_configurator_groups_attributes.od_cse_eightselect_basic_is_size = 0 OR s_article_configurator_groups_attributes.od_cse_eightselect_basic_is_size IS NULL)
+AND s_article_configurator_option_relations.article_id = $articleId
+SQL;
+
+        return array_column(Shopware()->Db()->query($sql)->fetchAll(\Zend_Db::FETCH_ASSOC), 'value');
     }
 
     /**
