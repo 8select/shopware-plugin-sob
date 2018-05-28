@@ -8,7 +8,6 @@ Ext.define(
       { name: "eightselectAttribute", type: "string" },
       { name: "eightselectAttributeLabel", type: "string" },
       { name: "eightselectAttributeLabelDescr", type: "string" },
-      { name: "eightselectAttributeGroupName", type: "string" },
       { name: "shopwareAttribute", type: "string" }
     ],
 

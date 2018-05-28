@@ -4,7 +4,6 @@ Ext.define(
     extend: "Ext.data.Store",
 
     model:
-      "Shopware.apps.CseEightselectBasicAttributeConfig.model.EightselectAttribute",
-    groupField: 'eightselectAttributeGroupName'
+      "Shopware.apps.CseEightselectBasicAttributeConfig.model.EightselectAttribute"
   }
 );
