@@ -37,7 +37,6 @@ Ext.define(
             editor: {
               xtype: "combobox",
               allowBlank: false,
-              multiSelect: true,
               valueField: "column_name",
               displayField: "label",
               store: Ext.create(
