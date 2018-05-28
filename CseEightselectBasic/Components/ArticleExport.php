@@ -3,17 +3,10 @@ namespace CseEightselectBasic\Components;
 
 class ArticleExport
 {
-    /**
-     * @const string
-     */
     const STORAGE = 'files/8select/';
 
-    /**
-     * @const string
-     */
     const CRON_NAME = '8select Full Export';
 
-    /** @var bool */
     const DEBUG = false;
 
     private $currentProgress = 0;
