@@ -2,6 +2,7 @@
 namespace CseEightselectBasic\Components;
 
 use League\Csv\Writer;
+use CseEightselectBasic\Components\RunCronOnce;
 
 class QuickUpdate
 {
@@ -21,38 +22,58 @@ class QuickUpdate
         'angebots_preis',
     ];
 
-    /**
-     * @const string
-     */
-    const CRON_NAME = '8select Quick Export';
-
-    /**
-     * @var int
-     */
-    private $queueId = null;
+    const CRON_NAME = '8select_update_export';
 
     /**
      * @var int
      */
     private $currentProgress = null;
 
+    public function scheduleCron()
+    {
+        RunCronOnce::runOnce(self::CRON_NAME);
+    }
+
     /**
      * @throws \Exception
      */
     public function doCron()
     {
-        if ($this->getNumArticles()) {
-            $this->setProgressTable();
+        try {
+            Shopware()->PluginLogger()->info('Führe Artikel Update Export aus.');
+            if (getenv('ES_DEBUG')) {
+                echo 'Führe Artikel Update Export aus.' . PHP_EOL;
+            }
 
+            if (RunCronOnce::isRunning(self::CRON_NAME)) {
+                if (getenv('ES_DEBUG')) {
+                    echo 'Update Export nicht ausgeführt, es läuft bereits ein Update Export.' . PHP_EOL;
+                }
+                return;
+            }
+
+            if (!RunCronOnce::isScheduled(self::CRON_NAME)) {
+                if (getenv('ES_DEBUG')) {
+                    echo 'Update Export nicht ausgeführt, es ist kein Update Export in der Warteschleife.' . PHP_EOL;
+                }
+                return;
+            }
+
+            RunCronOnce::runCron(self::CRON_NAME);
+
+            if ($this->getNumArticles() <= 0) {
+                RunCronOnce::finishCron(self::CRON_NAME);
+
+                Shopware()->PluginLogger()->info('Artikel Update Export nicht ausgeführt, da keine geänderten Artikel vorhanden.');
+                return;
+            }
+
+            $start = time();
             $config = Shopware()->Config();
             $feedId = $config->get('8s_feed_id');
             $feedType = 'status_feed';
             $timestampInMillis = round(microtime(true) * 1000);
             $filename = sprintf('%s_%s_%d.csv', $feedId, $feedType, $timestampInMillis);
-
-            if (!is_dir(self::STORAGE)) {
-                mkdir(self::STORAGE, 775, true);
-            }
 
             if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
                 require_once __DIR__ . '/../vendor/autoload.php';
@@ -68,11 +89,21 @@ class QuickUpdate
             $csvWriter->insertOne($header);
 
             $this->writeFile($csvWriter);
-
             AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
-        }
 
-        $this->emptyTables();
+            $this->emptyQueue();
+
+            RunCronOnce::finishCron(self::CRON_NAME);
+
+            if (getenv('ES_DEBUG')) {
+                echo('Artikel Update Export abgeschlossen in ' . (time() - $start) . "s\n");
+            }
+            Shopware()->PluginLogger()->info('Artikel Update Export abgeschlossen in ' . (time() - $start) . 's');
+        } catch (\Exception $exception) {
+            Shopware()->PluginLogger()->error($exception);
+            RunCronOnce::finishCron(self::CRON_NAME);
+            throw $exception;
+        }
     }
 
     /**
@@ -124,7 +155,6 @@ class QuickUpdate
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
                 LIMIT ' . $number . ' OFFSET ' . $from;
         $attributes = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
-
         return $attributes;
     }
 
@@ -135,10 +165,10 @@ class QuickUpdate
      */
     protected function getNumArticles()
     {
-        $sql = 'SELECT DISTINCT s_articles_details_id FROM 8s_articles_details_change_queue';
-
-        return Shopware()->Db()->query($sql)->rowCount();
+        $sql = 'SELECT COUNT(DISTINCT s_articles_details_id) as count FROM 8s_articles_details_change_queue';
+        return intval(Shopware()->Db()->query($sql)->fetchColumn());
     }
+
 
     /**
      * @param $numArticles
@@ -149,9 +179,8 @@ class QuickUpdate
     {
         $progress = floor($currentArticle / $numArticles * 100);
 
-        if ($this->queueId && $progress != $this->currentProgress) {
-            $sql = 'UPDATE 8s_cron_run_once_queue SET progress = ' . $progress . ' WHERE id = ' . $this->queueId;
-            Shopware()->Db()->query($sql);
+        if ($progress != $this->currentProgress) {
+            RunCronOnce::updateProgress(self::CRON_NAME, $progress);
             $this->currentProgress = $progress;
         }
     }
@@ -159,46 +188,9 @@ class QuickUpdate
     /**
      * @throws \Zend_Db_Adapter_Exception
      */
-    protected function emptyTables()
+    protected function emptyQueue()
     {
-        $sqls = [
-            'DELETE FROM 8s_articles_details_change_queue',
-            'DELETE FROM 8s_cron_run_once_queue WHERE cron_name = "' . self::CRON_NAME . '"',
-        ];
-
-        foreach ($sqls as $sql) {
-            Shopware()->Db()->query($sql);
-        }
-
-        $this->queueId = null;
-        $this->currentProgress = null;
-    }
-
-    /**
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     */
-    protected function setProgressTable()
-    {
-        $queueSql = 'SELECT * from 8s_cron_run_once_queue WHERE running = 0 AND cron_name = "' . self::CRON_NAME . '"';
-        $runningSql = 'SELECT * from 8s_cron_run_once_queue WHERE running = 1 AND cron_name = "' . self::CRON_NAME . '"';
-        $queue = Shopware()->Db()->query($queueSql)->fetchAll(\PDO::FETCH_ASSOC);
-        $running = Shopware()->Db()->query($runningSql)->fetchAll(\PDO::FETCH_ASSOC);
-
-        if (!count($queue)) {
-            $connection = Shopware()->Container()->get('dbal_connection');
-            $connection->insert('8s_cron_run_once_queue', ['cron_name' => self::CRON_NAME]);
-            $this->setProgressTable();
-        } elseif (count($queue) && !count($running)) {
-            $id = reset($queue)['id'];
-            $sqls = [
-                'UPDATE 8s_cron_run_once_queue SET running = 1 WHERE id = ' . $id,
-                'DELETE from 8s_cron_run_once_queue WHERE running = 0 AND cron_name = "' . self::CRON_NAME . '"',
-            ];
-            foreach ($sqls as $sql) {
-                Shopware()->Db()->query($sql);
-            }
-            $this->queueId = $id;
-        }
+        $sql = 'DELETE FROM 8s_articles_details_change_queue';
+        Shopware()->Db()->query($sql);
     }
 }

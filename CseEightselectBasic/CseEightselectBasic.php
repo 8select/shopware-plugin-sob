@@ -2,6 +2,7 @@
 namespace CseEightselectBasic;
 
 use CseEightselectBasic\Components\ArticleExport;
+use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Models\EightselectAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -11,6 +12,7 @@ use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\ActivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
+
 use Shopware\Components\Plugin\Context\UpdateContext;
 
 class CseEightselectBasic extends Plugin
@@ -31,6 +33,7 @@ class CseEightselectBasic extends Plugin
             'Shopware_CronJob_CseEightselectBasicArticleExport'                         => 'cseEightselectBasicArticleExport',
             'Shopware_CronJob_CseEightselectBasicArticleExportOnce'                     => 'cseEightselectBasicArticleExportOnce',
             'Shopware_CronJob_CseEightselectBasicQuickUpdate'                           => 'cseEightselectBasicQuickUpdate',
+            'Shopware_CronJob_CseEightselectBasicQuickUpdateOnce'                       => 'cseEightselectBasicQuickUpdateOnce',
             'Shopware_Controllers_Backend_Config_After_Save_Config_Element'             => 'onBackendConfigSave',
         ];
     }
@@ -178,6 +181,7 @@ class CseEightselectBasic extends Plugin
         $this->addExportCron();
         $this->addExportOnceCron();
         $this->addUpdateCron();
+        $this->addUpdateOnceCron();
         $this->installWidgets();
         $this->createDatabase();
         $this->createExportDir();
@@ -353,6 +357,7 @@ class CseEightselectBasic extends Plugin
         $this->removeExportCron();
         $this->removeExportOnceCron();
         $this->removeUpdateCron();
+        $this->removeUpdateOnceCron();
         $this->removeDatabase();
         $this->deleteExportDir();
         $this->removeAttributes();
@@ -373,7 +378,7 @@ class CseEightselectBasic extends Plugin
 
         $this->initAttributes();
         $this->initChangesQueueTable();
-        $this->initRunOnceQueueTable();
+        RunCronOnce::createTable();
     }
 
     private function removeDatabase()
@@ -384,6 +389,9 @@ class CseEightselectBasic extends Plugin
         $classes = $this->getClasses($modelManager);
 
         $tool->dropSchema($classes);
+
+        RunCronOnce::deleteTable();
+        $this->deleteChangesQueueTable;
     }
 
     /**
@@ -416,6 +424,7 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicArticleExport(\Shopware_Components_Cron_CronJob $job)
     {
+        $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
         $this->container->get('cse_eightselect_basic.article_export')->doCron();
     }
 
@@ -427,7 +436,7 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicArticleExportOnce(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->container->get('cse_eightselect_basic.article_export')->checkRunOnce();
+        $this->container->get('cse_eightselect_basic.article_export')->doCron();
     }
 
     /**
@@ -435,6 +444,16 @@ class CseEightselectBasic extends Plugin
      * @throws \Exception
      */
     public function cseEightselectBasicQuickUpdate(\Shopware_Components_Cron_CronJob $job)
+    {
+        $this->container->get('cse_eightselect_basic.quick_update')->scheduleCron();
+        $this->container->get('cse_eightselect_basic.quick_update')->doCron();
+    }
+
+    /**
+     * @param  \Shopware_Components_Cron_CronJob $job
+     * @throws \Exception
+     */
+    public function cseEightselectBasicQuickUpdateOnce(\Shopware_Components_Cron_CronJob $job)
     {
         $this->container->get('cse_eightselect_basic.quick_update')->doCron();
     }
@@ -499,7 +518,7 @@ class CseEightselectBasic extends Plugin
                 'action'     => 'Shopware_CronJob_CseEightselectBasicArticleExportOnce',
                 'next'       => new \DateTime(),
                 'start'      => null,
-                '`interval`' => '60',
+                '`interval`' => '1',
                 'active'     => 1,
                 'end'        => new \DateTime(),
                 'pluginID'   => $this->container->get('shopware.plugin_manager')->getPluginByName($this->getName())->getId(),
@@ -547,6 +566,38 @@ class CseEightselectBasic extends Plugin
     {
         $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
             'Shopware_CronJob_CseEightselectBasicQuickUpdate',
+        ]);
+    }
+
+    /**
+     * add cron job for exporting all products
+     */
+    public function addUpdateOnceCron()
+    {
+        $connection = $this->container->get('dbal_connection');
+        $connection->insert(
+            's_crontab',
+            [
+                'name'       => '8select quick product update',
+                'action'     => 'Shopware_CronJob_CseEightselectBasicQuickUpdateOnce',
+                'next'       => new \DateTime(),
+                'start'      => null,
+                '`interval`' => '1',
+                'active'     => 1,
+                'end'        => new \DateTime(),
+                'pluginID'   => $this->container->get('shopware.plugin_manager')->getPluginByName($this->getName())->getId(),
+            ],
+            [
+                'next' => 'datetime',
+                'end'  => 'datetime',
+            ]
+        );
+    }
+
+    public function removeUpdateOnceCron()
+    {
+        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
+            'Shopware_CronJob_CseEightselectBasicQuickUpdateOnce',
         ]);
     }
 
@@ -797,22 +848,16 @@ class CseEightselectBasic extends Plugin
     /**
      * @throws \Zend_Db_Adapter_Exception
      */
-    private function initRunOnceQueueTable()
+    private function deleteChangesQueueTable()
     {
-        $sqls = [
-            'DROP TABLE IF EXISTS `8s_cron_run_once_queue`;',
-            'CREATE TABLE `8s_cron_run_once_queue` (
-                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `cron_name` varchar(255) NOT NULL,
-                  `updated_at` datetime,
-                  `running` bit DEFAULT 0,
-                  `progress` int(3) DEFAULT 0,
-                  PRIMARY KEY (`id`)
-                ) COLLATE=\'utf8_unicode_ci\' ENGINE=InnoDB DEFAULT CHARSET=utf8;',
+        $triggerSqls = [
+            'DROP TABLE IF EXISTS `8s_articles_details_change_queue`;',
+            'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
         ];
 
-        foreach ($sqls as $sql) {
-            Shopware()->Db()->query($sql);
+        foreach ($triggerSqls as $triggerSql) {
+            Shopware()->Db()->query($triggerSql);
         }
     }
 
