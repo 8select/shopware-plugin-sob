@@ -517,7 +517,7 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'ean',
                 'eightselectAttributeLabel'      => 'EAN-CODE',
-                'eightselectAttributeLabelDescr' => 'Standardtisierte eindeutige Materialnummer nach EAN (European Article Number) oder UPC (Unified Product Code).',
+                'eightselectAttributeLabelDescr' => 'Standardisierte eindeutige Materialnummer nach EAN (European Article Number) oder UPC (Unified Product Code).',
                 'shopwareAttribute'              => 's_articles_details.ean',
 
             ],
