@@ -60,7 +60,6 @@ class QuickUpdate
 
             $csvWriter = Writer::createFromPath(self::STORAGE . $filename, 'a');
             $csvWriter->setDelimiter(';');
-            $csvWriter->setNewline("\r\n");
 
             $header = [];
             foreach ($this->fields as $field) {
@@ -112,6 +111,7 @@ class QuickUpdate
                 s_articles.id as articleID,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
+                s_articles_details.id AS detailID,
                 s_articles_details.active AS active,
                 s_articles_details.instock AS instock,
                 s_articles_details.ordernumber as sku,
@@ -187,9 +187,9 @@ class QuickUpdate
 
         if (!count($queue)) {
             $connection = Shopware()->Container()->get('dbal_connection');
-            $connection->insert('8s_cron_run_once_queue', ['cron_name' => '8select Quick Export']);
+            $connection->insert('8s_cron_run_once_queue', ['cron_name' => self::CRON_NAME]);
             $this->setProgressTable();
-        } else if (count($queue) && !count($running)) {
+        } elseif (count($queue) && !count($running)) {
             $id = reset($queue)['id'];
             $sqls = [
                 'UPDATE 8s_cron_run_once_queue SET running = 1 WHERE id = ' . $id,
