@@ -1,19 +1,15 @@
 <?php
 namespace CseEightselectBasic;
 
+use CseEightselectBasic\Components\ArticleExport;
 use CseEightselectBasic\Models\EightselectAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Tools\SchemaTool;
 use Shopware\Components\Emotion\ComponentInstaller;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\ActivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
-use Shopware\Components\Model\ModelManager;
-use Doctrine\ORM\Tools\SchemaTool;
-use CseEightselectBasic\Models\EightselectAttribute;
-use CseEightselectBasic\Components\ArticleExport;
 use Shopware\Components\Plugin\Context\UpdateContext;
 
 class CseEightselectBasic extends Plugin
@@ -858,31 +854,34 @@ class CseEightselectBasic extends Plugin
         $cacheManager->clearConfigCache();
     }
 
-    private function createExportDir() {
+    private function createExportDir()
+    {
         if (!is_dir(ArticleExport::STORAGE)) {
             mkdir(ArticleExport::STORAGE, 0775, true);
         }
     }
 
-    private function deleteExportDir() {
+    private function deleteExportDir()
+    {
         $this->rrmdir(ArticleExport::STORAGE);
     }
 
-    private function rrmdir($dir) {
+    private function rrmdir($dir)
+    {
         if (is_dir($dir)) {
-          $objects = scandir($dir);
-          foreach ($objects as $object) {
-            if ($object === '.' || $object === '..') {
-                continue;
-            }
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object === '.' || $object === '..') {
+                    continue;
+                }
 
-            if (is_dir($object)) {
-                rrmdir($dir);
-            } else {
-                unlink(sprintf('%s/%s', $dir, $object));
+                if (is_dir($object)) {
+                    rrmdir($dir);
+                } else {
+                    unlink(sprintf('%s/%s', $dir, $object));
+                }
             }
-          }
-          rmdir($dir);
+            rmdir($dir);
         }
     }
 }
