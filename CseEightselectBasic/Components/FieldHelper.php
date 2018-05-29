@@ -287,10 +287,19 @@ class FieldHelper
             $shop = $shop->getMain();
         }
 
-        if ($shop->getAlwaysSecure()) {
-            return 'https://' . $shop->getSecureHost() . $shop->getSecureBasePath();
+        $versionArray = explode('.', Shopware()::VERSION);
+        if ($versionArray[0] >= '5' && $versionArray[1] >= '4') {
+            if ($shop->getSecure()) {
+                return 'https://' . $shop->getHost() . $shop->getBasePath();
+            } else {
+                return 'http://' . $shop->getHost() . $shop->getBasePath();
+            }
         } else {
-            return 'http://' . $shop->getHost() . $shop->getBasePath();
+            if ($shop->getAlwaysSecure()) {
+                return 'https://' . $shop->getSecureHost() . $shop->getSecureBasePath();
+            } else {
+                return 'http://' . $shop->getHost() . $shop->getBasePath();
+            }
         }
     }
 }
