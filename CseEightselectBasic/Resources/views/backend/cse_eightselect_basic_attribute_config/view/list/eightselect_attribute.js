@@ -40,6 +40,22 @@ Ext.define(
               multiSelect: true,
               valueField: "column_name",
               displayField: "label",
+              listeners: {
+                beforeselect: function() {
+                  if (this.value.length === 0) {
+                    return true
+                  }
+                  
+                  var isArticleField = this.value.some(function(field) {
+                    return field.match('s_articles')
+                  })
+
+                  if (isArticleField) {
+                    return false
+                  }
+                  return true
+                }
+              },
               store: Ext.create(
                 "Shopware.apps.CseEightselectBasicAttributeConfig.store.ShopwareAttribute"
               ),
