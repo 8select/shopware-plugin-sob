@@ -77,16 +77,14 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
               ),
               listeners: {
                 beforeselect: function() {
-                  if (this.value.length === 0) {
-                    return true
-                  }
-                  
-                  var isArticleField = this.value.some(function(field) {
-                    return field.match('s_articles')
-                  })
+                  if (this.value.length > 1) {
+                      var isArticleField = this.value.some(function(field) {
+                        return field.match(/s\_articles|additionaltext|weight|width|height|length|ean/)
+                      })
 
-                  if (isArticleField) {
-                    return false
+                      if (isArticleField) {
+                        return false
+                      }
                   }
                   return true
                 }
