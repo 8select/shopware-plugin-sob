@@ -95,22 +95,26 @@ class FieldHelper
             return $value;
         }
 
-        $configGroup = self::getGroupOrFilterAttribute('group', $field);
+        $attrGroup = self::getGroupOrFilterAttribute($field);
 
-        if ($configGroup) {
-            $groupId = explode('id=', $configGroup)[1];
+        if ($attrGroup) {
+            $valuesTreshold = [];
+            $attributes = explode(',', $attrGroup);
 
-            return self::getConfiguratorGroupValue($article['detailID'], $groupId);
+            foreach ($attributes as $attribute) {
+                if ($attribute !== '-' && $attribute !== '') {
+                    if(strpos($attribute, "group") !== false) {
+                        $groupId = explode('id=', $attribute)[1];
+                        array_push($valuesTreshold, self::getConfiguratorGroupValue($article['detailID'], $groupId));
+                    }
+                    if(strpos($attribute, "filter") !== false) {
+                        $filterId = explode('id=', $attribute)[1];
+                        array_push($valuesTreshold, self::getFilterValues($article['articleID'], $filterId));
+                    }
+                }
+            }
+            return implode("|", array_filter($valuesTreshold));
         }
-
-        $filterGroup = self::getGroupOrFilterAttribute('filter', $field);
-
-        if ($filterGroup) {
-            $filterId = explode('id=', $filterGroup)[1];
-
-            return self::getFilterValues($article['articleID'], $filterId);
-        }
-
         return '';
     }
 
@@ -225,11 +229,10 @@ class FieldHelper
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    private static function getGroupOrFilterAttribute($type, $field)
-    {
+    private static function getGroupOrFilterAttribute($field) {
         $query = 'SELECT shopwareAttribute as groupId
                       FROM 8s_attribute_mapping
-                      WHERE shopwareAttribute LIKE "%' . $type . '%"
+                      WHERE (shopwareAttribute LIKE "%group%" OR shopwareAttribute LIKE "%filter%")
                       AND eightselectAttribute = "' . $field . '"';
 
         return Shopware()->Db()->query($query)->fetchColumn();
