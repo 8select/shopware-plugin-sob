@@ -4,6 +4,7 @@ namespace CseEightselectBasic;
 use CseEightselectBasic\Components\ArticleExport;
 use CseEightselectBasic\Models\EightselectAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Tools\SchemaTool;
 use Shopware\Components\Emotion\ComponentInstaller;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Components\Plugin;
