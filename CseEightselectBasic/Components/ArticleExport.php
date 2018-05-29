@@ -129,7 +129,6 @@ class ArticleExport
 
         $csvWriter = Writer::createFromPath(self::STORAGE . $filename, 'a');
         $csvWriter->setDelimiter(';');
-        $csvWriter->setNewline("\r\n");
 
         // insert header
         $csvWriter->insertOne($this->fields);

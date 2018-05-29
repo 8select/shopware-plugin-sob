@@ -21,21 +21,20 @@ class FieldHelper
         /** @var array $categories */
         $categories = self::getCategories($article['articleID']);
 
-        $sql = 'SELECT ordernumber, id FROM s_articles_details WHERE articleID = ? AND kind = "1"';
+        $sql = 'SELECT ordernumber, id FROM s_articles_details WHERE articleID = ? AND kind = 1';
         $articleDetail = Shopware()->Db()->query($sql, [$article['articleID']])->fetch();
-
-        $options = static::getNonSizeConfiguratorOptionsByArticleDetailId($articleDetail['id']);
-        if (!empty($options)) {
-            $optionsString = str_replace(' ', '-', implode('-', $options));
-        }
 
         foreach ($fields as $field) {
             switch ($field) {
                 case 'mastersku':
                     $value = $articleDetail['ordernumber'];
-                    if (!empty($optionsString)) {
-                        $value .= '-' . $optionsString;
+                    $options = static::getNonSizeConfiguratorOptionsByArticleDetailId($article['detailID']);
+                    if (!empty($options)) {
+                        $value .= '-' . mb_strtolower(str_replace(' ', '-', implode('-', $options)));
                     }
+                    break;
+                case 'model':
+                    $value = $articleDetail['ordernumber'];
                     break;
                 case 'kategorie1':
                     $value = !empty($categories[0]) ? $categories[0] : '';
@@ -58,12 +57,6 @@ class FieldHelper
                     break;
                 case 'status':
                     $value = self::getStatus($article['active'], $article['instock'], $article['laststock']);
-                    break;
-                case 'sku':
-                    $value = self::getValue($article, $field);
-                    if (!empty($optionsString)) {
-                        $value .= '-' . $optionsString;
-                    }
                     break;
                 default:
                     $value = self::getValue($article, $field);
