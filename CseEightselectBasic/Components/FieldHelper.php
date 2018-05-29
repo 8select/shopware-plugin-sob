@@ -58,6 +58,9 @@ class FieldHelper
                 case 'status':
                     $value = self::getStatus($article['active'], $article['instock'], $article['laststock']);
                     break;
+                case 'groesse':
+                    $value = self::getSizeOptionByArticleDetailId($article['detailID']);
+                    break;
                 default:
                     $value = self::getValue($article, $field);
             }
@@ -268,6 +271,28 @@ AND s_article_configurator_option_relations.article_id = $articleId
 SQL;
 
         return array_column(Shopware()->Db()->query($sql)->fetchAll(\Zend_Db::FETCH_ASSOC), 'value');
+    }
+
+
+    /**
+     * @param int $articleId
+     * @return string
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
+    private static function getSizeOptionByArticleDetailId($articleId)
+    {
+        $sql = <<<SQL
+SELECT s_article_configurator_options.name as value
+FROM s_article_configurator_options
+	INNER JOIN s_article_configurator_option_relations ON s_article_configurator_options.id = s_article_configurator_option_relations.option_id
+	INNER JOIN s_article_configurator_groups ON s_article_configurator_groups.id = s_article_configurator_options.group_id
+	INNER JOIN s_article_configurator_groups_attributes on s_article_configurator_groups.id = s_article_configurator_groups_attributes.groupID
+WHERE s_article_configurator_option_relations.article_id = $articleId
+AND (s_article_configurator_groups_attributes.od_cse_eightselect_basic_is_size = 1);
+SQL;
+
+        return Shopware()->Db()->query($sql)->fetchColumn();
     }
 
     /**
