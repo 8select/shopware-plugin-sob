@@ -790,7 +790,7 @@ class CseEightselectBasic extends Plugin
             'CREATE TABLE `8s_articles_details_change_queue` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `s_articles_details_id` int(11) NOT NULL,
-                  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                  `updated_at` datetime,
                   PRIMARY KEY (`id`)
                 ) COLLATE=\'utf8_unicode_ci\' ENGINE=InnoDB DEFAULT CHARSET=utf8;',
             'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
@@ -798,7 +798,7 @@ class CseEightselectBasic extends Plugin
                   FOR EACH ROW
                   BEGIN
                     IF (NEW.instock != OLD.instock OR NEW.active != OLD.active) THEN
-                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id) VALUES (NEW.id);
+                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.id, NOW());
                     END IF;
                   END',
             'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
@@ -806,7 +806,7 @@ class CseEightselectBasic extends Plugin
                   FOR EACH ROW
                   BEGIN
                     IF (NEW.price != OLD.price OR NEW.pseudoprice != OLD.pseudoprice) THEN
-                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id) VALUES (NEW.articleDetailsID);
+                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.articleDetailsID, NOW());
                     END IF;
                   END',
         ];
@@ -826,7 +826,7 @@ class CseEightselectBasic extends Plugin
             'CREATE TABLE `8s_cron_run_once_queue` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `cron_name` varchar(255) NOT NULL,
-                  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                  `updated_at` datetime,
                   `running` bit DEFAULT 0,
                   `progress` int(3) DEFAULT 0,
                   PRIMARY KEY (`id`)
