@@ -642,12 +642,6 @@ class CseEightselectBasic extends Plugin
                 'shopwareAttribute'              => 's_articles.description_long',
             ],
             [
-                'eightselectAttribute'           => 'beschreibung1',
-                'eightselectAttributeLabel'      => 'BESCHREIBUNGSTEXT',
-                'eightselectAttributeLabelDescr' => 'Der Beschreibunstext zum Artikel, auch "description" genannt, in unformatierter Reintext-Form z.B. "Federleichte Regenhose! ..."',
-                'shopwareAttribute'              => 's_articles.description',
-            ],
-            [
                 'eightselectAttribute'           => 'beschreibung2',
                 'eightselectAttributeLabel'      => 'ALTERNATIVER BESCHREIBUNGSTEXT',
                 'eightselectAttributeLabelDescr' => 'zusätzliche Informationen zum Produkt, technische Beschreibung, Kurzbeschreibung oder auch Keywords',
