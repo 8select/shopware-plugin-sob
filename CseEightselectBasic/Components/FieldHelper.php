@@ -61,6 +61,17 @@ class FieldHelper
                 case 'groesse':
                     $value = self::getSizeOptionByArticleDetailId($article['detailID']);
                     break;
+                case 'beschreibung':
+                    $withNewLines = self::getValue($article, $field);
+                    $value = str_replace(["\r\n", "\r", "\n"], '<br>', $withNewLines);
+                    break;
+                case 'beschreibung1':
+                case 'beschreibung2':
+                    $withNewLines = self::getValue($article, $field);
+                    $withOutNewLines = str_replace(["\r\n", "\r", "\n"], '<br>', $withNewLines);
+                    $wihtOutHtml = strip_tags($withOutNewLines);
+                    $value = html_entity_decode($wihtOutHtml);
+                    break;
                 default:
                     $value = self::getValue($article, $field);
             }
