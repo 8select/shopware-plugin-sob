@@ -1,23 +1,23 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "27ce0e4d9ecae4ec3bcd4884f8fda2b5",
+    "content-hash": "f49ed85823a455356ef04c91f91ac990",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.57.1",
+            "version": "3.58.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "795332f5f3a81474e85653e62d1d7b306bd4eeae"
+                "reference": "ab1cf3e90aa5ad04946e9de3978a339d64528bb1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/795332f5f3a81474e85653e62d1d7b306bd4eeae",
-                "reference": "795332f5f3a81474e85653e62d1d7b306bd4eeae",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/ab1cf3e90aa5ad04946e9de3978a339d64528bb1",
+                "reference": "ab1cf3e90aa5ad04946e9de3978a339d64528bb1",
                 "shasum": ""
             },
             "require": {
@@ -84,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2018-05-25T21:34:30+00:00"
+            "time": "2018-05-29T19:59:40+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -447,10 +447,10 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.0"
+        "php": "^7.0.10"
     },
     "platform-dev": [],
     "platform-overrides": {
-        "php": "7.0"
+        "php": "7.0.10"
     }
 }
