@@ -42,7 +42,7 @@ Ext.define(
               displayField: "label",
               listeners: {
                 beforeselect: function() {
-                  if (this.value.length > 1) {
+                  if (this.value.length === 1) {
                       var isArticleField = this.value.some(function(field) {
                         return field.match(/s\_articles|additionaltext|weight|width|height|length|ean/)
                       })
