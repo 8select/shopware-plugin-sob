@@ -642,15 +642,27 @@ class CseEightselectBasic extends Plugin
                 'shopwareAttribute'              => 's_articles.description_long',
             ],
             [
+                'eightselectAttribute'           => 'beschreibung1',
+                'eightselectAttributeLabel'      => 'BESCHREIBUNGSTEXT',
+                'eightselectAttributeLabelDescr' => 'Der Beschreibunstext zum Artikel, auch "description" genannt, in unformatierter Reintext-Form z.B. "Federleichte Regenhose! ..."',
+                'shopwareAttribute'              => 's_articles.description',
+            ],
+            [
+                'eightselectAttribute'           => 'beschreibung2',
+                'eightselectAttributeLabel'      => 'ALTERNATIVER BESCHREIBUNGSTEXT',
+                'eightselectAttributeLabelDescr' => 'zusätzliche Informationen zum Produkt, technische Beschreibung, Kurzbeschreibung oder auch Keywords',
+                'shopwareAttribute'              => 's_articles.keywords',
+            ],
+            [
                 'eightselectAttribute'           => 'rubrik',
                 'eightselectAttributeLabel'      => 'PRODUKTKATEGORIE',
-                'eightselectAttributeLabelDescr' => 'Bezeichnung der Artikelgruppen, die meist so in der Shopnavigation verwendet werden (z.B. Hosen, Jacken. Accessoires, Schuhe)',
+                'eightselectAttributeLabelDescr' => 'bezeichnet spezielle Artikelgruppen, die als Filter oder Shop-Navigation genutzt werden (z.B. Große Größen, Umstandsmode, Stillmode)',
                 'shopwareAttribute'              => '',
             ],
             [
                 'eightselectAttribute'           => 'typ',
                 'eightselectAttributeLabel'      => 'PRODUKTTYP / UNTERKATEGORIE',
-                'eightselectAttributeLabelDescr' => 'Verfeinerung der Ebene PRODUKTKATEGORIE (z.B. PRODUKTKATEGORIE = Jacken; PRODUKTTYP = Lederjacken, Parkas, Blousons)',
+                'eightselectAttributeLabelDescr' => 'verfeinerte Shop-Navigation oder Unterkategorie (z.B. Lederjacke, Blouson, Parka)',
                 'shopwareAttribute'              => '',
             ],
             [
@@ -807,6 +819,12 @@ class CseEightselectBasic extends Plugin
                 'eightselectAttribute'           => 'absatzhoehe',
                 'eightselectAttributeLabel'      => 'ABSATZHÖHE',
                 'eightselectAttributeLabelDescr' => 'speziell bei Schuhen: Höhe des Absatzes (Format mit oder ohne Maßeinheit z.B. 5,5 cm oder 5,5)',
+                'shopwareAttribute'              => '',
+            ],
+            [
+                'eightselectAttribute'           => 'sonstiges',
+                'eightselectAttributeLabel'      => 'SONSTIGES',
+                'eightselectAttributeLabelDescr' => 'zusätzlichen Artikelinformationen, die nicht im Mapping zur Auswahl stehen',
                 'shopwareAttribute'              => '',
             ]
         ];
