@@ -67,7 +67,8 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
             },
             editor: {
               xtype: "combobox",
-              allowBlank: false,
+              allowBlank: true,
+              multiSelect: true,
               valueField: "column_name",
               displayField: "label",
               tpl: Ext.create('Ext.XTemplate',
