@@ -59,7 +59,8 @@ class FieldHelper
                     $value = self::getStatus($article['active'], $article['instock'], $article['laststock']);
                     break;
                 case 'groesse':
-                    $value = self::getSizeOptionByArticleDetailId($article['detailID']);
+                    $size = self::getSizeOptionByArticleDetailId($article['detailID']);
+                    $value = !empty($size) ? $size : 'onesize';
                     break;
                 case 'beschreibung':
                     $withNewLines = self::getValue($article, $field);
