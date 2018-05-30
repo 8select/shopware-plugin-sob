@@ -1,16 +1,16 @@
 <?php
 namespace CseEightselectBasic;
 
-use Shopware\Components\Emotion\ComponentInstaller;
-use Shopware\Components\Plugin;
+use CseEightselectBasic\Components\ArticleExport;
+use CseEightselectBasic\Models\EightselectAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Tools\SchemaTool;
+use Shopware\Components\Emotion\ComponentInstaller;
+use Shopware\Components\Model\ModelManager;
+use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\ActivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
-use Shopware\Components\Model\ModelManager;
-use Doctrine\ORM\Tools\SchemaTool;
-use CseEightselectBasic\Models\EightselectAttribute;
-use CseEightselectBasic\Components\ArticleExport;
 use Shopware\Components\Plugin\Context\UpdateContext;
 
 class CseEightselectBasic extends Plugin
@@ -21,17 +21,17 @@ class CseEightselectBasic extends Plugin
     public static function getSubscribedEvents()
     {
         return [
-            'Enlight_Controller_Action_PreDispatch'                                         => 'onPreDispatch',
-            'Theme_Compiler_Collect_Plugin_Javascript'                                      => 'addJsFiles',
-            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_CseEightselectBasic'     => 'onGetFrontendCseEightselectBasicController',
-            'Enlight_Controller_Dispatcher_ControllerPath_Backend_CseEightselectBasic'      => 'onGetBackendCseEightselectBasicController',
-            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'                  => 'onPostDispatchBackendEmotion',
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend'                         => 'onFrontendPostDispatch',
-            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'                      => 'onCheckoutConfirm',
-            'Shopware_CronJob_CseEightselectBasicArticleExport'                             => 'cseEightselectBasicArticleExport',
-            'Shopware_CronJob_CseEightselectBasicArticleExportOnce'                         => 'cseEightselectBasicArticleExportOnce',
-            'Shopware_CronJob_CseEightselectBasicQuickUpdate'                               => 'cseEightselectBasicQuickUpdate',
-            'Shopware_Controllers_Backend_Config_After_Save_Config_Element'                 => 'onBackendConfigSave',
+            'Enlight_Controller_Action_PreDispatch'                                     => 'onPreDispatch',
+            'Theme_Compiler_Collect_Plugin_Javascript'                                  => 'addJsFiles',
+            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_CseEightselectBasic' => 'onGetFrontendCseEightselectBasicController',
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_CseEightselectBasic'  => 'onGetBackendCseEightselectBasicController',
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'              => 'onPostDispatchBackendEmotion',
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend'                     => 'onFrontendPostDispatch',
+            'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'                  => 'onCheckoutConfirm',
+            'Shopware_CronJob_CseEightselectBasicArticleExport'                         => 'cseEightselectBasicArticleExport',
+            'Shopware_CronJob_CseEightselectBasicArticleExportOnce'                     => 'cseEightselectBasicArticleExportOnce',
+            'Shopware_CronJob_CseEightselectBasicQuickUpdate'                           => 'cseEightselectBasicQuickUpdate',
+            'Shopware_Controllers_Backend_Config_After_Save_Config_Element'             => 'onBackendConfigSave',
         ];
     }
 
@@ -104,7 +104,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * @param  \Enlight_Event_EventArgs $args
+     * @param \Enlight_Event_EventArgs $args
      * @throws \Enlight_Exception
      */
     public function onCheckoutConfirm(\Enlight_Event_EventArgs $args)
@@ -170,7 +170,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * @param  InstallContext $context
+     * @param InstallContext $context
      * @throws \Exception
      */
     public function install(InstallContext $context)
@@ -181,6 +181,7 @@ class CseEightselectBasic extends Plugin
         $this->installWidgets();
         $this->createDatabase();
         $this->createExportDir();
+        $this->createAttributes();
         parent::install($context);
     }
 
@@ -203,6 +204,30 @@ class CseEightselectBasic extends Plugin
             case '1.0.2':
                 $this->update_1_0_2();
         }
+    }
+
+    /**
+     * Create attributes
+     *
+     * @throws \Exception
+     */
+    private function createAttributes()
+    {
+        /** @var \Shopware\Bundle\AttributeBundle\Service\CrudService $attributeService */
+        $attributeService = Shopware()->Container()->get('shopware_attribute.crud_service');
+
+        $attributeService->update('s_article_configurator_groups_attributes', 'od_cse_eightselect_basic_is_size', 'boolean', [
+            'label'            => 'Definiert Größe',
+            'displayInBackend' => true,
+            'custom'           => false,
+            'translatable'     => false,
+            'position'         => 0,
+        ]);
+
+        /** @var \Doctrine\Common\Cache\ClearableCache $metaDataCache */
+        $metaDataCache = Shopware()->Models()->getConfiguration()->getMetadataCacheImpl();
+        $metaDataCache->deleteAll();
+        Shopware()->Models()->generateAttributeModels(['s_filter_options_attributes']);
     }
 
     /**
@@ -250,7 +275,7 @@ class CseEightselectBasic extends Plugin
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
                                 befindet.',
-                'allowBlank' => true,
+                'allowBlank'   => true,
             ]
         );
 
@@ -282,7 +307,7 @@ class CseEightselectBasic extends Plugin
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
                                 befindet.',
-                'allowBlank' => true,
+                'allowBlank'   => true,
             ]
         );
 
@@ -314,13 +339,14 @@ class CseEightselectBasic extends Plugin
                                 sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
                                 sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
                                 befindet.',
-                'allowBlank' => true,
+                'allowBlank'   => true,
             ]
         );
     }
 
     /**
      * @param UninstallContext $context
+     * @throws \Exception
      */
     public function uninstall(UninstallContext $context)
     {
@@ -329,6 +355,7 @@ class CseEightselectBasic extends Plugin
         $this->removeUpdateCron();
         $this->removeDatabase();
         $this->deleteExportDir();
+        $this->removeAttributes();
         parent::uninstall($context);
     }
 
@@ -360,7 +387,18 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * @param  ModelManager $modelManager
+     * @throws \Exception
+     */
+    private function removeAttributes()
+    {
+        /** @var \Shopware\Bundle\AttributeBundle\Service\CrudService $attributeService */
+        $attributeService = Shopware()->Container()->get('shopware_attribute.crud_service');
+
+        $attributeService->delete('s_article_configurator_groups_attributes', 'od_cse_eightselect_basic_is_size');
+    }
+
+    /**
+     * @param ModelManager $modelManager
      * @return array
      */
     private function getClasses(ModelManager $modelManager)
@@ -371,7 +409,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * @param  \Shopware_Components_Cron_CronJob $job
+     * @param \Shopware_Components_Cron_CronJob $job
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
@@ -382,7 +420,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * @param  \Shopware_Components_Cron_CronJob $job
+     * @param \Shopware_Components_Cron_CronJob $job
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
@@ -393,7 +431,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * @param  \Shopware_Components_Cron_CronJob $job
+     * @param \Shopware_Components_Cron_CronJob $job
      * @throws \Exception
      */
     public function cseEightselectBasicQuickUpdate(\Shopware_Components_Cron_CronJob $job)
@@ -523,18 +561,11 @@ class CseEightselectBasic extends Plugin
                 'eightselectAttributeLabel'      => 'EAN-CODE',
                 'eightselectAttributeLabelDescr' => 'Standardisierte eindeutige Materialnummer nach EAN (European Article Number) oder UPC (Unified Product Code).',
                 'shopwareAttribute'              => 's_articles_details.ean',
-
-            ],
-            [
-                'eightselectAttribute'           => 'model',
-                'eightselectAttributeLabel'      => 'PRODUKT-MODELL ID',
-                'eightselectAttributeLabelDescr' => 'Ein Modell bezeichnet das "Grundprodukt". ID kann Name oder Nummer sein. Ein Modell kann in mehreren Ausführungen vorkommen, die sich z.B. in Größe, Farbe oder Muster unterschieden. Beispiel: Das Modell "Arie" (1234) gibt es in den 3 Farben: "blau", "rot", "gelb" (567) und in den 4 Größen: "S", "M", "L", "XL" (89), also 12 Ausführungen. Jede Ausführung hat eine eindeutige Artikelnummer.',
-                'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'name1',
                 'eightselectAttributeLabel'      => 'ARTIKELBEZEICHNUNG',
-                'eightselectAttributeLabelDescr' => 'Standardbezeichnung für den Artikel so wie er normal- erweise in der Artikeldetailansicht genutzt wird (z.B. Sportliches Herren-Hemd "Arie")',
+                'eightselectAttributeLabelDescr' => 'Standardbezeichnung für den Artikel so wie er normalerweise in der Artikeldetailansicht genutzt wird (z.B. Sportliches Herren-Hemd "Arie")',
                 'shopwareAttribute'              => 's_articles.name',
             ],
             [
@@ -550,39 +581,33 @@ class CseEightselectBasic extends Plugin
                 'shopwareAttribute'              => 's_articles.description_long',
             ],
             [
-                'eightselectAttribute'           => 'beschreibung1',
-                'eightselectAttributeLabel'      => 'BESCHREIBUNGSTEXT',
-                'eightselectAttributeLabelDescr' => 'Der Beschreibunstext zum Artikel, auch "description long" genannt, in unformatierter Reintext-Form z.B. "Federleichte Regenhose! ..."',
-                'shopwareAttribute'              => 's_articles.description_long',
-            ],
-            [
                 'eightselectAttribute'           => 'rubrik',
                 'eightselectAttributeLabel'      => 'PRODUKTKATEGORIE',
-                'eightselectAttributeLabelDescr' => 'Bezeichnung der Artikelgruppen, die meist so in der Shop- navigation verwendet werden (z.B. Hosen, Jacken. Accessoires, Schuhe)',
+                'eightselectAttributeLabelDescr' => 'Bezeichnung der Artikelgruppen, die meist so in der Shopnavigation verwendet werden (z.B. Hosen, Jacken, Accessoires, Schuhe)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'typ',
                 'eightselectAttributeLabel'      => 'PRODUKTTYP / UNTERKATEGORIE',
-                'eightselectAttributeLabelDescr' => 'Verfeinerung der Ebene PRODUKTKATEGORIE  (z.B. PRODUKTKATEGORIE = Jacken; PRODUKTTYP = Lederjacken, Parkas, Blousons)',
+                'eightselectAttributeLabelDescr' => 'Verfeinerung der Ebene PRODUKTKATEGORIE (z.B. PRODUKTKATEGORIE = Jacken; PRODUKTTYP = Lederjacken, Parkas, Blousons)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'abteilung',
                 'eightselectAttributeLabel'      => 'ABTEILUNG',
-                'eightselectAttributeLabelDescr' => 'Einteilung der Sortimente nach Zielgruppen  (z.B. Damen, Herren, Kinder)',
+                'eightselectAttributeLabelDescr' => 'Einteilung der Sortimente nach Zielgruppen (z.B. Damen, Herren, Kinder)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'kiko',
                 'eightselectAttributeLabel'      => 'KIKO',
-                'eightselectAttributeLabelDescr' => 'Speziell für Kindersortimente: Einteilung nach  Zielgruppen (z.B. Mädchen, Jungen, Baby)',
+                'eightselectAttributeLabelDescr' => 'Speziell für Kindersortimente: Einteilung nach Zielgruppen (z.B. Mädchen, Jungen, Baby)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'bereich',
                 'eightselectAttributeLabel'      => 'BEREICH',
-                'eightselectAttributeLabelDescr' => 'Damit können Teilsortimente bezeichnet sein  (z.B. Outdoor; Kosmetik; Trachten; Lifestyle)',
+                'eightselectAttributeLabelDescr' => 'Damit können Teilsortimente bezeichnet sein (z.B. Outdoor, Kosmetik, Trachten, Lifestyle)',
                 'shopwareAttribute'              => '-',
             ],
             [
@@ -594,37 +619,31 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'serie',
                 'eightselectAttributeLabel'      => 'SERIE',
-                'eightselectAttributeLabelDescr' => 'Hier können Bezeichnungen für Serien übergeben werden,  um Artikelfamilien oder Sondereditionen zu kennzeichnen (z.B. Expert Line, Mountain Professional)',
+                'eightselectAttributeLabelDescr' => 'Hier können Bezeichnungen für Serien übergeben werden, um Artikelfamilien oder Sondereditionen zu kennzeichnen (z.B. Expert Line, Mountain Professional)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'gruppe',
                 'eightselectAttributeLabel'      => 'GRUPPE / BAUKAUSTEN',
-                'eightselectAttributeLabelDescr' => 'bezeichnet direkt zusammengehörige Artikel  (z.B. Bikini-Oberteil  "Aloha"und Bikini-Unterteil  "Aloha"=  Gruppe 1002918; Baukasten-Sakko "Ernie" und Baukasten-Hose "Bert" = Gruppe "E&B"). Dabei können auch mehr als 2 Artikel eine Gruppe bilden (z.B. Mix & Match: Gruppe "Hawaii"  = 3 Bikini-Oberteile können mit 2 Bikini-Unterteilen frei kombiniert werden) . Die ID für eine Gruppe kann eine Nummer oder ein Name sein.',
+                'eightselectAttributeLabelDescr' => 'bezeichnet direkt zusammengehörige Artikel (z.B. Bikini-Oberteil "Aloha" und Bikini-Unterteil "Aloha" = Gruppe 1002918; Baukasten-Sakko "Ernie" und Baukasten-Hose "Bert" = Gruppe "E&B"). Dabei können auch mehr als 2 Artikel eine Gruppe bilden (z.B. Mix & Match: Gruppe "Hawaii" = 3 Bikini-Oberteile können mit 2 Bikini-Unterteilen frei kombiniert werden). Der Wert für eine Gruppe kann eine Nummer oder ein Name sein.',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'saison',
                 'eightselectAttributeLabel'      => 'SAISON',
-                'eightselectAttributeLabelDescr' => 'Beschreibt zu welcher Saison bzw. saisonalen Kollektion der  Artikel gehört (z.B. HW18/19; Sommer 2018; Winter)',
-                'shopwareAttribute'              => '-',
-            ],
-            [
-                'eightselectAttribute'           => 'groesse',
-                'eightselectAttributeLabel'      => 'GROESSE',
-                'eightselectAttributeLabelDescr' => 'Ein Artikel kann verschiedene Größe haben. Alle Größensysteme  sind zulässig. Artikel ohne Größe sind oft als "onesize" gekennzeichnet.',
+                'eightselectAttributeLabelDescr' => 'Beschreibt zu welcher Saison bzw. saisonalen Kollektion der Artikel gehört (z.B. HW18/19; Sommer 2018; Winter)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'farbe',
                 'eightselectAttributeLabel'      => 'FARBE',
-                'eightselectAttributeLabelDescr' => 'Die exakte Farbbezeichnung des Artikels  (z.B. Gelb; Himbeerrot; Rosenrot)',
+                'eightselectAttributeLabelDescr' => 'Die exakte Farbbezeichnung des Artikels (z.B. Gelb; Himbeerrot; Rosenrot)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'farbspektrum',
                 'eightselectAttributeLabel'      => 'FARBSPEKTRUM',
-                'eightselectAttributeLabelDescr' => 'Farben sind einem Farbspektrum zugeordnet  (z.B. Farbe: Himbeerrot > Farbspektrum: Rot)',
+                'eightselectAttributeLabelDescr' => 'Farben sind einem Farbspektrum zugeordnet (z.B. Farbe: Himbeerrot > Farbspektrum: Rot)',
                 'shopwareAttribute'              => '-',
             ],
             [
@@ -648,31 +667,31 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'detail',
                 'eightselectAttributeLabel'      => 'DETAIL',
-                'eightselectAttributeLabelDescr' => 'erwähnenswerte Details an Artikeln  (z.B. Reißverschluss seitlich am Saum, Brusttasche, Volants, Netzeinsatz, Kragen in Kontrastfarbe)',
+                'eightselectAttributeLabelDescr' => 'erwähnenswerte Details an Artikeln (z.B. Reißverschluss seitlich am Saum, Brusttasche, Volants, Netzeinsatz, Kragen in Kontrastfarbe)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'passform',
                 'eightselectAttributeLabel'      => 'PASSFORM',
-                'eightselectAttributeLabelDescr' => 'in Bezug auf die Körperform, wird häufig für  Hemden, Sakkos und Anzüge verwendet (z.B. schmal, bequeme Weite, slim-fit, regular-fit, comfort-fit, körpernah)',
+                'eightselectAttributeLabelDescr' => 'in Bezug auf die Körperform, wird häufig für Hemden, Sakkos und Anzüge verwendet (z.B. schmal, bequeme Weite, slim-fit, regular-fit, comfort-fit, körpernah)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'schnitt',
                 'eightselectAttributeLabel'      => 'SCHNITT',
-                'eightselectAttributeLabelDescr' => 'in Bezug auf die Form des Artikels  (z.B. Bootcut, gerades Bein, Oversized, spitzer Schuh)',
+                'eightselectAttributeLabelDescr' => 'in Bezug auf die Form des Artikels (z.B. Bootcut, gerades Bein, Oversized, spitzer Schuh)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'aermellaenge',
                 'eightselectAttributeLabel'      => 'ÄRMELLÄNGE',
-                'eightselectAttributeLabelDescr' => 'speziell bei Oberbekleidung: Länge der Ärmel  (z.B. normal, extra-lange Ärmel, ärmellos, 3/4 Arm)',
+                'eightselectAttributeLabelDescr' => 'speziell bei Oberbekleidung: Länge der Ärmel (z.B. normal, extra-lange Ärmel, ärmellos, 3/4 Arm)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'kragenform',
                 'eightselectAttributeLabel'      => 'KRAGENFORM',
-                'eightselectAttributeLabelDescr' => 'speziell bei Oberbekleidung: Beschreibung des Kragens  oder Ausschnitts (z.B. Rollkragen, V-Ausschnitt, Blusenkragen, Haifischkragen)',
+                'eightselectAttributeLabelDescr' => 'speziell bei Oberbekleidung: Beschreibung des Kragens oder Ausschnitts (z.B. Rollkragen, V-Ausschnitt, Blusenkragen, Haifischkragen)',
                 'shopwareAttribute'              => '-',
             ],
             [
@@ -690,19 +709,19 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'material',
                 'eightselectAttributeLabel'      => 'MATERIAL',
-                'eightselectAttributeLabelDescr' => 'bezeichnet die genaue Materialzusammensetzung  (z.B. 98% Baumwolle, 2% Elasthan)',
+                'eightselectAttributeLabelDescr' => 'bezeichnet die genaue Materialzusammensetzung (z.B. 98% Baumwolle, 2% Elasthan)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'funktion',
                 'eightselectAttributeLabel'      => 'FUNKTION',
-                'eightselectAttributeLabelDescr' => 'beschreibt Materialfunktionen und -eigenschaften  (z.b. schnelltrocknend, atmungsaktiv, 100% UV-Schutz;  pflegeleicht, bügelleicht, körperformend)',
+                'eightselectAttributeLabelDescr' => 'beschreibt Materialfunktionen und -eigenschaften (z.b. schnelltrocknend, atmungsaktiv, 100% UV-Schutz;  pflegeleicht, bügelleicht, körperformend)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'eigenschaft',
                 'eightselectAttributeLabel'      => 'EIGENSCHAFT / EINSATZBEREICH',
-                'eightselectAttributeLabelDescr' => 'speziell für Sport und Outdoor. Hinweise zum Einsatzbereich  (Bsp. Schlafsack geeignet für Temparaturbereich 1 °C bis -16 °C, kratzfest, wasserdicht)',
+                'eightselectAttributeLabelDescr' => 'speziell für Sport und Outdoor. Hinweise zum Einsatzbereich (Bsp. Schlafsack geeignet für Temparaturbereich 1 °C bis -16 °C, kratzfest, wasserdicht)',
                 'shopwareAttribute'              => '-',
             ],
             [
@@ -714,13 +733,13 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'fuellmenge',
                 'eightselectAttributeLabel'      => 'FUELLMENGE',
-                'eightselectAttributeLabelDescr' => 'bezieht sich auf die Menge des Inhalts des Artikels  (z.B. 200ml; 0,5 Liter, 3kg, 150 Stück)',
+                'eightselectAttributeLabelDescr' => 'bezieht sich auf die Menge des Inhalts des Artikels (z.B. 200ml; 0,5 Liter, 3kg, 150 Stück)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'absatzhoehe',
                 'eightselectAttributeLabel'      => 'ABSATZHÖHE',
-                'eightselectAttributeLabelDescr' => 'speziell bei Schuhen: Höhe des Absatzes (Format mit  oder ohne Maßeinheit z.B. 5,5 cm oder 5,5)',
+                'eightselectAttributeLabelDescr' => 'speziell bei Schuhen: Höhe des Absatzes (Format mit oder ohne Maßeinheit z.B. 5,5 cm oder 5,5)',
                 'shopwareAttribute'              => '-',
             ]
         ];
@@ -749,7 +768,7 @@ class CseEightselectBasic extends Plugin
             'CREATE TABLE `8s_articles_details_change_queue` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `s_articles_details_id` int(11) NOT NULL,
-                  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                  `updated_at` datetime,
                   PRIMARY KEY (`id`)
                 ) COLLATE=\'utf8_unicode_ci\' ENGINE=InnoDB DEFAULT CHARSET=utf8;',
             'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
@@ -757,7 +776,7 @@ class CseEightselectBasic extends Plugin
                   FOR EACH ROW
                   BEGIN
                     IF (NEW.instock != OLD.instock OR NEW.active != OLD.active) THEN
-                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id) VALUES (NEW.id);
+                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.id, NOW());
                     END IF;
                   END',
             'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
@@ -765,7 +784,7 @@ class CseEightselectBasic extends Plugin
                   FOR EACH ROW
                   BEGIN
                     IF (NEW.price != OLD.price OR NEW.pseudoprice != OLD.pseudoprice) THEN
-                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id) VALUES (NEW.articleDetailsID);
+                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.articleDetailsID, NOW());
                     END IF;
                   END',
         ];
@@ -785,7 +804,7 @@ class CseEightselectBasic extends Plugin
             'CREATE TABLE `8s_cron_run_once_queue` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `cron_name` varchar(255) NOT NULL,
-                  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
+                  `updated_at` datetime,
                   `running` bit DEFAULT 0,
                   `progress` int(3) DEFAULT 0,
                   PRIMARY KEY (`id`)
@@ -806,6 +825,7 @@ class CseEightselectBasic extends Plugin
         $date = new \DateTime();
         $date->setTime(0, 0);
         $date->add(new \DateInterval('P1D'));
+
         return $date;
     }
 
@@ -816,31 +836,34 @@ class CseEightselectBasic extends Plugin
         $cacheManager->clearConfigCache();
     }
 
-    private function createExportDir() {
+    private function createExportDir()
+    {
         if (!is_dir(ArticleExport::STORAGE)) {
             mkdir(ArticleExport::STORAGE, 0775, true);
         }
     }
 
-    private function deleteExportDir() {
+    private function deleteExportDir()
+    {
         $this->rrmdir(ArticleExport::STORAGE);
     }
 
-    private function rrmdir($dir) {
+    private function rrmdir($dir)
+    {
         if (is_dir($dir)) {
-          $objects = scandir($dir);
-          foreach ($objects as $object) {
-            if ($object === '.' || $object === '..') {
-                continue;
-            }
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object === '.' || $object === '..') {
+                    continue;
+                }
 
-            if (is_dir($object)) {
-                rrmdir($dir);
-            } else {
-                unlink(sprintf('%s/%s', $dir, $object));
+                if (is_dir($object)) {
+                    rrmdir($dir);
+                } else {
+                    unlink(sprintf('%s/%s', $dir, $object));
+                }
             }
-          }
-          rmdir($dir);
+            rmdir($dir);
         }
     }
 }

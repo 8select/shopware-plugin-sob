@@ -27,7 +27,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         } else {
             $progress = false;
         }
-        $this->View()->assign(['progress' =>$progress]);
+        $this->View()->assign(['progress' => $progress]);
     }
 
     public function getQuickExportStatusAction()
@@ -41,6 +41,6 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         } else {
             $progress = false;
         }
-        $this->View()->assign(['progress' =>$progress]);
+        $this->View()->assign(['progress' => $progress]);
     }
 }

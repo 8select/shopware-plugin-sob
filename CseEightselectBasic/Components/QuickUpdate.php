@@ -1,6 +1,8 @@
 <?php
 namespace CseEightselectBasic\Components;
 
+use League\Csv\Writer;
+
 class QuickUpdate
 {
     /**
@@ -27,7 +29,7 @@ class QuickUpdate
     /**
      * @var int
      */
-    private $queueId = Null;
+    private $queueId = null;
 
     /**
      * @var int
@@ -52,18 +54,21 @@ class QuickUpdate
                 mkdir(self::STORAGE, 775, true);
             }
 
-            $fp = fopen(self::STORAGE . $filename, 'a');
+            if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+                require_once __DIR__ . '/../vendor/autoload.php';
+            }
+
+            $csvWriter = Writer::createFromPath(self::STORAGE . $filename, 'a');
+            $csvWriter->setDelimiter(';');
 
             $header = [];
             foreach ($this->fields as $field) {
                 $header[] = $field;
             }
+            $csvWriter->insertOne($header);
 
-            fputcsv($fp, $header, ';');
+            $this->writeFile($csvWriter);
 
-            $this->writeFile($fp);
-
-            fclose($fp);
             AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
         }
 
@@ -71,12 +76,12 @@ class QuickUpdate
     }
 
     /**
-     * @param $fp
+     * @param Writer $csvWriter
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    protected function writeFile($fp)
+    protected function writeFile(Writer $csvWriter)
     {
         $numArticles = $this->getNumArticles();
         $batchSize = 100;
@@ -88,7 +93,7 @@ class QuickUpdate
 
             foreach ($articles as $article) {
                 $line = FieldHelper::getLine($article, $this->fields);
-                fputs($fp, implode(';', $line) . "\r\n");
+                $csvWriter->insertOne($line);
             }
         }
     }
@@ -106,6 +111,7 @@ class QuickUpdate
                 s_articles.id as articleID,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
+                s_articles_details.id AS detailID,
                 s_articles_details.active AS active,
                 s_articles_details.instock AS instock,
                 s_articles_details.ordernumber as sku,
@@ -118,6 +124,7 @@ class QuickUpdate
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
                 LIMIT ' . $number . ' OFFSET ' . $from;
         $attributes = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+
         return $attributes;
     }
 
@@ -129,9 +136,9 @@ class QuickUpdate
     protected function getNumArticles()
     {
         $sql = 'SELECT DISTINCT s_articles_details_id FROM 8s_articles_details_change_queue';
+
         return Shopware()->Db()->query($sql)->rowCount();
     }
-
 
     /**
      * @param $numArticles
@@ -180,9 +187,9 @@ class QuickUpdate
 
         if (!count($queue)) {
             $connection = Shopware()->Container()->get('dbal_connection');
-            $connection->insert('8s_cron_run_once_queue', ['cron_name' => '8select Quick Export']);
+            $connection->insert('8s_cron_run_once_queue', ['cron_name' => self::CRON_NAME]);
             $this->setProgressTable();
-        } else if (count($queue) && !count($running)) {
+        } elseif (count($queue) && !count($running)) {
             $id = reset($queue)['id'];
             $sqls = [
                 'UPDATE 8s_cron_run_once_queue SET running = 1 WHERE id = ' . $id,

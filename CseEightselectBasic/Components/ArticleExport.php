@@ -1,19 +1,14 @@
 <?php
 namespace CseEightselectBasic\Components;
 
+use League\Csv\Writer;
+
 class ArticleExport
 {
-    /**
-     * @const string
-     */
     const STORAGE = 'files/8select/';
 
-    /**
-     * @const string
-     */
     const CRON_NAME = '8select Full Export';
 
-    /** @var bool  */
     const DEBUG = false;
 
     private $currentProgress = 0;
@@ -100,11 +95,12 @@ class ArticleExport
     }
 
     /**
-     * @param  null                         $queueId
+     * @param  null $queueId
      * @throws \Doctrine\ORM\ORMException
      * @throws \Enlight_Exception
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @throws \League\Csv\Exception
      */
     public function doCron($queueId = null)
     {
@@ -112,28 +108,33 @@ class ArticleExport
             $connection = Shopware()->Container()->get('dbal_connection');
             $connection->insert('8s_cron_run_once_queue', ['cron_name' => '8select Full Export']);
             $this->checkRunOnce();
+
             return;
         }
 
         $start = time();
-        $config = Shopware()->Config();
-        $feedId = $config->get('8s_feed_id');
+        $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
+        $feedId = $config->getByPluginName('CseEightselectBasic')['8s_feed_id'];
+
         $feedType = 'product_feed';
         $timestampInMillis = round(microtime(true) * 1000);
         $filename = sprintf('%s_%s_%d.csv', $feedId, $feedType, $timestampInMillis);
 
-        $fp = fopen(self::STORAGE . $filename, 'a');
-
-        $header = [];
-        foreach ($this->fields as $field) {
-            $header[] = $field;
+        if (!is_dir(self::STORAGE)) {
+            mkdir(self::STORAGE, 0775, true);
         }
 
-        fputcsv($fp, $header, ';');
+        if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+            require_once __DIR__ . '/../vendor/autoload.php';
+        }
 
-        $this->writeFile($fp, $queueId);
+        $csvWriter = Writer::createFromPath(self::STORAGE . $filename, 'a');
+        $csvWriter->setDelimiter(';');
 
-        fclose($fp);
+        // insert header
+        $csvWriter->insertOne($this->fields);
+
+        $this->writeFile($csvWriter, $queueId);
 
         AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
 
@@ -143,13 +144,14 @@ class ArticleExport
     }
 
     /**
-     * @param $fp
+     * @param Writer $csvWriter
      * @param $queueId
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     * @throws \League\Csv\CannotInsertRecord
      */
-    protected function writeFile($fp, $queueId)
+    protected function writeFile(Writer $csvWriter, $queueId)
     {
         $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping
                          FROM 8s_attribute_mapping
@@ -176,7 +178,7 @@ class ArticleExport
 
             foreach ($articles as $article) {
                 $line = FieldHelper::getLine($article, $this->fields);
-                fputs($fp, implode(';', $line) . "\r\n");
+                $csvWriter->insertOne($line);
             }
         }
     }
@@ -222,6 +224,7 @@ class ArticleExport
     protected function getNumArticles()
     {
         $sql = 'SELECT id FROM s_articles_details';
+
         return Shopware()->Db()->query($sql)->rowCount();
     }
 
