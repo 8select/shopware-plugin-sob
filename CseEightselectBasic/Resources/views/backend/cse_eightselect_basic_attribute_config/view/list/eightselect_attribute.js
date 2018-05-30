@@ -36,7 +36,7 @@ Ext.define(
             header: "Shopware Attribute",
             editor: {
               xtype: "combobox",
-              allowBlank: false,
+              allowBlank: true,
               multiSelect: true,
               valueField: "column_name",
               displayField: "label",
