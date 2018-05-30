@@ -21,7 +21,6 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
     {
         $fixedAttributes = [
             // articles attributes
-            ['column_name' => '-', 'label' => '-'],
             ['column_name' => 's_articles.name', 'label' => 'Name'],
             ['column_name' => 's_articles.description', 'label' => 'Description'],
             ['column_name' => 's_articles.description_long', 'label' => 'Description long'],
