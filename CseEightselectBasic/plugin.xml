@@ -15,7 +15,7 @@
 <p>Curated Shopping as a Service</p>
 ]]>
     </description>
-    <compatibility minVersion="5.2.11" />
+    <compatibility minVersion="5.2.17" />
 
     <changelog version="1.0.1">
         <changes lang="de">Bugfixes am Produktexport;</changes>
