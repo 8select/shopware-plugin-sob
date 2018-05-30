@@ -66,8 +66,7 @@ class FieldHelper
                     $value = str_replace(["\r\n", "\r", "\n"], '<br>', $withNewLines);
                     break;
                 case 'beschreibung1':
-                case 'beschreibung2':
-                    $withNewLines = self::getValue($article, $field);
+                    $withNewLines = self::getValue($article, 'beschreibung');
                     $withOutNewLines = str_replace(["\r\n", "\r", "\n"], '<br>', $withNewLines);
                     $wihtOutHtml = strip_tags($withOutNewLines);
                     $value = html_entity_decode($wihtOutHtml);
