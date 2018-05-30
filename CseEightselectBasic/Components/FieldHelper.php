@@ -345,7 +345,8 @@ SQL;
             $shop = $shop->getMain();
         }
 
-        $versionArray = explode('.', Shopware()::VERSION);
+        $shopwareInstance = Shopware();
+        $versionArray = explode('.', $shopwareInstance::VERSION);
         if ($versionArray[0] >= '5' && $versionArray[1] >= '4') {
             if ($shop->getSecure()) {
                 return 'https://' . $shop->getHost() . $shop->getBasePath();
