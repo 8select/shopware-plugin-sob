@@ -102,15 +102,13 @@ class FieldHelper
             $attributes = explode(',', $attrGroup);
 
             foreach ($attributes as $attribute) {
-                if ($attribute !== '-' && $attribute !== '') {
-                    if(strpos($attribute, "group") !== false) {
-                        $groupId = explode('id=', $attribute)[1];
-                        array_push($valuesTreshold, self::getConfiguratorGroupValue($article['detailID'], $groupId));
-                    }
-                    if(strpos($attribute, "filter") !== false) {
-                        $filterId = explode('id=', $attribute)[1];
-                        array_push($valuesTreshold, self::getFilterValues($article['articleID'], $filterId));
-                    }
+                if(strpos($attribute, "group") !== false) {
+                    $groupId = explode('id=', $attribute)[1];
+                    array_push($valuesTreshold, self::getConfiguratorGroupValue($article['detailID'], $groupId));
+                }
+                if(strpos($attribute, "filter") !== false) {
+                    $filterId = explode('id=', $attribute)[1];
+                    array_push($valuesTreshold, self::getFilterValues($article['articleID'], $filterId));
                 }
             }
             return implode("|", array_filter($valuesTreshold));
