@@ -69,8 +69,8 @@ class QuickUpdate
             }
 
             $start = time();
-            $config = Shopware()->Config();
-            $feedId = $config->get('8s_feed_id');
+            $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
+            $feedId = $config->getByPluginName('CseEightselectBasic')['8s_feed_id'];
             $feedType = 'status_feed';
             $timestampInMillis = round(microtime(true) * 1000);
             $filename = sprintf('%s_%s_%d.csv', $feedId, $feedType, $timestampInMillis);
