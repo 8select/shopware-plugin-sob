@@ -1,6 +1,20 @@
 # Change Log
 
-## [1.0.1](https://github.com/8select/shopware-plugin-sob/tree/1.0.1) (2018-05-27)
+## [1.1.0](https://github.com/8select/shopware-plugin-sob/tree/1.1.0) (2018-05-31)
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.0.1...1.1.0)
+
+**Implemented features:**
+
+- CSE-860 single dimension variants [\#18](https://github.com/8select/shopware-plugin-sob/pull/18) ([akleiber](https://github.com/akleiber))
+- CSE-829 group attribute mappings [\#13](https://github.com/8select/shopware-plugin-sob/pull/13) ([voodoods](https://github.com/voodoods))
+
+**Fixed bugs:**
+
+- CSE-855 refactor export run once [\#16](https://github.com/8select/shopware-plugin-sob/pull/16) ([akleiber](https://github.com/akleiber))
+- CSE-854 take care of shopware version while getting host [\#15](https://github.com/8select/shopware-plugin-sob/pull/15) ([akleiber](https://github.com/akleiber))
+- CSE-852 set correct export rights and move to install/uninstall routine [\#14](https://github.com/8select/shopware-plugin-sob/pull/14) ([akleiber](https://github.com/akleiber))
+
+## [1.0.1](https://github.com/8select/shopware-plugin-sob/tree/1.0.1) (2018-05-26)
 **Implemented features:**
 
 - add configurator-groups to attribute config [\#11](https://github.com/8select/shopware-plugin-sob/pull/11) ([caora](https://github.com/caora))
