@@ -21,7 +21,8 @@ PLUGIN_DIR="${BUILD_DIR}/${PLUGIN_NAME}"
 echo "Build at ${BUILD_DIR}"
 cp -r "${CURRENT_DIR}/../${PLUGIN_NAME}" "${BUILD_DIR}/${PLUGIN_NAME}"
 cd ${PLUGIN_DIR}
-composer install --no-interaction --no-progress --ignore-platform-reqs --no-dev
+rm -rf vendor
+composer install --no-interaction --no-progress --ignore-platform-reqs --no-dev --optimize-autoloader
 cd ${BUILD_DIR}
 sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/plugin.xml
 zip -q -r "${DIST_PATH}" ${PLUGIN_NAME}
