@@ -1,5 +1,16 @@
 # Change Log
 
+## [1.2.0](https://github.com/8select/shopware-plugin-sob/tree/1.2.0) (2018-06-01)
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.1.0...1.2.0)
+
+**Implemented features:**
+
+- CSE-864 compatible to shopware system requirements [\#20](https://github.com/8select/shopware-plugin-sob/pull/20) ([akleiber](https://github.com/akleiber))
+
+**Fixed bugs:**
+
+- CSE-869 wgt ldr config object name [\#21](https://github.com/8select/shopware-plugin-sob/pull/21) ([akleiber](https://github.com/akleiber))
+
 ## [1.1.0](https://github.com/8select/shopware-plugin-sob/tree/1.1.0) (2018-05-31)
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.0.1...1.1.0)
 
