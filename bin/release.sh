@@ -13,7 +13,7 @@ VERSION=${1}
 PLUGIN_NAME="CseEightselectBasic"
 
 DIST_DIR="dist"
-ZIP_NAME="${PLUGIN_NAME}_Shopware-5.2.11_${VERSION}.zip"
+ZIP_NAME="${PLUGIN_NAME}_Shopware-5.2.17_${VERSION}.zip"
 DIST_PATH="${CURRENT_DIR}/../${DIST_DIR}/${ZIP_NAME}"
 BUILD_DIR=`mktemp -d`
 PLUGIN_DIR="${BUILD_DIR}/${PLUGIN_NAME}"
