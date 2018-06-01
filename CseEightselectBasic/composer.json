@@ -1,19 +1,20 @@
 {
   "name": "8select/shopware-plugin-sob",
-  "description": "Shopware 5.2.11 plugin to use 8select CSE",
+  "description": "Shopware plugin to use 8select CSE",
   "license": "proprietary",
   "type": "shopware-plugin",
   "extra": {
     "installer-name": "CseEightselectBasic"
   },
   "require": {
-    "php": "^7.0.10",
+    "php": "^5.6.4",
     "aws/aws-sdk-php": "^3.58.0",
-    "league/csv": "^9.1.4"
+    "league/csv": "^8.2.3"
   },
   "config": {
     "platform": {
-      "php": "7.0.10"
+      "php": "5.6.4"
     }
+  },
   }
 }
