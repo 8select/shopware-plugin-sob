@@ -16,5 +16,13 @@
       "php": "5.6.4"
     }
   },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.2",
+    "wimg/php-compatibility": "^8.1",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4"
+  },
+  "scripts": {
+    "php-comp":
+      "phpcs -p . --standard=PHPCompatibility --ignore=vendor/* --runtime-set testVersion 5.6"
   }
 }
