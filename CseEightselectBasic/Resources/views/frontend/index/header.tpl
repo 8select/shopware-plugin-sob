@@ -13,11 +13,11 @@
     {$smarty.block.parent}
     {if !$checkoutFinish}
         <script type="text/javascript">
-            if (typeof _8select_config === "undefined") {
-                var _8select_config = {};
+            if (typeof _eightselect_config === "undefined") {
+                var _eightselect_config = {};
             }
-            _8select_config.sys = _8select_config.sys || {};
-            _8select_config.sys.callback = function (error) {
+            _eightselect_config.sys = _eightselect_config.sys || {};
+            _eightselect_config.sys.callback = function (error) {
                 if (error) {
                     _8select_plugin.hideSys();
                 } else {
