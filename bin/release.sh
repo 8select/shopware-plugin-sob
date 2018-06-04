@@ -29,6 +29,9 @@ sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/plugin.xml
 if [ $BUCKET == 'staging' ]
 then
   sed -i '' "s@__BUCKET__@productfeed-prod.staging@g" ${PLUGIN_DIR}/Components/AWSUploader.php
+  echo '========================================================================================================================'
+  echo 'NOTE: This is a staging build. For production please make sure to to execute this script without `staging` parameter.'
+  echo '========================================================================================================================'
 else 
   sed -i '' "s@__BUCKET__@productfeed@g" ${PLUGIN_DIR}/Components/AWSUploader.php
 fi
