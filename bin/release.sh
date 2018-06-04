@@ -10,6 +10,7 @@ done
 CURRENT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 VERSION=${1}
+BUCKET=${2}
 PLUGIN_NAME="CseEightselectBasic"
 
 DIST_DIR="dist"
@@ -25,5 +26,11 @@ rm -rf vendor
 composer install --no-interaction --no-progress --ignore-platform-reqs --no-dev --optimize-autoloader
 cd ${BUILD_DIR}
 sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/plugin.xml
+if [ $BUCKET == 'staging' ]
+then
+  sed -i '' "s@__BUCKET__@productfeed-prod.staging@g" ${PLUGIN_DIR}/Components/AWSUploader.php
+else 
+  sed -i '' "s@__BUCKET__@productfeed@g" ${PLUGIN_DIR}/Components/AWSUploader.php
+fi
 zip -q -r "${DIST_PATH}" ${PLUGIN_NAME}
 echo "created release ${VERSION} at ${DIST_PATH}"
