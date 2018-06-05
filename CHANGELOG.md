@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.2.1](https://github.com/8select/shopware-plugin-sob/tree/1.2.1) (2018-06-05)
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.2.0...1.2.1)
+
+**Fixed bugs:**
+
+- CSE-877 use online SOB installation manual [\#22](https://github.com/8select/shopware-plugin-sob/pull/22) ([akleiber](https://github.com/akleiber))
+
 ## [1.2.0](https://github.com/8select/shopware-plugin-sob/tree/1.2.0) (2018-06-01)
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.1.0...1.2.0)
 
