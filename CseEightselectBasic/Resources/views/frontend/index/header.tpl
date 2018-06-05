@@ -25,7 +25,7 @@
                 }
             }
         </script>
-        <script async src="https://wgt.8select.io/{config name="8s_merchant_id"}/loader.js"></script>
+        <script async src="https://__BUCKET__.8select.io/{config name="8s_merchant_id"}/loader.js"></script>
 
         <script type="text/javascript">
             if (typeof _eightselect_shop_plugin === "undefined") {
