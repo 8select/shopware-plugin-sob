@@ -649,7 +649,7 @@ class CseEightselectBasic extends Plugin
             ],
             [
                 'eightselectAttribute'           => 'rubrik',
-                'eightselectAttributeLabel'      => 'PRODUKTKATEGORIE',
+                'eightselectAttributeLabel'      => 'PRODUKTKATEGORIE / -RUBRIK',
                 'eightselectAttributeLabelDescr' => 'bezeichnet spezielle Artikelgruppen, die als Filter oder Shop-Navigation genutzt werden (z.B. Große Größen, Umstandsmode, Stillmode)',
                 'shopwareAttribute'              => '',
             ],
