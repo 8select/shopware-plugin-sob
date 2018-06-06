@@ -742,12 +742,6 @@ class CseEightselectBasic extends Plugin
                 'shopwareAttribute'             => '-',
             ],
             [
-                'eightselectAttribute'           => 'groesse',
-                'eightselectAttributeLabel'      => 'GROESSE',
-                'eightselectAttributeLabelDescr' => 'Ein Artikel kann verschiedene Größe haben. Alle Größensysteme  sind zulässig. Artikel ohne Größe sind oft als "onesize" gekennzeichnet.',
-                'shopwareAttribute'             => '-',
-            ],
-            [
                 'eightselectAttribute'           => 'farbe',
                 'eightselectAttributeLabel'      => 'FARBE',
                 'eightselectAttributeLabelDescr' => 'Die exakte Farbbezeichnung des Artikels (z.B. Gelb; Himbeerrot; Rosenrot)',
