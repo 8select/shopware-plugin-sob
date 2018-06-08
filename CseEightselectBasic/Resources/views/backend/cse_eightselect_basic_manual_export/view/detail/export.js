@@ -8,6 +8,14 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     layout: "vbox",
 
     initComponent: function () {
+
+        Ext.Loader.setConfig({
+            enabled: true,
+            paths:{
+                'Ext.configChecker':'../../../cse_eightselect_common/plugin_config_checker.js'
+            }
+        });
+
         var me = this;
 
         var requestLastFullExport = Ext.Ajax.request({
@@ -33,6 +41,14 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         var lastQuickUpdateLabel =  lastQuickUpdateTimeStamp.length === 0 ? 
                                     'Noch keine Schnell-Update durchgeführt.' : 
                                     'Letztes Schnell-Update am: ' + lastQuickUpdateTimeStamp;
+        var stateCheck = Ext.Ajax.request({ async: false, url: '{url controller=CseEightselectBasicManualExport action=checkForActiveState}' })
+        var apiCheck = Ext.Ajax.request({ async: false, url: '{url controller=CseEightselectBasicManualExport action=checkForApiId}' })
+        var feedCheck = Ext.Ajax.request({ async: false, url: '{url controller=CseEightselectBasicManualExport action=checkForFeedId}' })
+        
+        var active = Ext.decode(stateCheck.responseText).active
+        var apiId = Ext.decode(apiCheck.responseText).apiId
+        var feedId = Ext.decode(feedCheck.responseText).feedId
+
 
         var FULL_BTN = {
             id: 'full-export-btn',
@@ -49,6 +65,15 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             statusUri: '{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}',
         };
         var ERROR_MESSAGE = "Es ist ein Fehler aufgetreten. Überprüfen Sie bitte Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
+
+        var EMPTY_API_ID_MESSAGE = "Keine API ID hinterlegt. Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
+        var INVALID_API_ID_MESSAGE = "API ID ungültig. Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
+
+        var EMPTY_FEED_ID_MESSAGE = "Keine Feed ID hinterlegt. Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
+        var INVALID_FEED_ID_MESSAGE = "Feed ID ungültig. Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
+
+        var PLUGIN_NOT_ACTIVE = "Plugin ist nicht aktiv. Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
+
 
         function statusCheck (actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {
             Ext.Ajax.request({
@@ -74,6 +99,49 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
         function quickExportStatusCheck () {
             statusCheck(QUICK_BTN.statusUri, QUICK_BTN.id, QUICK_BTN.textEnabled, QUICK_BTN.textDisabled, quickExportStatusCheck);
+        }
+
+        function checkForActiveState(state) {
+            if (!active || active === null) {
+                Shopware.Notification.createGrowlMessage("", PLUGIN_NOT_ACTIVE);
+            }
+        }
+
+        function checkForApiId(id) {
+            if (!apiId || apiId === null || apiId.length === 0) {
+                Shopware.Notification.createGrowlMessage("", EMPTY_API_ID_MESSAGE);
+            }
+
+            if (apiId && apiId !== null && apiId.length !== 36) {
+                Shopware.Notification.createGrowlMessage("", INVALID_API_ID_MESSAGE);
+            }
+        }
+
+        function checkForFeedId(id) {
+            if (!feedId || feedId === null || feedId.length === 0) {
+                Shopware.Notification.createGrowlMessage("", EMPTY_FEED_ID_MESSAGE);
+            }
+
+            if (feedId && feedId !== null && feedId.length !== 36) {
+                Shopware.Notification.createGrowlMessage("", INVALID_FEED_ID_MESSAGE);
+            }
+        }
+
+        function validatePluginConfig() {
+
+            checkForActiveState(active)
+            checkForApiId(apiId)
+            checkForFeedId(feedId)
+
+            if (active !== null && apiId !== null && feedId !== null) {
+                if (active && apiId.length === 36 && feedId.length === 36) {
+                    fullExportStatusCheck();
+                    quickExportStatusCheck();
+
+                    Ext.getCmp(QUICK_BTN.id).enable();
+                    Ext.getCmp(FULL_BTN.id).enable();
+                }
+            }
         }
 
         me.items = [
@@ -142,7 +210,10 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         ];
 
         me.callParent(arguments);
-        fullExportStatusCheck();
-        quickExportStatusCheck();
+
+        Ext.getCmp(QUICK_BTN.id).disable();
+        Ext.getCmp(FULL_BTN.id).disable();
+
+        validatePluginConfig();
     }
 });
