@@ -9,13 +9,6 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
     initComponent: function () {
 
-        Ext.Loader.setConfig({
-            enabled: true,
-            paths:{
-                'Ext.configChecker':'../../../cse_eightselect_common/plugin_config_checker.js'
-            }
-        });
-
         var me = this;
 
         var requestLastFullExport = Ext.Ajax.request({
