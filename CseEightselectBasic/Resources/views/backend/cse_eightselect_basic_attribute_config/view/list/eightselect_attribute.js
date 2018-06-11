@@ -142,13 +142,6 @@ Ext.define(
         checkForSysAccAction(sysAcc)
         checkForPreviewMode(previewMode)
 
-        console.log("active", active)
-        console.log("apiId", apiId)
-        console.log("feedId", feedId)
-        console.log("htmlContainer", htmlContainer)
-        console.log("sysAcc", sysAcc)
-        console.log("previewMode", previewMode)
-
         var everythingSet =     active !== null && 
                                 apiId !== null && 
                                 feedId !== null && 
