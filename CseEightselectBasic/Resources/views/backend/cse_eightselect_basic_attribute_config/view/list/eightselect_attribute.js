@@ -150,9 +150,9 @@ Ext.define(
                                 previewMode !== null;
 
         var everythingValid =   active && 
-                                apiId.length === 36 && 
-                                feedId.length === 36 &&
-                                htmlContainer === "CSE_SYS";
+                                apiId && apiId.length === 36 && 
+                                feedId && feedId.length === 36 &&
+                                htmlContainer && htmlContainer === "CSE_SYS";
 
         if (everythingSet) {
             if (everythingValid) {
