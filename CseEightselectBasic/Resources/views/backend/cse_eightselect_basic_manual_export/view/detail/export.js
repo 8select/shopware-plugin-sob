@@ -8,7 +8,6 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     layout: "vbox",
 
     initComponent: function () {
-
         var me = this;
 
         var requestLastFullExport = Ext.Ajax.request({
@@ -94,33 +93,33 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             statusCheck(QUICK_BTN.statusUri, QUICK_BTN.id, QUICK_BTN.textEnabled, QUICK_BTN.textDisabled, quickExportStatusCheck);
         }
 
-        function checkForActiveState(state) {
-            if (!active || active === null) {
+        function checkForActiveState(validateState) {
+            if (!validateState || validateState === null) {
                 Shopware.Notification.createGrowlMessage("", PLUGIN_NOT_ACTIVE);
             }
         }
 
         function checkForApiId(id) {
-            if (!apiId || apiId === null || apiId.length === 0) {
+            if (!id || id === null ||id.length === 0) {
                 Shopware.Notification.createGrowlMessage("", EMPTY_API_ID_MESSAGE);
             }
 
-            if (apiId && apiId !== null && apiId.length !== 36) {
+            if (id && id !== null && id.length !== 36) {
                 Shopware.Notification.createGrowlMessage("", INVALID_API_ID_MESSAGE);
             }
         }
 
         function checkForFeedId(id) {
-            if (!feedId || feedId === null || feedId.length === 0) {
+            if (!id || id === null ||id.length === 0) {
                 Shopware.Notification.createGrowlMessage("", EMPTY_FEED_ID_MESSAGE);
             }
 
-            if (feedId && feedId !== null && feedId.length !== 36) {
+            if (id && id !== null && id.length !== 36) {
                 Shopware.Notification.createGrowlMessage("", INVALID_FEED_ID_MESSAGE);
             }
         }
 
-        function validatePluginConfig() {
+        function validatePluginConfig(callback) {
 
             checkForActiveState(active)
             checkForApiId(apiId)
@@ -131,10 +130,19 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
                     fullExportStatusCheck();
                     quickExportStatusCheck();
 
-                    Ext.getCmp(QUICK_BTN.id).enable();
-                    Ext.getCmp(FULL_BTN.id).enable();
+                    callback();
                 }
             }
+        }
+
+        function enableManualExport() {
+            Ext.getCmp(QUICK_BTN.id).enable();
+            Ext.getCmp(FULL_BTN.id).enable();
+        }
+
+        function disableManualExport() {
+            Ext.getCmp(QUICK_BTN.id).disable();
+            Ext.getCmp(FULL_BTN.id).disable();
         }
 
         me.items = [
@@ -203,10 +211,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         ];
 
         me.callParent(arguments);
-
-        Ext.getCmp(QUICK_BTN.id).disable();
-        Ext.getCmp(FULL_BTN.id).disable();
-
-        validatePluginConfig();
+        disableManualExport();
+        validatePluginConfig(enableManualExport);
     }
 });
