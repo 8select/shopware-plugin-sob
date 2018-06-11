@@ -2,6 +2,7 @@
 namespace CseEightselectBasic;
 
 use CseEightselectBasic\Components\ArticleExport;
+use CseEightselectBasic\Components\GetPluginConfig;
 use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Models\EightselectAttribute;
@@ -31,6 +32,7 @@ class CseEightselectBasic extends Plugin
             'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion'              => 'onPostDispatchBackendEmotion',
             'Enlight_Controller_Action_PostDispatchSecure_Frontend'                     => 'onFrontendPostDispatch',
             'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'                  => 'onCheckoutConfirm',
+            'Shopware_CronJob_CseValidatePluginConfig'                                  => 'cseValidatePluginConfig',
             'Shopware_CronJob_CseEightselectBasicArticleExport'                         => 'cseEightselectBasicArticleExport',
             'Shopware_CronJob_CseEightselectBasicArticleExportOnce'                     => 'cseEightselectBasicArticleExportOnce',
             'Shopware_CronJob_CseEightselectBasicQuickUpdate'                           => 'cseEightselectBasicQuickUpdate',
@@ -420,15 +422,33 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
+     * @throws \Exception
+     */
+
+    public function cseValidatePluginConfig()
+    {  
+        $isActive = GetPluginConfig::getActiveState();
+        $apiId = GetPluginConfig::getApiId();
+        $feedId = GetPluginConfig::getFeedId();
+
+        $configIsValid = $isActive && $apiId && $feedId && strlen($apiId) == 36 && strlen($feedId) == 36;
+        return $configIsValid;
+    }
+
+    /**
      * @param \Shopware_Components_Cron_CronJob $job
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
     public function cseEightselectBasicArticleExport(\Shopware_Components_Cron_CronJob $job)
-    {
-        $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
-        $this->container->get('cse_eightselect_basic.article_export')->doCron();
+    {  
+        $pluginConfigValid = $this->cseValidatePluginConfig();
+
+        if ($pluginConfigValid) {
+            $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
+            $this->container->get('cse_eightselect_basic.article_export')->doCron();
+        }
     }
 
     /**
@@ -439,7 +459,11 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicArticleExportOnce(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->container->get('cse_eightselect_basic.article_export')->doCron();
+        $pluginConfigValid = $this->cseValidatePluginConfig();
+
+        if ($pluginConfigValid) {
+            $this->container->get('cse_eightselect_basic.article_export')->doCron();
+        }
     }
 
     /**
@@ -448,8 +472,12 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicQuickUpdate(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->container->get('cse_eightselect_basic.quick_update')->scheduleCron();
-        $this->container->get('cse_eightselect_basic.quick_update')->doCron();
+        $pluginConfigValid = $this->cseValidatePluginConfig();
+
+        if ($pluginConfigValid) {
+            $this->container->get('cse_eightselect_basic.quick_update')->scheduleCron();
+            $this->container->get('cse_eightselect_basic.quick_update')->doCron();
+        }
     }
 
     /**
@@ -458,7 +486,11 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicQuickUpdateOnce(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->container->get('cse_eightselect_basic.quick_update')->doCron();
+        $pluginConfigValid = $this->cseValidatePluginConfig();
+
+        if ($pluginConfigValid) {
+            $this->container->get('cse_eightselect_basic.quick_update')->doCron();
+        }
     }
 
     /**
