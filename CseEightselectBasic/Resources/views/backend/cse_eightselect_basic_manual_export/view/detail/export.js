@@ -36,11 +36,16 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         var stateCheck = Ext.Ajax.request({ async: false, url: '{url controller=CseEightselectBasicManualExport action=checkForActiveState}' })
         var apiCheck = Ext.Ajax.request({ async: false, url: '{url controller=CseEightselectBasicManualExport action=checkForApiId}' })
         var feedCheck = Ext.Ajax.request({ async: false, url: '{url controller=CseEightselectBasicManualExport action=checkForFeedId}' })
-        
+        var htmlContainerCheck = Ext.Ajax.request({ async: false, url: '{url controller=CseEightselectBasicManualExport action=checkForHtmlContainer}' })
+        var sysAccCheck = Ext.Ajax.request({ async: false, url: '{url controller=CseEightselectBasicManualExport action=checkForSysAcc}' })
+        var previewCheck = Ext.Ajax.request({ async: false, url: '{url controller=CseEightselectBasicManualExport action=checkForPreviewMode}' })
+
         var active = Ext.decode(stateCheck.responseText).active
         var apiId = Ext.decode(apiCheck.responseText).apiId
         var feedId = Ext.decode(feedCheck.responseText).feedId
-
+        var htmlContainer = Ext.decode(htmlContainerCheck.responseText).container
+        var sysAcc = Ext.decode(sysAccCheck.responseText).sysAcc
+        var previewMode = Ext.decode(previewCheck.responseText).previewMode
 
         var FULL_BTN = {
             id: 'full-export-btn',
@@ -56,16 +61,18 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             exportUri: '{url controller=CseEightselectBasicManualExport action=quickExport}',
             statusUri: '{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}',
         };
-        var ERROR_MESSAGE = "Es ist ein Fehler aufgetreten. Überprüfen Sie bitte Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
 
-        var EMPTY_API_ID_MESSAGE = "Keine API ID hinterlegt. Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-        var INVALID_API_ID_MESSAGE = "API ID ungültig. Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-
-        var EMPTY_FEED_ID_MESSAGE = "Keine Feed ID hinterlegt. Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-        var INVALID_FEED_ID_MESSAGE = "Feed ID ungültig. Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-
-        var PLUGIN_NOT_ACTIVE = "Plugin ist nicht aktiv. Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-
+        var CALL_EIGHTSELECT = "Überprüfen Sie bitte Ihre Plugin-Einstellungen oder wenden Sie sich an 8select."
+        var ERROR_MESSAGE = "Es ist ein Fehler aufgetreten. " + CALL_EIGHTSELECT;
+        var EMPTY_API_ID_MESSAGE = "Keine API ID hinterlegt. " + CALL_EIGHTSELECT;
+        var INVALID_API_ID_MESSAGE = "API ID ungültig. " + CALL_EIGHTSELECT;
+        var EMPTY_FEED_ID_MESSAGE = "Keine Feed ID hinterlegt. " + CALL_EIGHTSELECT;
+        var INVALID_FEED_ID_MESSAGE = "Feed ID ungültig. " + CALL_EIGHTSELECT;
+        var EMPTY_HTML_CONTAINER_MESSAGE = "Kein Widget-Platzhalter im HTML-Container. " + CALL_EIGHTSELECT;
+        var INVALID_HTML_CONTAINER_MESSAGE = "Widget-Platzhalter im HTML-Container ungültig. " + CALL_EIGHTSELECT;
+        var PLUGIN_NOT_ACTIVE = "Plugin ist nicht aktiv. " + CALL_EIGHTSELECT;
+        var SYS_ACC_IS_EMPTY = "Keine Einstellung für SYS-ACC Widget hinterlegt. " + CALL_EIGHTSELECT;
+        var PREVIEW_MODE_IS_EMPTY = "Keine Einstellung für Vorschau-Modus hinterlegt. " + CALL_EIGHTSELECT;
 
         function statusCheck (actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {
             Ext.Ajax.request({
@@ -119,14 +126,51 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             }
         }
 
+        function checkForHtmlContainer(container) {
+            if (!container || container === null ||container.length === 0) {
+                Shopware.Notification.createGrowlMessage("", EMPTY_HTML_CONTAINER_MESSAGE);
+            }
+
+            if (container && container !== null && container !== "CSE_SYS") {
+                Shopware.Notification.createGrowlMessage("", INVALID_HTML_CONTAINER_MESSAGE);
+            }
+        }
+
+        function checkForSysAccAction(option) {
+            if (option === null) {
+                Shopware.Notification.createGrowlMessage("", SYS_ACC_IS_EMPTY);
+            }
+        }
+
+        function checkForPreviewMode(mode) {
+            if (mode === null) {
+                Shopware.Notification.createGrowlMessage("", PREVIEW_MODE_IS_EMPTY);
+            }
+        }
+
         function validatePluginConfig(callback) {
 
             checkForActiveState(active)
             checkForApiId(apiId)
             checkForFeedId(feedId)
+            checkForHtmlContainer(htmlContainer)
+            checkForSysAccAction(sysAcc)
+            checkForPreviewMode(previewMode)
 
-            if (active !== null && apiId !== null && feedId !== null) {
-                if (active && apiId.length === 36 && feedId.length === 36) {
+            var everythingSet =     active !== null && 
+                                    apiId !== null && 
+                                    feedId !== null && 
+                                    htmlContainer !== null && 
+                                    sysAcc !== null && 
+                                    previewMode !== null;
+
+            var everythingValid =   active && 
+                                    apiId.length === 36 && 
+                                    feedId.length === 36 &&
+                                    htmlContainer === "CSE_SYS";
+
+            if (everythingSet) {
+                if (everythingValid) {
                     fullExportStatusCheck();
                     quickExportStatusCheck();
 

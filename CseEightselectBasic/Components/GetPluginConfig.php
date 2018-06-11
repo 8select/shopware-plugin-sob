@@ -4,7 +4,7 @@ namespace CseEightselectBasic\Components;
 class GetPluginConfig {
 
   /**
-  * @return string
+  * @return boolean
   */
   public static function getActiveState()
   {
@@ -31,5 +31,35 @@ class GetPluginConfig {
     $config = Shopware()->Container()->get('shopware.plugin.config_reader');
     $feedId = $config->getByPluginName('CseEightselectBasic')['8s_feed_id'];
     return $feedId;
+  }
+
+  /**
+  * @return string
+  */
+  public static function getHtmlContainer()
+  {
+    $config = Shopware()->Container()->get('shopware.plugin.config_reader');
+    $container = $config->getByPluginName('CseEightselectBasic')['8s_html_container_element'];
+    return $container;
+  }
+
+  /**
+  * @return boolean
+  */
+  public static function getSysAcc()
+  {
+    $config = Shopware()->Container()->get('shopware.plugin.config_reader');
+    $sysAcc = $config->getByPluginName('CseEightselectBasic')['8s_sys_acc_enabled'];
+    return $sysAcc;
+  }
+
+  /**
+  * @return boolean
+  */
+  public static function getPreviewMode()
+  {
+    $config = Shopware()->Container()->get('shopware.plugin.config_reader');
+    $previewMode = $config->getByPluginName('CseEightselectBasic')['8s_preview_mode_enabled'];
+    return $previewMode;
   }
 }

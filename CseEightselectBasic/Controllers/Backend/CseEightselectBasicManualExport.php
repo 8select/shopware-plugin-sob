@@ -59,4 +59,22 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         $feedId = GetPluginConfig::getFeedId();
         $this->View()->assign(['feedId' => $feedId]);
     }
+
+    public function checkForHtmlContainerAction()
+    {
+        $container = GetPluginConfig::getHtmlContainer();
+        $this->View()->assign(['container' => $container]);
+    }
+
+    public function checkForSysAccAction()
+    {
+        $sysAcc = GetPluginConfig::getSysAcc();
+        $this->View()->assign(['sysAcc' => $sysAcc]);
+    }
+
+    public function checkForPreviewModeAction()
+    {
+        $previewMode = GetPluginConfig::getPreviewMode();
+        $this->View()->assign(['previewMode' => $previewMode]);
+    }
 }
