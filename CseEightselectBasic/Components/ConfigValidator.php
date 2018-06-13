@@ -1,7 +1,7 @@
 <?php
 namespace CseEightselectBasic\Components;
 
-class GetPluginConfig {
+class ConfigValidator {
 
   /**
   * @return boolean
@@ -62,4 +62,19 @@ class GetPluginConfig {
     $previewMode = $config->getByPluginName('CseEightselectBasic')['8s_preview_mode_enabled'];
     return $previewMode;
   }
+
+  /**
+  * @return boolean
+  * @throws \Exception
+  */
+  public function isConfigValid()
+  {  
+      $isActive = $this->getActiveState();
+      $apiId = $this->getApiId();
+      $feedId = $this->getFeedId();
+
+      $configIsValid = $isActive && $apiId && $feedId && strlen($apiId) == 36 && strlen($feedId) == 36;
+      return $configIsValid;
+  }
+
 }

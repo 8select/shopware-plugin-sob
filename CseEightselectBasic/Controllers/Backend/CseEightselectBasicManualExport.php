@@ -4,7 +4,7 @@ use CseEightselectBasic\Components\ArticleExport;
 use CseEightselectBasic\Components\QuickUpdate;
 use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\FeedLogger;
-use CseEightselectBasic\Components\GetPluginConfig;
+use CseEightselectBasic\Components\ConfigValidator;
 
 class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shopware_Controllers_Backend_ExtJs
 {
@@ -44,37 +44,37 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
 
     public function checkForActiveStateAction()
     {
-        $isActive = GetPluginConfig::getActiveState();
+        $isActive = ConfigValidator::getActiveState();
         $this->View()->assign(['active' => $isActive]);
     }
     
     public function checkForApiIdAction()
     {
-        $apiId = GetPluginConfig::getApiId();
+        $apiId = ConfigValidator::getApiId();
         $this->View()->assign(['apiId' => $apiId]);
     }
 
     public function checkForFeedIdAction()
     {
-        $feedId = GetPluginConfig::getFeedId();
+        $feedId = ConfigValidator::getFeedId();
         $this->View()->assign(['feedId' => $feedId]);
     }
 
     public function checkForHtmlContainerAction()
     {
-        $container = GetPluginConfig::getHtmlContainer();
+        $container = ConfigValidator::getHtmlContainer();
         $this->View()->assign(['container' => $container]);
     }
 
     public function checkForSysAccAction()
     {
-        $sysAcc = GetPluginConfig::getSysAcc();
+        $sysAcc = ConfigValidator::getSysAcc();
         $this->View()->assign(['sysAcc' => $sysAcc]);
     }
 
     public function checkForPreviewModeAction()
     {
-        $previewMode = GetPluginConfig::getPreviewMode();
+        $previewMode = ConfigValidator::getPreviewMode();
         $this->View()->assign(['previewMode' => $previewMode]);
     }
 }
