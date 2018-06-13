@@ -22,4 +22,4 @@ sed -i '' "s@productfeed-prod.staging@__BUCKET__@g" ${CURRENT_DIR}/../${PLUGIN_N
 sed -i '' "s@wgt-prod.staging@__BUCKET__@g" ${CURRENT_DIR}/../${PLUGIN_NAME}/Resources/views/frontend/index/header.tpl
 sed -i '' "s@wgt-prod.staging@__BUCKET__@g" ${CURRENT_DIR}/../${PLUGIN_NAME}/Resources/views/frontend/checkout/finish.tpl
 
-echo "Working directory successfully copied to ${DOCKERDIR} in docker container ${container}"
+echo "Working directory successfully copied to ${DOCKERDIR} in docker container ${CONTAINER}"
