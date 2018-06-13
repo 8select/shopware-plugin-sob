@@ -3,18 +3,23 @@
 SOURCE="${BASH_SOURCE[0]}"
 
 CURRENT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-DESTINATION=${1}
+CONTAINER=${1}
 VERSION=${2}
+DOCKERDIR="/shopware/custom/plugins"
 
 PLUGIN_NAME="CseEightselectBasic"
-PLUGIN_DIR="${DESTINATION}/${PLUGIN_NAME}"
+PLUGIN_DIR="${CONTAINER}:${DOCKERDIR}/${PLUGIN_NAME}"
 
-cp -r "${CURRENT_DIR}/../${PLUGIN_NAME}" "${DESTINATION}"
+sed -i '' "s@__VERSION__@${VERSION}@g" ${CURRENT_DIR}/../${PLUGIN_NAME}/plugin.xml
+sed -i '' "s@__BUCKET__@productfeed-prod.staging@g" ${CURRENT_DIR}/../${PLUGIN_NAME}/Components/AWSUploader.php
+sed -i '' "s@__BUCKET__@wgt-prod.staging@g" ${CURRENT_DIR}/../${PLUGIN_NAME}/Resources/views/frontend/index/header.tpl
+sed -i '' "s@__BUCKET__@wgt-prod.staging@g" ${CURRENT_DIR}/../${PLUGIN_NAME}/Resources/views/frontend/checkout/finish.tpl
 
-sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/plugin.xml
-sed -i '' "s@__BUCKET__@productfeed-prod.staging@g" ${PLUGIN_DIR}/Components/AWSUploader.php
-sed -i '' "s@__BUCKET__@wgt-prod.staging@g" ${PLUGIN_DIR}/Resources/views/frontend/index/header.tpl
-sed -i '' "s@__BUCKET__@wgt-prod.staging@g" ${PLUGIN_DIR}/Resources/views/frontend/checkout/finish.tpl
+docker cp -a "${CURRENT_DIR}/../${PLUGIN_NAME}" "${CONTAINER}:${DOCKERDIR}"
 
+sed -i '' "s@${VERSION}@__VERSION__@g" ${CURRENT_DIR}/../${PLUGIN_NAME}/plugin.xml
+sed -i '' "s@productfeed-prod.staging@__BUCKET__@g" ${CURRENT_DIR}/../${PLUGIN_NAME}/Components/AWSUploader.php
+sed -i '' "s@wgt-prod.staging@__BUCKET__@g" ${CURRENT_DIR}/../${PLUGIN_NAME}/Resources/views/frontend/index/header.tpl
+sed -i '' "s@wgt-prod.staging@__BUCKET__@g" ${CURRENT_DIR}/../${PLUGIN_NAME}/Resources/views/frontend/checkout/finish.tpl
 
-echo "Working directory successfully copied to ${DESTINATION}"
+echo "Working directory successfully copied to ${DOCKERDIR} in docker container ${container}"
