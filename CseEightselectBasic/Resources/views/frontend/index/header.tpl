@@ -11,39 +11,55 @@
 
 {block name='frontend_index_header_javascript_tracking'}
     {$smarty.block.parent}
-    {if !$checkoutFinish}
-        <script type="text/javascript">
-            if (typeof _eightselect_config === "undefined") {
-                var _eightselect_config = {};
+    <script type="text/javascript">
+        if (typeof _eightselect_config === "undefined") {
+            var _eightselect_config = {};
+        }
+        _eightselect_config.sys = _eightselect_config.sys || {};
+        _eightselect_config.sys.callback = function (error) {
+            if (error) {
+                _eightselect_shop_plugin.hideSys();
+            } else {
+                _eightselect_shop_plugin.showSys();
             }
-            _eightselect_config.sys = _eightselect_config.sys || {};
-            _eightselect_config.sys.callback = function (error) {
-                if (error) {
-                    _eightselect_shop_plugin.hideSys();
-                } else {
-                    _eightselect_shop_plugin.showSys();
-                }
-            }
-        </script>
-        <script async src="https://__SUBDOMAIN__.8select.io/{config name="8s_merchant_id"}/loader.js"></script>
+        }
+    </script>
 
-        <script type="text/javascript">
-            if (typeof _eightselect_shop_plugin === "undefined") {
-                var _eightselect_shop_plugin = {};
-            }
-            _eightselect_shop_plugin.addToCart = function (sku) {
-                document.getElementById('eightselect_cart_trigger_form_sku').value = sku;
-                document.getElementById('eightselect_cart_trigger_form_submit').click();
-            };
+    <script type="text/javascript">
+        (function(d, s, w) {
+        var apiId = '{config name="8s_merchant_id"}';
 
-            _eightselect_shop_plugin.showSys = function () {
-                return;
+        window.eightlytics || function (w) {
+            w.eightlytics = function () {
+                window.eightlytics.queue = window.eightlytics.queue || []
+                window.eightlytics.queue.push(arguments)
             };
-            _eightselect_shop_plugin.hideSys = function () {
-                return;
-            };
-        </script>
-    {/if}
+        }(w);
+        var script = d.createElement(s);
+        script.src   = 'https://__SUBDOMAIN__.8select.io/' + apiId + '/loader.js';
+        var entry = d.getElementsByTagName(s)[0];
+        entry.parentNode.insertBefore(script, entry);
+        })(document, 'script', window);
+    </script>
+
+    <script async src="https://__SUBDOMAIN__.8select.io/{config name="8s_merchant_id"}/loader.js"></script>
+
+    <script type="text/javascript">
+        if (typeof _eightselect_shop_plugin === "undefined") {
+            var _eightselect_shop_plugin = {};
+        }
+        _eightselect_shop_plugin.addToCart = function (sku) {
+            document.getElementById('eightselect_cart_trigger_form_sku').value = sku;
+            document.getElementById('eightselect_cart_trigger_form_submit').click();
+        };
+
+        _eightselect_shop_plugin.showSys = function () {
+            return;
+        };
+        _eightselect_shop_plugin.hideSys = function () {
+            return;
+        };
+    </script>
 
     {if {config name="8s_selected_detail_block"} == "frontend_detail_tabs"}
         {* Activate description tab - SYS tab will be activated when CSE finds a set *}
