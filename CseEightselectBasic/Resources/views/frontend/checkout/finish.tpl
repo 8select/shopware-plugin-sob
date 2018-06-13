@@ -14,7 +14,7 @@
                     c.src = d;
                     b = b.getElementsByTagName(a)[0];
                     b.parentNode.insertBefore(c, b)
-                })(a.document, "script", {/literal}"https://wgt.8select.io/eightlytics/eightlytics-queue.js"{literal})
+                })(a.document, "script", {/literal}"https://__SUBDOMAIN__.8select.io/eightlytics/eightlytics-queue.js"{literal})
             }(window);
     /*]]>{/literal}*/</script>
     <script type="text/javascript">
