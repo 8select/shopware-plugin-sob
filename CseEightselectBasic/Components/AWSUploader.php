@@ -19,7 +19,7 @@ class AWSUploader
             require_once __DIR__ . '/../vendor/autoload.php';
         }
 
-        $bucket = '__BUCKET__.8select.io';
+        $bucket = '__SUBDOMAIN__.8select.io';
         $region = 'eu-central-1';
         $prefix = $feedId . '/' . $feedType . '/' . date('Y') . '/' . date('m') . '/' . date('d');
 
