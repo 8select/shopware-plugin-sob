@@ -150,7 +150,8 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
     function checkForSizeDefinitions(hasSizes) {
       if (!hasSizes) {
-        pluginGrowlMessage("Keine Attributgruppe als Größe definiert.");
+        var docsUrl = "https://www.8select.com/8select-cse-installationsanleitung-shopware#5-konfiguration-attributfelder"
+        pluginGrowlMessage("Keine Attributgruppe als Größe definiert.", docsUrl);
       }
     }
 
