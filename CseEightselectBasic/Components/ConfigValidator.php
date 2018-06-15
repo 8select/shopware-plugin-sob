@@ -68,8 +68,8 @@ class ConfigValidator {
    */
   public static function hasSizeDefinitions()
   {
-     $sizesQuery =  'SELECT COUNT(*) FROM s_article_configurator_groups_attributes WHERE od_cse_eightselect_basic_is_size';
-     $sizesCount =  Shopware()->Db()->query($sizesQuery)->fetch(\PDO::FETCH_ASSOC);
+     $sizesQuery =  'SELECT * FROM s_article_configurator_groups_attributes WHERE od_cse_eightselect_basic_is_size';
+     $sizesCount =  Shopware()->Db()->query($sizesQuery)->rowCount();
 
      return $sizesCount > 0;
   }
