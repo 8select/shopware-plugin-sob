@@ -64,11 +64,11 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             statusUri: '{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}',
         };
 
-        function pluginGrowlMessage (message) {
-            var callEightselect = " Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-            var fullNotification = message + callEightselect;
-            
-            Shopware.Notification.createGrowlMessage("", fullNotification);
+        function pluginGrowlMessage(message, helpUrl) {
+          var callEightselect = "Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
+          var fullNotification = helpUrl ? callEightselect + "<br><br><a href='" + helpUrl + "' target='_blank'>Hilfe</a>" : callEightselect;
+    
+          Shopware.Notification.createGrowlMessage(message, fullNotification);
         }
 
     function statusCheck(actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {

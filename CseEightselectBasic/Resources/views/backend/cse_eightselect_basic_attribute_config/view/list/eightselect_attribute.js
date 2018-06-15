@@ -88,11 +88,10 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
     var docsUrlAttributeFields = "https://www.8select.com/8select-cse-installationsanleitung-shopware#5-konfiguration-attributfelder"
 
     function pluginGrowlMessage(message, helpUrl) {
-      var callEightselect = " Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-      var fullTextNote = message + callEightselect;
-      var fullNotification = helpUrl ? fullTextNote + "<br><br><a href='" + helpUrl + "' target='_blank'>Hilfe</a>" : fullTextNote;
+      var callEightselect = "Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
+      var fullNotification = helpUrl ? callEightselect + "<br><br><a href='" + helpUrl + "' target='_blank'>Hilfe</a>" : callEightselect;
 
-      Shopware.Notification.createGrowlMessage("", fullNotification);
+      Shopware.Notification.createGrowlMessage(message, fullNotification);
     }
 
     function enableAttributeMapping() {
