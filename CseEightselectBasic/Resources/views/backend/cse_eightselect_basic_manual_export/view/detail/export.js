@@ -47,7 +47,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         var htmlContainer = Ext.decode(htmlContainerCheck.responseText).container
         var sysAcc = Ext.decode(sysAccCheck.responseText).sysAcc
         var previewMode = Ext.decode(previewCheck.responseText).previewMode
-        var sizeDefinitions = Ext.decode(sizesCheck.responseText).sizeDefinitions
+        var hasSizeDefinitions = Ext.decode(sizesCheck.responseText).sizeDefinitions
 
         var FULL_BTN = {
             id: 'full-export-btn',
@@ -142,6 +142,12 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             }
         }
 
+        function checkForSizeDefinitions(hasSizes) {
+            if (!hasSizes) {
+                pluginGrowlMessage("Keine Attributgruppe als Größe definiert.")
+            }
+        }
+
         function validatePluginConfig(callback) {
 
             checkForActiveState(active)
@@ -150,6 +156,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             checkForHtmlContainer(htmlContainer)
             checkForSysAccAction(sysAcc)
             checkForPreviewMode(previewMode)
+            checkForSizeDefinitions(hasSizeDefinitions)
 
             var everythingSet =     active !== null && 
                                     apiId !== null && 
@@ -161,7 +168,8 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             var everythingValid =   active && 
                                     apiId && apiId.length === 36 && 
                                     feedId && feedId.length === 36 &&
-                                    htmlContainer && htmlContainer === "CSE_SYS";
+                                    htmlContainer && htmlContainer === "CSE_SYS" &&
+                                    hasSizeDefinitions;
 
             if (everythingSet) {
                 if (everythingValid) {

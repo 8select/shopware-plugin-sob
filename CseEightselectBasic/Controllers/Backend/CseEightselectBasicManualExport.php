@@ -77,4 +77,10 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         $previewMode = ConfigValidator::isPreviewModeActive();
         $this->View()->assign(['previewMode' => $previewMode]);
     }
+
+    public function checkForSizeDefinitions()
+    {
+        $sizeDefinitions = ConfigValidator::hasSizeDefinitions();
+        $this->View()->assign(['sizeDefinitions' => $sizeDefinitions]);
+    }
 }

@@ -62,6 +62,17 @@ class ConfigValidator {
     $previewMode = $config->getByPluginName('CseEightselectBasic')['8s_preview_mode_enabled'];
     return $previewMode;
   }
+  
+  /**
+   * @return boolean
+   */
+  public static function hasSizeDefinitions()
+  {
+     $sizesQuery =  'SELECT COUNT(*) FROM s_article_configurator_groups_attributes WHERE od_cse_eightselect_basic_is_size';
+     $sizesCount =  Shopware()->Db()->query($sizesQuery)->fetch(\PDO::FETCH_ASSOC);
+
+     return $sizesCount > 0;
+  }
 
   /**
   * @return boolean
