@@ -66,11 +66,26 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
         function pluginGrowlMessage(message, helpUrl) {
           var callEightselect = "Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-          var fullNotification = helpUrl ? callEightselect + "<br><br><a href='" + helpUrl + "' target='_blank'>Hilfe</a>" : callEightselect;
     
-          Shopware.Notification.createGrowlMessage(message, fullNotification);
+          var messageOptions = {
+            title: message,
+            text: callEightselect
+          }
+    
+          if (helpUrl) {
+            messageOptions = {
+              title: message,
+              text: callEightselect,
+              btnDetail: {
+                text: 'Mehr Infos',
+                link: helpUrl,
+                target: "blank"
+              }
+            }
+          }
+    
+          Shopware.Notification.createStickyGrowlMessage(messageOptions);
         }
-
     function statusCheck(actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {
       Ext.Ajax.request({
         url: actionUri,
@@ -150,8 +165,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
     function checkForSizeDefinitions(hasSizes) {
       if (!hasSizes) {
-        var docsUrl = "https://www.8select.com/8select-cse-installationsanleitung-shopware#5-konfiguration-attributfelder"
-        pluginGrowlMessage("Keine Attributgruppe als Größe definiert.", docsUrl);
+        pluginGrowlMessage("Keine Attributgruppe als Größe definiert.", docsUrlAttributeFields);
       }
     }
 

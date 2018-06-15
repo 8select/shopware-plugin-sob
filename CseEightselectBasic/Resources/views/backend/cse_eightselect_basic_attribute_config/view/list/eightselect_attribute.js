@@ -89,9 +89,25 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
 
     function pluginGrowlMessage(message, helpUrl) {
       var callEightselect = "Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-      var fullNotification = helpUrl ? callEightselect + "<br><br><a href='" + helpUrl + "' target='_blank'>Hilfe</a>" : callEightselect;
 
-      Shopware.Notification.createGrowlMessage(message, fullNotification);
+      var messageOptions = {
+        title: message,
+        text: callEightselect
+      }
+
+      if (helpUrl) {
+        messageOptions = {
+          title: message,
+          text: callEightselect,
+          btnDetail: {
+            text: 'Mehr Infos',
+            link: helpUrl,
+            target: "blank"
+          }
+        }
+      }
+
+      Shopware.Notification.createStickyGrowlMessage(messageOptions);
     }
 
     function enableAttributeMapping() {
