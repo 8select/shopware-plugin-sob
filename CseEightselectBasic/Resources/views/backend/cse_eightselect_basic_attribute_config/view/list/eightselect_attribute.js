@@ -72,7 +72,10 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
       async: false,
       url: "{url controller=CseEightselectBasicManualExport action=checkForPreviewMode}"
     });
-    var sizesCheck = Ext.Ajax.request({ async: false, url: '{url controller=CseEightselectBasicManualExport action=checkForSizeDefinitions}' })
+    var sizesCheck = Ext.Ajax.request({
+      async: false,
+      url: "{url controller=CseEightselectBasicManualExport action=checkForSizeDefinitions}"
+    });
 
     var active = Ext.decode(stateCheck.responseText).active;
     var apiId = Ext.decode(apiCheck.responseText).apiId;
@@ -80,7 +83,7 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
     var htmlContainer = Ext.decode(htmlContainerCheck.responseText).container;
     var sysAcc = Ext.decode(sysAccCheck.responseText).sysAcc;
     var previewMode = Ext.decode(previewCheck.responseText).previewMode;
-    var hasSizeDefinitions = Ext.decode(sizesCheck.responseText).sizeDefinitions
+    var hasSizeDefinitions = Ext.decode(sizesCheck.responseText).sizeDefinitions;
 
     function pluginGrowlMessage(message) {
       var callEightselect = " Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
@@ -144,18 +147,18 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
 
     function checkForSizeDefinitions(hasSizes) {
       if (!hasSizes) {
-          pluginGrowlMessage("Keine Attributgruppe als Größe definiert.")
+        pluginGrowlMessage("Keine Attributgruppe als Größe definiert.");
       }
     }
 
     function validatePluginConfig(callback) {
-      checkForActiveState(active)
-      checkForApiId(apiId)
-      checkForFeedId(feedId)
-      checkForHtmlContainer(htmlContainer)
-      checkForSysAccAction(sysAcc)
-      checkForPreviewMode(previewMode)
-      checkForSizeDefinitions(hasSizeDefinitions)
+      checkForActiveState(active);
+      checkForApiId(apiId);
+      checkForFeedId(feedId);
+      checkForHtmlContainer(htmlContainer);
+      checkForSysAccAction(sysAcc);
+      checkForPreviewMode(previewMode);
+      checkForSizeDefinitions(hasSizeDefinitions);
 
       var everythingSet =
         active !== null &&

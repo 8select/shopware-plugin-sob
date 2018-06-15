@@ -71,125 +71,135 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             Shopware.Notification.createGrowlMessage("", fullNotification);
         }
 
-        function statusCheck (actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {
-            Ext.Ajax.request({
-                url: actionUri,
-                success: function (response) {
-                    var button = Ext.getCmp(buttonId);
-                    var progress = JSON.parse(response.responseText).progress;
-                    if (progress === false || progress === 100 || progress === "100") {
-                        button.enable();
-                        button.setText(buttonTextEnabled);
-                    } else {
-                        button.disable();
-                        button.setText(buttonTextDisabled + " (" + progress + "%)");
-                        setTimeout(callback, 5000);
-                    }
-                }
-            });
+    function statusCheck(actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {
+      Ext.Ajax.request({
+        url: actionUri,
+        success: function(response) {
+          var button = Ext.getCmp(buttonId);
+          var progress = JSON.parse(response.responseText).progress;
+          if (progress === false || progress === 100 || progress === "100") {
+            button.enable();
+            button.setText(buttonTextEnabled);
+          } else {
+            button.disable();
+            button.setText(buttonTextDisabled + " (" + progress + "%)");
+            setTimeout(callback, 5000);
+          }
         }
+      });
+    }
 
-        function fullExportStatusCheck () {
-            statusCheck(FULL_BTN.statusUri, FULL_BTN.id, FULL_BTN.textEnabled, FULL_BTN.textDisabled, fullExportStatusCheck);
+    function fullExportStatusCheck() {
+      statusCheck(FULL_BTN.statusUri, FULL_BTN.id, FULL_BTN.textEnabled, FULL_BTN.textDisabled, fullExportStatusCheck);
+    }
+
+    function quickExportStatusCheck() {
+      statusCheck(
+        QUICK_BTN.statusUri,
+        QUICK_BTN.id,
+        QUICK_BTN.textEnabled,
+        QUICK_BTN.textDisabled,
+        quickExportStatusCheck
+      );
+    }
+
+    function checkForActiveState(validateState) {
+      if (!validateState || validateState === null) {
+        pluginGrowlMessage("Plugin ist nicht aktiv.");
+      }
+    }
+
+    function checkForApiId(id) {
+      if (!id || id === null || id.length === 0) {
+        pluginGrowlMessage("Keine API ID hinterlegt.");
+      }
+      if (id && id !== null && id.length !== 36) {
+        pluginGrowlMessage("API ID ist ungültig.");
+      }
+    }
+
+    function checkForFeedId(id) {
+      if (!id || id === null || id.length === 0) {
+        pluginGrowlMessage("Keine Feed ID hinterlegt.");
+      }
+      if (id && id !== null && id.length !== 36) {
+        pluginGrowlMessage("Feed ID ist ungültig.");
+      }
+    }
+
+    function checkForHtmlContainer(container) {
+      if (!container || container === null || container.length === 0) {
+        pluginGrowlMessage("Kein Widget-Platzhalter im HTML-Container.");
+      }
+      if (container && container !== null && container !== "CSE_SYS") {
+        pluginGrowlMessage("Widget-Platzhalter im HTML-Container ist ungültig.");
+      }
+    }
+
+    function checkForSysAccAction(option) {
+      if (option === null) {
+        pluginGrowlMessage("Keine Einstellung für SYS-ACC Widget hinterlegt.");
+      }
+    }
+
+    function checkForPreviewMode(mode) {
+      if (mode === null) {
+        pluginGrowlMessage("Keine Einstellung für Vorschau-Modus hinterlegt.");
+      }
+    }
+
+    function checkForSizeDefinitions(hasSizes) {
+      if (!hasSizes) {
+        pluginGrowlMessage("Keine Attributgruppe als Größe definiert.");
+      }
+    }
+
+    function validatePluginConfig(callback) {
+      checkForActiveState(active);
+      checkForApiId(apiId);
+      checkForFeedId(feedId);
+      checkForHtmlContainer(htmlContainer);
+      checkForSysAccAction(sysAcc);
+      checkForPreviewMode(previewMode);
+      checkForSizeDefinitions(hasSizeDefinitions);
+
+      var everythingSet =
+        active !== null &&
+        apiId !== null &&
+        feedId !== null &&
+        htmlContainer !== null &&
+        sysAcc !== null &&
+        previewMode !== null;
+
+      var everythingValid =
+        active &&
+        apiId &&
+        apiId.length === 36 &&
+        feedId &&
+        feedId.length === 36 &&
+        htmlContainer &&
+        htmlContainer === "CSE_SYS" &&
+        hasSizeDefinitions;
+
+      if (everythingSet) {
+        if (everythingValid) {
+          fullExportStatusCheck();
+          quickExportStatusCheck();
+
+          callback();
         }
+      }
+    }
 
-        function quickExportStatusCheck () {
-            statusCheck(QUICK_BTN.statusUri, QUICK_BTN.id, QUICK_BTN.textEnabled, QUICK_BTN.textDisabled, quickExportStatusCheck);
-        }
+    function enableManualExport() {
+      Ext.getCmp(QUICK_BTN.id).enable();
+      Ext.getCmp(FULL_BTN.id).enable();
+    }
 
-        function checkForActiveState(validateState) {
-            if (!validateState || validateState === null) {
-                pluginGrowlMessage("Plugin ist nicht aktiv.")
-            }
-        }
-
-        function checkForApiId(id) {
-            if (!id || id === null ||id.length === 0) {
-                pluginGrowlMessage("Keine API ID hinterlegt.")
-            }
-            if (id && id !== null && id.length !== 36) {
-                pluginGrowlMessage("API ID ist ungültig.")
-            }
-        }
-
-        function checkForFeedId(id) {
-            if (!id || id === null ||id.length === 0) {
-                pluginGrowlMessage("Keine Feed ID hinterlegt.")
-            }
-            if (id && id !== null && id.length !== 36) {
-                pluginGrowlMessage("Feed ID ist ungültig.")
-            }
-        }
-
-        function checkForHtmlContainer(container) {
-            if (!container || container === null ||container.length === 0) {
-                pluginGrowlMessage("Kein Widget-Platzhalter im HTML-Container.")
-            }
-            if (container && container !== null && container !== "CSE_SYS") {
-                pluginGrowlMessage("Widget-Platzhalter im HTML-Container ist ungültig.")
-            }
-        }
-
-        function checkForSysAccAction(option) {
-            if (option === null) {
-                pluginGrowlMessage("Keine Einstellung für SYS-ACC Widget hinterlegt.")
-            }
-        }
-
-        function checkForPreviewMode(mode) {
-            if (mode === null) {
-                pluginGrowlMessage("Keine Einstellung für Vorschau-Modus hinterlegt.")
-            }
-        }
-
-        function checkForSizeDefinitions(hasSizes) {
-            if (!hasSizes) {
-                pluginGrowlMessage("Keine Attributgruppe als Größe definiert.")
-            }
-        }
-
-        function validatePluginConfig(callback) {
-
-            checkForActiveState(active)
-            checkForApiId(apiId)
-            checkForFeedId(feedId)
-            checkForHtmlContainer(htmlContainer)
-            checkForSysAccAction(sysAcc)
-            checkForPreviewMode(previewMode)
-            checkForSizeDefinitions(hasSizeDefinitions)
-
-            var everythingSet =     active !== null && 
-                                    apiId !== null && 
-                                    feedId !== null && 
-                                    htmlContainer !== null && 
-                                    sysAcc !== null && 
-                                    previewMode !== null;
-
-            var everythingValid =   active && 
-                                    apiId && apiId.length === 36 && 
-                                    feedId && feedId.length === 36 &&
-                                    htmlContainer && htmlContainer === "CSE_SYS" &&
-                                    hasSizeDefinitions;
-
-            if (everythingSet) {
-                if (everythingValid) {
-                    fullExportStatusCheck();
-                    quickExportStatusCheck();
-
-                    callback();
-                }
-            }
-        }
-
-        function enableManualExport() {
-            Ext.getCmp(QUICK_BTN.id).enable();
-            Ext.getCmp(FULL_BTN.id).enable();
-        }
-
-        function disableManualExport() {
-            Ext.getCmp(QUICK_BTN.id).disable();
-            Ext.getCmp(FULL_BTN.id).disable();
-        }
+    function disableManualExport() {
+      Ext.getCmp(QUICK_BTN.id).disable();
+      Ext.getCmp(FULL_BTN.id).disable();
+    }
 
         me.items = [
             {
@@ -254,10 +264,14 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
                     fontSize: "11px"
                 }
             }
-        ];
+          });
+          setTimeout(quickExportStatusCheck, 5000);
+        }
+      }
+    ];
 
-        me.callParent(arguments);
-        disableManualExport();
-        validatePluginConfig(enableManualExport);
-    }
+    me.callParent(arguments);
+    disableManualExport();
+    validatePluginConfig(enableManualExport);
+  }
 });
