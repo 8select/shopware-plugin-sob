@@ -44,7 +44,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
 
     public function checkForActiveStateAction()
     {
-        $isActive = ConfigValidator::getActiveState();
+        $isActive = ConfigValidator::isPluginActive();
         $this->View()->assign(['active' => $isActive]);
     }
     
@@ -68,13 +68,13 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
 
     public function checkForSysAccAction()
     {
-        $sysAcc = ConfigValidator::getSysAcc();
+        $sysAcc = ConfigValidator::isSysAccActive();
         $this->View()->assign(['sysAcc' => $sysAcc]);
     }
 
     public function checkForPreviewModeAction()
     {
-        $previewMode = ConfigValidator::getPreviewMode();
+        $previewMode = ConfigValidator::isPreviewModeActive();
         $this->View()->assign(['previewMode' => $previewMode]);
     }
 }

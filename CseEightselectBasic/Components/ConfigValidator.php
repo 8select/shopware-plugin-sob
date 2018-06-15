@@ -6,7 +6,7 @@ class ConfigValidator {
   /**
   * @return boolean
   */
-  public static function getActiveState()
+  public static function isPluginActive()
   {
     $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
     $isActive = $config->getByPluginName('CseEightselectBasic')['8s_enabled'];
@@ -46,7 +46,7 @@ class ConfigValidator {
   /**
   * @return boolean
   */
-  public static function getSysAcc()
+  public static function isSysAccActive()
   {
     $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
     $sysAcc = $config->getByPluginName('CseEightselectBasic')['8s_sys_acc_enabled'];
@@ -56,7 +56,7 @@ class ConfigValidator {
   /**
   * @return boolean
   */
-  public static function getPreviewMode()
+  public static function isPreviewModeActive()
   {
     $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
     $previewMode = $config->getByPluginName('CseEightselectBasic')['8s_preview_mode_enabled'];
@@ -69,7 +69,7 @@ class ConfigValidator {
   */
   public function isConfigValid()
   {  
-      $isActive = $this->getActiveState();
+      $isActive = $this->isPluginActive();
       $apiId = $this->getApiId();
       $feedId = $this->getFeedId();
 
