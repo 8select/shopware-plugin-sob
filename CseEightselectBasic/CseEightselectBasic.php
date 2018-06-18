@@ -2,7 +2,6 @@
 namespace CseEightselectBasic;
 
 use CseEightselectBasic\Components\ArticleExport;
-use CseEightselectBasic\Components\ConfigValidator;
 use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Models\EightselectAttribute;
@@ -428,12 +427,8 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicArticleExport(\Shopware_Components_Cron_CronJob $job)
     {  
-        $isConfigValid = ConfigValidator::isConfigValid();
-
-        if ($isConfigValid) {
-            $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
-            $this->container->get('cse_eightselect_basic.article_export')->doCron();
-        }
+        $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
+        $this->container->get('cse_eightselect_basic.article_export')->doCron();
     }
 
     /**
@@ -444,11 +439,7 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicArticleExportOnce(\Shopware_Components_Cron_CronJob $job)
     {
-        $isConfigValid = ConfigValidator::isConfigValid();
-
-        if ($isConfigValid) {
-            $this->container->get('cse_eightselect_basic.article_export')->doCron();
-        }
+        $this->container->get('cse_eightselect_basic.article_export')->doCron();
     }
 
     /**
@@ -457,12 +448,8 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicQuickUpdate(\Shopware_Components_Cron_CronJob $job)
     {
-        $isConfigValid = ConfigValidator::isConfigValid();
-
-        if ($isConfigValid) {
-            $this->container->get('cse_eightselect_basic.quick_update')->scheduleCron();
-            $this->container->get('cse_eightselect_basic.quick_update')->doCron();
-        }
+        $this->container->get('cse_eightselect_basic.quick_update')->scheduleCron();
+        $this->container->get('cse_eightselect_basic.quick_update')->doCron();
     }
 
     /**
@@ -471,11 +458,7 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicQuickUpdateOnce(\Shopware_Components_Cron_CronJob $job)
     {
-        $isConfigValid = ConfigValidator::isConfigValid();
-
-        if ($isConfigValid) {
-            $this->container->get('cse_eightselect_basic.quick_update')->doCron();
-        }
+        $this->container->get('cse_eightselect_basic.quick_update')->doCron();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace CseEightselectBasic\Components;
 use League\Csv\Writer;
 use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\FeedLogger;
+use CseEightselectBasic\Components\ConfigValidator;
 
 class ArticleExport
 {
@@ -80,6 +81,20 @@ class ArticleExport
      */
     public function doCron()
     {
+        $isConfigValid = ConfigValidator::isConfigValid();
+
+        if (!$isConfigValid) {
+           $isActive = ConfigValidator::isPluginActive();
+           $apiId = ConfigValidator::getApiId();
+           $feedId = ConfigValidator::getFeedId();
+
+           if (getenv('ES_DEBUG')) {
+                echo 'Kann Export nicht ausführen: Die 8select CSE Plugin-Konfiguration ist ungültig. 
+                Für Details prüfen Sie bitte das Logfile Ihres Shopware Backends.';
+                return;
+           }
+        }
+
         try {
             Shopware()->PluginLogger()->info('Führe Artikel Export aus.');
             if (getenv('ES_DEBUG')) {
