@@ -37,11 +37,9 @@ if [ ${PROFILE} == 'production' ]
 then
   sed -i '' "s@__SUBDOMAIN__@productfeed@g" ${PLUGIN_DIR}/Components/AWSUploader.php
   sed -i '' "s@__SUBDOMAIN__@wgt@g" ${PLUGIN_DIR}/Resources/views/frontend/index/header.tpl
-  sed -i '' "s@__SUBDOMAIN__@wgt@g" ${PLUGIN_DIR}/Resources/views/frontend/checkout/finish.tpl
 else
   sed -i '' "s@__SUBDOMAIN__@productfeed-prod.${PROFILE}@g" ${PLUGIN_DIR}/Components/AWSUploader.php
   sed -i '' "s@__SUBDOMAIN__@wgt-prod.${PROFILE}@g" ${PLUGIN_DIR}/Resources/views/frontend/index/header.tpl
-  sed -i '' "s@__SUBDOMAIN__@wgt-prod.${PROFILE}@g" ${PLUGIN_DIR}/Resources/views/frontend/checkout/finish.tpl
 fi
 zip -q -r "${DIST_PATH}" ${PLUGIN_NAME}
 echo "created release ${VERSION} at ${DIST_PATH}"
