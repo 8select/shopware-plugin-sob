@@ -120,64 +120,69 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
     function checkForActiveState(validateState) {
       if (!validateState || validateState === null) {
-        pluginGrowlMessage("Plugin ist nicht aktiv.");
+        return "Plugin ist nicht aktiv";
       }
     }
 
     function checkForApiId(id) {
       if (!id || id === null || id.length === 0) {
-        pluginGrowlMessage("Keine API ID hinterlegt.");
+        return "Keine API ID hinterlegt";
       }
       if (id && id !== null && id.length !== 36) {
-        pluginGrowlMessage("API ID ist ungültig.");
+        return "API ID ist ungültig";
       }
     }
 
     function checkForFeedId(id) {
       if (!id || id === null || id.length === 0) {
-        pluginGrowlMessage("Keine Feed ID hinterlegt.");
+        return "Keine Feed ID hinterlegt";
       }
       if (id && id !== null && id.length !== 36) {
-        pluginGrowlMessage("Feed ID ist ungültig.");
+        return "Feed ID ist ungültig";
       }
     }
 
     function checkForHtmlContainer(container) {
       if (!container || container === null || container.length === 0) {
-        pluginGrowlMessage("Kein Widget-Platzhalter im HTML-Container.");
+        return "Kein Widget-Platzhalter im HTML-Container";
       }
       if (container && container !== null && container !== "CSE_SYS") {
-        pluginGrowlMessage("Widget-Platzhalter im HTML-Container ist ungültig.");
+        return "Widget-Platzhalter im HTML-Container ist ungültig";
       }
     }
 
     function checkForSysAccAction(option) {
       if (option === null) {
-        pluginGrowlMessage("Keine Einstellung für SYS-ACC Widget hinterlegt.");
+        return "Keine Einstellung für SYS-ACC Widget hinterlegt";
       }
     }
 
     function checkForPreviewMode(mode) {
       if (mode === null) {
-        pluginGrowlMessage("Keine Einstellung für Vorschau-Modus hinterlegt.");
+        return "Keine Einstellung für Vorschau-Modus hinterlegt";
       }
     }
 
     function checkForSizeDefinitions(hasSizes) {
       if (!hasSizes) {
-        pluginGrowlMessage("Keine Attributgruppe als Größe definiert.", docsUrlAttributeFields);
+        return "Keine Attributgruppe als Größe definiert. Mehr Infos finden Sie in der " + 
+        "<a href='https://www.8select.com/8select-cse-installationsanleitung-shopware#5-konfiguration-attributfelder' target='_blank'>Installationsanleitung</a>";
       }
     }
 
-    function validatePluginConfig(callback) {
-      checkForActiveState(active);
-      checkForApiId(apiId);
-      checkForFeedId(feedId);
-      checkForHtmlContainer(htmlContainer);
-      checkForSysAccAction(sysAcc);
-      checkForPreviewMode(previewMode);
-      checkForSizeDefinitions(hasSizeDefinitions);
+    function validationDebugInfo() {
+      return [
+        checkForActiveState(active),
+        checkForApiId(apiId),
+        checkForFeedId(feedId),
+        checkForHtmlContainer(htmlContainer),
+        checkForSysAccAction(sysAcc),
+        checkForPreviewMode(previewMode),
+        checkForSizeDefinitions(hasSizeDefinitions)
+      ];
+    }
 
+    function validatePluginConfig(callback) {
       var everythingSet =
         active !== null &&
         apiId !== null &&
@@ -201,14 +206,12 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
           fullExportStatusCheck();
           quickExportStatusCheck();
 
-          callback();
+          if(callback) callback();
+          return true;
         }
       }
-    }
 
-    function enableManualExport() {
-      Ext.getCmp(QUICK_BTN.id).enable();
-      Ext.getCmp(FULL_BTN.id).enable();
+      return false;
     }
 
     function disableManualExport() {
@@ -279,14 +282,9 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
                     fontSize: "11px"
                 }
             }
-          });
-          setTimeout(quickExportStatusCheck, 5000);
-        }
-      }
-    ];
+      ];
 
     me.callParent(arguments);
-    disableManualExport();
-    validatePluginConfig(enableManualExport);
+    validatePluginConfig();
   }
 });
