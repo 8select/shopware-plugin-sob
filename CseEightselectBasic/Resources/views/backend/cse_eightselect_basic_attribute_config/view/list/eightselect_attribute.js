@@ -85,31 +85,6 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
     var previewMode = Ext.decode(previewCheck.responseText).previewMode;
     var hasSizeDefinitions = Ext.decode(sizesCheck.responseText).sizeDefinitions;
 
-    var docsUrlAttributeFields = "https://www.8select.com/8select-cse-installationsanleitung-shopware#5-konfiguration-attributfelder"
-
-    function pluginGrowlMessage(message, helpUrl) {
-      var callEightselect = "Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-
-      var messageOptions = {
-        title: message,
-        text: callEightselect
-      }
-
-      if (helpUrl) {
-        messageOptions = {
-          title: message,
-          text: callEightselect,
-          btnDetail: {
-            text: 'Mehr Infos',
-            link: helpUrl,
-            target: "blank"
-          }
-        }
-      }
-
-      Shopware.Notification.createStickyGrowlMessage(messageOptions);
-    }
-
     function enableAttributeMapping() {
       me.setDisabled(false);
     }
@@ -120,64 +95,71 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
 
     function checkForActiveState(validateState) {
       if (!validateState || validateState === null) {
-        pluginGrowlMessage("Plugin ist nicht aktiv.");
+        return "Plugin ist nicht aktiv";
       }
     }
 
     function checkForApiId(id) {
       if (!id || id === null || id.length === 0) {
-        pluginGrowlMessage("Keine API ID hinterlegt.");
+        return "Keine API ID hinterlegt";
       }
       if (id && id !== null && id.length !== 36) {
-        pluginGrowlMessage("API ID ist ungültig.");
+        return "API ID ist ungültig";
       }
     }
 
     function checkForFeedId(id) {
       if (!id || id === null || id.length === 0) {
-        pluginGrowlMessage("Keine Feed ID hinterlegt.");
+        return "Keine Feed ID hinterlegt";
       }
       if (id && id !== null && id.length !== 36) {
-        pluginGrowlMessage("Feed ID ist ungültig.");
+        return "Feed ID ist ungültig";
       }
     }
 
     function checkForHtmlContainer(container) {
       if (!container || container === null || container.length === 0) {
-        pluginGrowlMessage("Kein Widget-Platzhalter im HTML-Container.");
+        return "Kein Widget-Platzhalter im HTML-Container";
       }
       if (container && container !== null && container !== "CSE_SYS") {
-        pluginGrowlMessage("Widget-Platzhalter im HTML-Container ist ungültig.");
+        return "Widget-Platzhalter im HTML-Container ist ungültig";
       }
     }
 
     function checkForSysAccAction(option) {
       if (option === null) {
-        pluginGrowlMessage("Keine Einstellung für SYS-ACC Widget hinterlegt.");
+        return "Keine Einstellung für SYS-ACC Widget hinterlegt";
       }
     }
 
     function checkForPreviewMode(mode) {
       if (mode === null) {
-        pluginGrowlMessage("Keine Einstellung für Vorschau-Modus hinterlegt.");
+        return "Keine Einstellung für Vorschau-Modus hinterlegt";
       }
     }
 
     function checkForSizeDefinitions(hasSizes) {
       if (!hasSizes) {
-        pluginGrowlMessage("Keine Attributgruppe als Größe definiert.", docsUrlAttributeFields);
+        return (
+          "Keine Attributgruppe als Größe definiert. Mehr Infos finden Sie in der " +
+          "<a href='https://www.8select.com/8select-cse-installationsanleitung-shopware#5-konfiguration-attributfelder' target='_blank'>Installationsanleitung</a>"
+        );
       }
     }
 
-    function validatePluginConfig(callback) {
-      checkForActiveState(active);
-      checkForApiId(apiId);
-      checkForFeedId(feedId);
-      checkForHtmlContainer(htmlContainer);
-      checkForSysAccAction(sysAcc);
-      checkForPreviewMode(previewMode);
-      checkForSizeDefinitions(hasSizeDefinitions);
+    function validationDebugInfo() {
+      return [
+        checkForActiveState(active),
+        checkForApiId(apiId),
+        checkForFeedId(feedId),
+        checkForHtmlContainer(htmlContainer),
+        checkForSysAccAction(sysAcc),
+        checkForPreviewMode(previewMode),
+        checkForSizeDefinitions(hasSizeDefinitions)
+      ];
+    }
 
+    function validatePluginConfig(callback) {
       var everythingSet =
         active !== null &&
         apiId !== null &&
@@ -198,9 +180,15 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
 
       if (everythingSet) {
         if (everythingValid) {
-          callback();
+          fullExportStatusCheck();
+          quickExportStatusCheck();
+
+          if (callback) callback();
+          return true;
         }
       }
+
+      return false;
     }
 
     me.callParent(arguments);
