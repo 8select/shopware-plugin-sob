@@ -1,5 +1,17 @@
 # Change Log
 
+## [1.3.0](https://github.com/8select/shopware-plugin-sob/tree/1.3.0) (2018-06-19)
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.2.1...1.3.0)
+
+**Implemented features:**
+
+- CSE-897 include wgt-ldr instead of eltx on checkout [\#29](https://github.com/8select/shopware-plugin-sob/pull/29) ([akleiber](https://github.com/akleiber))
+- CSE-887 release for staging [\#24](https://github.com/8select/shopware-plugin-sob/pull/24) ([voodoods](https://github.com/voodoods))
+
+**Fixed bugs:**
+
+- CSE-880 productinfo output hotfix [\#25](https://github.com/8select/shopware-plugin-sob/pull/25) ([voodoods](https://github.com/voodoods))
+
 ## [1.2.1](https://github.com/8select/shopware-plugin-sob/tree/1.2.1) (2018-06-05)
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.2.0...1.2.1)
 
