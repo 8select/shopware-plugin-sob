@@ -37,31 +37,38 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         : "Letztes Schnell-Update am: " + lastQuickUpdateTimeStamp;
     var stateCheck = Ext.Ajax.request({
       async: false,
-      url: "{url controller=CseEightselectBasicManualExport action=checkForActiveState}"
+      url:
+        "{url controller=CseEightselectBasicManualExport action=checkForActiveState}"
     });
     var apiCheck = Ext.Ajax.request({
       async: false,
-      url: "{url controller=CseEightselectBasicManualExport action=checkForApiId}"
+      url:
+        "{url controller=CseEightselectBasicManualExport action=checkForApiId}"
     });
     var feedCheck = Ext.Ajax.request({
       async: false,
-      url: "{url controller=CseEightselectBasicManualExport action=checkForFeedId}"
+      url:
+        "{url controller=CseEightselectBasicManualExport action=checkForFeedId}"
     });
     var htmlContainerCheck = Ext.Ajax.request({
       async: false,
-      url: "{url controller=CseEightselectBasicManualExport action=checkForHtmlContainer}"
+      url:
+        "{url controller=CseEightselectBasicManualExport action=checkForHtmlContainer}"
     });
     var sysAccCheck = Ext.Ajax.request({
       async: false,
-      url: "{url controller=CseEightselectBasicManualExport action=checkForSysAcc}"
+      url:
+        "{url controller=CseEightselectBasicManualExport action=checkForSysAcc}"
     });
     var previewCheck = Ext.Ajax.request({
       async: false,
-      url: "{url controller=CseEightselectBasicManualExport action=checkForPreviewMode}"
+      url:
+        "{url controller=CseEightselectBasicManualExport action=checkForPreviewMode}"
     });
     var sizesCheck = Ext.Ajax.request({
       async: false,
-      url: "{url controller=CseEightselectBasicManualExport action=checkForSizeDefinitions}"
+      url:
+        "{url controller=CseEightselectBasicManualExport action=checkForSizeDefinitions}"
     });
 
     var active = Ext.decode(stateCheck.responseText).active;
@@ -70,21 +77,26 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     var htmlContainer = Ext.decode(htmlContainerCheck.responseText).container;
     var sysAcc = Ext.decode(sysAccCheck.responseText).sysAcc;
     var previewMode = Ext.decode(previewCheck.responseText).previewMode;
-    var hasSizeDefinitions = Ext.decode(sizesCheck.responseText).sizeDefinitions;
+    var hasSizeDefinitions = Ext.decode(sizesCheck.responseText)
+      .sizeDefinitions;
 
     var FULL_BTN = {
       id: "full-export-btn",
       textEnabled: "Produkt Voll-Export anstoßen",
       textDisabled: "Produkt Voll-Export wird ausgeführt",
-      exportUri: "{url controller=CseEightselectBasicManualExport action=fullExport}",
-      statusUri: "{url controller=CseEightselectBasicManualExport action=getFullExportStatus}"
+      exportUri:
+        "{url controller=CseEightselectBasicManualExport action=fullExport}",
+      statusUri:
+        "{url controller=CseEightselectBasicManualExport action=getFullExportStatus}"
     };
     var QUICK_BTN = {
       id: "quick-export-btn",
       textEnabled: "Produkt Schnell-Update anstoßen",
       textDisabled: "Produkt Schnell-Update wird ausgeführt",
-      exportUri: "{url controller=CseEightselectBasicManualExport action=quickExport}",
-      statusUri: "{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}"
+      exportUri:
+        "{url controller=CseEightselectBasicManualExport action=quickExport}",
+      statusUri:
+        "{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}"
     };
 
     function pluginGrowlMessage(message, helpUrl) {
@@ -109,6 +121,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
       Shopware.Notification.createStickyGrowlMessage(messageOptions);
     }
+    
     function statusCheck(actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {
       Ext.Ajax.request({
         url: actionUri,
@@ -128,7 +141,13 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     }
 
     function fullExportStatusCheck() {
-      statusCheck(FULL_BTN.statusUri, FULL_BTN.id, FULL_BTN.textEnabled, FULL_BTN.textDisabled, fullExportStatusCheck);
+      statusCheck(
+        FULL_BTN.statusUri,
+        FULL_BTN.id,
+        FULL_BTN.textEnabled,
+        FULL_BTN.textDisabled,
+        fullExportStatusCheck
+      );
     }
 
     function quickExportStatusCheck() {
