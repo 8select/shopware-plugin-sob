@@ -2,7 +2,6 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
   extend: "Ext.container.Container",
   alias: "widget.8select-export-detail-container",
   padding: 20,
-
   region: "center",
   cls: "shopware-form",
   layout: "vbox",
@@ -35,93 +34,32 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
       lastQuickUpdateTimeStamp.length === 0
         ? "Noch keine Schnell-Update durchgeführt."
         : "Letztes Schnell-Update am: " + lastQuickUpdateTimeStamp;
-    var stateCheck = Ext.Ajax.request({
-      async: false,
-      url:
-        "{url controller=CseEightselectBasicManualExport action=checkForActiveState}"
-    });
-    var apiCheck = Ext.Ajax.request({
-      async: false,
-      url:
-        "{url controller=CseEightselectBasicManualExport action=checkForApiId}"
-    });
-    var feedCheck = Ext.Ajax.request({
-      async: false,
-      url:
-        "{url controller=CseEightselectBasicManualExport action=checkForFeedId}"
-    });
-    var htmlContainerCheck = Ext.Ajax.request({
-      async: false,
-      url:
-        "{url controller=CseEightselectBasicManualExport action=checkForHtmlContainer}"
-    });
-    var sysAccCheck = Ext.Ajax.request({
-      async: false,
-      url:
-        "{url controller=CseEightselectBasicManualExport action=checkForSysAcc}"
-    });
-    var previewCheck = Ext.Ajax.request({
-      async: false,
-      url:
-        "{url controller=CseEightselectBasicManualExport action=checkForPreviewMode}"
-    });
-    var sizesCheck = Ext.Ajax.request({
-      async: false,
-      url:
-        "{url controller=CseEightselectBasicManualExport action=checkForSizeDefinitions}"
-    });
 
-    var active = Ext.decode(stateCheck.responseText).active;
-    var apiId = Ext.decode(apiCheck.responseText).apiId;
-    var feedId = Ext.decode(feedCheck.responseText).feedId;
-    var htmlContainer = Ext.decode(htmlContainerCheck.responseText).container;
-    var sysAcc = Ext.decode(sysAccCheck.responseText).sysAcc;
-    var previewMode = Ext.decode(previewCheck.responseText).previewMode;
-    var hasSizeDefinitions = Ext.decode(sizesCheck.responseText)
-      .sizeDefinitions;
+    var configValidationResult = Ext.decode(configValidationRequest.responseText).validationResult;
+
+    var isConfigValid = function(configValidationResult) {
+      return configValidationResult.isValid;
+    };
+
+    var getErrorMessages = function(configValidationResult) {
+      return configValidationResult.messages;
+    };
 
     var FULL_BTN = {
       id: "full-export-btn",
       textEnabled: "Produkt Voll-Export anstoßen",
       textDisabled: "Produkt Voll-Export wird ausgeführt",
-      exportUri:
-        "{url controller=CseEightselectBasicManualExport action=fullExport}",
-      statusUri:
-        "{url controller=CseEightselectBasicManualExport action=getFullExportStatus}"
+      exportUri: "{url controller=CseEightselectBasicManualExport action=fullExport}",
+      statusUri: "{url controller=CseEightselectBasicManualExport action=getFullExportStatus}"
     };
     var QUICK_BTN = {
       id: "quick-export-btn",
       textEnabled: "Produkt Schnell-Update anstoßen",
       textDisabled: "Produkt Schnell-Update wird ausgeführt",
-      exportUri:
-        "{url controller=CseEightselectBasicManualExport action=quickExport}",
-      statusUri:
-        "{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}"
+      exportUri: "{url controller=CseEightselectBasicManualExport action=quickExport}",
+      statusUri: "{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}"
     };
 
-    function pluginGrowlMessage(message, helpUrl) {
-      var callEightselect = "Bitte überprüfen Sie Ihre Plugin-Einstellungen oder wenden Sie sich an 8select.";
-
-      var messageOptions = {
-        title: message,
-        text: callEightselect
-      };
-
-      if (helpUrl) {
-        messageOptions = {
-          title: message,
-          text: callEightselect,
-          btnDetail: {
-            text: "Mehr Infos",
-            link: helpUrl,
-            target: "blank"
-          }
-        };
-      }
-
-      Shopware.Notification.createStickyGrowlMessage(messageOptions);
-    }
-    
     function statusCheck(actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {
       Ext.Ajax.request({
         url: actionUri,
@@ -141,13 +79,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     }
 
     function fullExportStatusCheck() {
-      statusCheck(
-        FULL_BTN.statusUri,
-        FULL_BTN.id,
-        FULL_BTN.textEnabled,
-        FULL_BTN.textDisabled,
-        fullExportStatusCheck
-      );
+      statusCheck(FULL_BTN.statusUri, FULL_BTN.id, FULL_BTN.textEnabled, FULL_BTN.textDisabled, fullExportStatusCheck);
     }
 
     function quickExportStatusCheck() {
@@ -160,136 +92,35 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
       );
     }
 
-    function checkForActiveState(validateState) {
-      if (!validateState || validateState === null) {
-        return "Plugin ist nicht aktiv";
-      }
-    }
-
-    function checkForApiId(id) {
-      if (!id || id === null || id.length === 0) {
-        return "Keine API ID hinterlegt";
-      }
-      if (id && id !== null && id.length !== 36) {
-        return "API ID ist ungültig";
-      }
-    }
-
-    function checkForFeedId(id) {
-      if (!id || id === null || id.length === 0) {
-        return "Keine Feed ID hinterlegt";
-      }
-      if (id && id !== null && id.length !== 36) {
-        return "Feed ID ist ungültig";
-      }
-    }
-
-    function checkForHtmlContainer(container) {
-      var isEmpty = !container || container === null || container.length === 0;
-      var containsPlaceholder =
-        container && container !== null && container.indexOf("CSE_SYS") >= 0;
-
-      if (isEmpty || !containsPlaceholder) {
-        return "Kein Widget-Platzhalter (CSE_SYS) im HTML-Container";
-      }
-    }
-
-    function checkForSysAccAction(option) {
-      if (option === null) {
-        return "Keine Einstellung für SYS-ACC Widget hinterlegt";
-      }
-    }
-
-    function checkForPreviewMode(mode) {
-      if (mode === null) {
-        return "Keine Einstellung für Vorschau-Modus hinterlegt";
-      }
-    }
-
-    function checkForSizeDefinitions(hasSizes) {
-      if (!hasSizes) {
-        return (
-          "Keine Attributgruppe als Größe definiert. Mehr Infos finden Sie in der " +
-          "<a href='https://www.8select.com/8select-cse-installationsanleitung-shopware#5-konfiguration-attributfelder' target='_blank'>Installationsanleitung</a>"
-        );
-      }
-    }
-
-    function validationDebugInfo() {
-      return [
-        checkForActiveState(active),
-        checkForApiId(apiId),
-        checkForFeedId(feedId),
-        checkForHtmlContainer(htmlContainer),
-        checkForSysAccAction(sysAcc),
-        checkForPreviewMode(previewMode),
-        checkForSizeDefinitions(hasSizeDefinitions)
-      ];
-    }
-
-    function validatePluginConfig(callback) {
-      var everythingSet =
-        active !== null &&
-        apiId !== null &&
-        feedId !== null &&
-        htmlContainer !== null &&
-        sysAcc !== null &&
-        previewMode !== null;
-
-      var everythingValid =
-        active &&
-        apiId &&
-        apiId.length === 36 &&
-        feedId &&
-        feedId.length === 36 &&
-        htmlContainer &&
-        htmlContainer === "CSE_SYS" &&
-        hasSizeDefinitions;
-
-      if (everythingSet) {
-        if (everythingValid) {
-          fullExportStatusCheck();
-          quickExportStatusCheck();
-
-          if (callback) callback();
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    if (!validatePluginConfig()) {
-      me.items = [
-        {
-          xtype: "panel",
-          region: "top",
-          id: "pluginerrors",
-          layout: "auto",
-          width: 400,
-          bodyPadding: 10,
-          style: {
-            backgroundColor: "#F8F9F9",
-            margin: "0 0 20px 0"
-          },
-          html:
-            "<h1>Funktion nicht verfügbar</h1><br><br>" +
-            "<p>Bitte überprüfen Sie Ihre Plugin-Konfiguration. Details:<br></p>" +
-            "<p>" +
-            ERORR_MESSAGES.map(function(error) {
-              if (!error) {
-                return;
-              }
+    me.items = [
+      {
+        xtype: "panel",
+        region: "top",
+        id: "pluginerrors",
+        layout: "auto",
+        width: 400,
+        bodyPadding: 10,
+        style: {
+          backgroundColor: "#F8F9F9",
+          margin: "0 0 20px 0"
+        },
+        html:
+          "<h1>Funktion nicht verfügbar</h1><br><br>" +
+          "<p>Bitte überprüfen Sie Ihre Plugin-Konfiguration. Details:<br></p>" +
+          "<p>" +
+          getErrorMessages(configValidationResult)
+            .map(function(error) {
               return "<b>- " + error + "</b>";
             })
-              .filter(Boolean)
-              .join("<br>") +
-            "</p>" +
-            "<p><br><br>Benötigen Sie Hilfe? Kontaktieren Sie uns unter " +
-            "<a href='mailto:onboarding@8select.de?subject=Shopware CSE Plugin: Fehlerhafte Plugin-Konfiguration'>onboarding@8select.de</a></p>"
-        }
-      ];
-    } else {
+            .filter(Boolean)
+            .join("<br>") +
+          "</p>" +
+          "<p><br><br>Benötigen Sie Hilfe? Kontaktieren Sie uns unter " +
+          "<a href='mailto:onboarding@8select.de?subject=Shopware CSE Plugin: Fehlerhafte Plugin-Konfiguration'>onboarding@8select.de</a></p>"
+      }
+    ];
+
+    if (isConfigValid(configValidationResult)) {
       me.items = [
         {
           text: FULL_BTN.textEnabled,
@@ -297,6 +128,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
           xtype: "button",
           scale: "large",
           width: "100%",
+          margins: "50px 0 5px 0",
 
           handler: function() {
             Ext.getCmp(FULL_BTN.id).disable();
@@ -304,7 +136,10 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             Ext.Ajax.request({
               url: FULL_BTN.exportUri,
               failure: function() {
-                pluginGrowlMessage("Es ist ein Fehler aufgetreten.");
+                Shopware.Notification.createStickyGrowlMessage({
+                  title: "Export fehlgeschlagen",
+                  text: "Es ist ein Fehler aufgetreten. Bitte kontaktieren Sie 8select."
+                });
               }
             });
             setTimeout(fullExportStatusCheck, 5000);
@@ -316,6 +151,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
           xtype: "button",
           scale: "large",
           width: "100%",
+          margins: "5px 0 0 0",
 
           handler: function() {
             Ext.getCmp(QUICK_BTN.id).disable();
@@ -323,7 +159,10 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             Ext.Ajax.request({
               url: QUICK_BTN.exportUri,
               failure: function() {
-                pluginGrowlMessage("Es ist ein Fehler aufgetreten.");
+                Shopware.Notification.createStickyGrowlMessage({
+                  title: "Export fehlgeschlagen",
+                  text: "Es ist ein Fehler aufgetreten. Bitte kontaktieren Sie 8select."
+                });
               }
             });
             setTimeout(quickExportStatusCheck, 5000);
@@ -355,8 +194,10 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         }
       ];
 
-      me.callParent(arguments);
-      validatePluginConfig();
+      fullExportStatusCheck();
+      quickExportStatusCheck();
     }
+
+    me.callParent(arguments);
   }
 });
