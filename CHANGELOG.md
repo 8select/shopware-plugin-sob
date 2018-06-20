@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.4.0](https://github.com/8select/shopware-plugin-sob/tree/1.4.0) (2018-06-20)
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.3.0...1.4.0)
+
+**Implemented features:**
+
+- CSE-923 upload via credentials [\#28](https://github.com/8select/shopware-plugin-sob/pull/28) ([voodoods](https://github.com/voodoods))
+
 ## [1.3.0](https://github.com/8select/shopware-plugin-sob/tree/1.3.0) (2018-06-19)
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.2.1...1.3.0)
 
