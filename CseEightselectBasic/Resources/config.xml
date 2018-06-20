@@ -106,6 +106,7 @@
             <name>8s_preview_mode_enabled</name>
             <label lang="de">Vorschau-Modus an</label>
             <label lang="en">Enable Preview-Mode</label>
+            <value>true</value>
             <description lang="de">Bei aktivem Preview-Modus können Sie über einen zusätzlichen Parameter "?preview=1" an der Shop-Adresse zu Ihrer Produktansicht aktive 8select Widgets testen. Beispiel: http://meinshop.de/fashion/145/mein-produkt?preview=1. Um das Modul SYS-ACC auch in der Preview zu sehen, müssen Sie es in den Plugin-Einstellungen aktivieren.</description>
             <description lang="en">When the preview-mode is active, you can test the widgets by adding the parameter "?preview=1" to the URL. Example: http://meinshop.de/fashion/145/mein-produkt?preview=1. To also preview the SYS-ACC module, you need to activate it in the plugin-config.
             </description>
