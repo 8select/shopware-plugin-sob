@@ -2,7 +2,6 @@
 namespace CseEightselectBasic\Components;
 
 use Aws\S3\S3Client;
-use Dotenv\Dotenv;
 
 class AWSUploader
 {
@@ -23,19 +22,13 @@ class AWSUploader
         $bucket = '__SUBDOMAIN__.8select.io';
         $region = 'eu-central-1';
         $prefix = $feedId . '/' . $feedType . '/' . date('Y') . '/' . date('m') . '/' . date('d');
-        
-        $dotenv = new Dotenv( __DIR__ . '/..' );
-        $dotenv->load();
-        $s3_plugin_key = getenv('S3_PLUGIN_USER_ACCESS_KEY');
-        $s3_plugin_secret_key = getenv('S3_PLUGIN_USER_ACCESS_KEY_SECRET');        
 
-        // Instantiate an Amazon S3 client.
         $s3 = new S3Client([
             'version'     => '2006-03-01',
             'region'      => $region,
             'credentials' => array(
-                'key' => $s3_plugin_key,
-                'secret' => $s3_plugin_secret_key,
+                'key' => '__S3_PLUGIN_USER_ACCESS_KEY__',
+                'secret' => '__S3_PLUGIN_USER_ACCESS_KEY_SECRET__',
             ),
         ]);
 

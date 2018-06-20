@@ -11,6 +11,16 @@ CURRENT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 VERSION=${1}
 PROFILE=${2}
+S3_ACCESS_KEY=${3}
+S3_ACCESS_KEY_SECRET=${4}
+
+if [ "$#" -ne 4 ]; then
+    echo "Illegal number of parameters"
+    echo "Usage:"
+    echo "bin/release.sh <version> <profile> <S3_ACCESS_KEY> <S3_ACCESS_KEY_SECRET>"
+    exit 1
+fi
+
 PLUGIN_NAME="CseEightselectBasic"
 
 DIST_DIR="dist"
@@ -23,6 +33,8 @@ echo "=========================="
 echo "BUILDING"
 echo "VERSION: ${VERSION}"
 echo "PROFILE: ${PROFILE}"
+echo "S3_ACCESS_KEY: ${S3_ACCESS_KEY}"
+echo "S3_ACCESS_KEY_SECRET: ${S3_ACCESS_KEY_SECRET}"
 echo "=========================="
 
 echo "Build at ${BUILD_DIR}"
@@ -41,5 +53,9 @@ else
   sed -i '' "s@__SUBDOMAIN__@productfeed-prod.${PROFILE}@g" ${PLUGIN_DIR}/Components/AWSUploader.php
   sed -i '' "s@__SUBDOMAIN__@wgt-prod.${PROFILE}@g" ${PLUGIN_DIR}/Resources/views/frontend/index/header.tpl
 fi
+
+sed -i '' "s@__S3_PLUGIN_USER_ACCESS_KEY__@${S3_ACCESS_KEY}@g" ${PLUGIN_DIR}/Components/AWSUploader.php
+sed -i '' "s@__S3_PLUGIN_USER_ACCESS_KEY_SECRET__@${S3_ACCESS_KEY_SECRET}@g" ${PLUGIN_DIR}/Components/AWSUploader.php
+
 zip -q -r "${DIST_PATH}" ${PLUGIN_NAME}
 echo "created release ${VERSION} at ${DIST_PATH}"
