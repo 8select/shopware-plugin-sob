@@ -23,11 +23,13 @@ class AWSUploader
         $region = 'eu-central-1';
         $prefix = $feedId . '/' . $feedType . '/' . date('Y') . '/' . date('m') . '/' . date('d');
 
-        // Instantiate an Amazon S3 client.
         $s3 = new S3Client([
             'version'     => '2006-03-01',
             'region'      => $region,
-            'credentials' => false,
+            'credentials' => array(
+                'key' => '__S3_PLUGIN_USER_ACCESS_KEY__',
+                'secret' => '__S3_PLUGIN_USER_ACCESS_KEY_SECRET__',
+            ),
         ]);
 
         $key = $prefix . '/' . $filename;
