@@ -426,7 +426,7 @@ class CseEightselectBasic extends Plugin
      * @throws \Zend_Db_Statement_Exception
      */
     public function cseEightselectBasicArticleExport(\Shopware_Components_Cron_CronJob $job)
-    {  
+    {
         $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
         $this->container->get('cse_eightselect_basic.article_export')->doCron();
     }
