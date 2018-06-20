@@ -11,13 +11,15 @@ CURRENT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 VERSION=${1}
 PROFILE=${2}
-S3_ACCESS_KEY=${3}
-S3_ACCESS_KEY_SECRET=${4}
 
-if [ "$#" -ne 4 ]; then
+S3_ACCESS_KEY=$(aws --profile ${PROFILE} --region eu-central-1 cloudformation describe-stacks --stack-name product-service-samt-prod --query 'Stacks[0].Outputs[?OutputKey==`PluginUserAccessKeyId`].OutputValue' --output text)
+S3_ACCESS_KEY_SECRET=$(aws --profile ${PROFILE} --region eu-central-1 cloudformation describe-stacks --stack-name product-service-samt-prod --query 'Stacks[0].Outputs[?OutputKey==`PluginUserAccessKeySecret`].OutputValue' --output text)
+
+
+if [ "$#" -ne 2 ]; then
     echo "Illegal number of parameters"
     echo "Usage:"
-    echo "bin/release.sh <version> <profile> <S3_ACCESS_KEY> <S3_ACCESS_KEY_SECRET>"
+    echo "bin/release.sh <version> <profile>"
     exit 1
 fi
 
