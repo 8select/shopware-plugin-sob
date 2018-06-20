@@ -185,11 +185,12 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     }
 
     function checkForHtmlContainer(container) {
-      if (!container || container === null || container.length === 0) {
-        return "Kein Widget-Platzhalter im HTML-Container";
-      }
-      if (container && container !== null && container !== "CSE_SYS") {
-        return "Widget-Platzhalter im HTML-Container ist ungültig";
+      var isEmpty = !container || container === null || container.length === 0;
+      var containsPlaceholder =
+        container && container !== null && container.indexOf("CSE_SYS") >= 0;
+
+      if (isEmpty || !containsPlaceholder) {
+        return "Kein Widget-Platzhalter (CSE_SYS) im HTML-Container";
       }
     }
 
