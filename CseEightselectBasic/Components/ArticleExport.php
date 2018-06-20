@@ -81,21 +81,18 @@ class ArticleExport
      */
     public function doCron()
     {
-        $isConfigValid = ConfigValidator::isConfigValid();
-
-        if (!$isConfigValid) {
-           $isActive = ConfigValidator::isPluginActive();
-           $apiId = ConfigValidator::getApiId();
-           $feedId = ConfigValidator::getFeedId();
-
-           if (getenv('ES_DEBUG')) {
-                echo 'Kann Export nicht ausführen: Die 8select CSE Plugin-Konfiguration ist ungültig. 
-                Für Details prüfen Sie bitte das Logfile Ihres Shopware Backends.';
-                return;
-           }
-        }
-
         try {
+            if (!ConfigValidator::isConfigValid()) {
+                $message = 'Artikel Export nicht ausgeführt, da die Plugin Konfiguration ungültig ist.';
+                Shopware()->PluginLogger()->warning($message);
+
+                if (getenv('ES_DEBUG')) {
+                    echo $message;
+                }
+
+                return;
+            }
+
             Shopware()->PluginLogger()->info('Führe Artikel Export aus.');
             if (getenv('ES_DEBUG')) {
                 echo 'Führe Artikel Export aus.' . PHP_EOL;
