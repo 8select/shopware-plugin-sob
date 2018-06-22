@@ -13,7 +13,6 @@ use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\ActivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
-
 use Shopware\Components\Plugin\Context\UpdateContext;
 
 class CseEightselectBasic extends Plugin
@@ -33,10 +32,8 @@ class CseEightselectBasic extends Plugin
             'Enlight_Controller_Action_PostDispatch_Frontend_Checkout'                  => 'onCheckoutConfirm',
             'Shopware_CronJob_CseEightselectBasicArticleExport'                         => 'cseEightselectBasicArticleExport',
             'Shopware_CronJob_CseEightselectBasicArticleExportOnce'                     => 'cseEightselectBasicArticleExportOnce',
-            'Shopware_CronJob_CseEightselectBasicQuickUpdate'                           => 'cseEightselectBasicQuickUpdate',
-            'Shopware_CronJob_CseEightselectBasicQuickUpdateOnce'                       => 'cseEightselectBasicQuickUpdateOnce',
-            'Shopware_CronJob_CseEightselectBasicPropertyUpdate'                        => 'cseEightselectBasicPropertyUpdate',
-            'Shopware_CronJob_CseEightselectBasicPropertyUpdateOnce'                    => 'cseEightselectBasicPropertyUpdateOnce',
+            'Shopware_CronJob_CseEightselectBasicPropertyExport'                        => 'cseEightselectBasicPropertyExport',
+            'Shopware_CronJob_CseEightselectBasicPropertyExportOnce'                    => 'cseEightselectBasicPropertyExportOnce',
             'Shopware_Controllers_Backend_Config_After_Save_Config_Element'             => 'onBackendConfigSave',
         ];
     }
@@ -183,8 +180,6 @@ class CseEightselectBasic extends Plugin
     {
         $this->addExportCron();
         $this->addExportOnceCron();
-        $this->addUpdateCron();
-        $this->addUpdateOnceCron();
         $this->addPropertyCron();
         $this->addPropertyOnceCron();
         $this->installWidgets();
@@ -365,8 +360,6 @@ class CseEightselectBasic extends Plugin
     {
         $this->removeExportCron();
         $this->removeExportOnceCron();
-        $this->removeUpdateCron();
-        $this->removeUpdateOnceCron();
         $this->removePropertyCron();
         $this->removePropertyOnceCron();
         $this->removeDatabase();
@@ -450,25 +443,6 @@ class CseEightselectBasic extends Plugin
     public function cseEightselectBasicArticleExportOnce(\Shopware_Components_Cron_CronJob $job)
     {
         $this->container->get('cse_eightselect_basic.article_export')->doCron();
-    }
-
-    /**
-     * @param \Shopware_Components_Cron_CronJob $job
-     * @throws \Exception
-     */
-    public function cseEightselectBasicQuickUpdate(\Shopware_Components_Cron_CronJob $job)
-    {
-        $this->container->get('cse_eightselect_basic.quick_update')->scheduleCron();
-        $this->container->get('cse_eightselect_basic.quick_update')->doCron();
-    }
-
-    /**
-     * @param  \Shopware_Components_Cron_CronJob $job
-     * @throws \Exception
-     */
-    public function cseEightselectBasicQuickUpdateOnce(\Shopware_Components_Cron_CronJob $job)
-    {
-        $this->container->get('cse_eightselect_basic.quick_update')->doCron();
     }
 
     /**
@@ -570,70 +544,6 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * add cron job for exporting all products
-     */
-    public function addUpdateCron()
-    {
-        $connection = $this->container->get('dbal_connection');
-        $connection->insert(
-            's_crontab',
-            [
-                'name'       => '8select quick product update',
-                'action'     => 'Shopware_CronJob_CseEightselectBasicQuickUpdate',
-                'next'       => new \DateTime(),
-                'start'      => null,
-                '`interval`' => '60',
-                'active'     => 1,
-                'end'        => new \DateTime(),
-                'pluginID'   => $this->container->get('shopware.plugin_manager')->getPluginByName($this->getName())->getId(),
-            ],
-            [
-                'next' => 'datetime',
-                'end'  => 'datetime',
-            ]
-        );
-    }
-
-    public function removeUpdateCron()
-    {
-        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
-            'Shopware_CronJob_CseEightselectBasicQuickUpdate',
-        ]);
-    }
-
-    /**
-     * add cron job for exporting all products
-     */
-    public function addUpdateOnceCron()
-    {
-        $connection = $this->container->get('dbal_connection');
-        $connection->insert(
-            's_crontab',
-            [
-                'name'       => '8select quick product update',
-                'action'     => 'Shopware_CronJob_CseEightselectBasicQuickUpdateOnce',
-                'next'       => new \DateTime(),
-                'start'      => null,
-                '`interval`' => '1',
-                'active'     => 1,
-                'end'        => new \DateTime(),
-                'pluginID'   => $this->container->get('shopware.plugin_manager')->getPluginByName($this->getName())->getId(),
-            ],
-            [
-                'next' => 'datetime',
-                'end'  => 'datetime',
-            ]
-        );
-    }
-
-    public function removeUpdateOnceCron()
-    {
-        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
-            'Shopware_CronJob_CseEightselectBasicQuickUpdateOnce',
-        ]);
-    }
-
-    /**
      * add cron job for exporting all properties
      */
     public function addPropertyCron()
@@ -674,7 +584,7 @@ class CseEightselectBasic extends Plugin
         $connection->insert(
             's_crontab',
             [
-                'name'       => '8select property export',
+                'name'       => '8select property export once',
                 'action'     => 'Shopware_CronJob_CseEightselectBasicPropertyExportOnce',
                 'next'       => new \DateTime(),
                 'start'      => null,
