@@ -840,11 +840,19 @@ class CseEightselectBasic extends Plugin
                   `updated_at` datetime,
                   PRIMARY KEY (`id`)
                 ) COLLATE=\'utf8_unicode_ci\' ENGINE=InnoDB DEFAULT CHARSET=utf8;',
+            'DROP TRIGGER IF EXISTS `8s_articles_change_queue_writer`',
+            'CREATE TRIGGER `8s_articles_change_queue_writer` AFTER UPDATE on `s_articles`
+                  FOR EACH ROW
+                  BEGIN
+                    IF (NEW.supplierID != OLD.supplierID OR NEW.configurator_set_id != OLD.configurator_set_id) THEN
+                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.id, NOW());
+                    END IF;
+                  END',
             'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
             'CREATE TRIGGER `8s_articles_details_change_queue_writer` AFTER UPDATE on `s_articles_details`
                   FOR EACH ROW
                   BEGIN
-                    IF (NEW.instock != OLD.instock OR NEW.active != OLD.active) THEN
+                    IF (NEW.ordernumber != OLD.ordernumber OR NEW.instock != OLD.instock OR NEW.active != OLD.active OR NEW.ean != OLD.ean) THEN
                       INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.id, NOW());
                     END IF;
                   END',
@@ -855,6 +863,18 @@ class CseEightselectBasic extends Plugin
                     IF (NEW.price != OLD.price OR NEW.pseudoprice != OLD.pseudoprice) THEN
                       INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.articleDetailsID, NOW());
                     END IF;
+                  END',
+            'DROP TRIGGER IF EXISTS `8s_s_articles_attributes_change_queue_writer`',
+            'CREATE TRIGGER `8s_s_articles_attributes_change_queue_writer` AFTER UPDATE on `s_articles_attributes`
+                  FOR EACH ROW
+                  BEGIN
+                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.articleDetailsID, NOW());
+                  END',
+            'DROP TRIGGER IF EXISTS `8s_s_article_configurator_option_relations_change_queue_writer`',
+            'CREATE TRIGGER `8s_s_article_configurator_option_relations_change_queue_writer` AFTER UPDATE on `s_article_configurator_option_relations`
+                  FOR EACH ROW
+                  BEGIN
+                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.article_id, NOW());
                   END',
         ];
 
@@ -869,9 +889,12 @@ class CseEightselectBasic extends Plugin
     private function deleteChangesQueueTable()
     {
         $triggerSqls = [
+            'DROP TABLE IF EXISTS `8s_articles_change_queue`;',
             'DROP TABLE IF EXISTS `8s_articles_details_change_queue`;',
-            'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer;`',
-            'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer;`',
+            'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_articles_attributes_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_article_configurator_option_relations_change_queue_writer`',
         ];
 
         foreach ($triggerSqls as $triggerSql) {
