@@ -10,7 +10,7 @@ class ArticleExport
 {
     const STORAGE = 'files/8select/';
 
-    const CRON_NAME = '8select_full_export';
+    const CRON_NAME = '8select_article_export';
 
     private $currentProgress = 0;
 
