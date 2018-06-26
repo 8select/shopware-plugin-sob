@@ -26,6 +26,13 @@ class FeedLogger {
     Shopware()->Db()->query($sql);
   }
 
+  public static function getLastFeedUpdate($feedName) {
+    $sql = 'SELECT last_run FROM `' . self::TABLE_NAME . '` WHERE feed_name = "' . $feedName . '"';
+    $lastRun = Shopware()->Db()->query($sql)->fetchAll();
+
+    return $lastRun;
+  }
+
   public static function createTable() 
   {
     $sqls = [
