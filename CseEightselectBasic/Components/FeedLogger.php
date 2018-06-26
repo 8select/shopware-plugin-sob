@@ -1,0 +1,49 @@
+<?php
+namespace CseEightselectBasic\Components;
+
+class FeedLogger {
+
+  const TABLE_NAME = '8s_feeds';
+
+  /**
+  * @throws \Zend_Db_Adapter_Exception
+  * @throws \Zend_Db_Statement_Exception
+  */
+
+  public static function logFeed($feedName) {
+
+    $sql = 'INSERT INTO `' . self::TABLE_NAME . '` (feed_name, last_run)
+            VALUES ("' . $feedName . '", NOW())
+            ON DUPLICATE KEY UPDATE
+              feed_name = "'. $feedName . '",
+              last_run = NOW();';
+
+    if (getenv('ES_DEBUG')) {
+      echo  \PHP_EOL . 'SQL'  . \PHP_EOL;
+      echo $sql . \PHP_EOL;
+    }
+
+    Shopware()->Db()->query($sql);
+  }
+
+  public static function createTable() 
+  {
+    $sqls = [
+      'DROP TABLE IF EXISTS `' . self::TABLE_NAME . '`;',
+      'CREATE TABLE `' . self::TABLE_NAME . '` (
+        `feed_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+        `last_run` datetime DEFAULT NULL,
+        PRIMARY KEY (`feed_name`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;'
+    ];
+
+    foreach ($sqls as $sql) {
+      Shopware()->Db()->query($sql);
+    }
+  }
+
+  public static function deleteTable() {
+    $sql = 'DROP TABLE IF EXISTS `' . self::TABLE_NAME . '`;';
+    Shopware()->Db()->query($sql);
+  }
+}
