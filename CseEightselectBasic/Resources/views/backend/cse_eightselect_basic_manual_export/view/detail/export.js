@@ -9,6 +9,31 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
     initComponent: function () {
         var me = this;
+
+        var requestLastFullExport = Ext.Ajax.request({
+            async: false,
+            url: "{url controller=CseEightselectBasicManualExport action=getLastFullExportDate}"
+        });
+        
+        var requestLastQuickUpdate = Ext.Ajax.request({
+            async: false,
+            url: "{url controller=CseEightselectBasicManualExport action=getLastQuickUpdateDate}"
+        });
+
+        var lastFullExport = Ext.decode(requestLastFullExport.responseText).lastFullExport[0];
+        var lastQuickUpdate = Ext.decode(requestLastQuickUpdate.responseText).lastQuickUpdate[0];
+
+        var lastFullExportTimeStamp = lastFullExport && lastFullExport.last_run ? lastFullExport.last_run : '';
+        var lastQuickUpdateTimeStamp = lastQuickUpdate && lastQuickUpdate.last_run ? lastQuickUpdate.last_run : '';
+
+        var lastFullExportLabel =   lastFullExportTimeStamp.length === 0 ? 
+                                    'Noch kein Voll-Export duchgeführt.' : 
+                                    'Letzter Voll-Export am: ' + lastFullExportTimeStamp;
+
+        var lastQuickUpdateLabel =  lastQuickUpdateTimeStamp.length === 0 ? 
+                                    'Noch keine Schnell-Update durchgeführt.' : 
+                                    'Letztes Schnell-Update am: ' + lastQuickUpdateTimeStamp;
+
         var FULL_BTN = {
             id: 'full-export-btn',
             textEnabled: 'Produkt Voll-Export anstoßen',
@@ -88,6 +113,30 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
                         }
                     });
                     setTimeout(quickExportStatusCheck, 5000);
+                }
+            },
+            {
+                text: lastFullExportLabel,
+                id: "last-full-export-timestamp",
+                xtype: "label",
+                width: "100%",
+                margins: "30 0 0 0",
+                style: {
+                    textAlign: "center",
+                    color: "#aaa",
+                    fontSize: "11px"
+                }
+            },
+            {
+                text: lastQuickUpdateLabel,
+                id: "last-quick-update-timestamp",
+                xtype: "label",
+                width: "100%",
+                margins: "5 0 15 0",
+                style: {
+                    textAlign: "center",
+                    color: "#aaa",
+                    fontSize: "11px"
                 }
             }
         ];
