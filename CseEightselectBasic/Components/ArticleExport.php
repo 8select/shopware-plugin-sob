@@ -129,7 +129,7 @@ class ArticleExport
             if (getenv('ES_DEBUG')) {
                 echo('Artikel Export abgeschlossen in ' . (time() - $start) . "s\n");
             }
-            Shopware()->PluginLogger()->info('Artikel Export abgeschlossen in ' . (time() - $start) . 's');        
+            Shopware()->PluginLogger()->info('Artikel Export abgeschlossen in ' . (time() - $start) . 's');
         } catch (\Exception $exception) {
             Shopware()->PluginLogger()->error($exception);
             RunCronOnce::finishCron(self::CRON_NAME);
