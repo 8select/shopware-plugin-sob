@@ -20,11 +20,11 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
             url: "{url controller=CseEightselectBasicManualExport action=getLastQuickUpdateDate}"
         });
 
-        var lastFullExport = Ext.decode(requestLastFullExport.responseText).lastFullExport[0];
-        var lastQuickUpdate = Ext.decode(requestLastQuickUpdate.responseText).lastQuickUpdate[0];
+        var lastFullExport = Ext.decode(requestLastFullExport.responseText).lastFullExport;
+        var lastQuickUpdate = Ext.decode(requestLastQuickUpdate.responseText).lastQuickUpdate;
 
-        var lastFullExportTimeStamp = lastFullExport && lastFullExport.last_run ? lastFullExport.last_run : '';
-        var lastQuickUpdateTimeStamp = lastQuickUpdate && lastQuickUpdate.last_run ? lastQuickUpdate.last_run : '';
+        var lastFullExportTimeStamp = lastFullExport ? lastFullExport : '';
+        var lastQuickUpdateTimeStamp = lastQuickUpdate ? lastQuickUpdate : '';
 
         var lastFullExportLabel =   lastFullExportTimeStamp.length === 0 ? 
                                     'Noch kein Voll-Export duchgeführt.' : 
