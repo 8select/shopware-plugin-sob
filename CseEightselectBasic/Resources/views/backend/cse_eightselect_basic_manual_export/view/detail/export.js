@@ -120,7 +120,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
                 id: "last-full-export-timestamp",
                 xtype: "label",
                 width: "100%",
-                margins: "30 0 0 0",
+                margins: "30px 0px 0px 0px",
                 style: {
                     textAlign: "center",
                     color: "#aaa",
@@ -132,7 +132,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
                 id: "last-quick-update-timestamp",
                 xtype: "label",
                 width: "100%",
-                margins: "5 0 15 0",
+                margins: "5px 0px 15px 0px",
                 style: {
                     textAlign: "center",
                     color: "#aaa",
