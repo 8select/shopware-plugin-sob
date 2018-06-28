@@ -47,14 +47,14 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
     var FULL_BTN = {
       id: "full-export-btn",
-      textEnabled: "Produkt Voll-Export anstoßen",
+      textEnabled: "Produkt Voll-Export ausführen",
       textDisabled: "Produkt Voll-Export wird ausgeführt",
       exportUri: "{url controller=CseEightselectBasicManualExport action=fullExport}",
       statusUri: "{url controller=CseEightselectBasicManualExport action=getFullExportStatus}"
     };
     var QUICK_BTN = {
       id: "quick-export-btn",
-      textEnabled: "Produkt Schnell-Update anstoßen",
+      textEnabled: "Produkt Schnell-Update ausführen",
       textDisabled: "Produkt Schnell-Update wird ausgeführt",
       exportUri: "{url controller=CseEightselectBasicManualExport action=quickExport}",
       statusUri: "{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}"
@@ -66,7 +66,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         success: function(response) {
           var button = Ext.getCmp(buttonId);
           var progress = JSON.parse(response.responseText).progress;
-          if (progress === false || progress === 100 || progress === "100") {
+          if (progress && progress === 100) {
             button.enable();
             button.setText(buttonTextEnabled);
           } else {
@@ -91,34 +91,6 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         quickExportStatusCheck
       );
     }
-
-    me.items = [
-      {
-        xtype: "panel",
-        region: "top",
-        id: "pluginerrors",
-        layout: "auto",
-        width: 400,
-        bodyPadding: 10,
-        style: {
-          backgroundColor: "#F8F9F9",
-          margin: "0 0 20px 0"
-        },
-        html:
-          "<h1>Funktion nicht verfügbar</h1><br><br>" +
-          "<p>Bitte überprüfen Sie Ihre Plugin-Konfiguration. Details:<br></p>" +
-          "<p>" +
-          getErrorMessages(configValidationResult)
-            .map(function(error) {
-              return "<b>- " + error + "</b>";
-            })
-            .filter(Boolean)
-            .join("<br>") +
-          "</p>" +
-          "<p><br><br>Benötigen Sie Hilfe? Kontaktieren Sie uns unter " +
-          "<a href='mailto:onboarding@8select.de?subject=Shopware CSE Plugin: Fehlerhafte Plugin-Konfiguration'>onboarding@8select.de</a></p>"
-      }
-    ];
 
     if (isConfigValid(configValidationResult)) {
       me.items = [
@@ -196,6 +168,34 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
       fullExportStatusCheck();
       quickExportStatusCheck();
+    } else {
+      me.items = [
+        {
+          xtype: "panel",
+          region: "top",
+          id: "pluginerrors",
+          layout: "auto",
+          width: 400,
+          bodyPadding: 10,
+          style: {
+            backgroundColor: "#F8F9F9",
+            margin: "0 0 20px 0"
+          },
+          html:
+            "<h1>Funktion nicht verfügbar</h1><br><br>" +
+            "<p>Bitte überprüfen Sie Ihre Plugin-Konfiguration. Details:<br></p>" +
+            "<p>" +
+            getErrorMessages(configValidationResult)
+              .map(function(error) {
+                return "<b>- " + error + "</b>";
+              })
+              .filter(Boolean)
+              .join("<br>") +
+            "</p>" +
+            "<p><br><br>Benötigen Sie Hilfe? Kontaktieren Sie uns unter " +
+            "<a href='mailto:onboarding@8select.de?subject=Shopware CSE Plugin: Fehlerhafte Plugin-Konfiguration'>onboarding@8select.de</a></p>"
+        }
+      ];
     }
 
     me.callParent(arguments);
