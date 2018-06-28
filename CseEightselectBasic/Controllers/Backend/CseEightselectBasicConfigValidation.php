@@ -12,7 +12,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicConfigValidation extends \
         $isActive = ConfigValidator::isPluginActive();
         $apiId = ConfigValidator::getApiId();
         $feedId = ConfigValidator::getFeedId();
-        $HtmlContainer = ConfigValidator::getHtmlContainer();
+        $htmlContainer = ConfigValidator::getHtmlContainer();
         $sizeDefinitions = ConfigValidator::hasSizeDefinitions();
 
         if ( !$isActive ) {
@@ -40,7 +40,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicConfigValidation extends \
             array_push($messages, "Die hinterlegte Feed ID ist ungültig");
         }
 
-        if ( strlen($HtmlContainer) === 0 || strpos($HtmlContainer, 'CSE_SYS') === false ) {
+        if ( strlen($htmlContainer) === 0 || strpos($htmlContainer, 'CSE_SYS') === false ) {
             $isValid = false;
             array_push($messages, "Kein Widget-Platzhalter (CSE_SYS) im HTML-Container");
         }
