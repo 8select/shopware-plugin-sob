@@ -20,7 +20,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicConfigValidation extends \
             array_push($messages, "Plugin ist nicht aktiv");
         }
 
-        if ( strlen($apiId) === 0 || $apiId === null || $apiId === false ) {
+        if ( !$apiId ) {
             $isValid = false;
             array_push($messages, "Keine API ID hinterlegt");
         }
@@ -30,7 +30,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicConfigValidation extends \
             array_push($messages, "Die hinterlegte API ID ist ungültig");
         }
 
-        if ( strlen($feedId) === 0 || $feedId === null || $feedId === false ) {
+        if ( !$feedId ) {
             $isValid = false;
             array_push($messages, "Keine Feed ID hinterlegt");
         }

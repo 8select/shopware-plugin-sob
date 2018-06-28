@@ -4,13 +4,18 @@ namespace CseEightselectBasic\Components;
 class ConfigValidator {
 
   /**
+   * @return object
+   */
+  private static function getCseEightselectBasicConfiguration() {
+    return Shopware()->Container()->get('shopware.plugin.cached_config_reader')->getByPluginName('CseEightselectBasic');
+  }
+
+  /**
   * @return boolean
   */
   public static function isPluginActive()
   {
-    $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-    $isActive = $config->getByPluginName('CseEightselectBasic')['8s_enabled'];
-    return $isActive;
+    return self::getCseEightselectBasicConfiguration()['8s_enabled'];
   }
 
   /**
@@ -18,9 +23,7 @@ class ConfigValidator {
   */
   public static function getApiId()
   {
-    $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-    $apiId = $config->getByPluginName('CseEightselectBasic')['8s_merchant_id'];
-    return $apiId;
+    return self::getCseEightselectBasicConfiguration()['8s_merchant_id'];
   }
 
   /**
@@ -28,9 +31,7 @@ class ConfigValidator {
   */
   public static function getFeedId()
   {
-    $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-    $feedId = $config->getByPluginName('CseEightselectBasic')['8s_feed_id'];
-    return $feedId;
+    return self::getCseEightselectBasicConfiguration()['8s_feed_id'];
   }
 
   /**
@@ -38,9 +39,7 @@ class ConfigValidator {
   */
   public static function getHtmlContainer()
   {
-    $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-    $container = $config->getByPluginName('CseEightselectBasic')['8s_html_container_element'];
-    return $container;
+    return self::getCseEightselectBasicConfiguration()['8s_html_container_element'];
   }
 
   /**
@@ -48,9 +47,7 @@ class ConfigValidator {
   */
   public static function isSysAccActive()
   {
-    $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-    $sysAcc = $config->getByPluginName('CseEightselectBasic')['8s_sys_acc_enabled'];
-    return $sysAcc;
+    return self::getCseEightselectBasicConfiguration()['8s_sys_acc_enabled'];
   }
 
   /**
@@ -58,9 +55,7 @@ class ConfigValidator {
   */
   public static function isPreviewModeActive()
   {
-    $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-    $previewMode = $config->getByPluginName('CseEightselectBasic')['8s_preview_mode_enabled'];
-    return $previewMode;
+    return self::getCseEightselectBasicConfiguration()['8s_preview_mode_enabled'];
   }
   
   /**
@@ -68,10 +63,7 @@ class ConfigValidator {
    */
   public static function hasSizeDefinitions()
   {
-     $sizesQuery =  'SELECT * FROM s_article_configurator_groups_attributes WHERE od_cse_eightselect_basic_is_size';
-     $sizesCount =  Shopware()->Db()->query($sizesQuery)->rowCount();
-
-     return $sizesCount > 0;
+     return Shopware()->Db()->fetchOne('SELECT SUM(od_cse_eightselect_basic_is_size = 1) FROM s_article_configurator_groups_attributes');
   }
 
   /**
