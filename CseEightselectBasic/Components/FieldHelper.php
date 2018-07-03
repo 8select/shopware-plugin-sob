@@ -190,15 +190,12 @@ class FieldHelper
      */
     private static function getImages($ordernumber)
     {
-
-        $mediaIds = ArticleImageMapper::getVariantImageMediaIdsByOrdernumber($ordernumber);
-
         /** @var MediaService $mediaService */
         $mediaService = Shopware()->Container()->get('shopware_media.media_service');
+        $mediaIds = ArticleImageMapper::getVariantImageMediaIdsByOrdernumber($ordernumber);
 
         foreach ($mediaIds as $mediaId) {
-            $image = Shopware()->Db()->query('SELECT img, extension FROM s_articles_img WHERE media_id = ?', [$mediaId])->fetchAll();
-            $image = $image[0];
+            $image = Shopware()->Db()->query('SELECT img, extension FROM s_articles_img WHERE media_id = ?', [$mediaId])->fetch();
 
             $path = 'media/image/' . $image['img'] . '.' . $image['extension'];
             if ($mediaService->has($path)) {

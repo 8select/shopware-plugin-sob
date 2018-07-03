@@ -4,19 +4,23 @@ namespace CseEightselectBasic\Components;
 class ArticleImageMapper
 {
 
+  /**
+  * @param  int $ordernumber
+  * @throws \Exception
+  * @return array
+  */
   public function getVariantImageMediaIdsByOrdernumber( $ordernumber ) 
   {
     $mediaIds = array();
-    $sql = 'SELECT articleID, id FROM s_articles_details WHERE ordernumber = ?';
-    $sArticle = Shopware()->Db()->query($sql, [$ordernumber])->fetchAll();
-    $sArticle = $sArticle[0];
     $hasVariants = false;
+    $sql = 'SELECT articleID, id FROM s_articles_details WHERE ordernumber = ?';
+    $sArticle = Shopware()->Db()->query($sql, [$ordernumber])->fetch();
 
-    $optionIDs = self::getOptionIdsByDetailId( $sArticle['id'] );
+    $allArticleOptionIDs = self::getOptionIdsByDetailId( $sArticle['id'] );
     $allArticleImageIDs = self::getImageIdsByArticleId( $sArticle['articleID'] );
 
     foreach( $allArticleImageIDs as $imageID ) {
-      foreach ( $optionIDs as $optionID ) {
+      foreach ( $allArticleOptionIDs as $optionID ) {
         if (self::doesImageMatchVariantOption($imageID, $optionID)) {
           $matchingMediaId = Shopware()->Db()->fetchOne('SELECT media_id FROM s_articles_img WHERE id = ?', [$imageID]);
           array_push($mediaIds, $matchingMediaId);
@@ -40,6 +44,11 @@ class ArticleImageMapper
     return $mediaIds;
   }
 
+  /**
+  * @param  int $detailID
+  * @throws \Exception
+  * @return array
+  */
   private function getOptionIdsByDetailId( $detailID ) 
   {
     $sql = 'SELECT option_id FROM s_article_configurator_option_relations WHERE article_id = ' . $detailID . ';';
@@ -55,9 +64,14 @@ class ArticleImageMapper
     return $optionIDs;
   }
 
-  private function getImageIdsByArticleId ( $articleId ) 
+  /**
+  * @param  int $articleID
+  * @throws \Exception
+  * @return array
+  */
+  private function getImageIdsByArticleId ( $articleID ) 
   {
-    $sql = 'SELECT id FROM s_articles_img WHERE articleID = ' . $articleId . ';';
+    $sql = 'SELECT id FROM s_articles_img WHERE articleID = ' . $articleID . ';';
     $images = Shopware()->Db()->query($sql)->fetchAll();
     $imageIDs = array();
 
@@ -70,11 +84,17 @@ class ArticleImageMapper
     return $imageIDs;
   }
 
+  /**
+  * @param  int $imageID
+  * @param  int $optionID
+  * @throws \Exception
+  * @return boolean
+  */
   private function doesImageMatchVariantOption( $imageID, $optionID ) 
   {
     $mappingQuery = 'SELECT id FROM s_article_img_mappings WHERE image_id =?';
-    $targetMappingId = Shopware()->Db()->fetchOne($mappingQuery, [$imageID]);
     $optionQuery = 'SELECT option_id FROM s_article_img_mapping_rules WHERE mapping_id = ?';
+    $targetMappingId = Shopware()->Db()->fetchOne($mappingQuery, [$imageID]);
     $targetOptionId = Shopware()->Db()->fetchOne($optionQuery, [$targetMappingId]);
 
     if ($optionID === $targetOptionId) {
