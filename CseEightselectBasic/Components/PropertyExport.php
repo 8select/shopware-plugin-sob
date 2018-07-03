@@ -116,59 +116,54 @@ class PropertyExport
     }
 
     public static function getOriginalFieldNames($fields) {
-
-        $origFields = array();
-
-        foreach ($fields as $field) {
+        return array_map(function ($field) {
             switch($field) {
                 case 'prop_sku':
-                    array_push($origFields, 'sku');
+                    return 'sku';
                     break;
                 case 'prop_isInStock':
-                    array_push($origFields, 'instock');
+                    return 'instock';
                     break;
                 case 'prop_parentSku':
-                    array_push($origFields, 'mastersku');
+                    return 'mastersku';
                     break;
                 case 'prop_ean':
-                    array_push($origFields, 'ean');
+                    return 'ean';
                     break;
                 case 'prop_model':
-                    array_push($origFields, 'model');
+                    return 'model';
                     break;
                 case 'prop_name':
-                    array_push($origFields, 'name1');
+                    return 'name1';
                     break;
                 case 'prop_discountPrice':
-                    array_push($origFields, 'streich_preis');
+                    return 'streich_preis';
                     break;
                 case 'prop_retailPrice':
-                    array_push($origFields, 'angebots_preis');
+                    return 'angebots_preis';
                     break;
                 case 'prop_size':
-                    array_push($origFields, 'groesse');
+                    return 'groesse';
                     break;
                 case 'prop_brand':
-                    array_push($origFields, 'marke');
+                    return 'marke';
                     break;
                 case 'prop_color':
-                    array_push($origFields, 'farbe');
+                    return 'farbe';
                     break;
                 case 'prop_url':
-                    array_push($origFields, 'produkt_url');
+                    return 'produkt_url';
                     break;
                 case 'prop_description':
-                    array_push($origFields, 'beschreibung1');
+                    return 'beschreibung1';
                     break;
                 case 'images':
-                    array_push($origFields, 'bilder');
+                    return 'bilder';
                     break;
                 default:
-                    array_push($origFields, $field);
+                    return $field;
             }
-        }
-
-        return $origFields;
+        }, $fields);
     }
 
 
