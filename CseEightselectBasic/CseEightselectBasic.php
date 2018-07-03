@@ -844,7 +844,12 @@ class CseEightselectBasic extends Plugin
             'CREATE TRIGGER `8s_articles_change_queue_writer` AFTER UPDATE on `s_articles`
                   FOR EACH ROW
                   BEGIN
-                    IF (NEW.supplierID != OLD.supplierID OR NEW.configurator_set_id != OLD.configurator_set_id) THEN
+                    IF (NEW.supplierID != OLD.supplierID OR 
+                    NEW.name != OLD.name OR 
+                    NEW.configurator_set_id != OLD.configurator_set_id OR 
+                    NEW.description != OLD.description OR 
+                    NEW.description_long != OLD.description_long) 
+                    THEN
                       INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.id, NOW());
                     END IF;
                   END',
@@ -852,15 +857,32 @@ class CseEightselectBasic extends Plugin
             'CREATE TRIGGER `8s_articles_details_change_queue_writer` AFTER UPDATE on `s_articles_details`
                   FOR EACH ROW
                   BEGIN
-                    IF (NEW.ordernumber != OLD.ordernumber OR NEW.instock != OLD.instock OR NEW.active != OLD.active OR NEW.ean != OLD.ean) THEN
+                    IF (NEW.articleID != OLD.articleID OR 
+                        NEW.ordernumber != OLD.ordernumber OR 
+                        NEW.instock != OLD.instock OR 
+                        NEW.active != OLD.active OR 
+                        NEW.ean != OLD.ean) 
+                    THEN
                       INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.id, NOW());
                     END IF;
                   END',
+            'DROP TRIGGER IF EXISTS `8s_articles_img_change_queue_writer`',
+            'CREATE TRIGGER `8s_articles_img_change_queue_writer` AFTER UPDATE on `s_articles_img`
+            FOR EACH ROW
+            BEGIN
+            IF (NEW.img != OLD.img OR 
+                NEW.extension != OLD.extension) 
+            THEN
+                INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.articleID, NOW());
+            END IF;
+            END',
             'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
             'CREATE TRIGGER `8s_s_articles_prices_change_queue_writer` AFTER UPDATE on `s_articles_prices`
                   FOR EACH ROW
                   BEGIN
-                    IF (NEW.price != OLD.price OR NEW.pseudoprice != OLD.pseudoprice) THEN
+                    IF (NEW.price != OLD.price OR 
+                        NEW.pseudoprice != OLD.pseudoprice) 
+                    THEN
                       INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.articleDetailsID, NOW());
                     END IF;
                   END',
@@ -875,6 +897,38 @@ class CseEightselectBasic extends Plugin
                   FOR EACH ROW
                   BEGIN
                       INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.article_id, NOW());
+                  END',
+            'DROP TRIGGER IF EXISTS `8s_s_article_img_mappings_change_queue_writer`',
+            'CREATE TRIGGER `8s_s_article_img_mappings_change_queue_writer` AFTER UPDATE on `s_article_img_mappings`
+                  FOR EACH ROW
+                  BEGIN
+                        INSERT INTO 
+                            8s_articles_details_change_queue (s_articles_details_id, updated_at) 
+                        VALUES (
+                            SELECT 
+                                articleID 
+                            FROM 
+                                s_articles_img 
+                            WHERE 
+                                id = NEW.image_id, NOW());
+                  END',
+            'DROP TRIGGER IF EXISTS `8s_s_article_img_mapping_rules_change_queue_writer`',
+            'CREATE TRIGGER `8s_s_article_img_mapping_rules_change_queue_writer` AFTER UPDATE on `s_article_img_mapping_rules`
+                  FOR EACH ROW
+                  BEGIN
+                        INSERT INTO 
+                            8s_articles_details_change_queue (s_articles_details_id, updated_at) 
+                        VALUES (
+                            SELECT 
+                                articleID 
+                            FROM 
+                                s_articles_img 
+                            INNER JOIN 
+                                s_article_img_mappings 
+                            ON 
+                                s_article_img_mappings.image_id = s_articles_img.id 
+                            WHERE 
+                                s_article_img_mappings.id = NEW.mapping_id, NOW());
                   END',
         ];
 
@@ -892,9 +946,12 @@ class CseEightselectBasic extends Plugin
             'DROP TABLE IF EXISTS `8s_articles_change_queue`;',
             'DROP TABLE IF EXISTS `8s_articles_details_change_queue`;',
             'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_articles_img_change_queue_writer`',
             'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
             'DROP TRIGGER IF EXISTS `8s_s_articles_attributes_change_queue_writer`',
             'DROP TRIGGER IF EXISTS `8s_s_article_configurator_option_relations_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_article_img_mappings_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_article_img_mapping_rules_change_queue_writer`',
         ];
 
         foreach ($triggerSqls as $triggerSql) {
