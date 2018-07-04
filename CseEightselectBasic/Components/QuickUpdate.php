@@ -3,6 +3,7 @@ namespace CseEightselectBasic\Components;
 
 use League\Csv\Writer;
 use CseEightselectBasic\Components\RunCronOnce;
+use CseEightselectBasic\Components\FeedLogger;
 
 class QuickUpdate
 {
@@ -90,9 +91,9 @@ class QuickUpdate
 
             $this->writeFile($csvWriter);
             AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
-
+            
             $this->emptyQueue();
-
+            FeedLogger::logFeed(self::CRON_NAME);
             RunCronOnce::finishCron(self::CRON_NAME);
 
             if (getenv('ES_DEBUG')) {

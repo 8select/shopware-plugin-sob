@@ -2,7 +2,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Window", {
   extend: "Enlight.app.Window",
   alias: "widget.8select-export-window",
   width: 450,
-  height: 200,
+  height: 220,
   title: "{s name=window_title}8select Manual Export{/s}",
   layout: "border",
 

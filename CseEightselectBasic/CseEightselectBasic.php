@@ -3,6 +3,7 @@ namespace CseEightselectBasic;
 
 use CseEightselectBasic\Components\ArticleExport;
 use CseEightselectBasic\Components\RunCronOnce;
+use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Models\EightselectAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -379,6 +380,7 @@ class CseEightselectBasic extends Plugin
         $this->initAttributes();
         $this->initChangesQueueTable();
         RunCronOnce::createTable();
+        FeedLogger::createTable();
     }
 
     private function removeDatabase()
@@ -391,6 +393,7 @@ class CseEightselectBasic extends Plugin
         $tool->dropSchema($classes);
 
         RunCronOnce::deleteTable();
+        FeedLogger::deleteTable();
         $this->deleteChangesQueueTable;
     }
 
