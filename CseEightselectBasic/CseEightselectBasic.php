@@ -818,7 +818,7 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'sonstiges',
                 'eightselectAttributeLabel'      => 'SONSTIGES',
-                'eightselectAttributeLabelDescr' => 'zusätzlichen Artikelinformationen, die nicht im Mapping zur Auswahl stehen',
+                'eightselectAttributeLabelDescr' => 'zusätzliche Artikelinformationen, die keinem spezifischen Attribut zugeordnet werden können',
                 'shopwareAttribute'              => '',
             ]
         ];
