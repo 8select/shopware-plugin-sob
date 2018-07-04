@@ -60,13 +60,13 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
       statusUri: "{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}"
     };
 
-    function statusCheck(actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {
+    var statusCheck = function(actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {
       Ext.Ajax.request({
         url: actionUri,
         success: function(response) {
           var button = Ext.getCmp(buttonId);
           var progress = JSON.parse(response.responseText).progress;
-          if ( !progress || progress === 100 ) {
+          if (!progress || progress === 100) {
             button.enable();
             button.setText(buttonTextEnabled);
           } else {
@@ -78,11 +78,11 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
       });
     }
 
-    function fullExportStatusCheck() {
+    var fullExportStatusCheck = function() {
       statusCheck(FULL_BTN.statusUri, FULL_BTN.id, FULL_BTN.textEnabled, FULL_BTN.textDisabled, fullExportStatusCheck);
     }
 
-    function quickExportStatusCheck() {
+    var quickExportStatusCheck = function() {
       statusCheck(
         QUICK_BTN.statusUri,
         QUICK_BTN.id,
