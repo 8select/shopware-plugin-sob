@@ -857,33 +857,21 @@ class CseEightselectBasic extends Plugin
             'CREATE TRIGGER `8s_articles_details_change_queue_writer` AFTER UPDATE on `s_articles_details`
                   FOR EACH ROW
                   BEGIN
-                    IF (NEW.articleID != OLD.articleID OR 
-                        NEW.ordernumber != OLD.ordernumber OR 
-                        NEW.instock != OLD.instock OR 
-                        NEW.active != OLD.active OR 
-                        NEW.ean != OLD.ean) 
-                    THEN
-                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.id, NOW());
+                    IF (NEW.articleID != OLD.articleID OR NEW.ordernumber != OLD.ordernumber OR NEW.instock != OLD.instock OR NEW.active != OLD.active OR NEW.ean != OLD.ean) THEN INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.id, NOW());
                     END IF;
                   END',
             'DROP TRIGGER IF EXISTS `8s_articles_img_change_queue_writer`',
             'CREATE TRIGGER `8s_articles_img_change_queue_writer` AFTER UPDATE on `s_articles_img`
             FOR EACH ROW
             BEGIN
-            IF (NEW.img != OLD.img OR 
-                NEW.extension != OLD.extension) 
-            THEN
-                INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.articleID, NOW());
+            IF (NEW.img != OLD.img OR NEW.extension != OLD.extension) THEN INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.articleID, NOW());
             END IF;
             END',
             'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
             'CREATE TRIGGER `8s_s_articles_prices_change_queue_writer` AFTER UPDATE on `s_articles_prices`
                   FOR EACH ROW
                   BEGIN
-                    IF (NEW.price != OLD.price OR 
-                        NEW.pseudoprice != OLD.pseudoprice) 
-                    THEN
-                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.articleDetailsID, NOW());
+                    IF (NEW.price != OLD.price OR NEW.pseudoprice != OLD.pseudoprice) THEN INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) VALUES (NEW.articleDetailsID, NOW());
                     END IF;
                   END',
             'DROP TRIGGER IF EXISTS `8s_s_articles_attributes_change_queue_writer`',
@@ -902,23 +890,27 @@ class CseEightselectBasic extends Plugin
             'CREATE TRIGGER `8s_s_article_img_mappings_change_queue_writer` AFTER UPDATE on `s_article_img_mappings`
                   FOR EACH ROW
                   BEGIN
-                        INSERT INTO 
-                            8s_articles_details_change_queue (s_articles_details_id, updated_at) 
-                        VALUES (
+                    INSERT INTO 
+                        8s_articles_details_change_queue (s_articles_details_id, updated_at) 
+                    VALUES (
+                        (
                             SELECT 
                                 articleID 
                             FROM 
                                 s_articles_img 
                             WHERE 
-                                id = NEW.image_id, NOW());
+                                id = NEW.image_id
+                        ), 
+                        NOW());
                   END',
             'DROP TRIGGER IF EXISTS `8s_s_article_img_mapping_rules_change_queue_writer`',
             'CREATE TRIGGER `8s_s_article_img_mapping_rules_change_queue_writer` AFTER UPDATE on `s_article_img_mapping_rules`
                   FOR EACH ROW
                   BEGIN
-                        INSERT INTO 
-                            8s_articles_details_change_queue (s_articles_details_id, updated_at) 
-                        VALUES (
+                    INSERT INTO 
+                        8s_articles_details_change_queue (s_articles_details_id, updated_at) 
+                    VALUES (
+                        (
                             SELECT 
                                 articleID 
                             FROM 
@@ -928,7 +920,9 @@ class CseEightselectBasic extends Plugin
                             ON 
                                 s_article_img_mappings.image_id = s_articles_img.id 
                             WHERE 
-                                s_article_img_mappings.id = NEW.mapping_id, NOW());
+                                s_article_img_mappings.id = NEW.mapping_id
+                        ), 
+                    NOW());
                   END',
         ];
 
