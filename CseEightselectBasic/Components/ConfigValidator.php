@@ -70,11 +70,11 @@ class ConfigValidator {
   * @return boolean
   * @throws \Exception
   */
-  public function isConfigValid()
+  public static function isConfigValid()
   {  
-      $isActive = $this->isPluginActive();
-      $apiId = $this->getApiId();
-      $feedId = $this->getFeedId();
+      $isActive = self::isPluginActive();
+      $apiId = self::getApiId();
+      $feedId = self::getFeedId();
 
       $configIsValid = $isActive && $apiId && $feedId && strlen($apiId) == 36 && strlen($feedId) == 36;
       return $configIsValid;
