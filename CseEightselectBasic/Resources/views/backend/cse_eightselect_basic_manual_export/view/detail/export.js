@@ -66,7 +66,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         success: function(response) {
           var button = Ext.getCmp(buttonId);
           var progress = JSON.parse(response.responseText).progress;
-          if (progress && progress === 100) {
+          if ( !progress || progress === 100 ) {
             button.enable();
             button.setText(buttonTextEnabled);
           } else {
