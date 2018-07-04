@@ -9,6 +9,11 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
   initComponent: function() {
     var me = this;
 
+    var configValidationRequest = Ext.Ajax.request({
+      async: false,
+      url: "{url controller=CseEightselectBasicConfigValidation action=validate}"
+    });
+
     var requestLastFullExport = Ext.Ajax.request({
       async: false,
       url: "{url controller=CseEightselectBasicManualExport action=getLastFullExportDate}"
@@ -66,7 +71,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         success: function(response) {
           var button = Ext.getCmp(buttonId);
           var progress = JSON.parse(response.responseText).progress;
-          if (!progress || progress === 100) {
+          if (progress === false || progress === 100) {
             button.enable();
             button.setText(buttonTextEnabled);
           } else {
@@ -79,7 +84,13 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     }
 
     var fullExportStatusCheck = function() {
-      statusCheck(FULL_BTN.statusUri, FULL_BTN.id, FULL_BTN.textEnabled, FULL_BTN.textDisabled, fullExportStatusCheck);
+      statusCheck(
+        FULL_BTN.statusUri, 
+        FULL_BTN.id, 
+        FULL_BTN.textEnabled, 
+        FULL_BTN.textDisabled, 
+        fullExportStatusCheck
+      );
     }
 
     var quickExportStatusCheck = function() {
