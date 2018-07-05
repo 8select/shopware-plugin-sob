@@ -148,7 +148,7 @@ class ArticleExport
     {
         $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping
                          FROM 8s_attribute_mapping
-                         WHERE shopwareAttribute != "-"
+                         WHERE shopwareAttribute != ""
                          AND shopwareAttribute NOT LIKE "%id=%"';
 
         $attributeMapping = Shopware()->Db()->query($attributeMappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];

@@ -36,9 +36,24 @@ Ext.define(
             header: "Shopware Attribute",
             editor: {
               xtype: "combobox",
-              allowBlank: false,
+              allowBlank: true,
+              multiSelect: true,
               valueField: "column_name",
               displayField: "label",
+              listeners: {
+                beforeselect: function() {
+                  if (this.value.length === 1) {
+                      var isArticleField = this.value.some(function(field) {
+                        return field.match(/s\_articles|additionaltext|weight|width|height|length|ean/)
+                      })
+
+                      if (isArticleField) {
+                        return false
+                      }
+                  }
+                  return true
+                }
+              },
               store: Ext.create(
                 "Shopware.apps.CseEightselectBasicAttributeConfig.store.ShopwareAttribute"
               ),
