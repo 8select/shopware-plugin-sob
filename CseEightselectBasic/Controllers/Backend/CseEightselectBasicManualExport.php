@@ -36,10 +36,9 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         $this->View()->assign(['lastFullExport' => $lastRun]);
     }
 
-    public function getLastQuickUpdateDateAction() 
-    {
-        $lastRun = FeedLogger::getLastFeedUpdate(QuickUpdate::CRON_NAME);
-        $this->View()->assign(['lastQuickUpdate' => $lastRun]);
+    public function getLastPropertyExportDateAction() {
+        $lastRun = FeedLogger::getLastFeedUpdate(PropertyExport::CRON_NAME);
+        $this->View()->assign(['lastPropertyExport' => $lastRun]);
     }
 
     public function checkForActiveStateAction()
