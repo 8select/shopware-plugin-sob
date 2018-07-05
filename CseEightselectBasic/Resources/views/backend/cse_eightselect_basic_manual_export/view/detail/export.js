@@ -21,29 +21,26 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         "{url controller=CseEightselectBasicManualExport action=getLastFullExportDate}"
     });
 
-    var requestLastQuickUpdate = Ext.Ajax.request({
+    var requestLastPropertyExport = Ext.Ajax.request({
       async: false,
-      url:
-        "{url controller=CseEightselectBasicManualExport action=getLastQuickUpdateDate}"
+      url: "{url controller=CseEightselectBasicManualExport action=getLastPropertyExportDate}"
     });
 
-    var lastFullExport = Ext.decode(requestLastFullExport.responseText)
-      .lastFullExport;
-    var lastQuickUpdate = Ext.decode(requestLastQuickUpdate.responseText)
-      .lastQuickUpdate;
+    var lastFullExport = Ext.decode(requestLastFullExport.responseText).lastFullExport;
+    var lastPropertyExport = Ext.decode(requestLastPropertyExport.responseText).lastPropertyExport;
 
     var lastFullExportTimeStamp = lastFullExport ? lastFullExport : "";
-    var lastQuickUpdateTimeStamp = lastQuickUpdate ? lastQuickUpdate : "";
+    var lastPropertyExportTimeStamp = lastPropertyExport ? lastPropertyExport : "";
 
     var lastFullExportLabel =
       lastFullExportTimeStamp.length === 0
-        ? "Noch kein Voll-Export duchgeführt."
-        : "Letzter Voll-Export am: " + lastFullExportTimeStamp;
+        ? "Noch kein Voll-Export duchgeführt (alle Stammdaten)"
+        : "Letzter Voll-Export am: " + lastFullExportTimeStamp + " (alle Stammdaten)"
 
-    var lastQuickUpdateLabel =
-      lastQuickUpdateTimeStamp.length === 0
-        ? "Noch kein Schnell-Update durchgeführt."
-        : "Letztes Schnell-Update am: " + lastQuickUpdateTimeStamp;
+    var lastPropertyExportLabel =
+      lastPropertyExportTimeStamp.length === 0
+        ? "Noch keine Schnell-Update durchgeführt (nur Änderungen)"
+        : "Letztes Schnell-Update am: " + lastPropertyExportTimeStamp + " (nur Änderungen)";
 
     var configValidationResult = Ext.decode(
       configValidationRequest.responseText
@@ -66,14 +63,12 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
       statusUri:
         "{url controller=CseEightselectBasicManualExport action=getFullExportStatus}"
     };
-    var QUICK_BTN = {
-      id: "quick-export-btn",
+    var PROPERTY_BTN = {
+      id: "property-export-btn",
       textEnabled: "Produkt Schnell-Update ausführen",
       textDisabled: "Produkt Schnell-Update wird ausgeführt",
-      exportUri:
-        "{url controller=CseEightselectBasicManualExport action=quickExport}",
-      statusUri:
-        "{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}"
+      exportUri: "{url controller=CseEightselectBasicManualExport action=propertyExport}",
+      statusUri: "{url controller=CseEightselectBasicManualExport action=getPropertyExportStatus}"
     };
 
     var statusCheck = function(
@@ -110,13 +105,13 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
       );
     };
 
-    var quickExportStatusCheck = function() {
+    var propertyExportStatusCheck = function() {
       statusCheck(
-        QUICK_BTN.statusUri,
-        QUICK_BTN.id,
-        QUICK_BTN.textEnabled,
-        QUICK_BTN.textDisabled,
-        quickExportStatusCheck
+        PROPERTY_BTN.statusUri,
+        PROPERTY_BTN.id,
+        PROPERTY_BTN.textEnabled,
+        PROPERTY_BTN.textDisabled,
+        propertyExportStatusCheck
       );
     };
 
@@ -147,18 +142,18 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
           }
         },
         {
-          text: QUICK_BTN.textEnabled,
-          id: QUICK_BTN.id,
+          text: PROPERTY_BTN.textEnabled,
+          id: PROPERTY_BTN.id,
           xtype: "button",
           scale: "large",
           width: "100%",
           margins: "5px 0 0 0",
 
           handler: function() {
-            Ext.getCmp(QUICK_BTN.id).disable();
-            Ext.getCmp(QUICK_BTN.id).setText(QUICK_BTN.textDisabled + " (0%)");
+            Ext.getCmp(PROPERTY_BTN.id).disable();
+            Ext.getCmp(PROPERTY_BTN.id).setText(PROPERTY_BTN.textDisabled + " (0%)");
             Ext.Ajax.request({
-              url: QUICK_BTN.exportUri,
+              url: PROPERTY_BTN.exportUri,
               failure: function() {
                 Shopware.Notification.createStickyGrowlMessage({
                   title: "Export fehlgeschlagen",
@@ -167,7 +162,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
                 });
               }
             });
-            setTimeout(quickExportStatusCheck, 5000);
+            setTimeout(propertyExportStatusCheck, 5000);
           }
         },
         {
@@ -183,8 +178,8 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
           }
         },
         {
-          text: lastQuickUpdateLabel,
-          id: "last-quick-update-timestamp",
+          text: lastPropertyExportLabel,
+          id: "last-property-export-timestamp",
           xtype: "label",
           width: "100%",
           margins: "5px 0px 15px 0px",
@@ -197,7 +192,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
       ];
 
       fullExportStatusCheck();
-      quickExportStatusCheck();
+      propertyExportStatusCheck();
     } else {
       me.items = [
         {
