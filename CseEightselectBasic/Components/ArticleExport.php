@@ -4,6 +4,7 @@ namespace CseEightselectBasic\Components;
 use League\Csv\Writer;
 use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\FeedLogger;
+use CseEightselectBasic\Components\ConfigValidator;
 
 class ArticleExport
 {
@@ -81,6 +82,17 @@ class ArticleExport
     public function doCron()
     {
         try {
+            if (!ConfigValidator::isConfigValid()) {
+                $message = 'Artikel Export nicht ausgeführt, da die Plugin Konfiguration ungültig ist.';
+                Shopware()->PluginLogger()->warning($message);
+
+                if (getenv('ES_DEBUG')) {
+                    echo $message;
+                }
+
+                return;
+            }
+
             Shopware()->PluginLogger()->info('Führe Artikel Export aus.');
             if (getenv('ES_DEBUG')) {
                 echo 'Führe Artikel Export aus.' . PHP_EOL;

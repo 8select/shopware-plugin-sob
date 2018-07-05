@@ -29,7 +29,7 @@
             <name>8s_selected_detail_block</name>
             <label lang="de">Position an der das SYS-Widget platziert wird:</label>
             <label lang="en">Position where SYS-widget will be placed:</label>
-            <value>none</value>
+            <value>frontend_detail_index_detail</value>
             <description lang="de">Geben Sie an, in welchem Block bzw. an welcher Stelle der Produktdetailseite das SYS-Widget platziert werden soll.</description>
             <description lang="en">Select a block of the product detail page in which the SYS widget will be placed.</description>
             <store>
@@ -65,7 +65,7 @@
             <name>8s_widget_placement</name>
             <label lang="de">Widget am Block-Anfang oder -Ende einfügen:</label>
             <label lang="en">Attach widget to the block start or end:</label>
-            <value>widget_before</value>
+            <value>widget_after</value>
             <description lang="de">Geben Sie an, ob das Widget am Anfang oder am Ende des ausgewählten Blocks positioniert werden soll.</description>
             <description lang="en">Choose if the widget should be placed at the start or the end of the selected block.</description>
             <store>
@@ -106,6 +106,7 @@
             <name>8s_preview_mode_enabled</name>
             <label lang="de">Vorschau-Modus an</label>
             <label lang="en">Enable Preview-Mode</label>
+            <value>true</value>
             <description lang="de">Bei aktivem Preview-Modus können Sie über einen zusätzlichen Parameter "?preview=1" an der Shop-Adresse zu Ihrer Produktansicht aktive 8select Widgets testen. Beispiel: http://meinshop.de/fashion/145/mein-produkt?preview=1. Um das Modul SYS-ACC auch in der Preview zu sehen, müssen Sie es in den Plugin-Einstellungen aktivieren.</description>
             <description lang="en">When the preview-mode is active, you can test the widgets by adding the parameter "?preview=1" to the URL. Example: http://meinshop.de/fashion/145/mein-produkt?preview=1. To also preview the SYS-ACC module, you need to activate it in the plugin-config.
             </description>

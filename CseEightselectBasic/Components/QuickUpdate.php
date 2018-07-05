@@ -41,6 +41,17 @@ class QuickUpdate
     public function doCron()
     {
         try {
+            if (!ConfigValidator::isConfigValid()) {
+                $message = 'Artikel Update Export nicht ausgeführt, da die Plugin Konfiguration ungültig ist.';
+                Shopware()->PluginLogger()->warning($message);
+
+                if (getenv('ES_DEBUG')) {
+                    echo $message;
+                }
+
+                return;
+            }
+
             Shopware()->PluginLogger()->info('Führe Artikel Update Export aus.');
             if (getenv('ES_DEBUG')) {
                 echo 'Führe Artikel Update Export aus.' . PHP_EOL;
