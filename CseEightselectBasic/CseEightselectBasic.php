@@ -635,21 +635,27 @@ class CseEightselectBasic extends Plugin
                 'shopwareAttribute'              => 's_articles.description_long',
             ],
             [
+                'eightselectAttribute'           => 'beschreibung2',
+                'eightselectAttributeLabel'      => 'ALTERNATIVER BESCHREIBUNGSTEXT',
+                'eightselectAttributeLabelDescr' => 'zusätzliche Informationen zum Produkt, technische Beschreibung, Kurzbeschreibung oder auch Keywords',
+                'shopwareAttribute'              => 's_articles.keywords',
+            ],
+            [
                 'eightselectAttribute'           => 'rubrik',
-                'eightselectAttributeLabel'      => 'PRODUKTKATEGORIE',
-                'eightselectAttributeLabelDescr' => 'Bezeichnung der Artikelgruppen, die meist so in der Shopnavigation verwendet werden (z.B. Hosen, Jacken, Accessoires, Schuhe)',
+                'eightselectAttributeLabel'      => 'PRODUKTKATEGORIE / -RUBRIK',
+                'eightselectAttributeLabelDescr' => 'bezeichnet spezielle Artikelgruppen, die als Filter oder Shop-Navigation genutzt werden (z.B. Große Größen, Umstandsmode, Stillmode)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'typ',
                 'eightselectAttributeLabel'      => 'PRODUKTTYP / UNTERKATEGORIE',
-                'eightselectAttributeLabelDescr' => 'Verfeinerung der Ebene PRODUKTKATEGORIE (z.B. PRODUKTKATEGORIE = Jacken; PRODUKTTYP = Lederjacken, Parkas, Blousons)',
+                'eightselectAttributeLabelDescr' => 'verfeinerte Shop-Navigation oder Unterkategorie (z.B. Lederjacke, Blouson, Parka)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'abteilung',
                 'eightselectAttributeLabel'      => 'ABTEILUNG',
-                'eightselectAttributeLabelDescr' => 'Einteilung der Sortimente nach Zielgruppen (z.B. Damen, Herren, Kinder)',
+                'eightselectAttributeLabelDescr' => 'Einteilung der Sortimente nach Zielgruppen  (z.B. Damen, Herren, Kinder)',
                 'shopwareAttribute'              => '-',
             ],
             [
@@ -661,7 +667,7 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'bereich',
                 'eightselectAttributeLabel'      => 'BEREICH',
-                'eightselectAttributeLabelDescr' => 'Damit können Teilsortimente bezeichnet sein (z.B. Outdoor, Kosmetik, Trachten, Lifestyle)',
+                'eightselectAttributeLabelDescr' => 'Damit können Teilsortimente bezeichnet sein (z.B. Outdoor; Kosmetik; Trachten; Lifestyle)',
                 'shopwareAttribute'              => '-',
             ],
             [
@@ -679,7 +685,7 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'gruppe',
                 'eightselectAttributeLabel'      => 'GRUPPE / BAUKAUSTEN',
-                'eightselectAttributeLabelDescr' => 'bezeichnet direkt zusammengehörige Artikel (z.B. Bikini-Oberteil "Aloha" und Bikini-Unterteil "Aloha" = Gruppe 1002918; Baukasten-Sakko "Ernie" und Baukasten-Hose "Bert" = Gruppe "E&B"). Dabei können auch mehr als 2 Artikel eine Gruppe bilden (z.B. Mix & Match: Gruppe "Hawaii" = 3 Bikini-Oberteile können mit 2 Bikini-Unterteilen frei kombiniert werden). Der Wert für eine Gruppe kann eine Nummer oder ein Name sein.',
+                'eightselectAttributeLabelDescr' => 'bezeichnet direkt zusammengehörige Artikel (z.B. Bikini-Oberteil "Aloha"und Bikini-Unterteil "Aloha"=  Gruppe 1002918; Baukasten-Sakko "Ernie" und Baukasten-Hose "Bert" = Gruppe "E&B"). Dabei können auch mehr als 2 Artikel eine Gruppe bilden (z.B. Mix & Match: Gruppe "Hawaii"  = 3 Bikini-Oberteile können mit 2 Bikini-Unterteilen frei kombiniert werden) . Die ID für eine Gruppe kann eine Nummer oder ein Name sein.',
                 'shopwareAttribute'              => '-',
             ],
             [
@@ -727,13 +733,13 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'passform',
                 'eightselectAttributeLabel'      => 'PASSFORM',
-                'eightselectAttributeLabelDescr' => 'in Bezug auf die Körperform, wird häufig für Hemden, Sakkos und Anzüge verwendet (z.B. schmal, bequeme Weite, slim-fit, regular-fit, comfort-fit, körpernah)',
+                'eightselectAttributeLabelDescr' => 'in Bezug auf die Körperform, wird häufig für  Hemden, Sakkos und Anzüge verwendet (z.B. schmal, bequeme Weite, slim-fit, regular-fit, comfort-fit, körpernah)',
                 'shopwareAttribute'              => '-',
             ],
             [
                 'eightselectAttribute'           => 'schnitt',
                 'eightselectAttributeLabel'      => 'SCHNITT',
-                'eightselectAttributeLabelDescr' => 'in Bezug auf die Form des Artikels (z.B. Bootcut, gerades Bein, Oversized, spitzer Schuh)',
+                'eightselectAttributeLabelDescr' => 'in Bezug auf die Form des Artikels  (z.B. Bootcut, gerades Bein, Oversized, spitzer Schuh)',
                 'shopwareAttribute'              => '-',
             ],
             [
@@ -745,7 +751,7 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'kragenform',
                 'eightselectAttributeLabel'      => 'KRAGENFORM',
-                'eightselectAttributeLabelDescr' => 'speziell bei Oberbekleidung: Beschreibung des Kragens oder Ausschnitts (z.B. Rollkragen, V-Ausschnitt, Blusenkragen, Haifischkragen)',
+                'eightselectAttributeLabelDescr' => 'speziell bei Oberbekleidung: Beschreibung des Kragens  oder Ausschnitts (z.B. Rollkragen, V-Ausschnitt, Blusenkragen, Haifischkragen)',
                 'shopwareAttribute'              => '-',
             ],
             [
@@ -769,7 +775,7 @@ class CseEightselectBasic extends Plugin
             [
                 'eightselectAttribute'           => 'funktion',
                 'eightselectAttributeLabel'      => 'FUNKTION',
-                'eightselectAttributeLabelDescr' => 'beschreibt Materialfunktionen und -eigenschaften (z.b. schnelltrocknend, atmungsaktiv, 100% UV-Schutz;  pflegeleicht, bügelleicht, körperformend)',
+                'eightselectAttributeLabelDescr' => 'beschreibt Materialfunktionen und -eigenschaften (z.b. schnelltrocknend, atmungsaktiv, 100% UV-Schutz; pflegeleicht, bügelleicht, körperformend)',
                 'shopwareAttribute'              => '-',
             ],
             [
@@ -794,6 +800,12 @@ class CseEightselectBasic extends Plugin
                 'eightselectAttribute'           => 'absatzhoehe',
                 'eightselectAttributeLabel'      => 'ABSATZHÖHE',
                 'eightselectAttributeLabelDescr' => 'speziell bei Schuhen: Höhe des Absatzes (Format mit oder ohne Maßeinheit z.B. 5,5 cm oder 5,5)',
+                'shopwareAttribute'              => '-',
+            ],
+            [
+                'eightselectAttribute'           => 'sonstiges',
+                'eightselectAttributeLabel'      => 'SONSTIGES',
+                'eightselectAttributeLabelDescr' => 'zusätzliche Artikelinformationen, die keinem spezifischen Attribut zugeordnet werden können',
                 'shopwareAttribute'              => '-',
             ]
         ];
