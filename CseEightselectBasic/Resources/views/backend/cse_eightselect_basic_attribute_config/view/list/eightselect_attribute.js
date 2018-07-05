@@ -61,6 +61,10 @@ Ext.define(
                   return item.data.column_name === currentField
               })
 
+              if (!targetItem) {
+                return val
+              }
+
               return targetItem.data.label
             },
             editor: {
