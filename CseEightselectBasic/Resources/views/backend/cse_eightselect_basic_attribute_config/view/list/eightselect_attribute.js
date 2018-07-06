@@ -82,12 +82,14 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
                       var isArticleField = this.value.some(function(field) {
                         return field.match(/s\_articles|additionaltext|weight|width|height|length|ean/)
                       })
-
-                  if (isArticleField) {
-                    return false;
                   }
+                  if (nonPropertyFields.length > 1) {
+                    alert("Es können nur Konfigurator-Gruppen und Eigenschaften mehrfach ausgewählt werden!");
+                    this.clearValue()
+                  }
+
+                  return true;
                 }
-                return true;
               }
             },
             store: Ext.create("Shopware.apps.CseEightselectBasicAttributeConfig.store.ShopwareAttribute"),
