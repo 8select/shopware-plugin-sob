@@ -1,6 +1,4 @@
-Ext.define(
-  "Shopware.apps.CseEightselectBasicAttributeConfig.view.list.EightselectAttribute",
-  {
+Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.EightselectAttribute",{
     extend: "Shopware.grid.Panel",
     alias: "widget.8select-attributes-grid",
     id: "8select-attributes-grid",
@@ -85,40 +83,38 @@ Ext.define(
           }
         }
       }
+    },
+    initComponent: function() {
+      var me = this;
+  
+      var configValidationRequest = Ext.Ajax.request({
+        async: false,
+        url: "{url controller=CseEightselectBasicConfigValidation action=validate}"
+      });
+  
+      var configValidationResult = Ext.decode(configValidationRequest.responseText).validationResult;
+  
+      var isConfigValid = function(configValidationResult) {
+        return configValidationResult.isValid;
+      };
+  
+      var getErrorMessages = function(configValidationResult) {
+        return configValidationResult.messages;
+      };
+  
+      function enableAttributeMapping() {
+        me.setDisabled(false);
+      }
+  
+      function disableAttributeMapping() {
+        me.setDisabled(true);
+      }
+  
+      me.callParent(arguments);
+      disableAttributeMapping();
+  
+      if (isConfigValid(configValidationResult)) {
+        enableAttributeMapping();
+      }
     }
-  },
-
-  initComponent: function() {
-    var me = this;
-
-    var configValidationRequest = Ext.Ajax.request({
-      async: false,
-      url: "{url controller=CseEightselectBasicConfigValidation action=validate}"
-    });
-
-    var configValidationResult = Ext.decode(configValidationRequest.responseText).validationResult;
-
-    var isConfigValid = function(configValidationResult) {
-      return configValidationResult.isValid;
-    };
-
-    var getErrorMessages = function(configValidationResult) {
-      return configValidationResult.messages;
-    };
-
-    function enableAttributeMapping() {
-      me.setDisabled(false);
-    }
-
-    function disableAttributeMapping() {
-      me.setDisabled(true);
-    }
-
-    me.callParent(arguments);
-    disableAttributeMapping();
-
-    if (isConfigValid(configValidationResult)) {
-      enableAttributeMapping();
-    }
-  }
 });
