@@ -83,18 +83,15 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
                         return field.match(/s\_articles|additionaltext|weight|width|height|length|ean/)
                       })
 
-                      if (isArticleField) {
-                        return false
-                      }
+                  if (isArticleField) {
+                    return false;
                   }
-                  return true
                 }
-              },
-              store: Ext.create(
-                "Shopware.apps.CseEightselectBasicAttributeConfig.store.ShopwareAttribute"
-              ),
-              editable: false
-            }
+                return true;
+              }
+            },
+            store: Ext.create("Shopware.apps.CseEightselectBasicAttributeConfig.store.ShopwareAttribute"),
+            editable: false
           }
         }
       }
