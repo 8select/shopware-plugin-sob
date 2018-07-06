@@ -29,3 +29,5 @@ docker cp "${BUILD_DIR}/${PLUGIN_NAME}" "${CONTAINER}:${PLUGINDIR}"
 docker exec -i ${CONTAINER} sh -c "php ${SHOPWARE_CLI_BIN} sw:plugin:refresh"
 docker exec -i ${CONTAINER} sh -c "php ${SHOPWARE_CLI_BIN} sw:plugin:update CseEightselectBasic"
 docker exec -i ${CONTAINER} sh -c "php ${SHOPWARE_CLI_BIN} sw:cache:clear"
+
+echo "Working directory successfully copied to ${PLUGINDIR} in docker container ${CONTAINER}"
