@@ -12,14 +12,12 @@ ___
 - Go to the [docker-shopware](https://github.com/8select/docker-shopware) repository and follow the instructions in the README.md
 - clone this repository to your local machine
 
-### 2. Develop and Test
+### 2. Write Code
 - Go to your local clone of this repository and write code
 - run `bin/copy2dev.sh [docker container name] [version]`  to copy the current state of your repository to the plugins directory within your running `docker-shopware` container; prefix your version with a reference to the JIRA issue i.e. `CSE-880` **Example**: `bin/copy2dev.sh 5217-php7_shopware_1 CSE-880`
-- update the plugin through Shopware Plugin Manager's "local update" button (see screenshot)
-- test your changes within your local Testshop
+- the above mentioned script will...
+  - ... create a `staging` build within your docker container so to avaoid test outputs to the `production` environment
+  - ... automatically update the installed plugin in your testshop
+  - ... clear the cache of your local testshop
 
-![update the plugin through Shopware's Plugin Manager](update_local_dev_plugin.png)
-
-**Note:** The `bin/copy2dev.sh` will always create a `staging` build within your docker container so to avaoid test outputs to the `production` environment. This means product exports as well as widget integrations will use endpoints from the `staging` stack.
-
-
+- now you can test your changes within your local testshop (endpoints for export and widgets from staging stack)
