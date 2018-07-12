@@ -11,21 +11,26 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
     var configValidationRequest = Ext.Ajax.request({
       async: false,
-      url: "{url controller=CseEightselectBasicConfigValidation action=validate}"
+      url:
+        "{url controller=CseEightselectBasicConfigValidation action=validate}"
     });
 
     var requestLastFullExport = Ext.Ajax.request({
       async: false,
-      url: "{url controller=CseEightselectBasicManualExport action=getLastFullExportDate}"
+      url:
+        "{url controller=CseEightselectBasicManualExport action=getLastFullExportDate}"
     });
 
     var requestLastQuickUpdate = Ext.Ajax.request({
       async: false,
-      url: "{url controller=CseEightselectBasicManualExport action=getLastQuickUpdateDate}"
+      url:
+        "{url controller=CseEightselectBasicManualExport action=getLastQuickUpdateDate}"
     });
 
-    var lastFullExport = Ext.decode(requestLastFullExport.responseText).lastFullExport;
-    var lastQuickUpdate = Ext.decode(requestLastQuickUpdate.responseText).lastQuickUpdate;
+    var lastFullExport = Ext.decode(requestLastFullExport.responseText)
+      .lastFullExport;
+    var lastQuickUpdate = Ext.decode(requestLastQuickUpdate.responseText)
+      .lastQuickUpdate;
 
     var lastFullExportTimeStamp = lastFullExport ? lastFullExport : "";
     var lastQuickUpdateTimeStamp = lastQuickUpdate ? lastQuickUpdate : "";
@@ -40,7 +45,9 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         ? "Noch kein Schnell-Update durchgeführt."
         : "Letztes Schnell-Update am: " + lastQuickUpdateTimeStamp;
 
-    var configValidationResult = Ext.decode(configValidationRequest.responseText).validationResult;
+    var configValidationResult = Ext.decode(
+      configValidationRequest.responseText
+    ).validationResult;
 
     var isConfigValid = function(configValidationResult) {
       return configValidationResult.isValid;
@@ -54,18 +61,28 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
       id: "full-export-btn",
       textEnabled: "Produkt Voll-Export ausführen",
       textDisabled: "Produkt Voll-Export wird ausgeführt",
-      exportUri: "{url controller=CseEightselectBasicManualExport action=fullExport}",
-      statusUri: "{url controller=CseEightselectBasicManualExport action=getFullExportStatus}"
+      exportUri:
+        "{url controller=CseEightselectBasicManualExport action=fullExport}",
+      statusUri:
+        "{url controller=CseEightselectBasicManualExport action=getFullExportStatus}"
     };
     var QUICK_BTN = {
       id: "quick-export-btn",
       textEnabled: "Produkt Schnell-Update ausführen",
       textDisabled: "Produkt Schnell-Update wird ausgeführt",
-      exportUri: "{url controller=CseEightselectBasicManualExport action=quickExport}",
-      statusUri: "{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}"
+      exportUri:
+        "{url controller=CseEightselectBasicManualExport action=quickExport}",
+      statusUri:
+        "{url controller=CseEightselectBasicManualExport action=getQuickExportStatus}"
     };
 
-    var statusCheck = function(actionUri, buttonId, buttonTextEnabled, buttonTextDisabled, callback) {
+    var statusCheck = function(
+      actionUri,
+      buttonId,
+      buttonTextEnabled,
+      buttonTextDisabled,
+      callback
+    ) {
       Ext.Ajax.request({
         url: actionUri,
         success: function(response) {
@@ -81,17 +98,17 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
           }
         }
       });
-    }
+    };
 
     var fullExportStatusCheck = function() {
       statusCheck(
-        FULL_BTN.statusUri, 
-        FULL_BTN.id, 
-        FULL_BTN.textEnabled, 
-        FULL_BTN.textDisabled, 
+        FULL_BTN.statusUri,
+        FULL_BTN.id,
+        FULL_BTN.textEnabled,
+        FULL_BTN.textDisabled,
         fullExportStatusCheck
       );
-    }
+    };
 
     var quickExportStatusCheck = function() {
       statusCheck(
@@ -101,7 +118,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         QUICK_BTN.textDisabled,
         quickExportStatusCheck
       );
-    }
+    };
 
     if (isConfigValid(configValidationResult)) {
       me.items = [
@@ -121,7 +138,8 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
               failure: function() {
                 Shopware.Notification.createStickyGrowlMessage({
                   title: "Export fehlgeschlagen",
-                  text: "Es ist ein Fehler aufgetreten. Bitte kontaktieren Sie 8select."
+                  text:
+                    "Es ist ein Fehler aufgetreten. Bitte kontaktieren Sie 8select."
                 });
               }
             });
@@ -144,7 +162,8 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
               failure: function() {
                 Shopware.Notification.createStickyGrowlMessage({
                   title: "Export fehlgeschlagen",
-                  text: "Es ist ein Fehler aufgetreten. Bitte kontaktieren Sie 8select."
+                  text:
+                    "Es ist ein Fehler aufgetreten. Bitte kontaktieren Sie 8select."
                 });
               }
             });
