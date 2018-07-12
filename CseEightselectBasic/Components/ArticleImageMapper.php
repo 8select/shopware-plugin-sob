@@ -3,7 +3,6 @@ namespace CseEightselectBasic\Components;
 
 class ArticleImageMapper
 {
-
   /**
   * @param  int $ordernumber
   * @throws \Exception
@@ -11,96 +10,79 @@ class ArticleImageMapper
   */
   public function getVariantImageMediaIdsByOrdernumber( $ordernumber ) 
   {
-    $mediaIds = array();
-    $hasVariants = false;
     $sql = 'SELECT articleID, id FROM s_articles_details WHERE ordernumber = ?';
     $sArticle = Shopware()->Db()->query($sql, [$ordernumber])->fetch();
+    $articleVariantId = $sArticle['id'];
+    $articleId = $sArticle['articleID'];
 
-    $allArticleOptionIDs = self::getOptionIdsByDetailId( $sArticle['id'] );
-    $allArticleImageIDs = self::getImageIdsByArticleId( $sArticle['articleID'] );
+    $optionIds = self::getOptionIdsByArticleVariantId($articleVariantId);
+    $articleImages = self::getImagesWithMapping($articleId);
+    $variantImages = self::getVariantImages($articleImages, $optionIds);
 
-    foreach( $allArticleImageIDs as $imageID ) {
-      foreach ( $allArticleOptionIDs as $optionID ) {
-        if (self::doesImageMatchVariantOption($imageID, $optionID)) {
-          $matchingMediaId = Shopware()->Db()->fetchOne('SELECT media_id FROM s_articles_img WHERE id = ?', [$imageID]);
-          array_push($mediaIds, $matchingMediaId);
+    $images = !empty($variantImages) ? $variantImages : $articleImages;
 
-          $hasVariants = true;
-        }
-      }
-    }
-
-    if (!$hasVariants) {
-      $imagesQuery = 'SELECT media_id FROM s_articles_img WHERE articleID = ?';
-      $standardMediaIds = Shopware()->Db()->query($imagesQuery, [$sArticle['articleID']])->fetchAll();
-
-      foreach ($standardMediaIds as $standardMedia) {
-        foreach ($standardMedia as $mediaId) {
-          array_push($mediaIds, $mediaId);
-        }
-      }
-    }
-
-    return $mediaIds;
+    return self::extractMediaIds($images);
   }
 
   /**
-  * @param  int $detailID
-  * @throws \Exception
+  * @param array $images
   * @return array
   */
-  private function getOptionIdsByDetailId( $detailID ) 
+  private function extractMediaIds($images) {
+    return array_map(function($image) { return $image['mediaId']; }, $images);
+  }
+
+  /**
+  * @param array $images
+  * @param array $optionIds
+  * @return array
+  */
+  private function getVariantImages($images, $optionIds)
   {
-    $sql = 'SELECT option_id FROM s_article_configurator_option_relations WHERE article_id = ' . $detailID . ';';
+    $variantImages = array_filter($images, function($image) use (&$optionIds) {
+      return !empty(array_intersect($image['optionIds'], $optionIds));
+    });
+
+    return $variantImages;
+  }
+
+  /**
+  * @param int $articleId
+  * @return array
+  */
+  private function getOptionIdsByArticleVariantId($articleId)
+  {
+    $sql = 'SELECT option_id FROM s_article_configurator_option_relations WHERE article_id = ' . $articleId . ';';
     $options = Shopware()->Db()->query($sql)->fetchAll();
-    $optionIDs = array();
 
-    foreach($options as $optionData) {
-      foreach($optionData as $optionID) {
-        array_push($optionIDs, $optionID);
-      }
-    }
+    $optionIds = array_map(function($option) { return $option['option_id']; }, $options);
 
-    return $optionIDs;
+    return $optionIds;
   }
 
   /**
-  * @param  int $articleID
+  * @param int $articleId
   * @throws \Exception
   * @return array
   */
-  private function getImageIdsByArticleId ( $articleID ) 
-  {
-    $sql = 'SELECT id FROM s_articles_img WHERE articleID = ' . $articleID . ';';
-    $images = Shopware()->Db()->query($sql)->fetchAll();
-    $imageIDs = array();
+  private function getImagesWithMapping($articleId) {
+    $mappingsSql = 'SELECT ai.id imageId, ai.media_id mediaId, GROUP_CONCAT(aimr.option_id) optionIds 
+      FROM s_articles_img ai
+        LEFT JOIN s_article_img_mappings aim ON aim.image_id = ai.id
+        LEFT JOIN s_article_img_mapping_rules aimr ON aimr.mapping_id = aim.id
+      WHERE ai.articleID = ?
+      GROUP BY ai.id;';
 
-    foreach ($images as $imageData) {
-      foreach($imageData as $id) {
-        array_push($imageIDs, $id);
-      }  
-    }
-    
-    return $imageIDs;
-  }
+    $imageMappings = Shopware()->Db()->query($mappingsSql, [$articleId])->fetchAll();
+    $images = array_map(function($image) {
+      return array(
+        imageId => $image['id'],
+        mediaId => $image['mediaId'],
+        optionIds => $image['optionIds'] == null ? [] : explode(',', $image['optionIds'])
+      );
+    }, $imageMappings);
 
-  /**
-  * @param  int $imageID
-  * @param  int $optionID
-  * @throws \Exception
-  * @return boolean
-  */
-  private function doesImageMatchVariantOption( $imageID, $optionID ) 
-  {
-    $mappingQuery = 'SELECT id FROM s_article_img_mappings WHERE image_id =?';
-    $optionQuery = 'SELECT option_id FROM s_article_img_mapping_rules WHERE mapping_id = ?';
-    $targetMappingId = Shopware()->Db()->fetchOne($mappingQuery, [$imageID]);
-    $targetOptionId = Shopware()->Db()->fetchOne($optionQuery, [$targetMappingId]);
+    return $images;
 
-    if ($optionID === $targetOptionId) {
-      return true;
-    } else {
-      return false;
-    }
   }
 }
