@@ -208,6 +208,8 @@ class CseEightselectBasic extends Plugin
         switch (true) {
             case version_compare($context->getCurrentVersion(), '1.0.1', '<='):
                 $this->update_1_0_1();
+            case version_compare($context->getCurrentVersion(), '1.5.0', '<='):
+                $this->update_1_5_0();
         }
     }
 
@@ -216,6 +218,12 @@ class CseEightselectBasic extends Plugin
         $this->deleteExportDir();
         $this->createExportDir();
     }
+
+    private function update_1_5_0()
+    {
+        FeedLogger::createTable();
+    }
+
     /**
      * Create attributes
      *
