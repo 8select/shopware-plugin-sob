@@ -37,7 +37,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
     var lastQuickUpdateLabel =
       lastQuickUpdateTimeStamp.length === 0
-        ? "Noch keine Schnell-Update durchgeführt."
+        ? "Noch kein Schnell-Update durchgeführt."
         : "Letztes Schnell-Update am: " + lastQuickUpdateTimeStamp;
 
     var configValidationResult = Ext.decode(configValidationRequest.responseText).validationResult;
