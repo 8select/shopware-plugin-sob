@@ -209,7 +209,7 @@ class FieldHelper
             }
         }
 
-        $urlString = implode(' | ', $urlArray);
+        $urlString = implode('|', $urlArray);
 
         return $urlString;
     }
