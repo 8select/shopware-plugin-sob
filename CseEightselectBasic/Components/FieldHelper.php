@@ -198,7 +198,6 @@ class FieldHelper
         /** @var MediaService $mediaService */
         $mediaService = Shopware()->Container()->get('shopware_media.media_service');
 
-        // note: prepared statement would not interpret imploded $mediaIds as array but as single value
         $sql = 'SELECT img, extension FROM s_articles_img WHERE media_id IN (' . implode(",", $mediaIds) . ') ORDER BY position;';
         $images = Shopware()->Db()->query($sql)->fetchAll();
 
