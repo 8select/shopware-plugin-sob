@@ -25,14 +25,14 @@ class FieldHelper
         foreach ($fields as $field) {
             switch ($field) {
                 case 'mastersku':
-                    $value = $article['sku'];
+                    $value = $article['mastersku'];
                     $options = static::getNonSizeConfiguratorOptionsByArticleDetailId($article['detailID']);
                     if (!empty($options)) {
                         $value .= '-' . mb_strtolower(str_replace(' ', '-', implode('-', $options)));
                     }
                     break;
                 case 'model':
-                    $value = $article['sku'];
+                    $value = $article['mastersku'];
                     break;
                 case 'kategorie1':
                     $value = !empty($categories[0]) ? $categories[0] : '';
@@ -51,7 +51,12 @@ class FieldHelper
                     $value = self::getUrl($article['articleID']);
                     break;
                 case 'bilder':
-                    $value = self::getImages($article['sku']);
+                    $mediaIds = ArticleImageMapper::getVariantImageMediaIdsByOrdernumber(
+                        $article['sku'], 
+                        $article['detailID'], 
+                        $article['articleID']
+                    );
+                    $value = self::getImages($mediaIds);
                     break;
                 case 'status':
                     $value = self::getStatus($article['active'], $article['instock'], $article['laststock']);
@@ -188,16 +193,18 @@ class FieldHelper
      * @throws \Exception
      * @return string
      */
-    private static function getImages($ordernumber)
+    private static function getImages($mediaIds)
     {
         /** @var MediaService $mediaService */
         $mediaService = Shopware()->Container()->get('shopware_media.media_service');
-        $mediaIds = ArticleImageMapper::getVariantImageMediaIdsByOrdernumber($ordernumber);
 
-        foreach ($mediaIds as $mediaId) {
-            $image = Shopware()->Db()->query('SELECT img, extension FROM s_articles_img WHERE media_id = ?', [$mediaId])->fetch();
+        // note: prepared statement would not interpret imploded $mediaIds as array but as single value
+        $sql = 'SELECT img, extension FROM s_articles_img WHERE media_id IN (' . implode(",", $mediaIds) . ') ORDER BY position;';
+        $images = Shopware()->Db()->query($sql)->fetchAll();
 
+        foreach ($images as $image) {
             $path = 'media/image/' . $image['img'] . '.' . $image['extension'];
+
             if ($mediaService->has($path)) {
                 $urlArray[] = $mediaService->getUrl($path);
             }

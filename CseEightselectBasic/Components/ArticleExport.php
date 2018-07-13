@@ -199,7 +199,7 @@ class ArticleExport
     protected function getArticles($mapping, $from, $number)
     {
         $sql = 'SELECT ' . $mapping . ',
-                s_articles.id as articleID,
+                s_articles_details.articleID,
                 s_articles.laststock AS laststock,
                 s_articles_details.id as detailID,
                 s_articles_prices.price AS angebots_preis,
@@ -207,12 +207,19 @@ class ArticleExport
                 s_articles_details.active AS active,
                 s_articles_details.instock AS instock,
                 s_articles_supplier.name as marke,
+                case
+                    when s_articles_details.kind = 1 then 
+                        s_articles_details.ordernumber
+                    else 
+                        ad2.ordernumber
+                end as mastersku, 		
                 s_articles_details.ordernumber as sku,
                 s_core_tax.tax AS tax
                 FROM s_articles_details
+                INNER JOIN s_articles_details AS ad2 ON ad2.articleID = s_articles_details.articleID AND ad2.kind = 1
                 INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
                 INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
-                INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = \'1\'
+                INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1
                 INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
                 LIMIT ' . $number . ' OFFSET ' . $from;

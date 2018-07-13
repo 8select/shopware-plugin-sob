@@ -8,13 +8,8 @@ class ArticleImageMapper
   * @throws \Exception
   * @return array
   */
-  public function getVariantImageMediaIdsByOrdernumber( $ordernumber ) 
+  public function getVariantImageMediaIdsByOrdernumber( $ordernumber, $articleVariantId, $articleId) 
   {
-    $sql = 'SELECT articleID, id FROM s_articles_details WHERE ordernumber = ?';
-    $sArticle = Shopware()->Db()->query($sql, [$ordernumber])->fetch();
-    $articleVariantId = $sArticle['id'];
-    $articleId = $sArticle['articleID'];
-
     $optionIds = self::getOptionIdsByArticleVariantId($articleVariantId);
     $articleImages = self::getImagesWithMapping($articleId);
     $variantImages = self::getVariantImages($articleImages, $optionIds);
@@ -66,12 +61,15 @@ class ArticleImageMapper
   * @return array
   */
   private function getImagesWithMapping($articleId) {
-    $mappingsSql = 'SELECT ai.id imageId, ai.media_id mediaId, GROUP_CONCAT(aimr.option_id) optionIds 
-      FROM s_articles_img ai
+    $mappingsSql = 'SELECT 
+        ai.id imageId, 
+        ai.media_id mediaId, 
+        GROUP_CONCAT(aimr.option_id) optionIds 
+        FROM s_articles_img ai
         LEFT JOIN s_article_img_mappings aim ON aim.image_id = ai.id
         LEFT JOIN s_article_img_mapping_rules aimr ON aimr.mapping_id = aim.id
-      WHERE ai.articleID = ?
-      GROUP BY ai.id;';
+        WHERE ai.articleID = ?
+        GROUP BY ai.id;';
 
     $imageMappings = Shopware()->Db()->query($mappingsSql, [$articleId])->fetchAll();
     $images = array_map(function($image) {
