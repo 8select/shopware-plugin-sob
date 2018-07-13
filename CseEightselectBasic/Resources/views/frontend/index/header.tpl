@@ -27,22 +27,18 @@
 
     <script type="text/javascript">
         (function(d, s, w) {
-        var apiId = '{config name="8s_merchant_id"}';
-
-        window.eightlytics || function (w) {
-            w.eightlytics = function () {
-                window.eightlytics.queue = window.eightlytics.queue || []
-                window.eightlytics.queue.push(arguments)
-            };
-        }(w);
-        var script = d.createElement(s);
-        script.src   = 'https://__SUBDOMAIN__.8select.io/' + apiId + '/loader.js';
-        var entry = d.getElementsByTagName(s)[0];
-        entry.parentNode.insertBefore(script, entry);
+            window.eightlytics || function (w) {
+                w.eightlytics = function () {
+                    window.eightlytics.queue = window.eightlytics.queue || []
+                    window.eightlytics.queue.push(arguments)
+                };
+            }(w);
+            var script = d.createElement(s);
+            script.src   = 'https://__SUBDOMAIN__.8select.io/{config name="8s_merchant_id"}/loader.js';
+            var entry = d.getElementsByTagName(s)[0];
+            entry.parentNode.insertBefore(script, entry);
         })(document, 'script', window);
     </script>
-
-    <script async src="https://__SUBDOMAIN__.8select.io/{config name="8s_merchant_id"}/loader.js"></script>
 
     <script type="text/javascript">
         if (typeof _eightselect_shop_plugin === "undefined") {
