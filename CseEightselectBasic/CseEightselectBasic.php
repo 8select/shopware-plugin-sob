@@ -205,10 +205,23 @@ class CseEightselectBasic extends Plugin
     {
         parent::update($context);
 
-        switch ($context->getCurrentVersion()) {
-            case '1.0.2':
-                $this->update_1_0_2();
+        switch (true) {
+            case version_compare($context->getCurrentVersion(), '1.0.1', '<='):
+                $this->update_1_0_1();
+            case version_compare($context->getCurrentVersion(), '1.5.0', '<='):
+                $this->update_1_5_0();
         }
+    }
+
+    private function update_1_0_1()
+    {
+        $this->deleteExportDir();
+        $this->createExportDir();
+    }
+
+    private function update_1_5_0()
+    {
+        FeedLogger::createTable();
     }
 
     /**
@@ -233,15 +246,6 @@ class CseEightselectBasic extends Plugin
         $metaDataCache = Shopware()->Models()->getConfiguration()->getMetadataCacheImpl();
         $metaDataCache->deleteAll();
         Shopware()->Models()->generateAttributeModels(['s_filter_options_attributes']);
-    }
-
-    /**
-     * Update to Version 1.0.2
-     */
-    private function update_1_0_2()
-    {
-        $this->deleteExportDir();
-        $this->createExportDir();
     }
 
     /**
