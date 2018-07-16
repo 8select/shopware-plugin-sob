@@ -135,7 +135,7 @@ class ArticleExport
 
             AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
 
-            FeedLogger::logFeed(self::CRON_NAME);   
+            FeedLogger::logFeed(self::CRON_NAME);
             RunCronOnce::finishCron(self::CRON_NAME);
 
             if (getenv('ES_DEBUG')) {
@@ -207,12 +207,7 @@ class ArticleExport
                 s_articles_details.active AS active,
                 s_articles_details.instock AS instock,
                 s_articles_supplier.name as marke,
-                case
-                    when s_articles_details.kind = 1 then 
-                        s_articles_details.ordernumber
-                    else 
-                        ad2.ordernumber
-                end as mastersku, 		
+                ad2.ordernumber as mastersku,
                 s_articles_details.ordernumber as sku,
                 s_core_tax.tax AS tax
                 FROM s_articles_details
