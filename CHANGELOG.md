@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.5.1](https://github.com/8select/shopware-plugin-sob/tree/1.5.1) (2018-7-16)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.5.0...1.5.1)
+
+**Fixed Bugs:**
+
+- [CSE-1077](https://8select.atlassian.net/browse/CSE-1077) create 8s feeds on update [\#35](https://github.com/8select/shopware-plugin-sob/pull/35) ([akleiber](https://github.com/akleiber))
+- [CSE-954](https://8select.atlassian.net/browse/CSE-954) fix wrong tab selection [\#36](https://github.com/8select/shopware-plugin-sob/pull/36) ([jbreckel](https://github.com/jbreckel))
+- [CSE-1088](https://8select.atlassian.net/browse/CSE-1088) broken export mapping modal [\#37](https://github.com/8select/shopware-plugin-sob/pull/37) ([voodoods](https://github.com/voodoods))
+
 ## [1.5.0](https://github.com/8select/shopware-plugin-sob/tree/1.5.0) (2018-7-11)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.4.0...1.5.0)
