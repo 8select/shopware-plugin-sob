@@ -27,22 +27,18 @@
 
     <script type="text/javascript">
         (function(d, s, w) {
-        var apiId = '{config name="8s_merchant_id"}';
-
-        window.eightlytics || function (w) {
-            w.eightlytics = function () {
-                window.eightlytics.queue = window.eightlytics.queue || []
-                window.eightlytics.queue.push(arguments)
-            };
-        }(w);
-        var script = d.createElement(s);
-        script.src   = 'https://__SUBDOMAIN__.8select.io/' + apiId + '/loader.js';
-        var entry = d.getElementsByTagName(s)[0];
-        entry.parentNode.insertBefore(script, entry);
+            window.eightlytics || function (w) {
+                w.eightlytics = function () {
+                    window.eightlytics.queue = window.eightlytics.queue || []
+                    window.eightlytics.queue.push(arguments)
+                };
+            }(w);
+            var script = d.createElement(s);
+            script.src   = 'https://__SUBDOMAIN__.8select.io/{config name="8s_merchant_id"}/loader.js';
+            var entry = d.getElementsByTagName(s)[0];
+            entry.parentNode.insertBefore(script, entry);
         })(document, 'script', window);
     </script>
-
-    <script async src="https://__SUBDOMAIN__.8select.io/{config name="8s_merchant_id"}/loader.js"></script>
 
     <script type="text/javascript">
         if (typeof _eightselect_shop_plugin === "undefined") {
@@ -63,107 +59,60 @@
 
     {if {config name="8s_selected_detail_block"} == "frontend_detail_tabs"}
         {* Activate description tab - SYS tab will be activated when CSE finds a set *}
-        {if {config name="8s_widget_placement"} == "widget_before"}
-            <script type="text/javascript">
+        <script type="text/javascript">
+            var isActiveClass = 'is--active'
+            _eightselect_shop_plugin.hideSys = function () {
+                var descriptionTab = document.querySelector('a[data-tabname=description]')
+                var descriptionContainer = document.querySelector('div.content--description').parentNode.parentNode
 
-                _eightselect_shop_plugin.hideSys = function () {
-                    var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
-                    if (!navNodes || navNodes.length === 0) {
-                        return;
-                    }
-                    var contentNodes = document.querySelectorAll('.tab-menu--product .tab--container-list .tab--container');
-                    if (!contentNodes || contentNodes.length === 0) {
-                        return;
-                    }
+                var cseTab = document.querySelector('a[data-tabname=cse]')
+                var cseContainer = document.querySelector('div.-eightselect-widget-container').parentNode.parentNode
 
-                    navNodes[1].className += " " + "is--active";
-                    contentNodes[1].className += " " + "is--active";
-
-                    navNodes[0].className = navNodes[0].className.replace('is--active', '');
-                    contentNodes[0].className = contentNodes[0].className.replace('is--active', '');
-                    navNodes[0].style.display = "none";
-                    contentNodes[0].style.display = "none";
-                };
-
-                _eightselect_shop_plugin.showSys = function () {
-                    var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
-                    if (!navNodes || navNodes.length === 0) {
-                        return;
-                    }
-                    var contentNodes = document.querySelectorAll('.tab-menu--product .tab--container-list .tab--container');
-                    if (!contentNodes || contentNodes.length === 0) {
-                        return;
-                    }
-
-                    navNodes[0].className += " " + "is--active";
-                    contentNodes[0].className += " " + "is--active";
-                    navNodes[0].style.display = "";
-                    contentNodes[0].style.display = "";
-
-                    navNodes[1].className = navNodes[1].className.replace('is--active', '');
-                    contentNodes[1].className = contentNodes[1].className.replace('is--active', '');
-                };
-
-                var domListener = function () {
-                    window.removeEventListener('DOMContentLoaded', domListener);
-                    _eightselect_shop_plugin.hideSys();
-                };
-
-                if (window.document.readyState !== 'loading') {
-                    domListener();
-                } else {
-                    window.addEventListener('DOMContentLoaded', domListener);
+                if (!descriptionTab || !cseTab || !descriptionContainer || !cseContainer) {
+                    return;
                 }
-            </script>
-        {/if}
-        {if {config name="8s_widget_placement"} == "widget_after"}
-            <script type="text/javascript">
 
-                _eightselect_shop_plugin.hideSys = function () {
-                    var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
-                    if (!navNodes || navNodes.length === 0) {
-                        return;
-                    }
-                    var navPosition = navNodes.length - 1;
+                descriptionTab.classList.add(isActiveClass)
+                descriptionContainer.classList.add(isActiveClass)
 
-                    var contentNodes = document.querySelectorAll('.tab-menu--product .tab--container-list .tab--container');
-                    if (!contentNodes || contentNodes.length === 0) {
-                        return;
-                    }
-                    var contentPosition = contentNodes.length - 1;
+                cseTab.classList.remove(isActiveClass)
+                cseContainer.classList.remove(isActiveClass)
 
-                    navNodes[0].className += " " + "is--active";
-                    contentNodes[0].className += " " + "is--active";
+                cseTab.style.display = 'none'
+                cseContainer.style.display = 'none'
+            };
 
-                    navNodes[navPosition].className = navNodes[navPosition].className.replace('is--active', '');
-                    contentNodes[contentPosition].className = contentNodes[contentPosition].className.replace('is--active', '');
+            _eightselect_shop_plugin.showSys = function () {
+                var descriptionTab = document.querySelector('a[data-tabname=description]')
+                var descriptionContainer = document.querySelector('div.content--description').parentNode.parentNode
 
-                    navNodes[navPosition].style.display = "none";
-                    contentNodes[contentPosition].style.display = "none";
-                };
+                var cseTab = document.querySelector('a[data-tabname=cse]')
+                var cseContainer = document.querySelector('div.-eightselect-widget-container').parentNode.parentNode
 
-                _eightselect_shop_plugin.showSys = function () {
-                    var navNodes = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
-                    if (!navNodes || navNodes.length === 0) {
-                        return;
-                    }
-                    var navPosition = navNodes.length - 1;
+                if (!descriptionTab || !cseTab || !descriptionContainer || !cseContainer) {
+                    return;
+                }
 
-                    var contentNodes = document.querySelectorAll('.tab-menu--product .tab--container-list .tab--container');
-                    if (!contentNodes || contentNodes.length === 0) {
-                        return;
-                    }
-                    var contentPosition = contentNodes.length - 1;
+                descriptionTab.classList.remove(isActiveClass)
+                descriptionContainer.classList.remove(isActiveClass)
 
-                    navNodes[navPosition].className += " " + "is--active";
-                    contentNodes[contentPosition].className += " " + "is--active";
-                    navNodes[navPosition].style.display = "";
-                    contentNodes[contentPosition].style.display = "";
+                cseTab.classList.add(isActiveClass)
+                cseContainer.classList.add(isActiveClass)
 
-                    navNodes[0].className = navNodes[0].className.replace('is--active', '');
-                    contentNodes[0].className = contentNodes[0].className.replace('is--active', '');
-                };
-            </script>
-        {/if}
+                cseTab.style.display = ''
+                cseContainer.style.display = ''
+            };
+
+            var domListener = function () {
+                window.removeEventListener('DOMContentLoaded', domListener);
+                _eightselect_shop_plugin.hideSys();
+            };
+
+            if (window.document.readyState !== 'loading') {
+                domListener();
+            } else {
+                window.addEventListener('DOMContentLoaded', domListener);
+            }
+        </script>
     {/if}
 {/block}
