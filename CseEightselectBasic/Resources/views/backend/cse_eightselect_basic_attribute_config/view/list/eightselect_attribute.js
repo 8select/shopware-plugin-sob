@@ -51,7 +51,7 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
               var labelStore = Ext.getStore('shopware-attribute-label-store')
               var currentField = store.data.items[rowIdx].data.shopwareAttribute
 
-              if (labelStore.data.items.length === 0 || !labelStore.data.items[rowIdx].data.label) {
+              if (!labelStore.data || labelStore.data.items.length === 0) {
                 return "Lade Daten..."
               }
               
