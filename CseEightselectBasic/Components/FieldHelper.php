@@ -52,8 +52,8 @@ class FieldHelper
                     break;
                 case 'bilder':
                     $mediaIds = ArticleImageMapper::getVariantImageMediaIdsByOrdernumber(
-                        $article['sku'], 
-                        $article['detailID'], 
+                        $article['sku'],
+                        $article['detailID'],
                         $article['articleID']
                     );
                     $value = self::getImages($mediaIds);
@@ -204,6 +204,7 @@ class FieldHelper
         foreach ($images as $image) {
             $path = 'media/image/' . $image['img'] . '.' . $image['extension'];
 
+            // mega inperformat, da dateisystem prüfung pro bild
             if ($mediaService->has($path)) {
                 $urlArray[] = $mediaService->getUrl($path);
             }
