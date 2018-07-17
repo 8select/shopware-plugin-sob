@@ -398,7 +398,7 @@ class CseEightselectBasic extends Plugin
 
         RunCronOnce::deleteTable();
         FeedLogger::deleteTable();
-        $this->deleteChangesQueueTable;
+        $this->deleteChangesQueueTable();
     }
 
     /**
@@ -871,8 +871,8 @@ class CseEightselectBasic extends Plugin
     {
         $triggerSqls = [
             'DROP TABLE IF EXISTS `8s_articles_details_change_queue`;',
-            'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
-            'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer;`',
+            'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer;`',
         ];
 
         foreach ($triggerSqls as $triggerSql) {
