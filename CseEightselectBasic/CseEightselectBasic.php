@@ -852,8 +852,12 @@ class CseEightselectBasic extends Plugin
                     OR NEW.description != OLD.description 
                     OR NEW.description_long != OLD.description_long) 
                     THEN
-                      INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at) 
-                      VALUES ( (SELECT id FROM s_articles_details WHERE articleID = NEW.id) , NOW());
+                        INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at)
+                        SELECT 
+                            id as s_articles_details_id,
+                            NOW() as updated_at
+                        FROM s_articles_details
+                        WHERE articleID = NEW.id;
                     END IF;
                   END',
             'CREATE TRIGGER `8s_articles_details_change_queue_writer` 
