@@ -51,12 +51,13 @@ class FieldHelper
                     $value = self::getUrl($article['articleID']);
                     break;
                 case 'bilder':
-                    $mediaIds = ArticleImageMapper::getVariantImageMediaIdsByOrdernumber(
+                    $images = ArticleImageMapper::getImagesByVariant(
                         $article['sku'],
                         $article['detailID'],
                         $article['articleID']
                     );
-                    $value = self::getImages($mediaIds);
+
+                    $value = self::getImageUrls($images);
                     break;
                 case 'status':
                     $value = self::getStatus($article['active'], $article['instock'], $article['laststock']);
@@ -193,21 +194,14 @@ class FieldHelper
      * @throws \Exception
      * @return string
      */
-    private static function getImages($mediaIds)
+    private static function getImageUrls($images)
     {
         /** @var MediaService $mediaService */
         $mediaService = Shopware()->Container()->get('shopware_media.media_service');
 
-        $sql = 'SELECT img, extension FROM s_articles_img WHERE media_id IN (' . implode(",", $mediaIds) . ') ORDER BY position;';
-        $images = Shopware()->Db()->query($sql)->fetchAll();
-
         foreach ($images as $image) {
             $path = 'media/image/' . $image['img'] . '.' . $image['extension'];
-
-            // mega inperformat, da dateisystem prüfung pro bild
-            if ($mediaService->has($path)) {
-                $urlArray[] = $mediaService->getUrl($path);
-            }
+            $urlArray[] = $mediaService->getUrl($path);
         }
 
         $urlString = implode('|', $urlArray);
