@@ -52,7 +52,6 @@ class FieldHelper
                     break;
                 case 'bilder':
                     $images = ArticleImageMapper::getImagesByVariant(
-                        $article['sku'],
                         $article['detailID'],
                         $article['articleID']
                     );
@@ -190,7 +189,7 @@ class FieldHelper
     }
 
     /**
-     * @param  int $ordernumber
+     * @param  array $images
      * @throws \Exception
      * @return string
      */
