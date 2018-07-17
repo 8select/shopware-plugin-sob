@@ -208,14 +208,15 @@ class PropertyExport
     protected function getArticles($mapping, $from, $number)
     {
         $sql = 'SELECT DISTINCT ' . $mapping . ',
-                s_articles.id AS articleID,
+                s_articles.id as articleID,
+                s_articles.laststock AS laststock,
+                s_articles_details.id as detailID,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
-                s_articles_details.id AS detailID,
                 s_articles_details.active AS active,
                 s_articles_details.instock AS instock,
-                s_articles_details.ordernumber AS sku,
-                s_articles_supplier.name AS marke,
+                s_articles_supplier.name as marke,
+                s_articles_details.ordernumber as sku,
                 s_core_tax.tax AS tax
                 FROM s_articles_details
                     INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
