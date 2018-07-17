@@ -34,21 +34,27 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
           header: "Shopware Attribute",
           renderer: function(val, meta, rec, rowIdx, colIdx, store, view) {
             var labelStore = Ext.getStore("shopware-attribute-label-store");
+            var allSelections = val.split(",")
             var currentField = store.data.items[rowIdx].data.shopwareAttribute;
+
 
             if (!labelStore.data || labelStore.data.items.length === 0) {
               return "Lade Daten...";
             }
 
-            var targetItem = labelStore.data.items.find(function(item) {
-              return item.data.column_name === currentField;
-            });
+            var selectedLabels = allSelections.map(function(selection){
+              var targetItem = labelStore.data.items.find(function(item) {
+                return item.data.column_name === selection;
+              });
 
-            if (!targetItem) {
-              return val;
-            }
+              if (!targetItem) {
+                return val;
+              }
 
-            return targetItem.data.label;
+              return targetItem.data.label;
+            })
+
+            return selectedLabels.join(", ")
           },
           editor: {
             xtype: "combobox",
