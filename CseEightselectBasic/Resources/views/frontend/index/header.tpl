@@ -63,10 +63,13 @@
             var isActiveClass = 'is--active'
             _eightselect_shop_plugin.hideSys = function () {
                 var descriptionTab = document.querySelector('a[data-tabname=description]')
-                var descriptionContainer = document.querySelector('div.content--description').parentNode.parentNode
+
+                var descriptionDiv = document.querySelector('div.content--description')
+                var descriptionContainer = descriptionDiv && descriptionDiv.parentNode && descriptionDiv.parentNode.parentNode
 
                 var cseTab = document.querySelector('a[data-tabname=cse]')
-                var cseContainer = document.querySelector('div.-eightselect-widget-container').parentNode.parentNode
+                var cseDiv = document.querySelector('div.content--cse')
+                var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
 
                 if (!descriptionTab || !cseTab || !descriptionContainer || !cseContainer) {
                     return;
@@ -84,10 +87,12 @@
 
             _eightselect_shop_plugin.showSys = function () {
                 var descriptionTab = document.querySelector('a[data-tabname=description]')
-                var descriptionContainer = document.querySelector('div.content--description').parentNode.parentNode
+                var descriptionDiv = document.querySelector('div.content--description')
+                var descriptionContainer = descriptionDiv && descriptionDiv.parentNode && descriptionDiv.parentNode.parentNode
 
                 var cseTab = document.querySelector('a[data-tabname=cse]')
-                var cseContainer = document.querySelector('div.-eightselect-widget-container').parentNode.parentNode
+                var cseDiv = document.querySelector('div.content--cse')
+                var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
 
                 if (!descriptionTab || !cseTab || !descriptionContainer || !cseContainer) {
                     return;
