@@ -14,7 +14,7 @@ ___
 
 ### 2. Write Code
 - Go to your local clone of this repository and write code
-- run `bin/copy2dev.sh [docker container name] [version]`  to copy the current state of your repository to the plugins directory within your running `docker-shopware` container; prefix your version with a reference to the JIRA issue i.e. `CSE-880` **Example**: `bin/copy2dev.sh 5217-php7_shopware_1 CSE-880`
+- run `bin/copy2dev.sh [version] [profile] [docker container name]`  to copy the current state of your repository to the plugins directory within your running `docker-shopware` container; prefix your version with a reference to the JIRA issue i.e. `CSE-880` **Example**: `bin/copy2dev.sh CSE-880 staging 5217-php7_shopware_1`
 - the above mentioned script will...
   - ... create a `staging` build within your docker container so to avaoid test outputs to the `production` environment
   - ... automatically update the installed plugin in your testshop
