@@ -31,7 +31,8 @@ class ArticleImageMapper
         LEFT JOIN s_article_img_mappings aim on aim.image_id = ai.id
         LEFT JOIN s_article_img_mapping_rules aimr on aimr.mapping_id = aim.id
         RIGHT JOIN s_article_configurator_option_relations acor ON acor.option_id = aimr.option_id AND acor.article_id = ' . $detailId . '
-        WHERE ai.articleID = ' . $articleId . ';';
+        WHERE ai.articleID = ' . $articleId . '
+        ORDER BY ai.position;';
     $variantImagesRaw = Shopware()->Db()->query($variantImagesQuery)->fetchAll();
 
     return array_map(function($image) {
@@ -49,7 +50,7 @@ class ArticleImageMapper
   * @return array
   */
   private function getParentImages($detailId, $articleId) {
-    $parentImagesQuery = 'SELECT ai.img, ai.extension FROM s_articles_img ai WHERE ai.articleID = ' . $articleId . ';';
+    $parentImagesQuery = 'SELECT ai.img, ai.extension FROM s_articles_img ai WHERE ai.articleID = ' . $articleId . ' ORDER BY ai.position;';
     $parentImagesRaw = Shopware()->Db()->query($parentImagesQuery)->fetchAll();
 
     return array_map(function($image) {
