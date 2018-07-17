@@ -27,12 +27,12 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
             ['column_name' => 's_articles.description_long', 'label' => 'Description long'],
             ['column_name' => 's_articles.keywords', 'label' => 'Keywords'],
             // details attributes
-            ['column_name' => 'additionaltext', 'label' => 'Additional text'],
-            ['column_name' => 'weight', 'label' => 'Weight'],
-            ['column_name' => 'width', 'label' => 'Width'],
-            ['column_name' => 'height', 'label' => 'Height'],
-            ['column_name' => 'length', 'label' => 'Length'],
-            ['column_name' => 'ean', 'label' => 'EAN'],
+            ['column_name' => 's_articles_details.additionaltext', 'label' => 'Additional text'],
+            ['column_name' => 's_articles_details.weight', 'label' => 'Weight'],
+            ['column_name' => 's_articles_details.width', 'label' => 'Width'],
+            ['column_name' => 's_articles_details.height', 'label' => 'Height'],
+            ['column_name' => 's_articles_details.length', 'label' => 'Length'],
+            ['column_name' => 's_articles_details.ean', 'label' => 'EAN'],
         ];
 
         $attributeData1 = Shopware()->Db()->query('SELECT `column_name`, label FROM s_attribute_configuration WHERE table_name = "s_articles_attributes"')->fetchAll();
