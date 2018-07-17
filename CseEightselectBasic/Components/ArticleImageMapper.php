@@ -4,20 +4,19 @@ namespace CseEightselectBasic\Components;
 class ArticleImageMapper
 {
   /**
-  * @param  string $ordernumber
   * @param  int $detailId
   * @param  int $articleId
   * @return array
   */
-  public function getImagesByVariant( $ordernumber, $detailId, $articleId)
+  public function getImagesByVariant($detailId, $articleId)
   {
     $variantImages = self::getVariantImages($detailId, $articleId);
-    $parentImages = self::getParentImages($detailId, $articleId);
 
     if (!empty($variantImages)) {
       return $variantImages;
     }
 
+    $parentImages = self::getParentImages($detailId, $articleId);
     return $parentImages;
   }
 
