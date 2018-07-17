@@ -1,5 +1,19 @@
 #!/usr/bin/env bash -e
-. $(dirname "$0")/common.sh
+. $(dirname "$0")/lib/common.sh
+
+if [ "$#" -ne 3 ]; then
+    echo "Illegal number of parameters"
+    echo "Usage:"
+    echo "bin/copy2dev.sh <version> <profile> <container>"
+    exit 1
+fi
+
+if [ "${PROFILE}" = "production" ]; then
+    echo "don't use production environment in development"
+    exit 1
+fi
+
+. $(dirname "$0")/lib/build.sh
 
 CONTAINER=${3}
 

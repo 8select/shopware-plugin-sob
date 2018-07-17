@@ -1,27 +1,5 @@
-#!/usr/bin/env bash -e
-
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "${SOURCE}" ]; do
-  CURRENT_DIR="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
-  SOURCE="$(readlink "${SOURCE}")"
-  [[ ${SOURCE} != /* ]] && SOURCE="${CURRENT_DIR}/${SOURCE}"
-done
-
-CURRENT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-
-VERSION=${1}
-PROFILE=${2}
-
 S3_ACCESS_KEY=$(aws --profile ${PROFILE} --region eu-central-1 cloudformation describe-stacks --stack-name product-service-samt-prod --query 'Stacks[0].Outputs[?OutputKey==`PluginUserAccessKeyId`].OutputValue' --output text)
 S3_ACCESS_KEY_SECRET=$(aws --profile ${PROFILE} --region eu-central-1 cloudformation describe-stacks --stack-name product-service-samt-prod --query 'Stacks[0].Outputs[?OutputKey==`PluginUserAccessKeySecret`].OutputValue' --output text)
-
-
-if [ "$#" -gt 3 ]; then
-    echo "Illegal number of parameters"
-    echo "Usage:"
-    echo "bin/your-script.sh <version> <profile> <container>"
-    exit 1
-fi
 
 PLUGIN_NAME="CseEightselectBasic"
 
@@ -40,7 +18,7 @@ echo "S3_ACCESS_KEY_SECRET: ${S3_ACCESS_KEY_SECRET}"
 echo "=========================="
 
 echo "Build at ${BUILD_DIR}"
-cp -r "${CURRENT_DIR}/../${PLUGIN_NAME}" "${BUILD_DIR}/${PLUGIN_NAME}"
+cp -r "${CURRENT_DIR}/../../${PLUGIN_NAME}" "${BUILD_DIR}/${PLUGIN_NAME}"
 cd ${PLUGIN_DIR}
 rm -rf vendor
 composer install --no-interaction --no-progress --ignore-platform-reqs --no-dev --optimize-autoloader
