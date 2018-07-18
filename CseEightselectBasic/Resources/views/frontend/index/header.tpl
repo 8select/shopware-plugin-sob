@@ -68,7 +68,7 @@
                 var descriptionContainer = descriptionDiv && descriptionDiv.parentNode && descriptionDiv.parentNode.parentNode
 
                 var cseTab = document.querySelector('a[data-tabname=cse]')
-                var cseDiv = document.querySelector('div.content--cse')
+                var cseDiv = document.querySelector('div.-eightselect-widget-container')
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
 
                 if (!descriptionTab || !cseTab || !descriptionContainer || !cseContainer) {
@@ -91,7 +91,7 @@
                 var descriptionContainer = descriptionDiv && descriptionDiv.parentNode && descriptionDiv.parentNode.parentNode
 
                 var cseTab = document.querySelector('a[data-tabname=cse]')
-                var cseDiv = document.querySelector('div.content--cse')
+                var cseDiv = document.querySelector('div.-eightselect-widget-container')
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
 
                 if (!descriptionTab || !cseTab || !descriptionContainer || !cseContainer) {
