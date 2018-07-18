@@ -93,23 +93,27 @@ class ArticleExport
                 return;
             }
 
-            Shopware()->PluginLogger()->info('Führe Artikel Export aus.');
-            if (getenv('ES_DEBUG')) {
-                echo 'Führe Artikel Export aus.' . PHP_EOL;
-            }
-
             if (RunCronOnce::isRunning(self::CRON_NAME)) {
+                $message = 'Export nicht ausgeführt, es läuft bereits ein Export.';
+                Shopware()->PluginLogger()->warning($message);
                 if (getenv('ES_DEBUG')) {
-                    echo 'Export nicht ausgeführt, es läuft bereits ein Export.' . PHP_EOL;
+                    echo $message . PHP_EOL;
                 }
                 return;
             }
 
             if (!RunCronOnce::isScheduled(self::CRON_NAME)) {
+                $message = 'Export nicht ausgeführt, es ist kein Export in der Warteschleife.';
+                Shopware()->PluginLogger()->warning($message);
                 if (getenv('ES_DEBUG')) {
-                    echo 'Export nicht ausgeführt, es ist kein Export in der Warteschleife.' . PHP_EOL;
+                    echo $message . PHP_EOL;
                 }
                 return;
+            }
+
+            Shopware()->PluginLogger()->info('Führe Artikel Export aus.');
+            if (getenv('ES_DEBUG')) {
+                echo 'Führe Artikel Export aus.' . PHP_EOL;
             }
 
             RunCronOnce::runCron(self::CRON_NAME);
