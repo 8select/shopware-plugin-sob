@@ -54,6 +54,10 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
               return targetItem.data.label;
             })
 
+            if (val === "") {
+              return "-"
+            }
+
             return selectedLabels.join(", ")
           },
           editor: {
