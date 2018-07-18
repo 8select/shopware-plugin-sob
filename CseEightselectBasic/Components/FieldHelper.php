@@ -76,7 +76,9 @@ class FieldHelper
             $line[] = $value;
         }
 
-        return $line;
+        return array_map(function ($value) {
+            return str_replace(';', ',', $value);
+        }, $line);
     }
 
     /**
