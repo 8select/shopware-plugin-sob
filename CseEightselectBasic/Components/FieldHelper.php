@@ -217,7 +217,6 @@ class FieldHelper
     }
 
     /**
-     * @param $type
      * @param $field
      * @return string
      * @throws \Zend_Db_Adapter_Exception
