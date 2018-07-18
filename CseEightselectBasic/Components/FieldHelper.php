@@ -1,6 +1,7 @@
 <?php
 namespace CseEightselectBasic\Components;
 
+use CseEightselectBasic\Components\ArticleImageMapper;
 use Shopware\Bundle\MediaBundle\MediaService;
 use Shopware\Models\Shop\Shop;
 
@@ -21,20 +22,17 @@ class FieldHelper
         /** @var array $categories */
         $categories = self::getCategories($article['articleID']);
 
-        $sql = 'SELECT ordernumber, id FROM s_articles_details WHERE articleID = ? AND kind = 1';
-        $articleDetail = Shopware()->Db()->query($sql, [$article['articleID']])->fetch();
-
         foreach ($fields as $field) {
             switch ($field) {
                 case 'mastersku':
-                    $value = $articleDetail['ordernumber'];
+                    $value = $article['mastersku'];
                     $options = static::getNonSizeConfiguratorOptionsByArticleDetailId($article['detailID']);
                     if (!empty($options)) {
                         $value .= '-' . mb_strtolower(str_replace(' ', '-', implode('-', $options)));
                     }
                     break;
                 case 'model':
-                    $value = $articleDetail['ordernumber'];
+                    $value = $article['mastersku'];
                     break;
                 case 'kategorie1':
                     $value = !empty($categories[0]) ? $categories[0] : '';
@@ -53,7 +51,7 @@ class FieldHelper
                     $value = self::getUrl($article['articleID']);
                     break;
                 case 'bilder':
-                    $value = self::getImages($article['articleID']);
+                    $value = self::getImageUrls($article['detailID'], $article['articleID']);
                     break;
                 case 'status':
                     $value = self::getStatus($article['active'], $article['instock'], $article['laststock']);
@@ -186,25 +184,23 @@ class FieldHelper
     }
 
     /**
+     * @param  int $detailId
      * @param  int $articleId
-     * @throws \Exception
      * @return string
      */
-    private static function getImages($articleId)
+    private static function getImageUrls($detailId, $articleId)
     {
-        $sql = 'SELECT img, extension FROM s_articles_img WHERE articleID = ?';
-        $images = Shopware()->Db()->query($sql, [$articleId])->fetchAll();
+        $imagePaths = ArticleImageMapper::getImagePathsByVariant($detailId, $articleId);
 
         /** @var MediaService $mediaService */
         $mediaService = Shopware()->Container()->get('shopware_media.media_service');
-        foreach ($images as $image) {
-            $path = 'media/image/' . $image['img'] . '.' . $image['extension'];
-            if ($mediaService->has($path)) {
-                $urlArray[] = $mediaService->getUrl($path);
-            }
+
+        $urlArray = [];
+        foreach ($imagePaths as $imagePath) {
+            $urlArray[] = $mediaService->getUrl($imagePath['path']);
         }
 
-        $urlString = implode(' | ', $urlArray);
+        $urlString = implode('|', $urlArray);
 
         return $urlString;
     }

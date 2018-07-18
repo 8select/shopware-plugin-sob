@@ -6,6 +6,15 @@ class RunCronOnce
     const TABLE_NAME = '8s_cron_run_once';
 
     public static function runOnce($cronName) {
+        if (self::isScheduled($cronName) || self::isRunning($cronName)) {
+            $message = 'Export nicht ausgeführt, es ist bereits ein Export in der Warteschleife.';
+            Shopware()->PluginLogger()->warning($message);
+            if (getenv('ES_DEBUG')) {
+                echo $message . PHP_EOL;
+            }
+            return;
+        }
+
         $connection = Shopware()->Container()->get('dbal_connection');
         $connection->insert(self::TABLE_NAME, ['cron_name' => $cronName, 'updated_at' => (new \DateTime())->format('Y-m-d H:i:s')]);
     }
