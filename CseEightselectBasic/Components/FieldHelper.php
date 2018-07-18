@@ -51,12 +51,7 @@ class FieldHelper
                     $value = self::getUrl($article['articleID']);
                     break;
                 case 'bilder':
-                    $images = ArticleImageMapper::getImagesByVariant(
-                        $article['detailID'],
-                        $article['articleID']
-                    );
-
-                    $value = self::getImageUrls($images);
+                    $value = self::getImageUrls($article['detailID'], $article['articleID']);
                     break;
                 case 'status':
                     $value = self::getStatus($article['active'], $article['instock'], $article['laststock']);
@@ -189,18 +184,20 @@ class FieldHelper
     }
 
     /**
-     * @param  array $images
-     * @throws \Exception
+     * @param  int $detailId
+     * @param  int $articleId
      * @return string
      */
-    private static function getImageUrls($images)
+    private static function getImageUrls($detailId, $articleId)
     {
+        $imagePaths = ArticleImageMapper::getImagePathsByVariant($detailId, $articleId);
+
         /** @var MediaService $mediaService */
         $mediaService = Shopware()->Container()->get('shopware_media.media_service');
 
-        foreach ($images as $image) {
-            $path = 'media/image/' . $image['img'] . '.' . $image['extension'];
-            $urlArray[] = $mediaService->getUrl($path);
+        $urlArray = [];
+        foreach ($imagePaths as $imagePath) {
+            $urlArray[] = $mediaService->getUrl($imagePath['path']);
         }
 
         $urlString = implode('|', $urlArray);
