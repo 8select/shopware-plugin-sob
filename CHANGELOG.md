@@ -1,5 +1,16 @@
 # Change Log
 
+## [1.5.2](https://github.com/8select/shopware-plugin-sob/tree/1.5.2) (2018-7-18)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.5.1...1.5.2)
+
+**Fixed Bugs:**
+
+- [CSE-988](https://8select.atlassian.net/browse/CSE-988) export variant images [\#32](https://github.com/8select/shopware-plugin-sob/pull/32) ([voodoods](https://github.com/voodoods))
+- [CSE-1091](https://8select.atlassian.net/browse/CSE-1091) check for exisitence of containers before getting their parentNode [\#38](https://github.com/8select/shopware-plugin-sob/pull/38) ([jbreckel](https://github.com/jbreckel))
+- [CSE-946](https://8select.atlassian.net/browse/CSE-946) actually call the method :see_no_evil: [\#39](https://github.com/8select/shopware-plugin-sob/pull/39) ([akleiber](https://github.com/akleiber))
+- [CSE-1096](https://8select.atlassian.net/browse/CSE-1096) add missing table names on standard mapping fields [\#40](https://github.com/8select/shopware-plugin-sob/pull/40) ([voodoods](https://github.com/voodoods))
+
 ## [1.5.1](https://github.com/8select/shopware-plugin-sob/tree/1.5.1) (2018-7-16)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.5.0...1.5.1)
