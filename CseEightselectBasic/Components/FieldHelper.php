@@ -319,7 +319,7 @@ SQL;
                 AND s_filter_values.optionID = ' . $filterId;
         $value = Shopware()->Db()->query($sql)->fetchAll();
 
-        return implode(' | ', array_column($value, 'name'));
+        return implode('|', array_column($value, 'name'));
     }
 
     /**
