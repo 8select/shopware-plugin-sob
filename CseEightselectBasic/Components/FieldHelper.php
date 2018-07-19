@@ -96,20 +96,20 @@ class FieldHelper
         $attrGroup = self::getGroupOrFilterAttribute($field);
 
         if ($attrGroup) {
-            $valuesTreshold = [];
+            $values = [];
             $attributes = explode(',', $attrGroup);
 
             foreach ($attributes as $attribute) {
                 if(strpos($attribute, "group") !== false) {
                     $groupId = explode('id=', $attribute)[1];
-                    array_push($valuesTreshold, self::getConfiguratorGroupValue($article['detailID'], $groupId));
+                    array_push($values, self::getConfiguratorGroupValue($article['detailID'], $groupId));
                 }
                 if(strpos($attribute, "filter") !== false) {
                     $filterId = explode('id=', $attribute)[1];
-                    array_push($valuesTreshold, self::getFilterValues($article['articleID'], $filterId));
+                    array_push($values, self::getFilterValues($article['articleID'], $filterId));
                 }
             }
-            return implode("|", array_filter($valuesTreshold));
+            return implode("|", array_filter($values));
         }
         return '';
     }
