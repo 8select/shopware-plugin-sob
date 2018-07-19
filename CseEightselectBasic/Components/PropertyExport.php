@@ -115,6 +115,10 @@ class PropertyExport
         }
     }
 
+
+    /**
+     * @param $fields
+     */
     public static function getOriginalFieldNames($fields) {
         return array_map(function ($field) {
             switch($field) {
@@ -199,8 +203,9 @@ class PropertyExport
     }
 
     /**
-     * @param $number
+     * @param $mapping
      * @param $from
+     * @param $number
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      * @return array
