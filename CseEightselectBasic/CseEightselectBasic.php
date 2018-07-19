@@ -576,7 +576,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * add cron job for exporting all products
+     * add cron job for exporting all properties
      */
     public function addPropertyOnceCron()
     {
