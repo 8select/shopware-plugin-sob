@@ -113,6 +113,7 @@ class PropertyExport
 
             $this->emptyQueue();
 
+            FeedLogger::logFeed(self::CRON_NAME);
             RunCronOnce::finishCron(self::CRON_NAME);
 
             if (getenv('ES_DEBUG')) {
