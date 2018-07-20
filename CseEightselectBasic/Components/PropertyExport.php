@@ -49,23 +49,38 @@ class PropertyExport
     public function doCron()
     {
         try {
-            Shopware()->PluginLogger()->info('Führe Property Export aus.');
-            if (getenv('ES_DEBUG')) {
-                echo 'Führe Property Export aus.' . PHP_EOL;
+            if (!ConfigValidator::isConfigValid()) {
+                $message = 'Property Export nicht ausgeführt, da die Plugin Konfiguration ungültig ist.';
+                Shopware()->PluginLogger()->warning($message);
+
+                if (getenv('ES_DEBUG')) {
+                    echo $message;
+                }
+
+                return;
             }
 
             if (RunCronOnce::isRunning(self::CRON_NAME)) {
+                $message = 'Property Export nicht ausgeführt, es läuft bereits ein Export.';
+                Shopware()->PluginLogger()->info($message);
                 if (getenv('ES_DEBUG')) {
-                    echo 'Property Export nicht ausgeführt, es läuft bereits ein Property Export.' . PHP_EOL;
+                    echo $message . PHP_EOL;
                 }
                 return;
             }
 
             if (!RunCronOnce::isScheduled(self::CRON_NAME)) {
+                $message = 'Property Export nicht ausgeführt, es ist kein Export in der Warteschleife.';
+                Shopware()->PluginLogger()->info($message);
                 if (getenv('ES_DEBUG')) {
-                    echo 'Property Export nicht ausgeführt, es ist kein Property Export in der Warteschleife.' . PHP_EOL;
+                    echo $message . PHP_EOL;
                 }
                 return;
+            }
+
+            Shopware()->PluginLogger()->info('Führe Property Export aus.');
+            if (getenv('ES_DEBUG')) {
+                echo 'Führe Property Export aus.' . PHP_EOL;
             }
 
             RunCronOnce::runCron(self::CRON_NAME);

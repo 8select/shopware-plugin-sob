@@ -94,8 +94,8 @@ class ArticleExport
             }
 
             if (RunCronOnce::isRunning(self::CRON_NAME)) {
-                $message = 'Export nicht ausgeführt, es läuft bereits ein Export.';
-                Shopware()->PluginLogger()->warning($message);
+                $message = 'Artikel Export nicht ausgeführt, es läuft bereits ein Export.';
+                Shopware()->PluginLogger()->info($message);
                 if (getenv('ES_DEBUG')) {
                     echo $message . PHP_EOL;
                 }
@@ -103,8 +103,8 @@ class ArticleExport
             }
 
             if (!RunCronOnce::isScheduled(self::CRON_NAME)) {
-                $message = 'Export nicht ausgeführt, es ist kein Export in der Warteschleife.';
-                Shopware()->PluginLogger()->warning($message);
+                $message = 'Artikel Export nicht ausgeführt, es ist kein Export in der Warteschleife.';
+                Shopware()->PluginLogger()->info($message);
                 if (getenv('ES_DEBUG')) {
                     echo $message . PHP_EOL;
                 }
