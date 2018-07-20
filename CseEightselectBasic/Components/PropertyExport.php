@@ -15,21 +15,21 @@ class PropertyExport
      * @var array
      */
     public $fields = [
-      'prop_sku',
-      'prop_isInStock',
-      'prop_parentSku',
-      'prop_ean',
-      'prop_model',
-      'prop_name',
-      'prop_discountPrice',
-      'prop_retailPrice',
-      'prop_size',
-      'prop_brand',
-      'prop_color',
-      'prop_url',
-      'prop_description',
-      'images'
-    ];
+        'prop_sku' => 'sku',
+        'prop_isInStock' => 'instock',
+        'prop_parentSku' => 'mastersku',
+        'prop_ean' => 'ean',
+        'prop_model' => 'model',
+        'prop_name' => 'name1',
+        'prop_discountPrice' => 'streich_preis',
+        'prop_retailPrice' => 'angebots_preis',
+        'prop_size' => 'groesse',
+        'prop_brand' => 'marke',
+        'prop_color' => 'farbe',
+        'prop_url' => 'produkt_url',
+        'prop_description' => 'beschreibung1',
+        'images' => 'bilder'
+      ];
 
     const CRON_NAME = '8select_property_export';
 
@@ -91,11 +91,7 @@ class PropertyExport
             $csvWriter = Writer::createFromPath(self::STORAGE . $filename, 'a');
             $csvWriter->setDelimiter(';');
 
-            $header = [];
-            foreach ($this->fields as $field) {
-                $header[] = $field;
-            }
-            $csvWriter->insertOne($header);
+            $csvWriter->insertOne(array_keys($this->fields));
 
             $this->writeFile($csvWriter);
             AWSUploader::upload($filename, self::STORAGE, $feedId, $feedType);
@@ -113,61 +109,6 @@ class PropertyExport
             RunCronOnce::finishCron(self::CRON_NAME);
             throw $exception;
         }
-    }
-
-
-    /**
-     * @param $fields
-     */
-    public static function getOriginalFieldNames($fields) {
-        return array_map(function ($field) {
-            switch($field) {
-                case 'prop_sku':
-                    return 'sku';
-                    break;
-                case 'prop_isInStock':
-                    return 'instock';
-                    break;
-                case 'prop_parentSku':
-                    return 'mastersku';
-                    break;
-                case 'prop_ean':
-                    return 'ean';
-                    break;
-                case 'prop_model':
-                    return 'model';
-                    break;
-                case 'prop_name':
-                    return 'name1';
-                    break;
-                case 'prop_discountPrice':
-                    return 'streich_preis';
-                    break;
-                case 'prop_retailPrice':
-                    return 'angebots_preis';
-                    break;
-                case 'prop_size':
-                    return 'groesse';
-                    break;
-                case 'prop_brand':
-                    return 'marke';
-                    break;
-                case 'prop_color':
-                    return 'farbe';
-                    break;
-                case 'prop_url':
-                    return 'produkt_url';
-                    break;
-                case 'prop_description':
-                    return 'beschreibung1';
-                    break;
-                case 'images':
-                    return 'bilder';
-                    break;
-                default:
-                    return $field;
-            }
-        }, $fields);
     }
 
 
@@ -192,11 +133,9 @@ class PropertyExport
         for ($i = 0; $i < $numArticles; $i += $batchSize) {
             $this->updateStatus($numArticles, $i);
 
-            $origFields = $this->getOriginalFieldNames($this->fields);
             $articles = $this->getArticles($attributeMapping, $i, $batchSize);
-
             foreach ($articles as $article) {
-                $line = FieldHelper::getLine($article, $origFields);
+                $line = FieldHelper::getLine($article, array_values($this->originalFields));
                 $csvWriter->insertOne($line);
             }
         }
