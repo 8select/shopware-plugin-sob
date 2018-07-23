@@ -44,4 +44,9 @@ class FeedLogger {
     $sql = 'DROP TABLE IF EXISTS `' . self::TABLE_NAME . '`;';
     Shopware()->Db()->query($sql);
   }
+
+  public static function deleteFeedEntryByName($feedName) {
+    $sql = 'DELETE FROM ' . self::TABLE_NAME . ' WHERE feed_name = "' . $feedName . '";';
+    Shopware()->Db()->query($sql);
+  }
 }

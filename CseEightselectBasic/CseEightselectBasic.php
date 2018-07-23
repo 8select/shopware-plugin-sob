@@ -209,6 +209,8 @@ class CseEightselectBasic extends Plugin
                 $this->update_1_0_1();
             case version_compare($context->getCurrentVersion(), '1.5.0', '<='):
                 $this->update_1_5_0();
+            case version_compare($context->getCurrentVersion(), '1.5.3', '<='):
+                $this->update_1_5_3();
         }
     }
 
@@ -221,6 +223,17 @@ class CseEightselectBasic extends Plugin
     private function update_1_5_0()
     {
         FeedLogger::createTable();
+    }
+
+    private function update_1_5_3()
+    {
+        // remove quick update
+        $this->removeQuickUpdateCron();
+        $this->removeQuickUpdateOnceCron();
+        FeedLogger::deleteFeedEntryByName('8select_update_export');
+        // add property update
+        $this->addPropertyCron();
+        $this->addPropertyOnceCron();
     }
 
     /**
@@ -606,6 +619,24 @@ class CseEightselectBasic extends Plugin
             'Shopware_CronJob_CseEightselectBasicPropertyExportOnce',
         ]);
     }
+
+    /**
+     * quick update remove methods for version < 1.5.3 
+     */
+    public function removeQuickUpdateCron()
+    {
+        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
+            'Shopware_CronJob_CseEightselectBasicQuickUpdate',
+        ]);
+    }
+
+    public function removeQuickUpdateOnceCron()
+    {
+        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
+            'Shopware_CronJob_CseEightselectBasicQuickUpdateOnce',
+        ]);
+    }
+
 
     /**
      * @throws \Zend_Db_Adapter_Exception
