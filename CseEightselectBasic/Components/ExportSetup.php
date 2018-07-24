@@ -19,47 +19,32 @@ class ExportSetup
             AFTER UPDATE on `s_articles`
                 FOR EACH ROW
                 BEGIN
-                IF (NEW.supplierID != OLD.supplierID
-                OR NEW.name != OLD.name
-                OR NEW.configurator_set_id != OLD.configurator_set_id
-                OR NEW.description != OLD.description
-                OR NEW.description_long != OLD.description_long)
-                THEN
                     INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at)
                     SELECT
                         id as s_articles_details_id,
                         NOW() as updated_at
                     FROM s_articles_details
                     WHERE articleID = NEW.id;
-                END IF;
                 END';
 
         $sArticlesDetailsTrigger = 'CREATE TRIGGER `8s_articles_details_change_queue_writer`
             AFTER UPDATE on `s_articles_details`
                 FOR EACH ROW
                 BEGIN
-                    IF (NEW.articleID != OLD.articleID
-                    OR NEW.ordernumber != OLD.ordernumber
-                    OR NEW.instock != OLD.instock
-                    OR NEW.active != OLD.active
-                    OR NEW.ean != OLD.ean)
-                    THEN
-                        INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at)
-                        VALUES (NEW.id, NOW());
-                    END IF;
+                    INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at)
+                    VALUES (NEW.id, NOW());
                 END';
 
         $sArticlesImgTrigger = 'CREATE TRIGGER `8s_articles_img_change_queue_writer`
             AFTER UPDATE on `s_articles_img`
                 FOR EACH ROW
                 BEGIN
-                    IF (NEW.img != OLD.img
-                    OR NEW.extension != OLD.extension
-                    OR NEW.position != OLD.position)
-                    THEN
-                        INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at)
-                        VALUES (NEW.articleID, NOW());
-                    END IF;
+                    INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at)
+                    SELECT
+                        id as s_articles_details_id,
+                        NOW() as updated_at
+                    FROM s_articles_details
+                    WHERE articleID = NEW.articleID;
                 END';
 
         $sArticlesPricesTrigger = 'CREATE TRIGGER `8s_s_articles_prices_change_queue_writer`
@@ -94,24 +79,27 @@ class ExportSetup
             AFTER UPDATE on `s_article_img_mappings`
                 FOR EACH ROW
                 BEGIN
-                    INSERT INTO
-                        8s_articles_details_change_queue (s_articles_details_id, updated_at)
-                    VALUES (
-                        (SELECT articleID FROM s_articles_img WHERE id = NEW.image_id), NOW());
+                    INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at)
+                        SELECT
+                            ad.id as s_articles_details_id,
+                            NOW() as updated_at
+                        FROM s_articles_img ai
+                        LEFT JOIN s_articles_details ad ON ad.articleID = ai.articleID
+                        WHERE ai.id = NEW.image_id;
                 END';
 
         $sArticleImgMappingRulesTrigger = 'CREATE TRIGGER `8s_s_article_img_mapping_rules_change_queue_writer`
             AFTER UPDATE on `s_article_img_mapping_rules`
                   FOR EACH ROW
                   BEGIN
-                    INSERT INTO
-                        8s_articles_details_change_queue (s_articles_details_id, updated_at)
-                    VALUES (
-                        (SELECT articleID FROM s_articles_img
-                            INNER JOIN s_article_img_mappings ON s_article_img_mappings.image_id = s_articles_img.id
-                                WHERE s_article_img_mappings.id = NEW.mapping_id
-                        ),
-                    NOW());
+                    INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at)
+                        SELECT
+                            ad.id as s_articles_details_id,
+                            NOW() as updated_at
+						FROM s_article_img_mappings aim
+                        INNER JOIN s_articles_img ai on ai.id = aim.image_id
+						INNER JOIN s_articles_details ad ON ad.articleID = ai.articleID
+                        WHERE aim.id = NEW.mapping_id;
                   END';
 
         $triggerQueries = [
