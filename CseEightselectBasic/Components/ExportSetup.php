@@ -102,6 +102,20 @@ class ExportSetup
                         WHERE aim.id = NEW.mapping_id;
                   END';
 
+        $sArticlesSupplierTrigger = 'CREATE TRIGGER `8s_articles_supplier_change_queue_writer`
+        AFTER UPDATE on `s_articles_supplier`
+            FOR EACH ROW
+            BEGIN
+                INSERT INTO 8s_articles_details_change_queue (s_articles_details_id, updated_at)
+                SELECT
+                    ad.id as s_articles_details_id,
+                    NOW() as updated_at
+                FROM s_articles_supplier asu
+                INNER JOIN s_articles a ON a.supplierID = asu.id
+                INNER JOIN s_articles_details ad ON ad.articleID = a.id
+                WHERE asu.id = NEW.id;
+            END';
+
         $triggerQueries = [
             $sArticlesTrigger,
             $sArticlesDetailsTrigger,
@@ -110,7 +124,8 @@ class ExportSetup
             $sArticlesAttributesTrigger,
             $sArticleConfiguratorOptionRelationsTrigger,
             $sArticleImgMappingsTrigger,
-            $sArticleImgMappingRulesTrigger
+            $sArticleImgMappingRulesTrigger,
+            $sArticlesSupplierTrigger
         ];
 
         foreach ($triggerQueries as $query) {
@@ -132,6 +147,7 @@ class ExportSetup
             'DROP TRIGGER IF EXISTS `8s_s_article_configurator_option_relations_change_queue_writer`',
             'DROP TRIGGER IF EXISTS `8s_s_article_img_mappings_change_queue_writer`',
             'DROP TRIGGER IF EXISTS `8s_s_article_img_mapping_rules_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_articles_supplier_change_queue_writer`',
         ];
 
         foreach ($triggerQueries as $query) {
