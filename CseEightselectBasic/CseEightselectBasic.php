@@ -209,8 +209,8 @@ class CseEightselectBasic extends Plugin
                 $this->update_1_0_1();
             case version_compare($context->getCurrentVersion(), '1.5.0', '<='):
                 $this->update_1_5_0();
-            case version_compare($context->getCurrentVersion(), '1.5.3', '<='):
-                $this->update_1_5_3();
+            case version_compare($context->getCurrentVersion(), '1.5.2', '<='):
+                $this->update_1_5_2();
         }
     }
 
@@ -225,7 +225,7 @@ class CseEightselectBasic extends Plugin
         FeedLogger::createTable();
     }
 
-    private function update_1_5_3()
+    private function update_1_5_2()
     {
         // remove quick update
         $this->removeQuickUpdateCron();
@@ -621,7 +621,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * quick update remove methods for version < 1.5.3 
+     * quick update remove methods for version <= 1.5.2
      */
     public function removeQuickUpdateCron()
     {
