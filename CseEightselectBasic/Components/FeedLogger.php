@@ -29,7 +29,7 @@ class FeedLogger {
   * @param string $feedname 
   * @throws \Zend_Db_Adapter_Exception
   * @throws \Zend_Db_Statement_Exception
-  * @return string
+  * @return \DateTime
   */
   public static function getLastFeedUpdate($feedName) {
     return Shopware()->Db()->fetchOne('SELECT last_run FROM ' . self::TABLE_NAME . ' WHERE feed_name = "' . $feedName . '";');
