@@ -68,6 +68,9 @@ abstract class Export
         }
     }
 
+    /**
+     * @return array
+     */
     private function canRunCron() {
         if (!ConfigValidator::isConfigValid()) {
             $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::CRON_NAME);
@@ -239,8 +242,9 @@ abstract class Export
     }
 
     /**
-     * @throws \Zend_Db_Adapter_Exception
-     */
+    * @throws \Zend_Db_Adapter_Exception
+    * @throws \Zend_Db_Statement_Exception
+    */
     private function emptyQueue()
     {
         if (static::FEED_TYPE === PropertyExport::FEED_TYPE) {

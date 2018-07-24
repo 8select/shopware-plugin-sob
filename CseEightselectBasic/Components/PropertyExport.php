@@ -41,7 +41,7 @@ class PropertyExport extends Export
     /**
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
-     * @return mixed
+     * @return integer
      */
     protected function getNumArticles()
     {

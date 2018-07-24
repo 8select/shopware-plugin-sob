@@ -6,10 +6,10 @@ class FeedLogger {
   const TABLE_NAME = '8s_feeds';
 
   /**
+  * @param string $feedname 
   * @throws \Zend_Db_Adapter_Exception
   * @throws \Zend_Db_Statement_Exception
   */
-
   public static function logFeed($feedName) {
 
     $sql = 'INSERT INTO `' . self::TABLE_NAME . '` (feed_name, last_run)
@@ -25,10 +25,20 @@ class FeedLogger {
     Shopware()->Db()->query($sql);
   }
 
+  /**
+  * @param string $feedname 
+  * @throws \Zend_Db_Adapter_Exception
+  * @throws \Zend_Db_Statement_Exception
+  * @return string
+  */
   public static function getLastFeedUpdate($feedName) {
     return Shopware()->Db()->fetchOne('SELECT last_run FROM ' . self::TABLE_NAME . ' WHERE feed_name = "' . $feedName . '";');
   }
 
+  /**
+  * @throws \Zend_Db_Adapter_Exception
+  * @throws \Zend_Db_Statement_Exception
+  */
   public static function createTable() 
   {
     $sql = 'CREATE TABLE IF NOT EXISTS`' . self::TABLE_NAME . '` (
@@ -40,11 +50,20 @@ class FeedLogger {
     Shopware()->Db()->query($sql);
   }
 
+  /**
+  * @throws \Zend_Db_Adapter_Exception
+  * @throws \Zend_Db_Statement_Exception
+  */
   public static function deleteTable() {
     $sql = 'DROP TABLE IF EXISTS `' . self::TABLE_NAME . '`;';
     Shopware()->Db()->query($sql);
   }
 
+  /**
+  * @param string $feedname 
+  * @throws \Zend_Db_Adapter_Exception
+  * @throws \Zend_Db_Statement_Exception
+  */
   public static function deleteFeedEntryByName($feedName) {
     $sql = 'DELETE FROM ' . self::TABLE_NAME . ' WHERE feed_name = "' . $feedName . '";';
     Shopware()->Db()->query($sql);
