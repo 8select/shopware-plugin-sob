@@ -18,7 +18,7 @@ class PropertyExport extends Export
      */
     private $fieldMapping = [
         'prop_sku' => 'sku',
-        'prop_isInStock' => 'instock',
+        'prop_isInStock' => 'status',
         'prop_parentSku' => 'mastersku',
         'prop_ean' => 'ean',
         'prop_model' => 'model',
