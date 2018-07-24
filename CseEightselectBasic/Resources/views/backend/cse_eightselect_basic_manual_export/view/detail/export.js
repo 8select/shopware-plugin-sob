@@ -29,18 +29,11 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     var lastFullExport = Ext.decode(requestLastFullExport.responseText).lastFullExport;
     var lastPropertyExport = Ext.decode(requestLastPropertyExport.responseText).lastPropertyExport;
 
-    var lastFullExportTimeStamp = lastFullExport ? lastFullExport : "";
-    var lastPropertyExportTimeStamp = lastPropertyExport ? lastPropertyExport : "";
+    var lastFullExportLabel = !lastFullExport ? "Noch kein Voll-Export duchgeführt (alle Stammdaten)"
+        : "Letzter Voll-Export am: " + lastFullExport + " (alle Stammdaten)"
 
-    var lastFullExportLabel =
-      lastFullExportTimeStamp.length === 0
-        ? "Noch kein Voll-Export duchgeführt (alle Stammdaten)"
-        : "Letzter Voll-Export am: " + lastFullExportTimeStamp + " (alle Stammdaten)"
-
-    var lastPropertyExportLabel =
-      lastPropertyExportTimeStamp.length === 0
-        ? "Noch keine Schnell-Update durchgeführt (nur Änderungen)"
-        : "Letztes Schnell-Update am: " + lastPropertyExportTimeStamp + " (nur Änderungen)";
+    var lastPropertyExportLabel = !lastPropertyExport ? "Noch kein Schnell-Update durchgeführt (nur Änderungen)"
+        : "Letztes Schnell-Update am: " + lastPropertyExport + " (nur Änderungen)";
 
     var configValidationResult = Ext.decode(
       configValidationRequest.responseText
