@@ -155,7 +155,7 @@ abstract class Export
 
             foreach ($articles as $article) {
                 $line = FieldHelper::getLine($article, $this->fields);
-                 $csvWriter->insertOne($line);
+                $csvWriter->insertOne($line);
             }
             $this->updateStatus($numArticles, $top);
         }
