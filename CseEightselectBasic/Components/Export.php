@@ -82,6 +82,15 @@ abstract class Export
             return false;
         }
 
+        if ($this->getNumArticles() <= 0) {
+            $message = sprintf('%s nicht ausgeführt, es wurden keine Produkte für Export gefunden.', static::CRON_NAME);
+            if (getenv('ES_DEBUG')) {
+                echo $message . PHP_EOL;
+            }
+
+            return false;
+        }
+
         if (RunCronOnce::isRunning(static::CRON_NAME)) {
             $message = sprintf('%s nicht ausgeführt, es läuft bereits ein Export.', static::CRON_NAME);
             Shopware()->PluginLogger()->info($message);
