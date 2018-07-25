@@ -57,7 +57,7 @@ class ConfigValidator {
   {
     return self::getCseEightselectBasicConfiguration()['8s_preview_mode_enabled'];
   }
-  
+
   /**
    * @return boolean
    */
@@ -71,12 +71,11 @@ class ConfigValidator {
   * @throws \Exception
   */
   public static function isConfigValid()
-  {  
-      $isActive = self::isPluginActive();
+  {
       $apiId = self::getApiId();
       $feedId = self::getFeedId();
 
-      $configIsValid = $isActive && $apiId && $feedId && strlen($apiId) == 36 && strlen($feedId) == 36;
+      $configIsValid = self::isPluginActive()  && self::hasSizeDefinitions() && $apiId && $feedId && strlen($apiId) == 36 && strlen($feedId) == 36;
       return $configIsValid;
   }
 
