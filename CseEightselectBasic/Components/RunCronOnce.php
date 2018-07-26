@@ -7,8 +7,7 @@ class RunCronOnce
 
     public static function runOnce($cronName) {
         if (self::isScheduled($cronName) || self::isRunning($cronName)) {
-            $message = 'Export nicht ausgeführt, es ist bereits ein Export in der Warteschleife.';
-            Shopware()->PluginLogger()->warning($message);
+            $message = sprintf('%s nicht eingereiht, ist bereits in der Warteschleife.', $cronName);
             if (getenv('ES_DEBUG')) {
                 echo $message . PHP_EOL;
             }

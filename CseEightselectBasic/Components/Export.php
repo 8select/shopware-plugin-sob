@@ -73,6 +73,14 @@ abstract class Export
      * @return array
      */
     private function canRunCron() {
+        if (!RunCronOnce::isScheduled(static::CRON_NAME)) {
+            $message = sprintf('%s nicht ausgeführt, es ist kein Export in der Warteschleife.', static::CRON_NAME);
+            if (getenv('ES_DEBUG')) {
+                echo $message . PHP_EOL;
+            }
+            return false;
+        }
+
         if (!ConfigValidator::isConfigValid()) {
             $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::CRON_NAME);
             Shopware()->PluginLogger()->warning($message);
@@ -94,16 +102,6 @@ abstract class Export
 
         if (RunCronOnce::isRunning(static::CRON_NAME)) {
             $message = sprintf('%s nicht ausgeführt, es läuft bereits ein Export.', static::CRON_NAME);
-            Shopware()->PluginLogger()->info($message);
-            if (getenv('ES_DEBUG')) {
-                echo $message . PHP_EOL;
-            }
-            return false;
-        }
-
-        if (!RunCronOnce::isScheduled(static::CRON_NAME)) {
-            $message = sprintf('%s nicht ausgeführt, es ist kein Export in der Warteschleife.', static::CRON_NAME);
-            Shopware()->PluginLogger()->info($message);
             if (getenv('ES_DEBUG')) {
                 echo $message . PHP_EOL;
             }
