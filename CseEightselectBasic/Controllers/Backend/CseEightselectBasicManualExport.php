@@ -21,16 +21,18 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
     public function getFullExportStatusAction()
     {
         $progress = RunCronOnce::getProgress(ArticleExport::CRON_NAME);
-        $this->View()->assign(['progress' => $progress]);
+        $isRunning = RunCronOnce::isRunning(ArticleExport::CRON_NAME);
+        $this->View()->assign(['progress' => $progress, 'isRunning' => $isRunning]);
     }
 
     public function getPropertyExportStatusAction()
     {
         $progress = RunCronOnce::getProgress(PropertyExport::CRON_NAME);
-        $this->View()->assign(['progress' => $progress]);
+        $isRunning = RunCronOnce::isRunning(PropertyExport::CRON_NAME);
+        $this->View()->assign(['progress' => $progress, 'isRunning' => $isRunning]);
     }
 
-    public function getLastFullExportDateAction() 
+    public function getLastFullExportDateAction()
     {
         $lastRun = FeedLogger::getLastFeedUpdate(ArticleExport::CRON_NAME);
         $this->View()->assign(['lastFullExport' => $lastRun]);
@@ -46,7 +48,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         $isActive = ConfigValidator::isPluginActive();
         $this->View()->assign(['active' => $isActive]);
     }
-    
+
     public function checkForApiIdAction()
     {
         $apiId = ConfigValidator::getApiId();

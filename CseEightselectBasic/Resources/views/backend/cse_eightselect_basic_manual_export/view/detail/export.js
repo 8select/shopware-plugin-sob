@@ -29,11 +29,15 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     var lastFullExport = Ext.decode(requestLastFullExport.responseText).lastFullExport;
     var lastPropertyExport = Ext.decode(requestLastPropertyExport.responseText).lastPropertyExport;
 
-    var lastFullExportLabel = !lastFullExport ? "Noch kein Voll-Export duchgeführt (alle Stammdaten)"
-        : "Letzter Voll-Export am: " + lastFullExport + " (alle Stammdaten)"
+    var lastFullExportLabel = !lastFullExport
+      ? "Noch kein Voll-Export duchgeführt (alle Stammdaten)"
+      : "Letzter Voll-Export am: " + lastFullExport + " (alle Stammdaten)";
 
-    var lastPropertyExportLabel = !lastPropertyExport ? "Noch kein Schnell-Update durchgeführt (nur Änderungen)"
-        : "Letztes Schnell-Update am: " + lastPropertyExport + " (nur Änderungen)";
+    var lastPropertyExportLabel = !lastPropertyExport
+      ? "Noch kein Schnell-Update durchgeführt oder keine Änderungen"
+      : "Letztes Schnell-Update am: " +
+        lastPropertyExport +
+        " (nur Änderungen)";
 
     var configValidationResult = Ext.decode(
       configValidationRequest.responseText
@@ -50,7 +54,8 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     var FULL_BTN = {
       id: "full-export-btn",
       textEnabled: "Produkt Voll-Export ausführen",
-      textDisabled: "Produkt Voll-Export wird ausgeführt",
+      textDisabled: "Produkt Voll-Export in Cron Warteschlange eingereiht",
+      textProgress: "Produkt Voll-Export wird ausgeführt",
       exportUri:
         "{url controller=CseEightselectBasicManualExport action=fullExport}",
       statusUri:
@@ -59,7 +64,8 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     var PROPERTY_BTN = {
       id: "property-export-btn",
       textEnabled: "Produkt Schnell-Update ausführen",
-      textDisabled: "Produkt Schnell-Update wird ausgeführt",
+      textDisabled: "Produkt Schnell-Update in Cron Warteschlange eingereiht",
+      textProgress: "Produkt Schnell-Update wird ausgeführt",
       exportUri: "{url controller=CseEightselectBasicManualExport action=propertyExport}",
       statusUri: "{url controller=CseEightselectBasicManualExport action=getPropertyExportStatus}"
     };
@@ -68,7 +74,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
       actionUri,
       buttonId,
       buttonTextEnabled,
-      buttonTextDisabled,
+      buttonTextProgress,
       callback
     ) {
       Ext.Ajax.request({
@@ -76,12 +82,15 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         success: function(response) {
           var button = Ext.getCmp(buttonId);
           var progress = JSON.parse(response.responseText).progress;
+          var isRunning = JSON.parse(response.responseText).isRunning;
           if (progress === false || progress === 100) {
             button.enable();
             button.setText(buttonTextEnabled);
-          } else {
+          } else if (isRunning) {
             button.disable();
-            button.setText(buttonTextDisabled + " (" + progress + "%)");
+            button.setText(buttonTextProgress + " (" + progress + "%)");
+            setTimeout(callback, 5000);
+          } else {
             setTimeout(callback, 5000);
           }
         }
@@ -93,7 +102,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         FULL_BTN.statusUri,
         FULL_BTN.id,
         FULL_BTN.textEnabled,
-        FULL_BTN.textDisabled,
+        FULL_BTN.textProgress,
         fullExportStatusCheck
       );
     };
@@ -103,7 +112,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         PROPERTY_BTN.statusUri,
         PROPERTY_BTN.id,
         PROPERTY_BTN.textEnabled,
-        PROPERTY_BTN.textDisabled,
+        PROPERTY_BTN.textProgress,
         propertyExportStatusCheck
       );
     };
@@ -120,7 +129,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
           handler: function() {
             Ext.getCmp(FULL_BTN.id).disable();
-            Ext.getCmp(FULL_BTN.id).setText(FULL_BTN.textDisabled + " (0%)");
+            Ext.getCmp(FULL_BTN.id).setText(FULL_BTN.textDisabled);
             Ext.Ajax.request({
               url: FULL_BTN.exportUri,
               failure: function() {
@@ -144,7 +153,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
 
           handler: function() {
             Ext.getCmp(PROPERTY_BTN.id).disable();
-            Ext.getCmp(PROPERTY_BTN.id).setText(PROPERTY_BTN.textDisabled + " (0%)");
+            Ext.getCmp(PROPERTY_BTN.id).setText(PROPERTY_BTN.textDisabled);
             Ext.Ajax.request({
               url: PROPERTY_BTN.exportUri,
               failure: function() {
