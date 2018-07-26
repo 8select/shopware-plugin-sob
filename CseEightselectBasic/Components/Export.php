@@ -39,6 +39,7 @@ abstract class Export
         try {
             $start = time();
             if ($this->canRunCron() === false) {
+                RunCronOnce::finishCron(static::CRON_NAME);
                 return;
             }
 
