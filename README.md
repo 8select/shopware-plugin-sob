@@ -18,7 +18,9 @@ https://www.8select.com/8select-cse-installationsanleitung-shopware
 ### 2. Write Code
 
 - Go to your local clone of this repository and write code
-- run `bin/copy2dev.sh [version] [profile] [docker container name]` to copy the current state of your repository to the plugins directory within your running `docker-shopware` container; prefix your version with a reference to the JIRA issue and a numeric suffix i.e. `CSE-880-1` **Example**: `bin/copy2dev.sh CSE-880-1 staging 5217-php7_shopware_1`
+- run `bin/copy2dev.sh [version] [profile] [docker container name]` to copy the current state of your repository to the plugins directory within your running `docker-shopware` container
+    - name your version with a version number that is higher than the current stable release and prefix it with a release candidate
+    - **Example** (if the current stable version is 1.5.3): `bin/copy2dev.sh 1.6.0-RC1 staging 5217-php7_shopware_1`
 - the above mentioned script will...
 
   - ... create a `staging` build within your docker container so to avaoid test outputs to the `production` environment

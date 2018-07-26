@@ -1,7 +1,7 @@
 <?php
 
 use CseEightselectBasic\Components\ArticleExport;
-use CseEightselectBasic\Components\QuickUpdate;
+use CseEightselectBasic\Components\PropertyExport;
 use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Components\ConfigValidator;
@@ -13,9 +13,9 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         RunCronOnce::runOnce(ArticleExport::CRON_NAME);
     }
 
-    public function quickExportAction()
+    public function propertyExportAction()
     {
-        RunCronOnce::runOnce(QuickUpdate::CRON_NAME);
+        RunCronOnce::runOnce(PropertyExport::CRON_NAME);
     }
 
     public function getFullExportStatusAction()
@@ -24,9 +24,9 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         $this->View()->assign(['progress' => $progress]);
     }
 
-    public function getQuickExportStatusAction()
+    public function getPropertyExportStatusAction()
     {
-        $progress = RunCronOnce::getProgress(QuickUpdate::CRON_NAME);
+        $progress = RunCronOnce::getProgress(PropertyExport::CRON_NAME);
         $this->View()->assign(['progress' => $progress]);
     }
 
@@ -36,10 +36,9 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         $this->View()->assign(['lastFullExport' => $lastRun]);
     }
 
-    public function getLastQuickUpdateDateAction() 
-    {
-        $lastRun = FeedLogger::getLastFeedUpdate(QuickUpdate::CRON_NAME);
-        $this->View()->assign(['lastQuickUpdate' => $lastRun]);
+    public function getLastPropertyExportDateAction() {
+        $lastRun = FeedLogger::getLastFeedUpdate(PropertyExport::CRON_NAME);
+        $this->View()->assign(['lastPropertyExport' => $lastRun]);
     }
 
     public function checkForActiveStateAction()

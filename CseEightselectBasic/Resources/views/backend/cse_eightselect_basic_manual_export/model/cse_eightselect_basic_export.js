@@ -5,7 +5,7 @@ Ext.define(
 
     fields: [
       { name: "fullexport", type: "string" },
-      { name: "quickexport", type: "string" }
+      { name: "propertyexport", type: "string" }
     ]
   }
 );

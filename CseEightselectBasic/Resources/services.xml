@@ -4,7 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service id="cse_eightselect_basic.article_export" class="CseEightselectBasic\Components\ArticleExport"> </service>
-        <service id="cse_eightselect_basic.quick_update" class="CseEightselectBasic\Components\QuickUpdate"> </service>
+        <service id="cse_eightselect_basic.property_export" class="CseEightselectBasic\Components\PropertyExport"> </service>
 
         <service id="cse_eightselect_basic.emotion_view_subscriber" class="Shopware\Components\Emotion\EmotionComponentViewSubscriber">
             <argument>%cse_eightselect_basic.plugin_dir%</argument>
