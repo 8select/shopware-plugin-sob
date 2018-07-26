@@ -227,13 +227,7 @@ abstract class Export
      * @throws \Zend_Db_Statement_Exception
      * @return integer
      */
-    protected function getNumArticles()
-    {
-        $sql = 'SELECT count(*) from s_articles_details';
-        $count = Shopware()->Db()->query($sql)->fetchColumn();
-
-        return intval($count);
-    }
+    protected abstract function getNumArticles();
 
     /**
      * @param $numArticles
