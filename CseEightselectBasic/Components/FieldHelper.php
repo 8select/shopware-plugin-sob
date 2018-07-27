@@ -93,25 +93,46 @@ class FieldHelper
             return $value;
         }
 
-        $attrGroup = self::getGroupOrFilterAttribute($field);
+        $attributes = self::getGroupOrFilterAttribute($field);
 
-        if ($attrGroup) {
-            $values = [];
-            $attributes = explode(',', $attrGroup);
-
-            foreach ($attributes as $attribute) {
-                if(strpos($attribute, "group") !== false) {
-                    $groupId = explode('id=', $attribute)[1];
-                    array_push($values, self::getConfiguratorGroupValue($article['detailID'], $groupId));
-                }
-                if(strpos($attribute, "filter") !== false) {
-                    $filterId = explode('id=', $attribute)[1];
-                    array_push($values, self::getFilterValues($article['articleID'], $filterId));
-                }
-            }
+        if ($attributes) {
+            $attributes = explode(',', $attributes);
+            $values = self::filterRelevantAttributeValues($attributes, $article);
             return implode("|", array_filter($values));
         }
         return '';
+    }
+
+    /**
+    * @param array $attributes
+    * @param array $article
+    * @return array
+    */
+    private static function filterRelevantAttributeValues($attributes, $article) {
+
+        // return only configurator group values if exist
+        $groups = array_filter($attributes, function($attr) {
+                return strpos($attr, "group");
+            }
+        );
+        
+        if ($groups) {
+            $groupIds = array_map( function($group) {
+                return explode('id=', $group)[1]; 
+            }, $groups);
+            
+            return array_map(function($id) use ($article) {
+                return self::getConfiguratorGroupValue($article['detailID'], $id); 
+            }, $groupIds);
+        }
+
+        // return filter values if no configurator group values exist
+        return array_map( function($attr) use ($article) {
+            if(strpos($attr, "filter")) {
+                $filterId = explode('id=', $attr)[1];
+                return self::getFilterValues($article['articleID'], $filterId);
+            }
+        }, $attributes);
     }
 
     /**
