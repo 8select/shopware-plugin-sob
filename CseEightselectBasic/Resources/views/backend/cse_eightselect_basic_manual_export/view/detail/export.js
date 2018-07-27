@@ -15,29 +15,30 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         "{url controller=CseEightselectBasicConfigValidation action=validate}"
     });
 
-    var requestLastFullExport = Ext.Ajax.request({
-      async: false,
-      url:
-        "{url controller=CseEightselectBasicManualExport action=getLastFullExportDate}"
-    });
+    var getLastFullExportLabel = function () {
+      var response = Ext.Ajax.request({
+        async: false,
+        url:
+          "{url controller=CseEightselectBasicManualExport action=getLastFullExportDate}"
+      });
+      var lastFullExport = Ext.decode(response.responseText).lastFullExport;
 
-    var requestLastPropertyExport = Ext.Ajax.request({
-      async: false,
-      url: "{url controller=CseEightselectBasicManualExport action=getLastPropertyExportDate}"
-    });
+      return !lastFullExport
+        ? "Noch kein Voll-Export duchgeführt (alle Stammdaten)."
+        : "Letzter Voll-Export am: " + lastFullExport + " (alle Stammdaten).";
+    }
 
-    var lastFullExport = Ext.decode(requestLastFullExport.responseText).lastFullExport;
-    var lastPropertyExport = Ext.decode(requestLastPropertyExport.responseText).lastPropertyExport;
+    var getLastPropertyExportLabel = function () {
+      var response = Ext.Ajax.request({
+        async: false,
+        url: "{url controller=CseEightselectBasicManualExport action=getLastPropertyExportDate}"
+      });
+      var lastPropertyExport = Ext.decode(response.responseText).lastPropertyExport;
 
-    var lastFullExportLabel = !lastFullExport
-      ? "Noch kein Voll-Export duchgeführt (alle Stammdaten)"
-      : "Letzter Voll-Export am: " + lastFullExport + " (alle Stammdaten)";
-
-    var lastPropertyExportLabel = !lastPropertyExport
-      ? "Noch kein Schnell-Update durchgeführt oder keine Änderungen"
-      : "Letztes Schnell-Update am: " +
-        lastPropertyExport +
-        " (nur Änderungen)";
+      return  !lastPropertyExport
+        ? "Noch kein Schnell-Update durchgeführt oder es gab keine Änderungen."
+        : "Letztes Schnell-Update am: " + lastPropertyExport + " (nur Änderungen).";
+    }
 
     var configValidationResult = Ext.decode(
       configValidationRequest.responseText
@@ -75,7 +76,9 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
       buttonId,
       buttonTextEnabled,
       buttonTextProgress,
-      callback
+      callback,
+      updateTimeId,
+      updateTimeCallback
     ) {
       Ext.Ajax.request({
         url: actionUri,
@@ -86,6 +89,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
           if (progress === false || progress === 100) {
             button.enable();
             button.setText(buttonTextEnabled);
+            Ext.getCmp(updateTimeId).setText(updateTimeCallback())
           } else if (isRunning) {
             button.disable();
             button.setText(buttonTextProgress + " (" + progress + "%)");
@@ -103,7 +107,9 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         FULL_BTN.id,
         FULL_BTN.textEnabled,
         FULL_BTN.textProgress,
-        fullExportStatusCheck
+        fullExportStatusCheck,
+        "last-full-export-timestamp",
+        getLastFullExportLabel,
       );
     };
 
@@ -113,7 +119,9 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
         PROPERTY_BTN.id,
         PROPERTY_BTN.textEnabled,
         PROPERTY_BTN.textProgress,
-        propertyExportStatusCheck
+        propertyExportStatusCheck,
+        "last-property-export-timestamp",
+        getLastPropertyExportLabel,
       );
     };
 
@@ -168,7 +176,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
           }
         },
         {
-          text: lastFullExportLabel,
+          text: getLastFullExportLabel(),
           id: "last-full-export-timestamp",
           xtype: "label",
           width: "100%",
@@ -180,7 +188,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
           }
         },
         {
-          text: lastPropertyExportLabel,
+          text: getLastPropertyExportLabel(),
           id: "last-property-export-timestamp",
           xtype: "label",
           width: "100%",
