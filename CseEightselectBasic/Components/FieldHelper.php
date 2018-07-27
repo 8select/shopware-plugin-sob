@@ -93,10 +93,11 @@ class FieldHelper
             return $value;
         }
 
-        $attributes = self::getGroupOrFilterAttribute($field);
+        $attributes = array_filter(
+            explode(',', self::getGroupOrFilterAttribute($field))
+        );
 
         if ($attributes) {
-            $attributes = explode(',', $attributes);
             $values = self::filterRelevantAttributeValues($attributes, $article);
             return implode("|", array_filter($values));
         }
@@ -110,29 +111,47 @@ class FieldHelper
     */
     private static function filterRelevantAttributeValues($attributes, $article) {
 
-        // return only configurator group values if exist
-        $groups = array_filter($attributes, function($attr) {
-                return strpos($attr, "group");
-            }
-        );
-        
+        $groups = array_filter($attributes, function($attr) { 
+            return strpos($attr, "group"); 
+        });
+
         if ($groups) {
             $groupIds = array_map( function($group) {
                 return explode('id=', $group)[1]; 
             }, $groups);
-            
-            return array_map(function($id) use ($article) {
-                return self::getConfiguratorGroupValue($article['detailID'], $id); 
-            }, $groupIds);
+
+            $groupValues = array_filter(
+                array_map(function($id) use ($article) {
+                    return self::getConfiguratorGroupValue($article['detailID'], $id); 
+                }, $groupIds)
+            );
+
+            if ($groupValues) {
+                return $groupValues;
+            }
         }
 
-        // return filter values if no configurator group values exist
-        return array_map( function($attr) use ($article) {
-            if(strpos($attr, "filter")) {
-                $filterId = explode('id=', $attr)[1];
-                return self::getFilterValues($article['articleID'], $filterId);
+        $filters = array_filter($attributes, function($attr) { 
+            return strpos($attr, "filter"); 
+        });
+ 
+        if($filters) {
+            $filterIds =  array_map( function($filter) {
+                return explode('id=', $filter)[1]; 
+            }, $filters);
+
+            $filterValues = array_filter(
+                array_map(function($id) use ($article) {
+                    return self::getFilterValues($article['articleID'], $id); 
+                }, $filterIds)
+            );
+
+            if ($filterValues) {
+                return $filterValues;
             }
-        }, $attributes);
+        }
+
+        return [];
     }
 
     /**
