@@ -657,12 +657,6 @@ class CseEightselectBasic extends Plugin
                 'shopwareAttribute'              => 's_articles_details.ean',
             ],
             [
-                'eightselectAttribute'           => 'model',
-                'eightselectAttributeLabel'      => 'PRODUKT-MODELL ID',
-                'eightselectAttributeLabelDescr' => 'Ein Modell bezeichnet das "Grundprodukt". ID kann Name oder Nummer sein. Ein Modell kann in mehreren Ausführungen vorkommen, die sich z.B. in Größe, Farbe oder Muster unterschieden. Beispiel: Das Modell "Arie" (1234) gibt es in den 3 Farben: "blau", "rot", "gelb" (567) und in den 4 Größen: "S", "M", "L", "XL" (89), also 12 Ausführungen. Jede Ausführung hat eine eindeutige Artikelnummer.',
-                'shopwareAttribute'              => '-',
-            ],
-            [
                 'eightselectAttribute'           => 'name1',
                 'eightselectAttributeLabel'      => 'ARTIKELBEZEICHNUNG',
                 'eightselectAttributeLabelDescr' => 'Standardbezeichnung für den Artikel so wie er normalerweise in der Artikeldetailansicht genutzt wird (z.B. Sportliches Herren-Hemd "Arie")',
