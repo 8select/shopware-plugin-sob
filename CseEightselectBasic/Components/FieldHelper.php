@@ -112,7 +112,7 @@ class FieldHelper
     private static function filterRelevantAttributeValues($attributes, $article) {
 
         $groups = array_filter($attributes, function($attr) { 
-            return strpos($attr, "group"); 
+            return strpos($attr, "group") !== false; 
         });
 
         if ($groups) {
