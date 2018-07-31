@@ -93,23 +93,65 @@ class FieldHelper
             return $value;
         }
 
-        $configGroup = self::getGroupOrFilterAttribute('group', $field);
+        $attributes = array_filter(
+            explode(',', self::getGroupOrFilterAttribute($field))
+        );
 
-        if ($configGroup) {
-            $groupId = explode('id=', $configGroup)[1];
-
-            return self::getConfiguratorGroupValue($article['detailID'], $groupId);
+        if ($attributes) {
+            $values = self::filterRelevantAttributeValues($attributes, $article);
+            return implode("|", array_filter($values));
         }
-
-        $filterGroup = self::getGroupOrFilterAttribute('filter', $field);
-
-        if ($filterGroup) {
-            $filterId = explode('id=', $filterGroup)[1];
-
-            return self::getFilterValues($article['articleID'], $filterId);
-        }
-
         return '';
+    }
+
+    /**
+    * @param array $attributes
+    * @param array $article
+    * @return array
+    */
+    private static function filterRelevantAttributeValues($attributes, $article) {
+
+        $groups = array_filter($attributes, function($attr) { 
+            return strpos($attr, "group") !== false; 
+        });
+
+        if ($groups) {
+            $groupIds = array_map( function($group) {
+                return explode('id=', $group)[1]; 
+            }, $groups);
+
+            $groupValues = array_filter(
+                array_map(function($id) use ($article) {
+                    return self::getConfiguratorGroupValue($article['detailID'], $id); 
+                }, $groupIds)
+            );
+
+            if ($groupValues) {
+                return $groupValues;
+            }
+        }
+
+        $filters = array_filter($attributes, function($attr) { 
+            return strpos($attr, "filter"); 
+        });
+ 
+        if($filters) {
+            $filterIds =  array_map( function($filter) {
+                return explode('id=', $filter)[1]; 
+            }, $filters);
+
+            $filterValues = array_filter(
+                array_map(function($id) use ($article) {
+                    return self::getFilterValues($article['articleID'], $id); 
+                }, $filterIds)
+            );
+
+            if ($filterValues) {
+                return $filterValues;
+            }
+        }
+
+        return [];
     }
 
     /**
@@ -215,17 +257,15 @@ class FieldHelper
     }
 
     /**
-     * @param $type
      * @param $field
      * @return string
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    private static function getGroupOrFilterAttribute($type, $field)
-    {
+    private static function getGroupOrFilterAttribute($field) {
         $query = 'SELECT shopwareAttribute as groupId
                       FROM 8s_attribute_mapping
-                      WHERE shopwareAttribute LIKE "%' . $type . '%"
+                      WHERE (shopwareAttribute LIKE "%group%" OR shopwareAttribute LIKE "%filter%")
                       AND eightselectAttribute = "' . $field . '"';
 
         return Shopware()->Db()->query($query)->fetchColumn();
@@ -318,7 +358,7 @@ SQL;
                 AND s_filter_values.optionID = ' . $filterId;
         $value = Shopware()->Db()->query($sql)->fetchAll();
 
-        return implode(' | ', array_column($value, 'name'));
+        return implode('|', array_column($value, 'name'));
     }
 
     /**
