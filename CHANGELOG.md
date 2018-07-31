@@ -1,5 +1,19 @@
 # Change Log
 
+## [1.6.0](https://github.com/8select/shopware-plugin-sob/tree/1.6.0) (2018-7-31)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.5.2...1.6.0)
+
+**Fixed Bugs:**
+
+- [CSE-1066](https://8select.atlassian.net/browse/CSE-1066) fix copy2dev [\#34](https://github.com/8select/shopware-plugin-sob/pull/34) ([voodoods](https://github.com/voodoods))
+- [CSE-921](https://8select.atlassian.net/browse/CSE-921) schedule and run same cron only once [\#42](https://github.com/8select/shopware-plugin-sob/pull/42) ([akleiber](https://github.com/akleiber))
+
+**Implemented Features:**
+
+- [CSE-851](https://8select.atlassian.net/browse/CSE-851) multi field mapping [\#17](https://github.com/8select/shopware-plugin-sob/pull/17) ([voodoods](https://github.com/voodoods))
+- [CSE-921](https://8select.atlassian.net/browse/CSE-921) export props and images [\#30](https://github.com/8select/shopware-plugin-sob/pull/30) ([voodoods](https://github.com/voodoods))
+
 ## [1.5.2](https://github.com/8select/shopware-plugin-sob/tree/1.5.2) (2018-7-18)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.5.1...1.5.2)
