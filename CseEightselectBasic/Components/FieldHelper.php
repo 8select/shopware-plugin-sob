@@ -67,8 +67,10 @@ class FieldHelper
                 case 'beschreibung1':
                     $withNewLines = self::getValue($article, 'beschreibung');
                     $withOutNewLines = str_replace(["\r\n", "\r", "\n"], '<br>', $withNewLines);
-                    $wihtOutHtml = strip_tags($withOutNewLines);
-                    $value = html_entity_decode($wihtOutHtml);
+                    $withExtraSpaces = str_replace(">", '> ', $withOutNewLines);
+                    $withOutHtml = strip_tags($withExtraSpaces);
+                    $withTrimmedAndCollapsedSpaces = trim(preg_replace('/\s+/', ' ', $withOutHtml));
+                    $value = html_entity_decode($withTrimmedAndCollapsedSpaces);
                     break;
                 default:
                     $value = self::getValue($article, $field);
