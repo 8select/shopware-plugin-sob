@@ -29,7 +29,7 @@ class PropertyExport extends Export
         'prop_brand' => 'marke',
         'prop_color' => 'farbe',
         'prop_url' => 'produkt_url',
-        'prop_description' => 'beschreibung1',
+        'prop_description' => 'beschreibung',
         'images' => 'bilder'
     ];
 
