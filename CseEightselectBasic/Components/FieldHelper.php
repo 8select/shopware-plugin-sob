@@ -69,8 +69,8 @@ class FieldHelper
                     $withOutNewLines = str_replace(["\r\n", "\r", "\n"], '<br>', $withNewLines);
                     $withExtraSpaces = str_replace(">", '> ', $withOutNewLines);
                     $withOutHtml = strip_tags($withExtraSpaces);
-                    $withTrimmedAndCollapsedSpaces = trim(preg_replace('/\s+/', ' ', $withOutHtml));
-                    $value = html_entity_decode($withTrimmedAndCollapsedSpaces);
+                    $withOutHtmlEntities = html_entity_decode($withOutHtml);
+                    $value = trim(preg_replace('/\s+/', ' ', $withOutHtmlEntities));
                     break;
                 default:
                     $value = self::getValue($article, $field);
