@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.6.1](https://github.com/8select/shopware-plugin-sob/tree/1.6.1) (2018-9-6)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.6.0...1.6.1)
+
+**Fixed Bugs:**
+
+- [CSE-1270](https://8select.atlassian.net/browse/CSE-1270) Replace HTML tags with single spaces [\#43](https://github.com/8select/shopware-plugin-sob/pull/43) ([rschweizer](https://github.com/rschweizer))
+
 ## [1.6.0](https://github.com/8select/shopware-plugin-sob/tree/1.6.0) (2018-7-31)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.5.2...1.6.0)
