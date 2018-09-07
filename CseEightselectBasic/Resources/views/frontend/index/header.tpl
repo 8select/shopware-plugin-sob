@@ -63,49 +63,67 @@
     {if {config name="8s_selected_detail_block"} == "frontend_detail_tabs"}
         {* Activate description tab - SYS tab will be activated when CSE finds a set *}
         <script type="text/javascript">
-            var isActiveClass = 'is--active'
-            _eightselect_shop_plugin.hideSys = function () {
-                var descriptionTab = document.querySelector('a[data-tabname=description]')
+            _eightselect_shop_plugin.isActiveClass = 'is--active'
 
-                var descriptionDiv = document.querySelector('div.content--description')
-                var descriptionContainer = descriptionDiv && descriptionDiv.parentNode && descriptionDiv.parentNode.parentNode
+            _eightselect_shop_plugin.setPreviouslyActiveTab = function () {
+                _eightselect_shop_plugin.previouslyActiveTab = document.querySelector('a.tab--link.has--content.is--active')
+                return _eightselect_shop_plugin.previouslyActiveTab
+            }
+
+            _eightselect_shop_plugin.getPreviouslyActiveTab = function () {
+                _eightselect_shop_plugin.previouslyActiveTab = _eightselect_shop_plugin.previouslyActiveTab || document.querySelector('a.tab--link.has--content.is--active')
+                return _eightselect_shop_plugin.previouslyActiveTab
+            }
+
+            _eightselect_shop_plugin.getPreviouslyActiveTabContent = function () {
+                _eightselect_shop_plugin.previouslyActiveTabContent = _eightselect_shop_plugin.previouslyActiveTabContent || document.querySelector('div.tab--container.has--content.is--active')
+                return _eightselect_shop_plugin.previouslyActiveTabContent
+            }
+
+            _eightselect_shop_plugin.setPreviouslyActiveTabContent = function () {
+                _eightselect_shop_plugin.previouslyActiveTabContent = document.querySelector('div.tab--container.has--content.is--active')
+                return _eightselect_shop_plugin.previouslyActiveTabContent
+            }
+
+            _eightselect_shop_plugin.hideSys = function () {
+                var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab()
+                var previouslyActiveTabContent = _eightselect_shop_plugin.getPreviouslyActiveTabContent()
 
                 var cseTab = document.querySelector('a[data-tabname=cse]')
                 var cseDiv = document.querySelector('div.-eightselect-widget-container')
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
 
-                if (!descriptionTab || !cseTab || !descriptionContainer || !cseContainer) {
+                if (!previouslyActiveTab || !cseTab || !previouslyActiveTabContent || !cseContainer) {
                     return;
                 }
 
-                descriptionTab.classList.add(isActiveClass)
-                descriptionContainer.classList.add(isActiveClass)
+                previouslyActiveTab.classList.add(_eightselect_shop_plugin.isActiveClass)
+                previouslyActiveTabContent.classList.add(_eightselect_shop_plugin.isActiveClass)
 
-                cseTab.classList.remove(isActiveClass)
-                cseContainer.classList.remove(isActiveClass)
+                cseTab.classList.remove(_eightselect_shop_plugin.isActiveClass)
+                cseContainer.classList.remove(_eightselect_shop_plugin.isActiveClass)
 
                 cseTab.style.display = 'none'
                 cseContainer.style.display = 'none'
             };
 
             _eightselect_shop_plugin.showSys = function () {
-                var descriptionTab = document.querySelector('a[data-tabname=description]')
-                var descriptionDiv = document.querySelector('div.content--description')
-                var descriptionContainer = descriptionDiv && descriptionDiv.parentNode && descriptionDiv.parentNode.parentNode
+                var previouslyActiveTab = _eightselect_shop_plugin.setPreviouslyActiveTab()
+                var previouslyActiveTabContent = _eightselect_shop_plugin.setPreviouslyActiveTabContent()
 
                 var cseTab = document.querySelector('a[data-tabname=cse]')
                 var cseDiv = document.querySelector('div.-eightselect-widget-container')
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
 
-                if (!descriptionTab || !cseTab || !descriptionContainer || !cseContainer) {
+                if (!previouslyActiveTab || !cseTab || !previouslyActiveTabContent || !cseContainer) {
                     return;
                 }
 
-                descriptionTab.classList.remove(isActiveClass)
-                descriptionContainer.classList.remove(isActiveClass)
+                previouslyActiveTab.classList.remove(_eightselect_shop_plugin.isActiveClass)
+                previouslyActiveTabContent.classList.remove(_eightselect_shop_plugin.isActiveClass)
 
-                cseTab.classList.add(isActiveClass)
-                cseContainer.classList.add(isActiveClass)
+                cseTab.classList.add(_eightselect_shop_plugin.isActiveClass)
+                cseContainer.classList.add(_eightselect_shop_plugin.isActiveClass)
 
                 cseTab.style.display = ''
                 cseContainer.style.display = ''
