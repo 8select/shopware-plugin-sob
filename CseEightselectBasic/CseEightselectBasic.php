@@ -212,6 +212,8 @@ class CseEightselectBasic extends Plugin
                 $this->update_1_5_0();
             case version_compare($context->getCurrentVersion(), '1.5.2', '<='):
                 $this->update_1_5_2();
+            case version_compare($context->getCurrentVersion(), '1.6.3', '<='):
+                $this->update_1_6_3();
         }
     }
 
@@ -237,6 +239,15 @@ class CseEightselectBasic extends Plugin
         $this->addPropertyOnceCron();
         // update changeQueue triggers
         ExportSetup::dropChangeQueueTriggers();
+        ExportSetup::createChangeQueueTriggers();
+    }
+
+    private function update_1_6_3()
+    {
+        // update changeQueue table and triggers
+        ExportSetup::dropChangeQueueTriggers();
+        ExportSetup::dropChangeQueueTable();
+        ExportSetup::createChangeQueueTable();
         ExportSetup::createChangeQueueTriggers();
     }
 
