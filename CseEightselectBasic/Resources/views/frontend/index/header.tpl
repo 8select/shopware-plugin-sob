@@ -44,9 +44,12 @@
         if (typeof _eightselect_shop_plugin === "undefined") {
             var _eightselect_shop_plugin = {};
         }
-        _eightselect_shop_plugin.addToCart = function (sku) {
+        _eightselect_shop_plugin.addToCart = function (sku, quantity, Promise) {
             document.getElementById('eightselect_cart_trigger_form_sku').value = sku;
+            document.getElementById('eightselect_cart_trigger_form_quantity').value = quantity;
             document.getElementById('eightselect_cart_trigger_form_submit').click();
+
+            return Promise.resolve()
         };
 
         _eightselect_shop_plugin.showSys = function () {
