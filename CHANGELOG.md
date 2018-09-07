@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.6.3](https://github.com/8select/shopware-plugin-sob/tree/1.6.3) (2018-9-7)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.6.2...1.6.3)
+
+**Fixed Bugs:**
+
+- [CSE-1321](https://8select.atlassian.net/browse/CSE-1321) store activeTab based on is--active classname [\#45](https://github.com/8select/shopware-plugin-sob/pull/45) ([jbreckel](https://github.com/jbreckel))
+
 ## [1.6.2](https://github.com/8select/shopware-plugin-sob/tree/1.6.2) (2018-9-7)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.6.1...1.6.2)
