@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.6.4](https://github.com/8select/shopware-plugin-sob/tree/1.6.4) (2018-9-7)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.6.3...1.6.4)
+
+**Fixed Bugs:**
+
+- [CSE-1323](https://8select.atlassian.net/browse/CSE-1323) make entries in update queue unique [\#46](https://github.com/8select/shopware-plugin-sob/pull/46) ([akleiber](https://github.com/akleiber))
+
 ## [1.6.3](https://github.com/8select/shopware-plugin-sob/tree/1.6.3) (2018-9-7)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.6.2...1.6.3)
