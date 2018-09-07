@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.6.2](https://github.com/8select/shopware-plugin-sob/tree/1.6.2) (2018-9-7)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.6.1...1.6.2)
+
+**Fixed Bugs:**
+
+- [CSE-1320](https://8select.atlassian.net/browse/CSE-1320) - fix addToCart: update quantity and return Promise [\#44](https://github.com/8select/shopware-plugin-sob/pull/44) ([akleiber](https://github.com/akleiber))
+
 ## [1.6.1](https://github.com/8select/shopware-plugin-sob/tree/1.6.1) (2018-9-6)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.6.0...1.6.1)
