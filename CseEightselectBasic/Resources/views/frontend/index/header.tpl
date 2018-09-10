@@ -77,7 +77,7 @@
                 var evt = new MouseEvent('click');
                 var canceled = !elem.dispatchEvent(evt);
             };
-      
+
             _eightselect_shop_plugin.hideSys = function () {
                 var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab()
                 var previouslyActiveTabContent = _eightselect_shop_plugin.getPreviouslyActiveTabContent()
