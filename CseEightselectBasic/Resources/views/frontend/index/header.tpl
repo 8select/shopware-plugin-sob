@@ -80,7 +80,6 @@
 
             _eightselect_shop_plugin.hideSys = function () {
                 var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab()
-                var previouslyActiveTabContent = _eightselect_shop_plugin.getPreviouslyActiveTabContent()
 
                 var cseTab = document.querySelector('a[data-tabname=cse]')
                 var cseDiv = document.querySelector('div.-eightselect-widget-container')
