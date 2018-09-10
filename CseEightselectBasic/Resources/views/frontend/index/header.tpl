@@ -73,11 +73,6 @@
                 return _eightselect_shop_plugin.previouslyActiveTabContent
             }
 
-            _eightselect_shop_plugin.doClick = function (elem) {
-                var evt = new MouseEvent('click');
-                var canceled = !elem.dispatchEvent(evt);
-            };
-
             _eightselect_shop_plugin.hideSys = function () {
                 var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab()
 
@@ -89,7 +84,7 @@
                     return;
                 }
 
-                _eightselect_shop_plugin.doClick(previouslyActiveTab)
+                previouslyActiveTab.click()
 
                 cseTab.style.display = 'none'
                 cseContainer.style.display = 'none'
@@ -104,7 +99,7 @@
                     return;
                 }
 
-                _eightselect_shop_plugin.doClick(cseTab)
+                cseTab.click()
 
                 cseTab.style.display = ''
                 cseContainer.style.display = ''
