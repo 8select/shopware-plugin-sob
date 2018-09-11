@@ -79,8 +79,6 @@
             }
 
             _eightselect_shop_plugin.hideSys = function () {
-                var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab()
-
                 var cseTab = document.querySelector('a[data-tabname=cse]')
                 var cseDiv = document.querySelector('div.-eightselect-widget-container')
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
@@ -89,21 +87,18 @@
                     return;
                 }
 
-                previouslyActiveTab.click()
+                _eightselect_shop_plugin.getPreviouslyActiveTab().click()
 
                 cseTab.style.display = 'none'
                 cseContainer.style.display = 'none'
             };
 
             _eightselect_shop_plugin.showSys = function () {
-                var previouslyActiveTab = _eightselect_shop_plugin.setPreviouslyActiveTab()
-                var previouslyActiveTabContent = _eightselect_shop_plugin.setPreviouslyActiveTabContent()
-
                 var cseTab = document.querySelector('a[data-tabname=cse]')
                 var cseDiv = document.querySelector('div.-eightselect-widget-container')
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
 
-                if (!previouslyActiveTab || !cseTab || !previouslyActiveTabContent || !cseContainer) {
+                if (!_eightselect_shop_plugin.setPreviouslyActiveTab() || !cseTab || !_eightselect_shop_plugin.setPreviouslyActiveTabContent() || !cseContainer) {
                     return;
                 }
 
