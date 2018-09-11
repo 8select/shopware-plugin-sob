@@ -73,21 +73,17 @@
                 return _eightselect_shop_plugin.previouslyActiveTab
             }
 
-            _eightselect_shop_plugin.setPreviouslyActiveTabContent = function () {
-                _eightselect_shop_plugin.previouslyActiveTabContent = document.querySelector('div.tab--container.has--content.is--active')
-                return _eightselect_shop_plugin.previouslyActiveTabContent
-            }
-
             _eightselect_shop_plugin.hideSys = function () {
                 var cseTab = document.querySelector('a[data-tabname=cse]')
                 var cseDiv = document.querySelector('div.-eightselect-widget-container')
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
+                var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab()
 
-                if (!cseTab || !cseContainer) {
+                if (!previouslyActiveTab || !cseTab || !cseContainer) {
                     return;
                 }
 
-                _eightselect_shop_plugin.getPreviouslyActiveTab().click()
+                previouslyActiveTab.click()
 
                 cseTab.style.display = 'none'
                 cseContainer.style.display = 'none'
@@ -98,7 +94,7 @@
                 var cseDiv = document.querySelector('div.-eightselect-widget-container')
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
 
-                if (!_eightselect_shop_plugin.setPreviouslyActiveTab() || !cseTab || !_eightselect_shop_plugin.setPreviouslyActiveTabContent() || !cseContainer) {
+                if (!_eightselect_shop_plugin.setPreviouslyActiveTab() || !cseTab || !cseContainer) {
                     return;
                 }
 
