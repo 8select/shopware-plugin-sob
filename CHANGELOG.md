@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.6.5](https://github.com/8select/shopware-plugin-sob/tree/1.6.5) (2018-9-12)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.6.4...1.6.5)
+
+**Fixed Bugs:**
+
+- [CSE-1326](https://8select.atlassian.net/browse/CSE-1326) fix tab navigation [\#47](https://github.com/8select/shopware-plugin-sob/pull/47) ([voodoods](https://github.com/voodoods))
+- [CSE-1342](https://8select.atlassian.net/browse/CSE-1342) remove export files after upload, remove extra breaks from description, correct price update values [\#48](https://github.com/8select/shopware-plugin-sob/pull/48) ([akleiber](https://github.com/akleiber))
+
 ## [1.6.4](https://github.com/8select/shopware-plugin-sob/tree/1.6.4) (2018-9-7)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.6.3...1.6.4)
