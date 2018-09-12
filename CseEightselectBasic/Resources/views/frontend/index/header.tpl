@@ -63,7 +63,7 @@
     {if {config name="8s_selected_detail_block"} == "frontend_detail_tabs"}
         {* Activate description tab - SYS tab will be activated when CSE finds a set *}
         <script type="text/javascript">
-             _eightselect_shop_plugin.setPreviouslyActiveTab = function () {
+            _eightselect_shop_plugin.setPreviouslyActiveTab = function () {
                 _eightselect_shop_plugin.previouslyActiveTab = document.querySelector('a.tab--link.has--content.is--active')
                 return _eightselect_shop_plugin.previouslyActiveTab
             }
@@ -74,10 +74,11 @@
             }
 
             _eightselect_shop_plugin.hideSys = function () {
+                var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab()
+                
                 var cseTab = document.querySelector('a[data-tabname=cse]')
                 var cseDiv = document.querySelector('div.-eightselect-widget-container')
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
-                var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab()
 
                 if (!previouslyActiveTab || !cseTab || !cseContainer) {
                     return;
