@@ -214,6 +214,8 @@ class CseEightselectBasic extends Plugin
                 $this->update_1_5_2();
             case version_compare($context->getCurrentVersion(), '1.6.3', '<='):
                 $this->update_1_6_3();
+            case version_compare($context->getCurrentVersion(), '1.6.4', '<='):
+                $this->update_1_6_4();
         }
     }
 
@@ -249,6 +251,12 @@ class CseEightselectBasic extends Plugin
         ExportSetup::dropChangeQueueTable();
         ExportSetup::createChangeQueueTable();
         ExportSetup::createChangeQueueTriggers();
+    }
+
+    private function update_1_6_4()
+    {
+        $this->deleteExportDir();
+        $this->createExportDir();
     }
 
     /**
@@ -460,8 +468,14 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicArticleExport(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
-        $this->container->get('cse_eightselect_basic.article_export')->doCron();
+        try {
+            $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
+            $this->container->get('cse_eightselect_basic.article_export')->doCron();
+        } catch (\Exception $exception) {
+            return sprintf('Export fehlgeschlagen: %s', $exception->getMessage());
+        }
+
+        return 'Export erfolgreich';
     }
 
     /**
@@ -472,7 +486,13 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicArticleExportOnce(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->container->get('cse_eightselect_basic.article_export')->doCron();
+        try{
+            $this->container->get('cse_eightselect_basic.article_export')->doCron();
+        } catch (\Exception $exception) {
+            return sprintf('Export fehlgeschlagen: %s', $exception->getMessage());
+        }
+
+        return 'Export erfolgreich';
     }
 
     /**
@@ -481,8 +501,14 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicPropertyExport(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->container->get('cse_eightselect_basic.property_export')->scheduleCron();
-        $this->container->get('cse_eightselect_basic.property_export')->doCron();
+        try {
+            $this->container->get('cse_eightselect_basic.property_export')->scheduleCron();
+            $this->container->get('cse_eightselect_basic.property_export')->doCron();
+        } catch (\Exception $exception) {
+            return sprintf('Export fehlgeschlagen: %s', $exception->getMessage());
+        }
+
+        return 'Export erfolgreich';
     }
 
     /**
@@ -491,7 +517,13 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicPropertyExportOnce(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->container->get('cse_eightselect_basic.property_export')->doCron();
+        try {
+            $this->container->get('cse_eightselect_basic.property_export')->doCron();
+        } catch (\Exception $exception) {
+            return sprintf('Export fehlgeschlagen: %s', $exception->getMessage());
+        }
+
+        return 'Export erfolgreich';
     }
 
     /**

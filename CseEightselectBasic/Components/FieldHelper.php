@@ -62,7 +62,7 @@ class FieldHelper
                     break;
                 case 'beschreibung':
                     $withNewLines = self::getValue($article, $field);
-                    $value = str_replace(["\r\n", "\r", "\n"], '<br>', $withNewLines);
+                    $value = str_replace(["\r\n", "\r", "\n"], ' ', $withNewLines);
                     break;
                 case 'beschreibung1':
                     $withNewLines = self::getValue($article, 'beschreibung');
@@ -113,18 +113,18 @@ class FieldHelper
     */
     private static function filterRelevantAttributeValues($attributes, $article) {
 
-        $groups = array_filter($attributes, function($attr) { 
-            return strpos($attr, "group") !== false; 
+        $groups = array_filter($attributes, function($attr) {
+            return strpos($attr, "group") !== false;
         });
 
         if ($groups) {
             $groupIds = array_map( function($group) {
-                return explode('id=', $group)[1]; 
+                return explode('id=', $group)[1];
             }, $groups);
 
             $groupValues = array_filter(
                 array_map(function($id) use ($article) {
-                    return self::getConfiguratorGroupValue($article['detailID'], $id); 
+                    return self::getConfiguratorGroupValue($article['detailID'], $id);
                 }, $groupIds)
             );
 
@@ -133,18 +133,18 @@ class FieldHelper
             }
         }
 
-        $filters = array_filter($attributes, function($attr) { 
-            return strpos($attr, "filter"); 
+        $filters = array_filter($attributes, function($attr) {
+            return strpos($attr, "filter");
         });
- 
+
         if($filters) {
             $filterIds =  array_map( function($filter) {
-                return explode('id=', $filter)[1]; 
+                return explode('id=', $filter)[1];
             }, $filters);
 
             $filterValues = array_filter(
                 array_map(function($id) use ($article) {
-                    return self::getFilterValues($article['articleID'], $id); 
+                    return self::getFilterValues($article['articleID'], $id);
                 }, $filterIds)
             );
 

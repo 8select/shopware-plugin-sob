@@ -51,7 +51,13 @@ abstract class Export
 
             RunCronOnce::runCron(static::CRON_NAME);
 
-            $this->generateExportCSV();
+
+            $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
+            $feedId = $config->getByPluginName('CseEightselectBasic')['8s_feed_id'];
+            $timestampInMillis = round(microtime(true) * 1000);
+            $filename = sprintf('%s_%s_%d.csv', $feedId, static::FEED_TYPE, $timestampInMillis);
+            $this->generateExportCSV($filename, $feedId);
+            unlink(static::STORAGE . $filename);
 
             $this->emptyQueue();
             FeedLogger::logFeed(static::CRON_NAME);
@@ -65,6 +71,9 @@ abstract class Export
         } catch (\Exception $exception) {
             Shopware()->PluginLogger()->error($exception);
             RunCronOnce::finishCron(static::CRON_NAME);
+            if (isset($filename)) {
+                unlink(static::STORAGE . $filename);
+            }
             throw $exception;
         }
     }
@@ -111,15 +120,11 @@ abstract class Export
         return true;
     }
 
-    private function generateExportCSV() {
+    private function generateExportCSV($filename, $feedId) {
         if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
             require_once __DIR__ . '/../vendor/autoload.php';
         }
 
-        $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-        $feedId = $config->getByPluginName('CseEightselectBasic')['8s_feed_id'];
-        $timestampInMillis = round(microtime(true) * 1000);
-        $filename = sprintf('%s_%s_%d.csv', $feedId, static::FEED_TYPE, $timestampInMillis);
         $csvWriter = Writer::createFromPath(static::STORAGE . $filename, 'a');
         $csvWriter->setDelimiter(';');
 

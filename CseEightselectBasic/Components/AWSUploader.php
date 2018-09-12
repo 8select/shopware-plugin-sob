@@ -41,8 +41,11 @@ class AWSUploader
                 'Key'    => $key,
                 'Body'   => fopen($storage . $filename, 'r'),
             ]);
-        } catch (\Aws\S3\Exception\S3Exception $e) {
-            Shopware()->PluginLogger()->error($e->getAwsErrorMessage(), [$e->getAwsErrorCode(), $e->getAwsErrorType()]);
+        } catch (\Exception $exception) {
+            Shopware()->PluginLogger()->error('Upload des Export auf AWS S3 fehlgeschlagen.');
+            Shopware()->PluginLogger()->error($exception);
+
+            throw $exception;
         }
     }
 }
