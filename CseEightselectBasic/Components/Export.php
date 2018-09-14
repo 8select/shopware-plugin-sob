@@ -201,7 +201,7 @@ abstract class Export
                     INNER JOIN s_articles_details AS ad2 ON ad2.articleID = s_articles_details.articleID AND ad2.kind = 1
                     INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
                     INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
-                    INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1
+                    INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1 AND s_articles_prices.pricegroup = "EK"
                     INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
                     INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
                 LIMIT %d OFFSET %d';
