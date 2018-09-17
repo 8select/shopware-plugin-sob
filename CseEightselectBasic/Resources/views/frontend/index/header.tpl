@@ -14,15 +14,15 @@
     <script type="text/javascript">
         if (typeof _eightselect_config === "undefined") {
             var _eightselect_config = {};
-        };
+        }
         _eightselect_config.sys = _eightselect_config.sys || {};
         _eightselect_config.sys.callback = function (error) {
             if (error) {
                 _eightselect_shop_plugin.hideSys();
             } else {
                 _eightselect_shop_plugin.showSys();
-            };
-        };
+            }
+        }
     </script>
 
     <script type="text/javascript">
@@ -43,7 +43,7 @@
     <script type="text/javascript">
         if (typeof _eightselect_shop_plugin === "undefined") {
             var _eightselect_shop_plugin = {};
-        };
+        }
         _eightselect_shop_plugin.addToCart = function (sku, quantity, Promise) {
             document.getElementById('eightselect_cart_trigger_form_sku').value = sku;
             document.getElementById('eightselect_cart_trigger_form_quantity').value = quantity;
@@ -97,7 +97,7 @@
 
                 if (!_eightselect_shop_plugin.setPreviouslyActiveTab() || !cseTab || !cseContainer) {
                     return;
-                };
+                }
 
                 cseTab.click();
 
@@ -114,7 +114,7 @@
                 domListener();
             } else {
                 window.addEventListener('DOMContentLoaded', domListener);
-            };
+            }
         </script>
     {/if}
 {/block}
