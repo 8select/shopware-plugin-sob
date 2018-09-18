@@ -1,12 +1,20 @@
 # Change Log
 
+## [1.7.1](https://github.com/8select/shopware-plugin-sob/tree/1.7.1) (2018-9-18)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.7.0...1.7.1)
+
+**Fixed Bugs:**
+
+- [CSE-1358](https://8select.atlassian.net/browse/CSE-1358) add missing js semicolons [\#51](https://github.com/8select/shopware-plugin-sob/pull/51) ([voodoods](https://github.com/voodoods))
+
 ## [1.7.0](https://github.com/8select/shopware-plugin-sob/tree/1.7.0) (2018-9-14)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.6.5...1.7.0)
 
 **Fixed Bugs:**
 
-- [CSE-1351](https://8select.atlassian.net/browse/CSE-1351) only use default pricegroup [\#50](https://github.com/8select/shopware-plugin-sob/pull/50) ([akleiber](https://github.com/akleiber))
+- [CSE-1351](https://8select.atlassian.net/browse/CSE-1351) only use default "kundengruppe" [\#50](https://github.com/8select/shopware-plugin-sob/pull/50) ([akleiber](https://github.com/akleiber))
 
 **Implemented Features:**
 
