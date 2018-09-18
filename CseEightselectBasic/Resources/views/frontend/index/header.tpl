@@ -29,12 +29,12 @@
         (function(d, s, w) {
             window.eightlytics || function (w) {
                 w.eightlytics = function () {
-                    window.eightlytics.queue = window.eightlytics.queue || []
-                    window.eightlytics.queue.push(arguments)
+                    window.eightlytics.queue = window.eightlytics.queue || [];
+                    window.eightlytics.queue.push(arguments);
                 };
             }(w);
             var script = d.createElement(s);
-            script.src   = 'https://__SUBDOMAIN__.8select.io/{config name="8s_merchant_id"}/loader.js';
+            script.src = 'https://__SUBDOMAIN__.8select.io/{config name="8s_merchant_id"}/loader.js';
             var entry = d.getElementsByTagName(s)[0];
             entry.parentNode.insertBefore(script, entry);
         })(document, 'script', window);
@@ -49,7 +49,7 @@
             document.getElementById('eightselect_cart_trigger_form_quantity').value = quantity;
             document.getElementById('eightselect_cart_trigger_form_submit').click();
 
-            return Promise.resolve()
+            return Promise.resolve();
         };
 
         _eightselect_shop_plugin.showSys = function () {
@@ -64,45 +64,45 @@
         {* Activate description tab - SYS tab will be activated when CSE finds a set *}
         <script type="text/javascript">
             _eightselect_shop_plugin.setPreviouslyActiveTab = function () {
-                _eightselect_shop_plugin.previouslyActiveTab = document.querySelector('a.tab--link.has--content.is--active')
-                return _eightselect_shop_plugin.previouslyActiveTab
-            }
+                _eightselect_shop_plugin.previouslyActiveTab = document.querySelector('a.tab--link.has--content.is--active');
+                return _eightselect_shop_plugin.previouslyActiveTab;
+            };
 
             _eightselect_shop_plugin.getPreviouslyActiveTab = function () {
-                _eightselect_shop_plugin.previouslyActiveTab = _eightselect_shop_plugin.previouslyActiveTab || document.querySelector('a.tab--link.has--content.is--active')
-                return _eightselect_shop_plugin.previouslyActiveTab
-            }
+                _eightselect_shop_plugin.previouslyActiveTab = _eightselect_shop_plugin.previouslyActiveTab || document.querySelector('a.tab--link.has--content.is--active');
+                return _eightselect_shop_plugin.previouslyActiveTab;
+            };
 
             _eightselect_shop_plugin.hideSys = function () {
-                var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab()
+                var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab();
                 
-                var cseTab = document.querySelector('a[data-tabname=cse]')
-                var cseDiv = document.querySelector('div.-eightselect-widget-container')
-                var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
+                var cseTab = document.querySelector('a[data-tabname=cse]');
+                var cseDiv = document.querySelector('div.-eightselect-widget-container');
+                var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode;
 
                 if (!previouslyActiveTab || !cseTab || !cseContainer) {
                     return;
-                }
+                };
 
-                previouslyActiveTab.click()
+                previouslyActiveTab.click();
 
-                cseTab.style.display = 'none'
-                cseContainer.style.display = 'none'
+                cseTab.style.display = 'none';
+                cseContainer.style.display = 'none';
             };
 
             _eightselect_shop_plugin.showSys = function () {
-                var cseTab = document.querySelector('a[data-tabname=cse]')
-                var cseDiv = document.querySelector('div.-eightselect-widget-container')
-                var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode
+                var cseTab = document.querySelector('a[data-tabname=cse]');
+                var cseDiv = document.querySelector('div.-eightselect-widget-container');
+                var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode;
 
                 if (!_eightselect_shop_plugin.setPreviouslyActiveTab() || !cseTab || !cseContainer) {
                     return;
                 }
 
-                cseTab.click()
+                cseTab.click();
 
-                cseTab.style.display = ''
-                cseContainer.style.display = ''
+                cseTab.style.display = '';
+                cseContainer.style.display = '';
             };
 
             var domListener = function () {
