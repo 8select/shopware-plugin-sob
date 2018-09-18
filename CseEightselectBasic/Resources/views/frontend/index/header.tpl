@@ -103,6 +103,7 @@
 
             var domListener = function () {
                 window.removeEventListener('DOMContentLoaded', domListener);
+                _eightselect_shop_plugin.hideSys();
             };
 
             if (window.document.readyState !== 'loading') {
