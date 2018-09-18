@@ -54,7 +54,7 @@
 
     {if {config name="8s_selected_detail_block"} == "frontend_detail_tabs"}
         {block name="frontend_detail_tabs_content_cse"}
-                <div class="tab--container" style="display: none;">
+                <div class="tab--container -eightselect-widget-sw-tab-container" style="display: none;">
                 {block name="frontend_detail_tabs_content_cse_inner"}
                     {block name="frontend_detail_tabs_content_cse_title"}
                             <div class="tab--header">
