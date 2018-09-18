@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.7.2](https://github.com/8select/shopware-plugin-sob/tree/1.7.2) (2018-9-18)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.7.1...1.7.2)
+
+**Fixed Bugs:**
+
+- [CSE-1362](https://8select.atlassian.net/browse/CSE-1362) corect tab behaviour [\#52](https://github.com/8select/shopware-plugin-sob/pull/52) ([akleiber](https://github.com/akleiber))
+
 ## [1.7.1](https://github.com/8select/shopware-plugin-sob/tree/1.7.1) (2018-9-18)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.7.0...1.7.1)
