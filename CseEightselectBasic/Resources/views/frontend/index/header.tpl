@@ -97,7 +97,9 @@
                 var cseDiv = document.querySelector('div.-eightselect-widget-container');
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode;
 
-                if (!_eightselect_shop_plugin.setPreviouslyActiveTab() || !cseTab || !cseContainer) {
+                _eightselect_shop_plugin.setPreviouslyActiveTab();
+
+                if (!cseTab || !cseContainer) {
                     return;
                 }
 
