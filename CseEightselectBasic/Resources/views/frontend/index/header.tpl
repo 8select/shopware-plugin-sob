@@ -75,19 +75,21 @@
 
             _eightselect_shop_plugin.hideSys = function () {
                 var previouslyActiveTab = _eightselect_shop_plugin.getPreviouslyActiveTab();
-                
+
+                if (previouslyActiveTab) {
+                    previouslyActiveTab.click();
+                }
+
                 var cseTab = document.querySelector('a[data-tabname=cse]');
                 var cseDiv = document.querySelector('div.-eightselect-widget-container');
                 var cseContainer = cseDiv && cseDiv.parentNode && cseDiv.parentNode.parentNode;
 
-                if (!previouslyActiveTab || !cseTab || !cseContainer) {
-                    return;
-                };
-
-                previouslyActiveTab.click();
-
-                cseTab.style.display = 'none';
-                cseContainer.style.display = 'none';
+                if (cseTab && cseTab.style.display !== 'none') {
+                    cseTab.style.display = 'none';
+                }
+                if (cseContainer && cseContainer.style.display !== 'none') {
+                    cseContainer.style.display = 'none';
+                }
             };
 
             _eightselect_shop_plugin.showSys = function () {
