@@ -2,9 +2,10 @@
 namespace CseEightselectBasic\Components;
 
 use League\Csv\Writer;
-use CseEightselectBasic\Components\RunCronOnce;
-use CseEightselectBasic\Components\FeedLogger;
+use CseEightselectBasic\Components\Config;
 use CseEightselectBasic\Components\ConfigValidator;
+use CseEightselectBasic\Components\FeedLogger;
+use CseEightselectBasic\Components\RunCronOnce;
 
 abstract class Export
 {
@@ -182,7 +183,7 @@ abstract class Export
      * @throws \Zend_Db_Statement_Exception
      * @return array
      */
-    private function getArticles($mapping, $offset, $limit)
+    protected function getArticles($mapping, $offset, $limit)
     {
         $sqlTemplate = 'SELECT %s %s,
                     s_articles_details.articleID,
@@ -254,9 +255,17 @@ abstract class Export
     */
     private function emptyQueue()
     {
+        if ($this->isDeltaExport === false) {
+            return;
+        }
+
         if (static::FEED_TYPE === PropertyExport::FEED_TYPE) {
             $sql = 'DELETE FROM 8s_articles_details_change_queue';
             Shopware()->Db()->query($sql);
         }
+    }
+
+    protected function isDeltaExport() {
+        return Config::getOption(Config::OPTION_EXPORT_TYPE) === Config::OPTION_EXPORT_TYPE_VALUE_DELTA;
     }
 }
