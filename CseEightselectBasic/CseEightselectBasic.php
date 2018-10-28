@@ -180,9 +180,13 @@ class CseEightselectBasic extends Plugin
      */
     public function install(InstallContext $context)
     {
+        $this->removeExportCron();
         $this->addExportCron();
+        $this->removeExportOnceCron();
         $this->addExportOnceCron();
+        $this->removePropertyCron();
         $this->addPropertyCron();
+        $this->removePropertyOnceCron();
         $this->addPropertyOnceCron();
         $this->installWidgets();
         $this->createDatabase();
