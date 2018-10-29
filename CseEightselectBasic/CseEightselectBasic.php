@@ -512,6 +512,8 @@ class CseEightselectBasic extends Plugin
         try {
             $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
             $this->container->get('cse_eightselect_basic.article_export')->doCron();
+            $this->container->get('cse_eightselect_basic.force_full_property_export')->scheduleCron();
+            $this->container->get('cse_eightselect_basic.force_full_property_export')->doCron();
         } catch (\Exception $exception) {
             return sprintf('Export fehlgeschlagen: %s', $exception->getMessage());
         }
@@ -529,6 +531,7 @@ class CseEightselectBasic extends Plugin
     {
         try{
             $this->container->get('cse_eightselect_basic.article_export')->doCron();
+            $this->container->get('cse_eightselect_basic.force_full_property_export')->doCron();
         } catch (\Exception $exception) {
             return sprintf('Export fehlgeschlagen: %s', $exception->getMessage());
         }

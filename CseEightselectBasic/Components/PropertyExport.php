@@ -92,17 +92,4 @@ class PropertyExport extends Export
 
         return $articles;
     }
-
-    /**
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @return integer
-     */
-    protected function getNumArticles()
-    {
-        $sql = 'SELECT COUNT(DISTINCT s_articles_details_id) as count FROM 8s_articles_details_change_queue';
-        $count = Shopware()->Db()->query($sql)->fetchColumn();
-
-        return intval($count);
-    }
 }

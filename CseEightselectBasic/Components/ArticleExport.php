@@ -72,18 +72,4 @@ class ArticleExport extends Export
     public function __construct() {
         $this->header = $this->fields;
     }
-
-
-    /**
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @return integer
-     */
-    protected function getNumArticles()
-    {
-        $sql = 'SELECT count(*) from s_articles_details';
-        $count = Shopware()->Db()->query($sql)->fetchColumn();
-
-        return intval($count);
-    }
 }
