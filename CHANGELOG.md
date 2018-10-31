@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.8.0](https://github.com/8select/shopware-plugin-sob/tree/1.8.0) (2018-10-31)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.7.4...1.8.0)
+
+**Implemented Features:**
+
+- [CSE-1504](https://8select.atlassian.net/browse/CSE-1504) fallback full export without db trigger [\#55](https://github.com/8select/shopware-plugin-sob/pull/55) ([akleiber](https://github.com/akleiber))
+
 ## [1.7.4](https://github.com/8select/shopware-plugin-sob/tree/1.7.4) (2018-10-2)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.7.3...1.7.4)
