@@ -2,8 +2,8 @@
 namespace CseEightselectBasic\Components;
 
 use League\Csv\Writer;
-use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\Export;
+use CseEightselectBasic\Components\RunCronOnce;
 
 class PropertyExport extends Export
 {
@@ -16,7 +16,7 @@ class PropertyExport extends Export
     /**
      * @var array
      */
-    private $fieldMapping = [
+    private $fieldMappingComplete = [
         'prop_sku' => 'sku',
         'prop_isInStock' => 'status',
         'prop_parentSku' => 'mastersku',
@@ -33,21 +33,63 @@ class PropertyExport extends Export
         'images' => 'bilder'
     ];
 
+    /**
+     * @var array
+     */
+    private $fieldMappingPriceAndStock = [
+        'prop_sku' => 'sku',
+        'prop_isInStock' => 'status',
+        'prop_discountPrice' => 'angebots_preis',
+        'prop_retailPrice' => 'streich_preis',
+    ];
+
     public function __construct() {
-        $this->header = array_keys($this->fieldMapping);
-        $this->fields = array_values($this->fieldMapping);
+        $fieldMapping = $this->fieldMappingPriceAndStock;
+        if ($this->isDeltaExport()) {
+            $fieldMapping = $this->fieldMappingComplete;
+        }
+
+        $this->header = array_keys($fieldMapping);
+        $this->fields = array_values($fieldMapping);
     }
 
     /**
+     * @param string $mapping
+     * @param int $offset
+     * @param int $limit
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
-     * @return integer
+     * @return array
      */
-    protected function getNumArticles()
+    protected function getArticles($mapping, $offset, $limit)
     {
-        $sql = 'SELECT COUNT(DISTINCT s_articles_details_id) as count FROM 8s_articles_details_change_queue';
-        $count = Shopware()->Db()->query($sql)->fetchColumn();
+        if ($this->isDeltaExport()) {
+            return parent::getArticles($mapping, $offset, $limit);
+        }
 
-        return intval($count);
+        $sqlTemplate = 'SELECT
+                    s_articles.laststock AS laststock,
+                    s_articles_prices.price AS angebots_preis,
+                    s_articles_prices.pseudoprice AS streich_preis,
+                    s_articles_details.active AS active,
+                    s_articles_details.instock AS instock,
+                    s_articles_details.ordernumber as sku,
+                    s_core_tax.tax AS tax
+                FROM s_articles_details
+                    INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
+                    INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1 AND s_articles_prices.pricegroup = "EK"
+                    INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
+                LIMIT %d OFFSET %d';
+
+        $sql = sprintf($sqlTemplate, $limit, $offset);
+
+        if (getenv('ES_DEBUG')) {
+            echo  \PHP_EOL . 'SQL'  . \PHP_EOL;
+            echo $sql . \PHP_EOL;
+        }
+
+        $articles = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $articles;
     }
 }

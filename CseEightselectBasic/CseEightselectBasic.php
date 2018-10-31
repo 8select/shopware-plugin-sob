@@ -3,6 +3,7 @@ namespace CseEightselectBasic;
 
 use CseEightselectBasic\Components\ArticleExport;
 use CseEightselectBasic\Components\ExportSetup;
+use CseEightselectBasic\Components\Config;
 use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Models\EightselectAttribute;
@@ -179,9 +180,13 @@ class CseEightselectBasic extends Plugin
      */
     public function install(InstallContext $context)
     {
+        $this->removeExportCron();
         $this->addExportCron();
+        $this->removeExportOnceCron();
         $this->addExportOnceCron();
+        $this->removePropertyCron();
         $this->addPropertyCron();
+        $this->removePropertyOnceCron();
         $this->addPropertyOnceCron();
         $this->installWidgets();
         $this->createDatabase();
@@ -216,6 +221,8 @@ class CseEightselectBasic extends Plugin
                 $this->update_1_6_3();
             case version_compare($context->getCurrentVersion(), '1.6.4', '<='):
                 $this->update_1_6_4();
+            case version_compare($context->getCurrentVersion(), '1.8.0', '<='):
+                $this->update_1_8_0();
         }
     }
 
@@ -257,6 +264,11 @@ class CseEightselectBasic extends Plugin
     {
         $this->deleteExportDir();
         $this->createExportDir();
+    }
+
+    private function update_1_8_0()
+    {
+        $this->createDefaultConfig();
     }
 
     /**
@@ -404,38 +416,67 @@ class CseEightselectBasic extends Plugin
         parent::uninstall($context);
     }
 
+    private function updateSchema()
+    {
+        $modelManager = $this->container->get('models');
+        $tool = new SchemaTool($modelManager);
+        $classes = $this->getClasses($modelManager);
+        $tool->updateSchema($classes, true);
+    }
+
+    private function dropSchema()
+    {
+        $modelManager = $this->container->get('models');
+        $tool = new SchemaTool($modelManager);
+        $classes = $this->getClasses($modelManager);
+        $tool->dropSchema($classes);
+    }
+
+    private function createDefaultConfig()
+    {
+        Config::createTable();
+        Config::setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_DELTA);
+    }
+
     /**
      * @throws \Zend_Db_Adapter_Exception
      */
     private function createDatabase()
     {
-        $modelManager = $this->container->get('models');
-        $tool = new SchemaTool($modelManager);
-
-        $classes = $this->getClasses($modelManager);
-
-        $tool->updateSchema($classes, true); // make sure to use the save mode
-
+        $this->createDefaultConfig();
+        $this->updateSchema();
         $this->initAttributes();
         ExportSetup::createChangeQueueTable();
-        ExportSetup::createChangeQueueTriggers();
+        try {
+            ExportSetup::createChangeQueueTriggers();
+        } catch (\Zend_Db_Statement_Exception $exception) {
+            if (!$exception->hasChainedException()) {
+                throw $exception;
+            }
+
+            $sqlstate = $exception->getChainedException()->errorInfo[0];
+            $sqlDriverErrorCode = $exception->getChainedException()->errorInfo[1];
+            if ($sqlstate !== 'HY000' || $sqlDriverErrorCode !== 1419) {
+                throw $exception;
+            }
+
+            Config::setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_FULL);
+            ExportSetup::dropChangeQueueTable();
+        }
         RunCronOnce::createTable();
         FeedLogger::createTable();
     }
 
     private function removeDatabase()
     {
-        $modelManager = $this->container->get('models');
-        $tool = new SchemaTool($modelManager);
-
-        $classes = $this->getClasses($modelManager);
-
-        $tool->dropSchema($classes);
-
+        $this->dropSchema();
         RunCronOnce::deleteTable();
         FeedLogger::deleteTable();
-        ExportSetup::dropChangeQueueTriggers();
-        ExportSetup::dropChangeQueueTable();
+        if (Config::getOption(Config::OPTION_EXPORT_TYPE) === Config::OPTION_EXPORT_TYPE_VALUE_DELTA) {
+            ExportSetup::dropChangeQueueTriggers();
+            ExportSetup::dropChangeQueueTable();
+        }
+        Config::dropTable();
     }
 
     /**
@@ -471,6 +512,8 @@ class CseEightselectBasic extends Plugin
         try {
             $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
             $this->container->get('cse_eightselect_basic.article_export')->doCron();
+            $this->container->get('cse_eightselect_basic.force_full_property_export')->scheduleCron();
+            $this->container->get('cse_eightselect_basic.force_full_property_export')->doCron();
         } catch (\Exception $exception) {
             return sprintf('Export fehlgeschlagen: %s', $exception->getMessage());
         }
@@ -488,6 +531,7 @@ class CseEightselectBasic extends Plugin
     {
         try{
             $this->container->get('cse_eightselect_basic.article_export')->doCron();
+            $this->container->get('cse_eightselect_basic.force_full_property_export')->doCron();
         } catch (\Exception $exception) {
             return sprintf('Export fehlgeschlagen: %s', $exception->getMessage());
         }

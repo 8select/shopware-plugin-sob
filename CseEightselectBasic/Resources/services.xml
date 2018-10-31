@@ -5,6 +5,7 @@
     <services>
         <service id="cse_eightselect_basic.article_export" class="CseEightselectBasic\Components\ArticleExport"> </service>
         <service id="cse_eightselect_basic.property_export" class="CseEightselectBasic\Components\PropertyExport"> </service>
+        <service id="cse_eightselect_basic.force_full_property_export" class="CseEightselectBasic\Components\ForceFullPropertyExport"> </service>
 
         <service id="cse_eightselect_basic.emotion_view_subscriber" class="Shopware\Components\Emotion\EmotionComponentViewSubscriber">
             <argument>%cse_eightselect_basic.plugin_dir%</argument>

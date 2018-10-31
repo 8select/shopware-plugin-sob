@@ -2,9 +2,10 @@
 namespace CseEightselectBasic\Components;
 
 use League\Csv\Writer;
-use CseEightselectBasic\Components\RunCronOnce;
-use CseEightselectBasic\Components\FeedLogger;
+use CseEightselectBasic\Components\Config;
 use CseEightselectBasic\Components\ConfigValidator;
+use CseEightselectBasic\Components\FeedLogger;
+use CseEightselectBasic\Components\RunCronOnce;
 
 abstract class Export
 {
@@ -81,7 +82,7 @@ abstract class Export
     /**
      * @return array
      */
-    private function canRunCron() {
+    protected function canRunCron() {
         if (!RunCronOnce::isScheduled(static::CRON_NAME)) {
             $message = sprintf('%s nicht ausgeführt, es ist kein Export in der Warteschleife.', static::CRON_NAME);
             if (getenv('ES_DEBUG')) {
@@ -182,7 +183,7 @@ abstract class Export
      * @throws \Zend_Db_Statement_Exception
      * @return array
      */
-    private function getArticles($mapping, $offset, $limit)
+    protected function getArticles($mapping, $offset, $limit)
     {
         $sqlTemplate = 'SELECT %s %s,
                     s_articles_details.articleID,
@@ -209,7 +210,7 @@ abstract class Export
         $distinct = '';
         $join = '';
 
-        if (static::FEED_TYPE === PropertyExport::FEED_TYPE) {
+        if (static::FEED_TYPE === PropertyExport::FEED_TYPE && $this->isDeltaExport()) {
             $distinct = ' DISTINCT ';
             $join = ' INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id ';
         }
@@ -231,7 +232,17 @@ abstract class Export
      * @throws \Zend_Db_Statement_Exception
      * @return integer
      */
-    protected abstract function getNumArticles();
+    protected function getNumArticles()
+    {
+        $sql = 'SELECT count(*) from s_articles_details';
+
+        if (static::FEED_TYPE === PropertyExport::FEED_TYPE && $this->isDeltaExport()) {
+            $sql = 'SELECT COUNT(DISTINCT s_articles_details_id) as count FROM 8s_articles_details_change_queue';
+        }
+
+        $count = Shopware()->Db()->query($sql)->fetchColumn();
+        return intval($count);
+    }
 
     /**
      * @param $numArticles
@@ -254,9 +265,15 @@ abstract class Export
     */
     private function emptyQueue()
     {
-        if (static::FEED_TYPE === PropertyExport::FEED_TYPE) {
-            $sql = 'DELETE FROM 8s_articles_details_change_queue';
-            Shopware()->Db()->query($sql);
+        if ($this->isDeltaExport() === false || static::FEED_TYPE !== PropertyExport::FEED_TYPE) {
+            return;
         }
+
+        $sql = 'DELETE FROM 8s_articles_details_change_queue';
+        Shopware()->Db()->query($sql);
+    }
+
+    protected function isDeltaExport() {
+        return Config::getOption(Config::OPTION_EXPORT_TYPE) === Config::OPTION_EXPORT_TYPE_VALUE_DELTA;
     }
 }

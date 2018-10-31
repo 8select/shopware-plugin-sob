@@ -4,7 +4,7 @@ namespace CseEightselectBasic\Components;
 class ExportSetup
 {
     public static function createChangeQueueTable() {
-        $query = 'CREATE TABLE `8s_articles_details_change_queue` (
+        $query = 'CREATE TABLE IF NOT EXISTS `8s_articles_details_change_queue` (
             `s_articles_details_id` int(11) NOT NULL,
             `updated_at` datetime,
             PRIMARY KEY (`s_articles_details_id`)
