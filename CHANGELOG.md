@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.8.1](https://github.com/8select/shopware-plugin-sob/tree/1.8.1) (2018-11-7)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.8.0...1.8.1)
+
+**Fixed Bugs:**
+
+- [CSE-1537](https://8select.atlassian.net/browse/CSE-1537) ignore unmapped attributes [\#56](https://github.com/8select/shopware-plugin-sob/pull/56) ([akleiber](https://github.com/akleiber))
+
 ## [1.8.0](https://github.com/8select/shopware-plugin-sob/tree/1.8.0) (2018-10-31)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.7.4...1.8.0)
