@@ -1,12 +1,20 @@
 # Change Log
 
+## [1.8.2](https://github.com/8select/shopware-plugin-sob/tree/1.8.2) (2018-11-12)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.8.1...1.8.2)
+
+**Fixed Bugs:**
+
+- [CSE-1562](https://8select.atlassian.net/browse/CSE-1562) - invalid sql due to filterId = null [\#57](https://github.com/8select/shopware-plugin-sob/pull/57) ([akleiber](https://github.com/akleiber))
+
 ## [1.8.1](https://github.com/8select/shopware-plugin-sob/tree/1.8.1) (2018-11-7)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.8.0...1.8.1)
 
 **Fixed Bugs:**
 
-- [CSE-1537](https://8select.atlassian.net/browse/CSE-1537) ignore unmapped attributes [\#56](https://github.com/8select/shopware-plugin-sob/pull/56) ([akleiber](https://github.com/akleiber))
+- [CSE-1547](https://8select.atlassian.net/browse/CSE-1547) ignore unmapped attributes [\#56](https://github.com/8select/shopware-plugin-sob/pull/56) ([akleiber](https://github.com/akleiber))
 
 ## [1.8.0](https://github.com/8select/shopware-plugin-sob/tree/1.8.0) (2018-10-31)
 
