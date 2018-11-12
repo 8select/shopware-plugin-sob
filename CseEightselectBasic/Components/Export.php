@@ -72,6 +72,9 @@ abstract class Export
         } catch (\Exception $exception) {
             Shopware()->PluginLogger()->error($exception);
             RunCronOnce::finishCron(static::CRON_NAME);
+            if (getenv('ES_DEBUG')) {
+                echo $exception;
+            }
             if (isset($filename)) {
                 unlink(static::STORAGE . $filename);
             }

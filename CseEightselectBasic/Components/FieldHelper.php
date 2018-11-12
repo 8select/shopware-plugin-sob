@@ -138,9 +138,9 @@ class FieldHelper
         });
 
         if($filters) {
-            $filterIds =  array_map( function($filter) {
+            $filterIds = array_filter(array_map( function($filter) {
                 return explode('id=', $filter)[1];
-            }, $filters);
+            }, $filters));
 
             $filterValues = array_filter(
                 array_map(function($id) use ($article) {
@@ -353,6 +353,9 @@ SQL;
      */
     private static function getFilterValues($articleId, $filterId)
     {
+        if (!$articleId || !$filterId) {
+            return '';
+        }
         $sql = 'SELECT s_filter_values.value as name
                 FROM s_filter_values
                 INNER JOIN s_filter_articles on s_filter_articles.valueID = s_filter_values.id
