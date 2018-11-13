@@ -85,7 +85,7 @@
             document.getElementById('eightselect_cart_trigger_form_sku').value = sku;
             document.getElementById('eightselect_cart_trigger_form_quantity').value = quantity;
             document.getElementById('eightselect_cart_trigger_form_submit').click();
-        
+
             return Promise.resolve();
         };
 
