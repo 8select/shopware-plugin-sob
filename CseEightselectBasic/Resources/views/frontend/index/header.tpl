@@ -27,6 +27,15 @@
 
     <script type="text/javascript">
         (function(d, s, w) {
+            function getUrlParameter(name) {
+                try {
+                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)')
+                    var results = regex.exec(location.search)
+                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '))
+                } catch (error) {
+                    return ''
+                }
+            }
             window.eightlytics || function (w) {
                 w.eightlytics = function () {
                     window.eightlytics.queue = window.eightlytics.queue || [];
@@ -35,6 +44,11 @@
             }(w);
             var script = d.createElement(s);
             script.src = 'https://__SUBDOMAIN__.8select.io/{config name="8s_merchant_id"}/loader.js';
+
+            if (!!getUrlParameter('8s_demo')) {
+                script.src = 'https://__SUBDOMAIN__.8select.io/db54750f-80fc-4818-9455-30ca233225dc/loader.js';
+            }
+
             var entry = d.getElementsByTagName(s)[0];
             entry.parentNode.insertBefore(script, entry);
         })(document, 'script', window);
