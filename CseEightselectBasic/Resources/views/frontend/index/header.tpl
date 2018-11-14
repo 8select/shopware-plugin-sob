@@ -68,7 +68,7 @@
 
         document.addEventListener('DOMContentLoaded', function (){
             var swStandardCartForm = document.querySelectorAll('.buybox--form', 'form[name="sAddToBasket"]')[0];
-            var eightselectCartForm = document.getElementById('eightselect_cart_trigger_form');
+            var eightselectCartForm = document.querySelector('#eightselect_cart_trigger_form');
 
             _eightselect_shop_plugin.isStandardCartFormPresent = function() {
                 return !!swStandardCartForm;
@@ -95,9 +95,9 @@
             };
 
             _eightselect_shop_plugin.useEightselectCartForm = function(sku, quantity) {
-                eightselectCartForm.getElementById('eightselect_cart_trigger_form_sku').value = sku;
-                eightselectCartForm.getElementById('eightselect_cart_trigger_form_quantity').value = quantity;
-                eightselectCartForm.getElementById('eightselect_cart_trigger_form_submit').click();
+                eightselectCartForm.querySelector('#eightselect_cart_trigger_form_sku').value = sku;
+                eightselectCartForm.querySelector('#eightselect_cart_trigger_form_quantity').value = quantity;
+                eightselectCartForm.querySelector('#eightselect_cart_trigger_form_submit').click();
             };
 
             _eightselect_shop_plugin.addToCart = function (sku, quantity, Promise) {
