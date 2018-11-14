@@ -1,5 +1,17 @@
 # Change Log
 
+## [1.9.0](https://github.com/8select/shopware-plugin-sob/tree/1.9.0) (2018-11-14)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.8.2...1.9.0)
+
+**Fixed Bugs:**
+
+- [CSE-1570](https://8select.atlassian.net/browse/CSE-1570) prevent multiple cart events [\#59](https://github.com/8select/shopware-plugin-sob/pull/59) ([voodoods](https://github.com/voodoods))
+
+**Implemented Features:**
+
+- [CSE-1555](https://8select.atlassian.net/browse/CSE-1555) allow to activate demo mode [\#58](https://github.com/8select/shopware-plugin-sob/pull/58) ([akleiber](https://github.com/akleiber))
+
 ## [1.8.2](https://github.com/8select/shopware-plugin-sob/tree/1.8.2) (2018-11-12)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.8.1...1.8.2)
