@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.9.1](https://github.com/8select/shopware-plugin-sob/tree/1.9.1) (2018-11-15)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.0...1.9.1)
+
+**Fixed Bugs:**
+
+- [CSE-1578](https://8select.atlassian.net/browse/CSE-1578) fix cart function outside details page [\#60](https://github.com/8select/shopware-plugin-sob/pull/60) ([voodoods](https://github.com/voodoods))
+
 ## [1.9.0](https://github.com/8select/shopware-plugin-sob/tree/1.9.0) (2018-11-14)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.8.2...1.9.0)
