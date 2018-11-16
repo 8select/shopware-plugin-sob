@@ -450,16 +450,6 @@ class CseEightselectBasic extends Plugin
         try {
             ExportSetup::createChangeQueueTriggers();
         } catch (\Zend_Db_Statement_Exception $exception) {
-            if (!$exception->hasChainedException()) {
-                throw $exception;
-            }
-
-            $sqlstate = $exception->getChainedException()->errorInfo[0];
-            $sqlDriverErrorCode = $exception->getChainedException()->errorInfo[1];
-            if ($sqlstate !== 'HY000' || $sqlDriverErrorCode !== 1419) {
-                throw $exception;
-            }
-
             Config::setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_FULL);
             ExportSetup::dropChangeQueueTable();
         }
