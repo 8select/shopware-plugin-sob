@@ -2,10 +2,12 @@
 namespace CseEightselectBasic;
 
 use CseEightselectBasic\Components\ArticleExport;
+use CseEightselectBasic\Components\AWSUploader;
 use CseEightselectBasic\Components\ExportSetup;
 use CseEightselectBasic\Components\Config;
 use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\FeedLogger;
+use CseEightselectBasic\Components\FieldHelper;
 use CseEightselectBasic\Models\EightselectAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -13,12 +15,31 @@ use Shopware\Components\Emotion\ComponentInstaller;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\ActivateContext;
+use Shopware\Components\Plugin\Context\DeactivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
 use Shopware\Components\Plugin\Context\UpdateContext;
 
 class CseEightselectBasic extends Plugin
 {
+    /**
+     * array
+     */
+    private $installMessages = [];
+
+    private function initInstallLog($context)
+    {
+        $this->installMessages[] = 'Shop-URL: ' . FieldHelper::getFallbackBaseUrl();
+        $this->installMessages[] = 'Shopware-Version: ' . Shopware()::VERSION;
+        $this->installMessages[] = 'CSE-Plugin-Version: ' . $context->getCurrentVersion();
+    }
+
+    private function sendLog($type = 'install')
+    {
+        $logMessage = implode(\PHP_EOL . \PHP_EOL, $this->installMessages);
+        AWSUploader::uploadLog($logMessage, $type);
+    }
+
     /**
      * @return array
      */
@@ -180,6 +201,8 @@ class CseEightselectBasic extends Plugin
      */
     public function install(InstallContext $context)
     {
+        $this->initInstallLog($context);
+
         $this->removeExportCron();
         $this->addExportCron();
         $this->removeExportOnceCron();
@@ -189,18 +212,33 @@ class CseEightselectBasic extends Plugin
         $this->removePropertyOnceCron();
         $this->addPropertyOnceCron();
         $this->installWidgets();
-        $this->createDatabase();
+        $this->createDatabase($context);
         $this->createExportDir();
         $this->createAttributes();
-        parent::install($context);
+
+        $this->sendLog('install');
+
+        return parent::install($context);
     }
 
     /**
-     * @param ActivateContext $activateContext
+     * @param ActivateContext $context
      */
-    public function activate(ActivateContext $activateContext)
+    public function activate(ActivateContext $context)
     {
-        $activateContext->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
+        $this->initInstallLog($context);
+        $this->sendLog('activate');
+        return parent::activate($context);
+    }
+
+    /**
+     * @param DeactivateContext $context
+     */
+    public function deactivate(DeactivateContext $context)
+    {
+        $this->initInstallLog($context);
+        $this->sendLog('deactivate');
+        return parent::deactivate($context);
     }
 
     /**
@@ -208,7 +246,7 @@ class CseEightselectBasic extends Plugin
      */
     public function update(UpdateContext $context)
     {
-        parent::update($context);
+        $this->initInstallLog($context);
 
         switch (true) {
             case version_compare($context->getCurrentVersion(), '1.0.1', '<='):
@@ -224,6 +262,10 @@ class CseEightselectBasic extends Plugin
             case version_compare($context->getCurrentVersion(), '1.8.0', '<='):
                 $this->update_1_8_0();
         }
+
+        $this->sendLog('update');
+
+        return parent::update($context);
     }
 
     private function update_1_0_1()
@@ -406,6 +448,8 @@ class CseEightselectBasic extends Plugin
      */
     public function uninstall(UninstallContext $context)
     {
+        $this->initInstallLog($context);
+
         $this->removeExportCron();
         $this->removeExportOnceCron();
         $this->removePropertyCron();
@@ -413,7 +457,10 @@ class CseEightselectBasic extends Plugin
         $this->removeDatabase();
         $this->deleteExportDir();
         $this->removeAttributes();
-        parent::uninstall($context);
+
+        $this->sendLog('uninstall');
+
+        return parent::uninstall($context);
     }
 
     private function updateSchema()
@@ -439,9 +486,10 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
+     * @param InstallContext $context
      * @throws \Zend_Db_Adapter_Exception
      */
-    private function createDatabase()
+    private function createDatabase(InstallContext $context)
     {
         $this->createDefaultConfig();
         $this->updateSchema();
@@ -452,6 +500,11 @@ class CseEightselectBasic extends Plugin
         } catch (\Zend_Db_Statement_Exception $exception) {
             Config::setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_FULL);
             ExportSetup::dropChangeQueueTable();
+
+            $message = 'DB Trigger für Delta-Export nicht installiert. Fallback zu Vollexport.';
+            $context->scheduleMessage($message);
+            $this->installMessages[] = $message;
+            $this->installMessages[] = (string)$exception;
         }
         RunCronOnce::createTable();
         FeedLogger::createTable();
@@ -462,10 +515,8 @@ class CseEightselectBasic extends Plugin
         $this->dropSchema();
         RunCronOnce::deleteTable();
         FeedLogger::deleteTable();
-        if (Config::getOption(Config::OPTION_EXPORT_TYPE) === Config::OPTION_EXPORT_TYPE_VALUE_DELTA) {
-            ExportSetup::dropChangeQueueTriggers();
-            ExportSetup::dropChangeQueueTable();
-        }
+        ExportSetup::dropChangeQueueTriggers();
+        ExportSetup::dropChangeQueueTable();
         Config::dropTable();
     }
 
