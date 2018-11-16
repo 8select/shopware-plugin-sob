@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.9.3](https://github.com/8select/shopware-plugin-sob/tree/1.9.3) (2018-11-16)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.2...1.9.3)
+
+**Fixed Bugs:**
+
+- [CSE-1555](https://8select.atlassian.net/browse/CSE-1555) add missing semicolons [\#62](https://github.com/8select/shopware-plugin-sob/pull/62) ([akleiber](https://github.com/akleiber))
+
 ## [1.9.2](https://github.com/8select/shopware-plugin-sob/tree/1.9.2) (2018-11-16)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.1...1.9.2)
