@@ -22,3 +22,5 @@
         </script>
     {/if}
 {/block}
+
+{block name='checkout_ajax_add_cross_selling'}{/block}
