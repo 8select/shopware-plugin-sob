@@ -97,8 +97,14 @@
         <!-- SYS-ACC WIDGET -->
         <element type="boolean" required="true" scope="shop">
             <name>8s_sys_acc_enabled</name>
-            <label lang="de">Zeige SYS-ACC Widget</label>
-            <label lang="en">Display SYS-ACC Widget</label>
+            <label lang="de">Zeige SYS-ACC Widget in der Warenkorb-Bestätigung an</label>
+            <label lang="en">Show SYS-ACC Widget in cart confirmation</label>
+            <value>false</value>
+        </element>
+        <element type="boolean" required="true" scope="shop">
+            <name>8s_sys_acc_replace_sw_cross_selling</name>
+            <label lang="de">SYS-ACC Widget ersetzt Standard-Cross-Selling, wenn ein Set verfügbar ist</label>
+            <label lang="en">SYS-ACC widget replaces default cross-selling, if valid set is available</label>
             <value>false</value>
         </element>
         <!-- PREVIEW-MODE -->

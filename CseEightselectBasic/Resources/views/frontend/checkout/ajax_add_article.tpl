@@ -8,7 +8,6 @@
         
         <div class="modal--title">Dazu passt:</div>
         <div class="modal--article block-group">
-
             <div data-sku="{$sArticle.ordernumber}" data-include-css="true" data-8select-widget-id="sys-acc"></div>
         </div>
 
@@ -23,4 +22,9 @@
     {/if}
 {/block}
 
-{block name='checkout_ajax_add_cross_selling'}{/block}
+
+{block name='checkout_ajax_add_cross_selling'}
+    <div class="eightselect-sw-cross-selling-container" style="display:none">
+        {$smarty.block.parent}
+    </div>
+{/block}
