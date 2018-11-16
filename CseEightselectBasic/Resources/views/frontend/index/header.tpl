@@ -26,6 +26,7 @@
     </script>
 
     <script type="text/javascript">
+        /* 8select CSE - Shopware Plugin __VERSION__ */
         (function(d, s, w) {
             function getUrlParameter(name) {
                 try {
