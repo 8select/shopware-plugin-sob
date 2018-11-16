@@ -24,6 +24,7 @@ rm -rf vendor
 composer install --no-interaction --no-progress --ignore-platform-reqs --no-dev --optimize-autoloader
 cd ${BUILD_DIR}
 sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/plugin.xml
+sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/Resources/views/frontend/index/header.tpl
 
 if [ ${PROFILE} == 'production' ]
 then

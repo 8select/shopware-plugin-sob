@@ -26,14 +26,15 @@
     </script>
 
     <script type="text/javascript">
+        /* 8select CSE - Shopware Plugin __VERSION__ */
         (function(d, s, w) {
             function getUrlParameter(name) {
                 try {
-                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)')
-                    var results = regex.exec(location.search)
-                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '))
+                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                    var results = regex.exec(location.search);
+                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
                 } catch (error) {
-                    return ''
+                    return '';
                 }
             }
             window.eightlytics || function (w) {
