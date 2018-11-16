@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.9.2](https://github.com/8select/shopware-plugin-sob/tree/1.9.2) (2018-11-16)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.1...1.9.2)
+
+**Fixed Bugs:**
+
+- [CSE-1590](https://8select.atlassian.net/browse/CSE-1590) add our cart form without swAddArticle plugin triggers [\#61](https://github.com/8select/shopware-plugin-sob/pull/61) ([akleiber](https://github.com/akleiber))
+
 ## [1.9.1](https://github.com/8select/shopware-plugin-sob/tree/1.9.1) (2018-11-15)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.0...1.9.1)
