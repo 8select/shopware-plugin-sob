@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.9.5](https://github.com/8select/shopware-plugin-sob/tree/1.9.5) (2018-11-19)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.4...1.9.5)
+
+**Fixed Bugs:**
+
+- [CSE-1593](https://8select.atlassian.net/browse/CSE-1593) respect sorting of variant mappings in article image mapper [\#65](https://github.com/8select/shopware-plugin-sob/pull/65) ([voodoods](https://github.com/voodoods))
+
 ## [1.9.4](https://github.com/8select/shopware-plugin-sob/tree/1.9.4) (2018-11-19)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.3...1.9.4)
