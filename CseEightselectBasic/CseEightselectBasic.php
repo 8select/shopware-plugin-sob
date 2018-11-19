@@ -11,6 +11,7 @@ use CseEightselectBasic\Components\FieldHelper;
 use CseEightselectBasic\Models\EightselectAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\SchemaTool;
+use Shopware;
 use Shopware\Components\Emotion\ComponentInstaller;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Components\Plugin;
@@ -31,7 +32,7 @@ class CseEightselectBasic extends Plugin
     {
         try {
             $this->installMessages[] = 'Shop-URL: ' . FieldHelper::getFallbackBaseUrl();
-            $this->installMessages[] = 'Shopware-Version: ' . Shopware()::VERSION;
+            $this->installMessages[] = 'Shopware-Version: ' . Shopware::VERSION;
             $this->installMessages[] = 'CSE-Plugin-Version: ' . $context->getCurrentVersion();
         } catch (\Exception $exception) {
             $this->installMessages[] = 'ERROR: initInstallLog ' . (string)$exception;
