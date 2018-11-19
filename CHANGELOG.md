@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.9.4](https://github.com/8select/shopware-plugin-sob/tree/1.9.4) (2018-11-19)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.3...1.9.4)
+
+**Fixed Bugs:**
+
+- [CSE-1579](https://8select.atlassian.net/browse/CSE-1579) fallback to fullexport on all dbtrigger errors [\#64](https://github.com/8select/shopware-plugin-sob/pull/64) ([akleiber](https://github.com/akleiber))
+
 ## [1.9.3](https://github.com/8select/shopware-plugin-sob/tree/1.9.3) (2018-11-16)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.2...1.9.3)
