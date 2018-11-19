@@ -232,7 +232,7 @@ class CseEightselectBasic extends Plugin
     {
         $this->initInstallLog($context);
         $this->sendLog('activate');
-        return parent::activate($context);
+        return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
 
     /**
@@ -242,7 +242,7 @@ class CseEightselectBasic extends Plugin
     {
         $this->initInstallLog($context);
         $this->sendLog('deactivate');
-        return parent::deactivate($context);
+        return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
 
     /**
@@ -269,7 +269,7 @@ class CseEightselectBasic extends Plugin
 
         $this->sendLog('update');
 
-        return parent::update($context);
+        return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
 
     private function update_1_0_1()
@@ -464,7 +464,7 @@ class CseEightselectBasic extends Plugin
 
         $this->sendLog('uninstall');
 
-        return parent::uninstall($context);
+        return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
 
     private function updateSchema()
