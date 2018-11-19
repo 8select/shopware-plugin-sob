@@ -29,9 +29,13 @@ class CseEightselectBasic extends Plugin
 
     private function initInstallLog($context)
     {
-        $this->installMessages[] = 'Shop-URL: ' . FieldHelper::getFallbackBaseUrl();
-        $this->installMessages[] = 'Shopware-Version: ' . Shopware()::VERSION;
-        $this->installMessages[] = 'CSE-Plugin-Version: ' . $context->getCurrentVersion();
+        try {
+            $this->installMessages[] = 'Shop-URL: ' . FieldHelper::getFallbackBaseUrl();
+            $this->installMessages[] = 'Shopware-Version: ' . Shopware()::VERSION;
+            $this->installMessages[] = 'CSE-Plugin-Version: ' . $context->getCurrentVersion();
+        } catch (\Exception $exception) {
+            $this->installMessages[] = 'ERROR: initInstallLog ' . (string)$exception;
+        }
     }
 
     private function sendLog($type = 'install')
