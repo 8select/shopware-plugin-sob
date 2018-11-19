@@ -370,7 +370,7 @@ SQL;
      * @return string
      * @throws \Exception
      */
-    private static function getFallbackBaseUrl()
+    public static function getFallbackBaseUrl()
     {
         $container = Shopware()->Container();
 
