@@ -87,13 +87,6 @@
             <label lang="de">Eigenes CSS:</label>
             <label lang="en">Custom CSS:</label>
         </element>
-        <!-- CONTAINER ELEMENT -->
-        <element type="textarea" required="true" scope="shop">
-            <name>8s_html_container_element</name>
-            <label lang="de">HTML container, CSE_SYS wird durch das SYS-Widget ersetzt:</label>
-            <label lang="en">HTML container CSE_SYS will be replaced by the SYS widget:</label>
-            <value>CSE_SYS</value>
-        </element>
         <!-- SYS-ACC WIDGET -->
         <element type="boolean" required="true" scope="shop">
             <name>8s_sys_acc_enabled</name>
@@ -101,11 +94,18 @@
             <label lang="en">Show SYS-ACC Widget in cart confirmation</label>
             <value>false</value>
         </element>
-        <element type="boolean" required="true" scope="shop">
-            <name>8s_sys_acc_replace_sw_cross_selling</name>
-            <label lang="de">SYS-ACC Widget ersetzt Standard-Cross-Selling, wenn ein Set verfügbar ist</label>
-            <label lang="en">SYS-ACC widget replaces default cross-selling, if valid set is available</label>
-            <value>false</value>
+        <!-- CONTAINER ELEMENTS -->
+        <element type="textarea" required="true" scope="shop">
+            <name>8s_html_container_element</name>
+            <label lang="de">HTML container, CSE_SYS wird durch das SYS-PSP-Widget ersetzt:</label>
+            <label lang="en">HTML container CSE_SYS will be replaced by the SYS-PSP widget:</label>
+            <value>CSE_SYS</value>
+        </element>
+        <element type="textarea" required="true" scope="shop">
+            <name>8s_html_sysacc_container_element</name>
+            <label lang="de">HTML container, CSE_SYS wird durch das SYS-ACC-Widget ersetzt:</label>
+            <label lang="en">HTML container CSE_SYS will be replaced by the SYS-ACC widget:</label>
+            <value>CSE_SYS</value>
         </element>
         <!-- PREVIEW-MODE -->
         <element type="boolean" scope="shop">

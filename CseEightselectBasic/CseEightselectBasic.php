@@ -116,7 +116,10 @@ class CseEightselectBasic extends Plugin
         $view = $controller->View();
 
         $htmlContainer = $config->get('8s_html_container_element');
+        $htmlSysAccContainer = $config->get('8s_html_sysacc_container_element');
+        
         $view->assign('htmlContainer', explode('CSE_SYS', $htmlContainer));
+        $view->assign('htmlSysAccContainer', explode('CSE_SYS', $htmlSysAccContainer));
     }
 
     /**
