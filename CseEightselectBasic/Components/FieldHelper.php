@@ -48,7 +48,7 @@ class FieldHelper
                     $value = PriceHelper::getGrossPrice($article, $field);
                     break;
                 case 'produkt_url':
-                    $value = self::getUrl($article['articleID']);
+                    $value = self::getUrl($article['articleID'], $article['sku']);
                     break;
                 case 'bilder':
                     $value = self::getImageUrls($article['detailID'], $article['articleID']);
@@ -211,7 +211,7 @@ class FieldHelper
      * @throws \Exception
      * @return string
      */
-    private static function getUrl($articleId)
+    private static function getUrl($articleId, $sku)
     {
         $baseUrl = self::getFallbackBaseUrl();
 
@@ -219,8 +219,9 @@ class FieldHelper
         $assembleParams = [
             'module'    => 'frontend',
             'sViewport' => 'detail',
-            'sArticle'  => $articleId
-        ];
+            'sArticle'  => $articleId,
+            'number'    => $sku
+         ];
 
         $link = $router->assemble($assembleParams);
 
