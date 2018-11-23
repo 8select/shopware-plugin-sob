@@ -2,6 +2,7 @@
 namespace CseEightselectBasic\Components;
 
 use League\Csv\Writer;
+use Symfony\Component\Finder\SplFileInfo;
 use CseEightselectBasic\Components\Config;
 use CseEightselectBasic\Components\ConfigValidator;
 use CseEightselectBasic\Components\FeedLogger;
@@ -129,14 +130,15 @@ abstract class Export
             require_once __DIR__ . '/../vendor/autoload.php';
         }
 
-        $csvWriter = Writer::createFromPath(static::STORAGE . $filename, 'a');
+        $tempPath = new SplFileInfo(static::STORAGE);
+        $csvWriter = Writer::createFromPath($tempPath->getPath() . $filename, 'a');
         $csvWriter->setDelimiter(';');
 
         $csvWriter->insertOne($this->header);
 
         $this->writeFile($csvWriter);
 
-        AWSUploader::upload($filename, static::STORAGE, $feedId, static::FEED_TYPE);
+        AWSUploader::upload($filename, $tempPath->getPath(), $feedId, static::FEED_TYPE);
     }
 
     /**
