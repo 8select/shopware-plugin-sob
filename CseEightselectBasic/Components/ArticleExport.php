@@ -9,7 +9,7 @@ use CseEightselectBasic\Components\Export;
 
 class ArticleExport extends Export
 {
-    const STORAGE = 'files/8select/';
+    const STORAGE = __DIR__ . '/files/8select/';
 
     const CRON_NAME = '8select_article_export';
 
