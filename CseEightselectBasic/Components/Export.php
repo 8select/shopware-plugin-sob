@@ -1,8 +1,8 @@
 <?php
 namespace CseEightselectBasic\Components;
 
+use SplFileInfo;
 use League\Csv\Writer;
-use Symfony\Component\Finder\SplFileInfo;
 use CseEightselectBasic\Components\Config;
 use CseEightselectBasic\Components\ConfigValidator;
 use CseEightselectBasic\Components\FeedLogger;
