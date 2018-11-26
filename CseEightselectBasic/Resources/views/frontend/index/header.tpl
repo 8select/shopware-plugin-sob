@@ -121,7 +121,7 @@
 
             _eightselect_shop_plugin.showSys = function () {
                 if (window.document.readyState === 'loading') {
-                    window.addEventListener('DOMContentLoaded', _eightselect_shop_plugin.hideSys);
+                    window.addEventListener('DOMContentLoaded', _eightselect_shop_plugin.showSys);
                     return;
                 }
 
