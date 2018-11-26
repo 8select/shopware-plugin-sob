@@ -120,6 +120,11 @@
             };
 
             _eightselect_shop_plugin.showSys = function () {
+                if (window.document.readyState === 'loading') {
+                    window.addEventListener('DOMContentLoaded', _eightselect_shop_plugin.hideSys);
+                    return;
+                }
+
                 var cseTab = document.querySelector('a[data-tabname=cse]');
                 var cseContainer = document.querySelector('div.-eightselect-widget-sw-tab-container');
 
