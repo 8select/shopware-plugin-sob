@@ -31,6 +31,8 @@
 
    Go to the configuration tab in the Shopware Plugin Manager and **insert the keys** in the corresponding fields. Set **"Aktiviert"** to **"Ja"**. Save your settings.
 
+   [insert image: 02_insert_keys]
+
 3. **Define size relevant attribute groups for the product data feed** 
    - In your Shopware Backend menu go to "Items" > "Overview"
    - Choose a product and go to "Variants" > "Configuration" 
@@ -38,7 +40,7 @@
    - Click "Save" and repeat this for every size relevant attribute group of this product. This could also be attributes like "Gefäßgröße", "Skigröße" or "Stocklänge".
    - You only need to make these settings for one product. Your changes will be applied to the general settings for product variants automatically.
 
-   [insert video eng-installation-size-attributes]
+   [insert video: eng-installation-size-attributes]
 
 4. **Select attributes for the export of your product data**
    - In your Shopware Backend menu go to "Configuration" > "8select" > "Export Settings"
@@ -46,7 +48,7 @@
    - Within this row, go to the field "Shopware Attribute" and select "Konfigurator-Gruppe: Farbvariante" from the dropdown menu.
    - Click "Update" to save your settings.
 
-   [insert video eng-export-settings-farbvariant]
+   [insert video: eng-export-settings-farbvariant]
 
 5. **Start processing your feed**
 
@@ -56,6 +58,8 @@
    - Go to "Configuration" > "8select" > "Manueller Export". 
    - Choose „Produkt Voll-Export anstoßen“.  
 
+   [insert image: 05_insert_keys]
+
  > **Note for test shops:** if you are testing the 8select plugin in a test shop, where no Cron plugin is activated, you can also call the 8select-Cron on your server with this code:  
  `php bin/console sw:cron:run Shopware_CronJob_CseEightselectBasicArticleExport -f`
 
@@ -64,7 +68,7 @@
    - Go to a page in your online shop where the widget should be shown.
    - Add `?preview=1` to the end of the URL. For example: `http://meinshop.de/fashion/145/mein-produkt?preview=1`
    - The widget should now be visible in its default design. 
-   - To customize the design, please read our guide on customizing the 8select CSE Widget in our [Knowledge Base](https://knowledge.8select.com). 
+   - To customize the design, please read our [guide on customizing the 8select CSE Widget](./customization.md) or check our [Knowledge Base](https://knowledge.8select.com). 
    - To **set the widget "live"** in your shop you need to **deactivate the preview mode**. 
   
 7. **Deactivate the preview mode** 
