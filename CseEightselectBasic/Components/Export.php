@@ -145,7 +145,7 @@ abstract class Export
         ]);
 
         $s3->registerStreamWrapper();
-        $stream = fopen('s3://' . $bucket . '/' . $key, '+r', false, $context);
+        $stream = fopen('s3://' . $bucket . '/' . $key, 'w', false, $context);
 
         $csvWriter = Writer::createFromStream($stream);
         $csvWriter->setDelimiter(';');
@@ -208,6 +208,8 @@ abstract class Export
             }
             $this->updateStatus($numArticles, $top);
         }
+
+        fflush($stream);
     }
 
     /**
