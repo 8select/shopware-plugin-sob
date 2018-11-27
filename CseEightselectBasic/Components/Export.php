@@ -51,15 +51,7 @@ abstract class Export
             }
 
             RunCronOnce::runCron(static::CRON_NAME);
-
-
-            $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-            $feedId = $config->getByPluginName('CseEightselectBasic')['8s_feed_id'];
-            $timestampInMillis = round(microtime(true) * 1000);
-            $filename = sprintf('%s_%s_%d.csv', $feedId, static::FEED_TYPE, $timestampInMillis);
-            $this->generateExportCSV($filename, $feedId);
-            unlink(static::STORAGE . $filename);
-
+            $this->generateExportCSV();
             $this->emptyQueue();
             FeedLogger::logFeed(static::CRON_NAME);
             RunCronOnce::finishCron(static::CRON_NAME);
@@ -74,9 +66,6 @@ abstract class Export
             RunCronOnce::finishCron(static::CRON_NAME);
             if (getenv('ES_DEBUG')) {
                 echo $exception;
-            }
-            if (isset($filename)) {
-                unlink(static::STORAGE . $filename);
             }
             throw $exception;
         }
@@ -124,19 +113,32 @@ abstract class Export
         return true;
     }
 
-    private function generateExportCSV($filename, $feedId) {
+    private function generateExportCSV() {
         if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
             require_once __DIR__ . '/../vendor/autoload.php';
         }
 
-        $csvWriter = Writer::createFromPath(static::STORAGE . $filename, 'a');
+        $tempfile = tmpfile();
+        if (!$tempfile) {
+            $message = sprintf('%s nicht ausgeführt, temporäre Datei für Export konnte nicht erstellt werden.', static::CRON_NAME);
+            Shopware()->PluginLogger()->error($message);
+            if (getenv('ES_DEBUG')) {
+                echo $message . PHP_EOL;
+            }
+            return false;
+        }
+
+        $path = stream_get_meta_data($tempfile)['uri'];
+        $csvWriter = Writer::createFromPath($path, 'w');
         $csvWriter->setDelimiter(';');
 
         $csvWriter->insertOne($this->header);
 
         $this->writeFile($csvWriter);
 
-        AWSUploader::upload($filename, static::STORAGE, $feedId, static::FEED_TYPE);
+        AWSUploader::upload($path, static::FEED_TYPE);
+
+        fclose($tempfile);
     }
 
     /**
