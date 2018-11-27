@@ -2,6 +2,7 @@
 namespace CseEightselectBasic\Components;
 
 use SplFileInfo;
+use Aws\S3\S3Client;
 use League\Csv\Writer;
 use CseEightselectBasic\Components\Config;
 use CseEightselectBasic\Components\ConfigValidator;
@@ -59,7 +60,6 @@ abstract class Export
             $timestampInMillis = round(microtime(true) * 1000);
             $filename = sprintf('%s_%s_%d.csv', $feedId, static::FEED_TYPE, $timestampInMillis);
             $this->generateExportCSV($filename, $feedId);
-            unlink(static::STORAGE . $filename);
 
             $this->emptyQueue();
             FeedLogger::logFeed(static::CRON_NAME);
@@ -75,9 +75,6 @@ abstract class Export
             RunCronOnce::finishCron(static::CRON_NAME);
             if (getenv('ES_DEBUG')) {
                 echo $exception;
-            }
-            if (isset($filename)) {
-                unlink(static::STORAGE . $filename);
             }
             throw $exception;
         }
@@ -130,25 +127,51 @@ abstract class Export
             require_once __DIR__ . '/../vendor/autoload.php';
         }
 
-        $tempPath = new SplFileInfo(static::STORAGE);
-        $csvWriter = Writer::createFromPath($tempPath->getPath() . $filename, 'a');
+        $bucket = '__SUBDOMAIN__.8select.io';
+        $region = 'eu-central-1';
+        $prefix = $feedId . '/' . static::FEED_TYPE . '/' . date('Y') . '/' . date('m') . '/' . date('d');
+                        
+        $s3 = new S3Client([
+            'version'     => '2006-03-01',
+            'region'      => $region,
+            'credentials' => array(
+                'key' => '__S3_PLUGIN_USER_ACCESS_KEY__',
+                'secret' => '__S3_PLUGIN_USER_ACCESS_KEY_SECRET__',
+            ),
+        ]);
+                        
+        $s3->registerStreamWrapper();
+        $stream = fopen('s3://' . $bucket . '/' . $prefix . '/' . $filename, 'w');
+
+        $csvWriter = Writer::createFromStream($stream, 'a');
         $csvWriter->setDelimiter(';');
 
         $csvWriter->insertOne($this->header);
 
-        $this->writeFile($csvWriter);
+        try {
+            $this->writeFile($csvWriter, $stream);
+        } catch (\Exception $exception) {
+            Shopware()->PluginLogger()->error($exception);
+            RunCronOnce::finishCron(static::CRON_NAME);
 
-        AWSUploader::upload($filename, $tempPath->getPath(), $feedId, static::FEED_TYPE);
+            if (getenv('ES_DEBUG')) {
+                echo $exception;
+            }
+            throw $exception;
+        }
+
+        fclose($stream);
     }
 
     /**
      * @param Writer $csvWriter
+     * @param resource $stream
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      * @throws \League\Csv\CannotInsertRecord
      */
-    private function writeFile(Writer $csvWriter)
+    private function writeFile(Writer $csvWriter, $stream)
     {
         $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping
                          FROM 8s_attribute_mapping
@@ -177,6 +200,7 @@ abstract class Export
             foreach ($articles as $article) {
                 $line = FieldHelper::getLine($article, $this->fields);
                 $csvWriter->insertOne($line);
+                fwrite($stream, $line);
             }
             $this->updateStatus($numArticles, $top);
         }
