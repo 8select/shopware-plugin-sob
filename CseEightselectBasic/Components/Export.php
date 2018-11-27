@@ -144,7 +144,9 @@ abstract class Export
             throw $exception;
         }
 
-        fclose($stream);
+        if ($stream) {
+            fclose($stream);
+        }
     }
 
     /**
