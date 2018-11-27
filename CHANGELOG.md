@@ -1,5 +1,18 @@
 # Change Log
 
+## [1.10.0](https://github.com/8select/shopware-plugin-sob/tree/1.10.0) (2018-11-27)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.5...1.10.0)
+
+**Fixed Bugs:**
+
+- [CSE-1592](https://8select.atlassian.net/browse/CSE-1592) export product deeplinks [\#66](https://github.com/8select/shopware-plugin-sob/pull/66) ([voodoods](https://github.com/voodoods))
+- [CSE-1621](https://8select.atlassian.net/browse/CSE-1621) wait for dom content to be loaded before activating tab [\#68](https://github.com/8select/shopware-plugin-sob/pull/68) ([voodoods](https://github.com/voodoods))
+
+**Implemented Features:**
+
+- [CSE-1617](https://8select.atlassian.net/browse/CSE-1617) try to use temp file or fallback dir inside shopware installation dir [\#71](https://github.com/8select/shopware-plugin-sob/pull/71) ([akleiber](https://github.com/akleiber))
+
 ## [1.9.5](https://github.com/8select/shopware-plugin-sob/tree/1.9.5) (2018-11-19)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.4...1.9.5)
