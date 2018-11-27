@@ -6,7 +6,7 @@
     {if ({config name="8s_sys_acc_enabled"} && !{config name="8s_preview_mode_enabled"})
         || ({config name="8s_sys_acc_enabled"} && {config name="8s_preview_mode_enabled"} && {$smarty.get.preview})}
         
-        <div class="modal--article block-group">
+        <div class="modal--article block-group -eightselect-widget-container">
             <div class="eightselect-sysacc-html" style="display: none">{include file="string:{$htmlSysAccContainer.0}"}</div>
                 <div data-sku="{$sArticle.ordernumber}" data-include-css="true" data-8select-widget-id="sys-acc"></div>
             <div class="eightselect-sysacc-html" style="display: none">{include file="string:{$htmlSysAccContainer.1}"}</div>
