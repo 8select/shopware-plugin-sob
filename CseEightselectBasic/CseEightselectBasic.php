@@ -218,7 +218,6 @@ class CseEightselectBasic extends Plugin
         $this->addPropertyOnceCron();
         $this->installWidgets();
         $this->createDatabase($context);
-        $this->createExportDir();
         $this->createAttributes();
 
         $this->sendLog('install');
@@ -276,7 +275,6 @@ class CseEightselectBasic extends Plugin
     private function update_1_0_1()
     {
         $this->deleteExportDir();
-        $this->createExportDir();
     }
 
     private function update_1_5_0()
@@ -310,7 +308,6 @@ class CseEightselectBasic extends Plugin
     private function update_1_6_4()
     {
         $this->deleteExportDir();
-        $this->createExportDir();
     }
 
     private function update_1_8_0()
@@ -1017,16 +1014,10 @@ class CseEightselectBasic extends Plugin
         $cacheManager->clearConfigCache();
     }
 
-    private function createExportDir()
-    {
-        if (!is_dir(ArticleExport::STORAGE)) {
-            mkdir(ArticleExport::STORAGE, 0775, true);
-        }
-    }
 
     private function deleteExportDir()
     {
-        $this->rrmdir(ArticleExport::STORAGE);
+        $this->rrmdir(Shopware()->DocPath('files_8select'));
     }
 
     private function rrmdir($dir)

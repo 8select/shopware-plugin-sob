@@ -7,8 +7,6 @@ use CseEightselectBasic\Components\RunCronOnce;
 
 class PropertyExport extends Export
 {
-    const STORAGE = 'files/8select/';
-
     const FEED_TYPE = 'property_feed';
 
     const CRON_NAME = '8select_property_export';
