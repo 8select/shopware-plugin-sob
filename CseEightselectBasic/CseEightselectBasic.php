@@ -266,6 +266,8 @@ class CseEightselectBasic extends Plugin
                 $this->update_1_6_4();
             case version_compare($context->getCurrentVersion(), '1.8.0', '<='):
                 $this->update_1_8_0();
+                case version_compare($context->getCurrentVersion(), '1.9.5', '<='):
+                $this->update_1_9_5();
         }
 
         $this->sendLog('update');
@@ -316,6 +318,11 @@ class CseEightselectBasic extends Plugin
     private function update_1_8_0()
     {
         $this->createDefaultConfig();
+    }
+
+    private function update_1_9_5()
+    {
+        $this->deleteExportDir();
     }
 
     /**
@@ -1015,6 +1022,17 @@ class CseEightselectBasic extends Plugin
         /** @var $cacheManager \Shopware\Components\CacheManager */
         $cacheManager = $this->container->get('shopware.cache_manager');
         $cacheManager->clearConfigCache();
+    }
+
+    private function createExportDir()
+    {
+        if (!is_dir('files/8select/')) {
+            mkdir('files/8select/', 0775, true);
+        }
+    }
+     private function deleteExportDir()
+    {
+        $this->rrmdir('files/8select/');
     }
 
     private function rrmdir($dir)
