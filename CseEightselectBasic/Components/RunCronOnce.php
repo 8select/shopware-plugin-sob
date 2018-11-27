@@ -9,7 +9,7 @@ class RunCronOnce
         if (self::isScheduled($cronName) || self::isRunning($cronName)) {
             $message = sprintf('%s nicht eingereiht, ist bereits in der Warteschleife.', $cronName);
             if (getenv('ES_DEBUG')) {
-                echo $message . PHP_EOL;
+                echo $message . \PHP_EOL;
             }
             return;
         }

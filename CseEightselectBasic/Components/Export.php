@@ -47,19 +47,11 @@ abstract class Export
             $message = sprintf('Führe %s aus.', static::CRON_NAME);
             Shopware()->PluginLogger()->info($message);
             if (getenv('ES_DEBUG')) {
-                echo $message . PHP_EOL;
+                echo $message . \PHP_EOL;
             }
 
             RunCronOnce::runCron(static::CRON_NAME);
-
-
-            $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-            $feedId = $config->getByPluginName('CseEightselectBasic')['8s_feed_id'];
-            $timestampInMillis = round(microtime(true) * 1000);
-            $filename = sprintf('%s_%s_%d.csv', $feedId, static::FEED_TYPE, $timestampInMillis);
-            $this->generateExportCSV($filename, $feedId);
-            unlink(static::STORAGE . $filename);
-
+            $this->generateExportCSV();
             $this->emptyQueue();
             FeedLogger::logFeed(static::CRON_NAME);
             RunCronOnce::finishCron(static::CRON_NAME);
@@ -75,9 +67,6 @@ abstract class Export
             if (getenv('ES_DEBUG')) {
                 echo $exception;
             }
-            if (isset($filename)) {
-                unlink(static::STORAGE . $filename);
-            }
             throw $exception;
         }
     }
@@ -89,7 +78,7 @@ abstract class Export
         if (!RunCronOnce::isScheduled(static::CRON_NAME)) {
             $message = sprintf('%s nicht ausgeführt, es ist kein Export in der Warteschleife.', static::CRON_NAME);
             if (getenv('ES_DEBUG')) {
-                echo $message . PHP_EOL;
+                echo $message . \PHP_EOL;
             }
             return false;
         }
@@ -107,7 +96,7 @@ abstract class Export
         if ($this->getNumArticles() <= 0) {
             $message = sprintf('%s nicht ausgeführt, es wurden keine Produkte für Export gefunden.', static::CRON_NAME);
             if (getenv('ES_DEBUG')) {
-                echo $message . PHP_EOL;
+                echo $message . \PHP_EOL;
             }
 
             return false;
@@ -116,7 +105,7 @@ abstract class Export
         if (RunCronOnce::isRunning(static::CRON_NAME)) {
             $message = sprintf('%s nicht ausgeführt, es läuft bereits ein Export.', static::CRON_NAME);
             if (getenv('ES_DEBUG')) {
-                echo $message . PHP_EOL;
+                echo $message . \PHP_EOL;
             }
             return false;
         }
@@ -124,19 +113,70 @@ abstract class Export
         return true;
     }
 
-    private function generateExportCSV($filename, $feedId) {
+    private function generateExportCSV() {
         if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
             require_once __DIR__ . '/../vendor/autoload.php';
         }
 
-        $csvWriter = Writer::createFromPath(static::STORAGE . $filename, 'a');
+        try {
+            $path = $this->createTempFile();
+        } catch (\Exception $exception) {
+            Shopware()->PluginLogger()->error($exception->getMessage());
+            if (getenv('ES_DEBUG')) {
+                echo $message . \PHP_EOL;
+            }
+            return false;
+        }
+
+        $csvWriter = Writer::createFromPath($path, 'w');
         $csvWriter->setDelimiter(';');
 
         $csvWriter->insertOne($this->header);
 
         $this->writeFile($csvWriter);
 
-        AWSUploader::upload($filename, static::STORAGE, $feedId, static::FEED_TYPE);
+        AWSUploader::upload($path, static::FEED_TYPE);
+        unlink($path);
+    }
+
+    private function createTempFile()
+    {
+        try {
+            $tempfile = tmpfile();
+
+            if (!$tempfile) {
+                $message = sprintf('%s nicht ausgeführt, temporäre Datei für Export konnte nicht erstellt werden.', static::CRON_NAME);
+                if (getenv('ES_DEBUG')) {
+                    echo $message . \PHP_EOL;
+                }
+                throw new \Exception($message);
+            }
+            $path = stream_get_meta_data($tempfile)['uri'];
+        } catch (\Exception $exception) {
+            $storagePath = Shopware()->DocPath('files_8select');
+            $isDirCreated = true;
+            if (!is_dir($storagePath)) {
+                $isDirCreated = mkdir($storagePath, 0775, true);
+            }
+            if (!$isDirCreated) {
+                $message = sprintf('%s nicht ausgeführt, Fallback Verzeichnis für Export konnte nicht erstellt werden.', static::CRON_NAME);
+                if (getenv('ES_DEBUG')) {
+                    echo $message . \PHP_EOL;
+                }
+                throw new \Exception($message, 500, $exception);
+            }
+            $path = tempnam($storagePath, static::FEED_TYPE);
+        }
+
+        $tempPath = new \SplFileInfo($path);
+        if (!$tempPath->isWritable()) {
+            $message = sprintf('%s nicht ausgeführt, temporäre Datei in Fallback Verzeichnis für Export konnte nicht erstellt werden.', static::CRON_NAME);
+            if (getenv('ES_DEBUG')) {
+                echo $message . \PHP_EOL;
+            }
+            throw new \Exception($message);
+        }
+        return $path;
     }
 
     /**
