@@ -1017,18 +1017,6 @@ class CseEightselectBasic extends Plugin
         $cacheManager->clearConfigCache();
     }
 
-    private function createExportDir()
-    {
-        if (!is_dir(ArticleExport::STORAGE)) {
-            mkdir(ArticleExport::STORAGE, 0775, true);
-        }
-    }
-
-    private function deleteExportDir()
-    {
-        $this->rrmdir(ArticleExport::STORAGE);
-    }
-
     private function rrmdir($dir)
     {
         if (is_dir($dir)) {
