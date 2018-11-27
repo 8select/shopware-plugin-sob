@@ -1,4 +1,4 @@
-## 8select Curated Shopping Engine for Shopware
+## 8select Curated Shopping Engine für Shopware
 #  Produktinformationen
 
 8select bietet mit dem **Curated-Shopping-Engine-Plugin (CSE-Plugin)** eine **Plug&Play-Lösung** für Onlineshops zur Generierung von Produktempfehlungen in Form **contentbasierter Produkt-Sets (z. B. Outfits)**. Dieser Cross-Selling-Ansatz erschließt dem Kunden eines Onlineshops das Sortiment, wie es sonst nur einem Fachverkäufer im stationären Handel möglich ist. Im Durchschnitt werden durch die zusätzlichen Verkäufe **35% größere Warenkörbe** und bis zu **8% mehr Umsatz** erzielt. Zu den Kunden von 8select zählen u. a. die Otto-Gruppe, Peek&Cloppenburg, Vaude, Betty Barclay und Ulla Popken.

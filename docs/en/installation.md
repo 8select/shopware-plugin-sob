@@ -8,8 +8,6 @@
 - A crontab entry on your server, that runs Shopware cronjobs regularly. How to set up a crontab entry with regular cronjobs you can read [here](https://en-community.shopware.com/Cronjobs_detail_1103.html#Setting_up_a_cronjob) 
 
 
-
-
 ## Before Getting Started
 
 - Choose an **8select service package** on the [8select website](https://www.8select.com/cse-pricing) and complete your registration. After registration, you receive an email with **two registration keys for the 8select plugin for Shopware** and an **activation link** for your **8select Management Console user credentials**.
@@ -20,7 +18,7 @@
 ## Installing the 8select plugin
 
 1. **Download the 8select plugin from the Shopware Store and activate it**  
-   You can download the plugin [here](https://store.shopware.com/detail/index/sArticle/164960). Please activate it in the Plugin Manager in your Shopware Backend before continuing.
+   You can download the plugin [here](https://store.shopware.com/detail/index/sArticle/164960). Please activate it in your Shopware Backend Plugin Manager before continuing.
 
 2. **Insert your registration keys and activate the configuration**  
    You have already received these registration keys by e-mail after the purchase of your service package on the [8select website](https://www.8select.com/cse-pricing).

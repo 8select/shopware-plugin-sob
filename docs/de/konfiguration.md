@@ -1,4 +1,4 @@
-## 8select Curated Shopping Engine for Shopware
+## 8select Curated Shopping Engine für Shopware
 #  Anpassen des CSE Shopware Plugin
 
 Sie können das 8select CSE Shopware Plugin in ihrem Shopware Backend anpassen: Dazu gehen sie unter Konfiguration > Plugin Manager und wählen hier das 8select CSE Plugin unter „installiert“ aus.
