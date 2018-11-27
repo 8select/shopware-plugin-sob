@@ -20,6 +20,6 @@ In addition a **[performance-based compensation](https://www.8select.com/cse-pri
 
 Risk-free testing thanks to our **[money back guarantee](https://www.8select.com/cse-pricing)**. If you opt-out of further use within 30 days after activating the CSE solution, the setup fee will be reimbursed in full.
 
-Detailed information about our price model can be found at **[8select CSE Pricing Model](https://www.8select.com/cse-pricing)**
+Detailed information about our price model can be found at **[8select CSE Pricing Model](https://www.8select.com/cse-pricing)**.
 
 If you have any questions about the CSE solution, please contact us by phone at +49 (0) 941-206096-10 or by e-mail at service@8select.de
