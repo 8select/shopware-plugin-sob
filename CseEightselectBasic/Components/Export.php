@@ -1,7 +1,6 @@
 <?php
 namespace CseEightselectBasic\Components;
 
-use SplFileInfo;
 use Aws\S3\S3Client;
 use League\Csv\Writer;
 use CseEightselectBasic\Components\Config;
@@ -130,6 +129,7 @@ abstract class Export
         $bucket = '__SUBDOMAIN__.8select.io';
         $region = 'eu-central-1';
         $prefix = $feedId . '/' . static::FEED_TYPE . '/' . date('Y') . '/' . date('m') . '/' . date('d');
+        $key = $prefix . '/' . $filename;
                         
         $s3 = new S3Client([
             'version'     => '2006-03-01',
@@ -143,11 +143,11 @@ abstract class Export
         $context = stream_context_create([
             's3' => ['seekable' => true]
         ]);
-                        
-        $s3->registerStreamWrapper();
-        $stream = fopen('s3://' . $bucket . '/' . $prefix . '/' . $filename, 'w', false, $context);
 
-        $csvWriter = Writer::createFromStream($stream, 'r+');
+        $s3->registerStreamWrapper();
+        $stream = fopen('s3://' . $bucket . '/' . $key, '+r', false, $context);
+
+        $csvWriter = Writer::createFromStream($stream);
         $csvWriter->setDelimiter(';');
 
         $csvWriter->insertOne($this->header);
