@@ -41,5 +41,12 @@ Recommended setting: "Ja" (Yes). In this case, the SYS-ACC-Widget is added to th
 - "Ja" (Yes):  the widget is shown only in preview mode. Add `?preview=1` to the end of the URL of a product detail page. The widget is now visible on your local computer. Use the preview mode URL to check the current design settings of the widget. Please make sure the option "Activated" is set to "Ja".
 
 
+### Further customizations with the 8select Management Console (MCON)
+You can customize colors, fonts, button texts, links and many other settings of the 8select CSE Widgets in the [8select Management Console](https://console.8select.io). 
 
+- To be able to login you need to activate your **8select Management Console user account** by clicking on the link in the email you received at registration. Your login credentials will be sent to you in a second email shortly after.
+- Log in to the Management Console. In the menu go to "Widget-Manager" > "Product Set Presenter".
+- At the tabs "Setup", "Behaviour" and "Design" you can make all the customizations to make the widget fit the look and feel of your shop seamlessly.
+
+More information about customizing and the functionality of the Management Console you find in our [Knowledge Base](https://knowledge.8select.com). 
 

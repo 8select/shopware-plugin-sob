@@ -36,3 +36,13 @@ Voreinstellung: leer/nicht genutzt. Sollte nur durch erfahrene Entwickler genutz
  ### Vorschau Modus an: 
 - "Nein": die Widgets spielen Ergebnisse im Shop sichtbar aus; 
 - "Ja": Die Widgets werden im Preview Modus angezeigt. Fügen sie `?preview=1` am Ende der URL einer Produkt Detail Seite hinzu. Das Widget ist jetzt nur lokal bei ihnen sichtbar. Nutzen sie den Vorschau Modus um Änderungen am Design zu testen. Vergewissern sie dich dass die Option „Aktiviert“ auf „ja“ gestellt ist.
+
+### Weitere Anpassungen mit der 8select Management Console (MCON)
+
+Sie können Farben, Schriftarten, Buttontexte, Links und viele andere Einstellungen der 8select CSE-Widgets in der [8select Management Console](https://console.8select.io) anpassen.
+
+- Um sich anmelden zu können, müssen Sie Ihr **8select Management Console-Benutzerkonto aktivieren**. Klicken Sie dazu auf den Link in der E-Mail, die Sie bei der Registrierung erhalten haben. Ihre Zugangsdaten werden Ihnen kurz darauf in einer zweiten E-Mail zugesandt.
+- Melden Sie sich bei der Management Console an. Gehen Sie im Menü zu "Widget-Manager" > "Product Set Presenter".
+- Über den Tabs "Setup", "Behaviour" und "Design" können Sie alle Anpassungen vornehmen, um das Widget nahtlos an das Erscheinungsbild Ihres Shops anzupassen.
+
+Weitere Informationen bezüglich Konfigurationsmöglichkeiten und die Funktionalität der Management Console finden Sie in unserer [Knowledge Base](https://knowledge.8select.com).
