@@ -139,11 +139,15 @@ abstract class Export
                 'secret' => '__S3_PLUGIN_USER_ACCESS_KEY_SECRET__',
             ),
         ]);
+
+        $context = stream_context_create([
+            's3' => ['seekable' => true]
+        ]);
                         
         $s3->registerStreamWrapper();
-        $stream = fopen('s3://' . $bucket . '/' . $prefix . '/' . $filename, 'w');
+        $stream = fopen('s3://' . $bucket . '/' . $prefix . '/' . $filename, 'w', false, $context);
 
-        $csvWriter = Writer::createFromStream($stream, 'a');
+        $csvWriter = Writer::createFromStream($stream, 'r+');
         $csvWriter->setDelimiter(';');
 
         $csvWriter->insertOne($this->header);
