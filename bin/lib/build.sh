@@ -29,15 +29,11 @@ sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/Resources/views/frontend/in
 if [ ${PROFILE} == 'production' ]
 then
   sed -i '' "s@__SUBDOMAIN__@productfeed@g" ${PLUGIN_DIR}/Components/AWSUploader.php
-  sed -i '' "s@__SUBDOMAIN__@productfeed@g" ${PLUGIN_DIR}/Components/Export.php
   sed -i '' "s@__SUBDOMAIN__@wgt@g" ${PLUGIN_DIR}/Resources/views/frontend/index/header.tpl
 else
   sed -i '' "s@__SUBDOMAIN__@productfeed-prod.${PROFILE}@g" ${PLUGIN_DIR}/Components/AWSUploader.php
-  sed -i '' "s@__SUBDOMAIN__@productfeed-prod.${PROFILE}@g" ${PLUGIN_DIR}/Components/Export.php
   sed -i '' "s@__SUBDOMAIN__@wgt-prod.${PROFILE}@g" ${PLUGIN_DIR}/Resources/views/frontend/index/header.tpl
 fi
 
 sed -i '' "s@__S3_PLUGIN_USER_ACCESS_KEY__@${S3_ACCESS_KEY}@g" ${PLUGIN_DIR}/Components/AWSUploader.php
 sed -i '' "s@__S3_PLUGIN_USER_ACCESS_KEY_SECRET__@${S3_ACCESS_KEY_SECRET}@g" ${PLUGIN_DIR}/Components/AWSUploader.php
-sed -i '' "s@__S3_PLUGIN_USER_ACCESS_KEY__@${S3_ACCESS_KEY}@g" ${PLUGIN_DIR}/Components/Export.php
-sed -i '' "s@__S3_PLUGIN_USER_ACCESS_KEY_SECRET__@${S3_ACCESS_KEY_SECRET}@g" ${PLUGIN_DIR}/Components/Export.php

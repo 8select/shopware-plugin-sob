@@ -1,8 +1,8 @@
 <?php
 namespace CseEightselectBasic\Components;
 
-use Aws\S3\S3Client;
 use League\Csv\Writer;
+use CseEightselectBasic\Components\AWSUploader;
 use CseEightselectBasic\Components\Config;
 use CseEightselectBasic\Components\ConfigValidator;
 use CseEightselectBasic\Components\FeedLogger;
@@ -126,33 +126,13 @@ abstract class Export
             require_once __DIR__ . '/../vendor/autoload.php';
         }
 
-        $bucket = '__SUBDOMAIN__.8select.io';
-        $region = 'eu-central-1';
-        $prefix = $feedId . '/' . static::FEED_TYPE . '/' . date('Y') . '/' . date('m') . '/' . date('d');
-        $key = $prefix . '/' . $filename;
-                        
-        $s3 = new S3Client([
-            'version'     => '2006-03-01',
-            'region'      => $region,
-            'credentials' => array(
-                'key' => '__S3_PLUGIN_USER_ACCESS_KEY__',
-                'secret' => '__S3_PLUGIN_USER_ACCESS_KEY_SECRET__',
-            ),
-        ]);
-
-        $context = stream_context_create([
-            's3' => ['seekable' => true]
-        ]);
-
-        $s3->registerStreamWrapper();
-        $stream = fopen('s3://' . $bucket . '/' . $key, 'w', false, $context);
-
-        $csvWriter = Writer::createFromStream($stream);
-        $csvWriter->setDelimiter(';');
-
-        $csvWriter->insertOne($this->header);
-
         try {
+            $stream = AWSUploader::createStreamInstance($filename, $feedId, static::FEED_TYPE);
+            $csvWriter = Writer::createFromStream($stream);
+            $csvWriter->setDelimiter(';');
+
+            $csvWriter->insertOne($this->header);
+
             $this->writeFile($csvWriter, $stream);
         } catch (\Exception $exception) {
             Shopware()->PluginLogger()->error($exception);
