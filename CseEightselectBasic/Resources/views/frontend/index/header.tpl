@@ -165,9 +165,12 @@
 
             _eightselect_shop_plugin.showSwCrossSelling = function(sysAccWasCalled) {
                 var crossSellingContainer = document.querySelector('.eightselect-sw-cross-selling-container');
-                var eightselectSysAccHtml = document.querySelector('.eightselect-sysacc-html');
+                var eightselectSysAccHtml = document.querySelectorAll('.eightselect-sysacc-html');
 
-                eightselectSysAccHtml.setAttribute("style", "display: block");       
+                for (let i = 0; i < eightselectSysAccHtml.length; i++) {
+                    eightselectSysAccHtml[i].style.display = "block";
+                }
+
                 crossSellingContainer.setAttribute("style", "display: none");
             };
         </script>
