@@ -94,8 +94,9 @@
         <!-- CUSTOM CSS -->
         <element type="textarea" required="false" scope="shop">
             <name>8s_custom_css</name>
-            <label lang="de">SYS-PSV: Eigenes CSS für den Widget-Container:</label>
-            <label lang="en">SYS-PSV: Custom CSS for the widget's container:</label>
+            <label lang="de">Eigenes CSS:</label>
+            <label lang="en">Custom CSS:</label>
+            <value><![CDATA[[data-8select-widget-id="sys-psv"] { padding: 10px; }]]></value>
         </element>
         <!-- CONTAINER ELEMENTS -->
         <element type="textarea" required="true" scope="shop">
@@ -109,14 +110,14 @@
             <name>8s_sys_acc_enabled</name>
             <label lang="de">SYS-ACC: Zeige Widget in der Warenkorb-Bestätigung an</label>
             <label lang="en">SYS-ACC: Show Widget in cart confirmation</label>
-            <value>false</value>
+            <value>true</value>
         </element>
 
         <element type="textarea" required="true" scope="shop">
             <name>8s_html_sysacc_container_element</name>
             <label lang="de">SYS-ACC: HTML container, CSE_SYS wird durch das Widget ersetzt:</label>
             <label lang="en">SYS-ACC: HTML container CSE_SYS will be replaced by the widget:</label>
-            <value>CSE_SYS</value>
+            <value><![CDATA[<h1>Das passt dazu</h1> CSE_SYS]]></value>
         </element>
     </elements>
 </config>
