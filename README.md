@@ -1,12 +1,20 @@
 # shopware-plugin-sob
 
+## Installation manual
+
 https://www.8select.com/8select-cse-installationsanleitung-shopware
 
-&nbsp;
+### Generate new manual
 
----
+**de**
+```
+pandoc --standalone --toc --metadata=title:"8select Curated Shopping Engine - Modul für Shopware" -o anleitung.html docs/de/installationsanleitung.md
+```
 
-&nbsp;
+**en** 
+```
+pandoc --standalone --toc --metadata=title:"8select Curated Shopping Engine - Modul für Shopware" -o anleitung-en.html docs/en/installation.md
+```
 
 ## Development Workflow
 
