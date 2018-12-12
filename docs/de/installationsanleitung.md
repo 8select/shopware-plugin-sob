@@ -25,7 +25,7 @@ Sie haben die Freischaltcodes bereits per E-Mail erhalten, nachdem Sie erfolgrei
 
     Gehen Sie in den Konfiguration Tab in Ihrem Shopware Plugin Manager und **tragen Sie die Freischaltcodes** in die dafür vorgesehenen Felder ein. Setzen Sie **„Aktiviert“** auf **„ja“** und speichern Sie Ihre Eingaben.
 
-   ![Plugin Konfiguration](img/config-de.png)
+   ![Plugin Konfiguration](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/de/config-de.png)
 
 3. **Definieren der Größenrelevanten Attributegruppen für den Produktdaten Feed**
     - In Ihrem Shopware Backend gehen Sie auf „Artikel“ > „Übersicht“
@@ -34,7 +34,7 @@ Sie haben die Freischaltcodes bereits per E-Mail erhalten, nachdem Sie erfolgrei
     - Klicken Sie auf „Speichern“ und wiederholen Sie diesen Schritt für alle relevanten Attributgruppen dieses Produktes. Das können Sie bei allen Attributen wie „Gefäßgröße“, „Skigröße“ oder „Stocklänge“ machen.
     - Sie müssen diese Änderungen nur exemplarisch für ein Produkt vornehmen. Ihre Änderungen werden in den allgemeinen Einstellungen gespeichert und für alle Produktvarianten automatisch übernommen.
 
-    [Variantenattribute für Größe Video](img/eng-installation-size-attributes.mp4)
+    [Variantenattribute für Größe Video](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/de/eng-installation-size-attributes.mp4)
 
 4. **Auswahl der Attribute für den Export Ihrer Produktdaten**
     - Im Shopware Backen gehen Sie auf „Einstellungen“ > „8select“ > „Export Einstellungen“
@@ -42,7 +42,7 @@ Sie haben die Freischaltcodes bereits per E-Mail erhalten, nachdem Sie erfolgrei
     - Innerhalb dieser Reihe gehen Sie auf das Feld „Shopware Attribute“ und wählen Sie „Konfigurator-Gruppe: Farbvariante“ aus dem Dropdown Menü.
     - Klicken Sie auf „update“ um Ihre Einstellungen zu speichern.
 
-     [Define Attribute Mapping](img/eng-export-settings-farbvariant.mp4)
+     [Define Attribute Mapping](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/de/eng-export-settings-farbvariant.mp4)
 
 5. **Start der Feed Verarbeitung**
     Um den Datenfeed erfolgreich verarbeiten zu können, muss ein Crontab Eintrag auf Ihrem Server hinterlegt sein der die Shopware Cronjobs in regelmäßigen Abständen ausführt. Bitte stellen Sie sicher, dass der Crontab Eintrag ordnungsgemäß eingerichtet ist bevor Sie mit der Installation fortfahren.
@@ -51,7 +51,7 @@ Sie haben die Freischaltcodes bereits per E-Mail erhalten, nachdem Sie erfolgrei
     - Gehen Sie auf „Einstellungen“ > „8select“ > „Manueller Export“.
     - Wählen Sie „Produkt Voll-Export anstoßen.
     
-    ![manual product export](img/manual_product_export.png)
+    ![manual product export](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/de/manual_product_export.png)
        
     > **Hinweis für Testshops:** Wenn Sie das 8select CSE Plugin in Ihrem Testshop testen und kein Crontab Eintrag auf Ihrem Server hinterlegt haben können Sie den 8select-Cronjob auf Ihrem Server mit folgendem Befehl ausführen:  
     `php bin/console sw:cron:run Shopware_CronJob_CseEightselectBasicArticleExport -f`

@@ -29,7 +29,7 @@
 
    Go to the configuration tab in the Shopware Plugin Manager and **insert the keys** in the corresponding fields. Set **"Aktiviert"** to **"Ja"**. Save your settings.
 
-   ![Plugin Configuration](img/config-en.png)
+   ![Plugin Configuration](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/en/config-en.png)
 
 3. **Define size relevant attribute groups for the product data feed** 
     - In your Shopware Backend menu go to "Items" > "Overview"
@@ -38,7 +38,7 @@
     - Click "Save" and repeat this for every size relevant attribute group of this product. This could also be attributes like "Gefäßgröße", "Skigröße" or "Stocklänge".
     - You only need to make these settings for one product. Your changes will be applied to the general settings for product variants automatically.
 
-    [Define Variant Attributes for size Video](img/eng-installation-size-attributes.mp4)
+    [Define Variant Attributes for size Video](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/en/eng-installation-size-attributes.mp4)
 
 4. **Select attributes for the export of your product data**
     - In your Shopware Backend menu go to "Configuration" > "8select" > "Export Settings"
@@ -46,7 +46,7 @@
     - Within this row, go to the field "Shopware Attribute" and select "Konfigurator-Gruppe: Farbvariante" from the dropdown menu.
     - Click "Update" to save your settings.
 
-    [Define Attribute Mapping](img/eng-export-settings-farbvariant.mp4)
+    [Define Attribute Mapping](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/en/eng-export-settings-farbvariant.mp4)
 
 5. **Start processing your feed**
 
@@ -56,7 +56,7 @@
    - Go to "Configuration" > "8select" > "Manueller Export". 
    - Choose „Produkt Voll-Export anstoßen“.  
 
-    ![manual product export](img/manual_product_export.png)
+    ![manual product export](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/en/manual_product_export.png)
 
     > **Note for test shops:** if you are testing the 8select plugin in a test shop, where no Crontab entry is present, you can also call the 8select-Cron on your server with this code:  
     `php bin/console sw:cron:run Shopware_CronJob_CseEightselectBasicArticleExport -f`
