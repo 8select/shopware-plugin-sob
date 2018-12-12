@@ -1,3 +1,4 @@
 /CseEightselectBasic/vendor
 /dist/*
 !/dist/.gitkeep
+/*.html
