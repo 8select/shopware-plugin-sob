@@ -21,8 +21,5 @@
         <service id="cse_eightselect_basic.config.validator" class="CseEightselectBasic\Services\Config\Validator">
             <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
         </service>
-        <service id="cse_eightselect_basic.config.config" class="CseEightselectBasic\Services\Config\Config">
-            <argument type="service" id="dbal_connection"/>
-        </service>
     </services>
 </container>

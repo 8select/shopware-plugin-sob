@@ -36,3 +36,7 @@ pandoc --standalone --toc --metadata=title:"8select Curated Shopping Engine - Mo
   - ... clear the cache of your local testshop
 
 - now you can test your changes within your local testshop (endpoints for export and widgets from staging stack)
+
+### 3. Debugging
+
+- use https://github.com/FriendsOfShopware/FroshProfiler

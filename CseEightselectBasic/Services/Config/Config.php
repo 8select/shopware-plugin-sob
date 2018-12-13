@@ -2,6 +2,8 @@
 
 namespace CseEightselectBasic\Services\Config;
 
+use Doctrine\DBAL\Connection;
+
 class Config
 {
     const OPTION_EXPORT_TYPE = 'export_type';
@@ -25,37 +27,37 @@ class Config
 
     public function install()
     {
-        $this->dropTable();
+        $this->uninstall();
         $sql = "
-            CREATE TABLE `:table_name` (
+            CREATE TABLE `" . self::TABLE_NAME . "` (
                 `option` varchar(32) NOT NULL,
                 `value` varchar(32) NOT NULL,
                 PRIMARY KEY (`option`)
             ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
         ";
 
-        $this->connection->executeUpdate($sql, ['table_name' => self::TABLE_NAME]);
+        $this->connection->executeUpdate($sql);
     }
 
     public function uninstall()
     {
-        $sql = "DROP TABLE IF EXISTS `:table_name`;";
-        $this->connection->executeUpdate($sql, ['table_name' => self::TABLE_NAME]);
+        $sql = "DROP TABLE IF EXISTS `" . self::TABLE_NAME . "`;";
+        $this->connection->executeUpdate($sql);
     }
 
     public function getOption($option)
     {
-        $sql = "SELECT value from :table_name WHERE `option` = :option";
-        return $this->connection->fetchColumn($sql, ['table_name' => self::TABLE_NAME, 'option' => $option]);
+        $sql = "SELECT value FROM " . self::TABLE_NAME . " WHERE `option` = :option";
+        return $this->connection->fetchColumn($sql, ['option' => $option]);
     }
 
 
     public function setOption($option, $value)
     {
-        $sql = "REPLACE INTO :table_name VALUES(:option, :value)";
+        $sql = "REPLACE INTO " . self::TABLE_NAME . " VALUES(:option, :value)";
         $this->connection->executeUpdate(
             $sql,
-            ['table_name' => self::TABLE_NAME, 'option' => $option, 'value' => $value]
+            ['option' => $option, 'value' => $value]
         );
     }
 }

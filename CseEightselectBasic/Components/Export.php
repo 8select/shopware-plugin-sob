@@ -113,7 +113,7 @@ abstract class Export
             return false;
         }
 
-        $validationResult = $this->configValidator->validateConfig();
+        $validationResult = $this->configValidator->validateExportConfig();
         if ($validationResult['isValid'] === false) {
             $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::CRON_NAME);
             Shopware()->PluginLogger()->warning($message);
@@ -268,6 +268,42 @@ abstract class Export
      */
     protected function getArticles($mapping, $offset, $limit)
     {
+        // läuft das hier für jeden subshop?
+         //-> aus plugin config die shops holen für die das plugin aktiv ist?
+         //-> was sind die werte die man aus plugin config bekommt, die vom aktuellen shop, oder main oder alle?
+        var_dump($this->pluginConfig);
+         $shop = $this->provider->getShop();
+        var_dump($shop->getName());
+//subshop abfragen in export und validierung
+//subshop abfragen in frontend?
+
+        // $container = Shopware()->Container();
+
+        // if ($container->has('Shop')) {
+        //     /** @var Shop $shop */
+        //     $shop = $container->get('Shop');
+        // } else {
+        //     /** @var Shop $shop */
+        //     $shop = $container->get('models')->getRepository(Shop::class)->getActiveDefault();
+        // }
+
+        // if ($shop->getMain()) {
+        //     $shop = $shop->getMain();
+        // }
+
+        // $mainCategoryId = $this->dependenciesProvider->getShop()->getCategory()->getId();
+
+        // $this->modelManager->getDBALQueryBuilder();
+        // $builder = $this->connection->createQueryBuilder();
+        // $builder->select('product.name')
+        //         ->from('s_articles', 'product')
+        //         ->innerJoin('product', 's_articles_categories_ro', 'ac', 'ac.articleID = product.id AND ac.categoryID = :categoryId')
+        //         ->innerJoin('product', 's_categories', 'c', 'c.id = ac.categoryID AND c.active = 1')
+        //         ->where($builder->expr()->in('product.id', $products))
+        //         ->groupBy('product.id')
+        //         ->setParameter('categoryId', $mainCategoryId);
+
+
         $sqlTemplate = 'SELECT %s %s,
                     s_articles_details.articleID,
                     s_articles.laststock AS laststock,

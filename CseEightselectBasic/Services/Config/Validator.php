@@ -36,6 +36,25 @@ class Validator
     /**
      * @return array
      */
+    public function validateExportConfig()
+    {
+        var_dump($this->pluginConfig);
+        $violations = [];
+        array_push($violations, $this->validateApiId());
+        array_push($violations, $this->validateFeedId());
+        array_push($violations, $this->validateMappedSizeAttribute());
+
+        $violationsWithoutNull = array_filter($violations);
+
+        return [
+            'isValid' => empty($violationsWithoutNull),
+            'violations' => $violationsWithoutNull
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public function validateConfig()
     {
         $violations = [];
@@ -45,32 +64,52 @@ class Validator
         //     array_push($violations, "Plugin ist nicht aktiv");
         // }
 
-        if (strlen($this->pluginConfig['CseEightselectBasicApiId']) !== 36) {
-            array_push($violations, "Die hinterlegte API ID ist ungültig");
-        }
+        array_push($violations, $this->validateApiId());
+        array_push($violations, $this->validateFeedId());
+        array_push($violations, $this->validateSysPsvContainer());
+        array_push($violations, $this->validateMappedSizeAttribute());
 
-        if (strlen($this->pluginConfig['CseEightselectBasicFeedId']) !== 36) {
-            array_push($violations, "Die hinterlegte Feed ID ist ungültig");
-        }
-
-        $sysPsvContainer = $this->pluginConfig['CseEightselectBasicSysPsvContainer'];
-        if ( strlen($sysPsvContainer) === 0 || strpos($sysPsvContainer, 'CSE_SYS') === false ) {
-            array_push($violations, "Kein Widget-Platzhalter (CSE_SYS) im SYS-PSV HTML-Container");
-        }
-
-        $dbConnection = $this->provider->getDbConnection();
-        $sql = 'SELECT SUM(od_cse_eightselect_basic_is_size = 1) FROM s_article_configurator_groups_attributes';
-        $hasMappedSizeAttribute = (bool)$connection->fetchOne($sql);
-
-        if ($hasMappedSizeAttribute === false) {
-            $noSizesMessage = "Größenrelevante Attributegruppen wurden nicht definiert. Mehr Infos finden Sie in der " .
-            "<a href='https://www.8select.com/8select-cse-installationsanleitung-shopware#5-konfiguration-attributfelder' target='_blank'>Installationsanleitung</a>";
-            array_push($violations, $noSizesMessage);
-        }
+        $violationsWithoutNull = array_filter($violations);
 
         return [
-            'isValid' => empty($violations),
-            'violations' => $violations
+            'isValid' => empty($violationsWithoutNull),
+            'violations' => $violationsWithoutNull
         ];
+    }
+
+    private function validateApiId()
+    {
+        if (strlen($this->pluginConfig['CseEightselectBasicApiId']) !== 36) {
+            return "Die hinterlegte API ID ist ungültig";
+        }
+    }
+
+    private function validateFeedId()
+    {
+        if (strlen($this->pluginConfig['CseEightselectBasicFeedId']) !== 36) {
+            return "Die hinterlegte Feed ID ist ungültig";
+        }
+    }
+
+    private function validateSysPsvContainer()
+    {
+        $sysPsvContainer = $this->pluginConfig['CseEightselectBasicSysPsvContainer'];
+        if ( strlen($sysPsvContainer) === 0 || strpos($sysPsvContainer, 'CSE_SYS') === false ) {
+            return "Kein Widget-Platzhalter (CSE_SYS) im SYS-PSV HTML-Container";
+        }
+    }
+
+    private function validateMappedSizeAttribute()
+    {
+        $dbConnection = $this->provider->getDbConnection();
+        $sql = "SELECT count(*) FROM s_article_configurator_groups_attributes WHERE od_cse_eightselect_basic_is_size = 1;";
+        $result = $dbConnection->fetchColumn($sql);
+        dump($result);
+        $hasMappedSizeAttribute = (bool) $result;
+
+        if ($hasMappedSizeAttribute === false) {
+            return "Größenrelevante Attributegruppen wurden nicht definiert. Mehr Infos finden Sie in der " .
+            "<a href='https://www.8select.com/8select-cse-installationsanleitung-shopware#5-konfiguration-attributfelder' target='_blank'>Installationsanleitung</a>";
+        }
     }
 }

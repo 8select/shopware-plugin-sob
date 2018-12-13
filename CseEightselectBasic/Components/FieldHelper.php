@@ -388,6 +388,7 @@ SQL;
         }
 
         $shopwareInstance = Shopware();
+        //Shopware()->Container()->get('shopware.release')->getVersion();
         $versionArray = explode('.', $shopwareInstance::VERSION);
         if ($versionArray[0] >= '5' && $versionArray[1] >= '4') {
             if ($shop->getSecure()) {

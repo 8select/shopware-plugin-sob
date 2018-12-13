@@ -1,5 +1,6 @@
 <?php
 
+use CseEightselectBasic\Components\AWSUploader;
 use CseEightselectBasic\Models\EightselectAttribute;
 
 class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \Shopware_Controllers_Backend_Application
@@ -17,7 +18,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
      * @throws Zend_Db_Statement_Exception
      * @return array
      */
-    protected function getArticleAttributes()
+    private function getArticleAttributes()
     {
         $fixedAttributes = [
             // articles attributes
@@ -57,5 +58,17 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
             'success' => true,
             'data'    => $attributesComplete,
         ];
+    }
+
+    public function save($data)
+    {
+        try {
+            $message = 'Attribute-Mapping gespeichert' . \PHP_EOL . \PHP_EOL;
+            $message .= print_r($data, true);
+            $pluginConfig = Shopware()->Container()->get('cse_eightselect_basic.dependencies.provider')->getPluginConfig();
+            AWSUploader::uploadLog($message, 'tenants/' . $pluginConfig['CseEightselectBasicFeedId'] . '/attribute-mapping');
+        } catch (\Exception $ingore) {}
+
+        return parent::save($data);
     }
 }
