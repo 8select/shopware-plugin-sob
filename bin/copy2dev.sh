@@ -4,12 +4,15 @@
 if [ "$#" -ne 3 ]; then
     echo "Illegal number of parameters"
     echo "Usage:"
-    echo "bin/copy2dev.sh <version> <profile> <container>"
+    echo "bin/copy2dev.sh <version> <profile> <container-id>"
+    echo "Example:"
+    echo "bin/copy2dev.sh 1.11.0-staging staging b7f42c7b1b73"
     exit 1
 fi
 
 if [ "${PROFILE}" = "production" ]; then
-    echo "don't use production environment in development"
+    echo "don't use the production environment during development"
+    echo "images can not be downloaded from your machine - testing without images sucks"
     exit 1
 fi
 
