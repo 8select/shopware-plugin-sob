@@ -110,7 +110,7 @@
             <name>8s_sys_acc_enabled</name>
             <label lang="de">SYS-ACC: Zeige Widget in der Warenkorb-Bestätigung an</label>
             <label lang="en">SYS-ACC: Show Widget in cart confirmation</label>
-            <value>true</value>
+            <value>false</value>
         </element>
 
         <element type="textarea" required="true" scope="shop">
