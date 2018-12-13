@@ -2,10 +2,12 @@
 namespace CseEightselectBasic\Components;
 
 use League\Csv\Writer;
-use CseEightselectBasic\Components\Config;
-use CseEightselectBasic\Components\ConfigValidator;
+use CseEightselectBasic\Components\AWSUploader;
 use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Components\RunCronOnce;
+use CseEightselectBasic\Services\Config\Config;
+use CseEightselectBasic\Services\Config\Validator;
+use CseEightselectBasic\Services\Dependencies\Provider;
 
 abstract class Export
 {
@@ -23,6 +25,34 @@ abstract class Export
      * @var string[]
      */
     protected $fields = [];
+
+    /**
+     * @var Provider
+     */
+    protected $provider;
+
+    /**
+     * @var array
+     */
+    protected $pluginConfig;
+
+    /**
+     * @var Validator
+     */
+    protected $configValidator;
+
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    public function __construct() {
+        $container = Shopware()->Container();
+        $this->provider = $container->get('cse_eightselect_basic.dependencies.provider');
+        $this->pluginConfig = $this->provider->getPluginConfig();
+        $this->configValidator = $container->get('cse_eightselect_basic.config.validator');
+        $this->config = $container->get('cse_eightselect_basic.config.config');
+    }
 
     public function scheduleCron()
     {
@@ -83,11 +113,13 @@ abstract class Export
             return false;
         }
 
-        if (!ConfigValidator::isConfigValid()) {
+        $validationResult = $this->configValidator->validateConfig();
+        if ($validationResult['isValid'] === false) {
             $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::CRON_NAME);
             Shopware()->PluginLogger()->warning($message);
             if (getenv('ES_DEBUG')) {
                 echo $message;
+                var_dump($validationResult);
             }
 
             return false;
@@ -196,6 +228,12 @@ abstract class Export
                          AND shopwareAttribute NOT LIKE "%id=%"';
 
         $attributeMapping = Shopware()->Db()->query($attributeMappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
+
+        try {
+            $message = 'Attribute-Mapping' . \PHP_EOL . \PHP_EOL;
+            $message .= $attributeMapping;
+            AWSUploader::uploadLog($message, 'tenants/' . $this->pluginConfig['CseEightselectBasicFeedId'] . '/attribute-mapping');
+        } catch (\Exception $ignore) {}
 
         $numArticles = $this->getNumArticles();
         $batchSize = 100;
@@ -319,6 +357,6 @@ abstract class Export
     }
 
     protected function isDeltaExport() {
-        return Config::getOption(Config::OPTION_EXPORT_TYPE) === Config::OPTION_EXPORT_TYPE_VALUE_DELTA;
+        return $this->config->getOption(Config::OPTION_EXPORT_TYPE) === Config::OPTION_EXPORT_TYPE_VALUE_DELTA;
     }
 }

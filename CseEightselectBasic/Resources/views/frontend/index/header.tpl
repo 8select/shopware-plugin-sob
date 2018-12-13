@@ -2,9 +2,9 @@
 
 {block name="frontend_index_header_css_screen"}
     {$smarty.block.parent}
-    {if {config name="8s_custom_css"} != ""}
+    {if {config name="CseEightselectBasicCustomCss"} != ""}
     <style>
-        {include file='string:{config name="8s_custom_css"}'}
+        {include file='string:{config name="CseEightselectBasicCustomCss"}'}
     </style>
     {/if}
 {/block}
@@ -44,7 +44,7 @@
                 };
             }(w);
             var script = d.createElement(s);
-            script.src = 'https://__SUBDOMAIN__.8select.io/{config name="8s_merchant_id"}/loader.js';
+            script.src = 'https://__SUBDOMAIN__.8select.io/{config name="CseEightselectBasicApiId"}/loader.js';
 
             if (!!getUrlParameter('8s_demo')) {
                 script.src = 'https://__SUBDOMAIN__.8select.io/db54750f-80fc-4818-9455-30ca233225dc/loader.js';
@@ -91,17 +91,17 @@
         };
     </script>
 
-    {if {config name="8s_selected_detail_block"} == "frontend_detail_tabs"}
+    {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
         {* Activate description tab - SYS tab will be activated when CSE finds a set *}
         <script type="text/javascript">
             _eightselect_shop_plugin.hideSys = function () {
                 var tabs = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
 
-                {if {config name="8s_widget_placement"} == "widget_before"}
+                {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_before"}
                     var tabToActivate = tabs && tabs[1];
                 {/if}
 
-                {if {config name="8s_widget_placement"} == "widget_after"}
+                {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_after"}
                     var tabToActivate = tabs && tabs[0];
                 {/if}
 

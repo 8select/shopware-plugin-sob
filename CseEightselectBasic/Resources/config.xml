@@ -3,14 +3,14 @@
         xsi:noNamespaceSchemaLocation="../../../engine/Shopware/Components/Plugin/schema/config.xsd">
     <elements>
         <element type="boolean" required="true" scope="shop">
-            <name>8s_enabled</name>
+            <name>CseEightselectBasicPluginActive</name>
             <label lang="de">Aktiviert</label>
             <label lang="en">Enabled</label>
             <value>true</value>
         </element>
         <!-- MERCHANT ID -->
         <element type="text" required="true" scope="shop">
-            <name>8s_merchant_id</name>
+            <name>CseEightselectBasicApiId</name>
             <label lang="de">API ID:</label>
             <label lang="en">API ID:</label>
             <description lang="de">Ihre API ID erhalten Sie von 8select</description>
@@ -18,7 +18,7 @@
         </element>
         <!-- FEED ID -->
         <element type="text" required="true" scope="shop">
-            <name>8s_feed_id</name>
+            <name>CseEightselectBasicFeedId</name>
             <label lang="de">Feed ID:</label>
             <label lang="en">Feed ID:</label>
             <description lang="de">Ihre Feed ID erhalten Sie von 8select</description>
@@ -26,7 +26,7 @@
         </element>
         <!-- SELECTED DETAIL BLOCK -->
         <element type="select" required="true" scope="shop">
-            <name>8s_selected_detail_block</name>
+            <name>CseEightselectBasicSysPsvBlock</name>
             <label lang="de">Position an der das SYS-Widget platziert wird:</label>
             <label lang="en">Position where SYS-widget will be placed:</label>
             <value>frontend_detail_index_detail</value>
@@ -62,7 +62,7 @@
         </element>
         <!-- WIDGET PLACEMENT-->
         <element type="select" required="true" scope="shop">
-            <name>8s_widget_placement</name>
+            <name>CseEightselectBasicSysPsvPosition</name>
             <label lang="de">Widget am Block-Anfang oder -Ende einfügen:</label>
             <label lang="en">Attach widget to the block start or end:</label>
             <value>widget_after</value>
@@ -81,29 +81,29 @@
                 </option>
             </store>
         </element>
-        <!-- CUSTOM CSS -->
-        <element type="textarea" required="false" scope="shop">
-            <name>8s_custom_css</name>
-            <label lang="de">Eigenes CSS:</label>
-            <label lang="en">Custom CSS:</label>
-        </element>
         <!-- CONTAINER ELEMENT -->
         <element type="textarea" required="true" scope="shop">
-            <name>8s_html_container_element</name>
+            <name>CseEightselectBasicSysPsvContainer</name>
             <label lang="de">HTML container, CSE_SYS wird durch das SYS-Widget ersetzt:</label>
             <label lang="en">HTML container CSE_SYS will be replaced by the SYS widget:</label>
             <value>CSE_SYS</value>
         </element>
         <!-- SYS-ACC WIDGET -->
         <element type="boolean" required="true" scope="shop">
-            <name>8s_sys_acc_enabled</name>
+            <name>CseEightselectBasicSysAccActive</name>
             <label lang="de">Zeige SYS-ACC Widget</label>
             <label lang="en">Display SYS-ACC Widget</label>
             <value>false</value>
         </element>
+        <!-- CUSTOM CSS -->
+        <element type="textarea" required="false" scope="shop">
+            <name>CseEightselectBasicCustomCss</name>
+            <label lang="de">Eigenes CSS:</label>
+            <label lang="en">Custom CSS:</label>
+        </element>
         <!-- PREVIEW-MODE -->
         <element type="boolean" scope="shop">
-            <name>8s_preview_mode_enabled</name>
+            <name>CseEightselectBasicPreviewActive</name>
             <label lang="de">Vorschau-Modus an</label>
             <label lang="en">Enable Preview-Mode</label>
             <value>true</value>

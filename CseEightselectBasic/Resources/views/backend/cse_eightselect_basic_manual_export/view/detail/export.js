@@ -49,7 +49,7 @@ Ext.define("Shopware.apps.CseEightselectBasicManualExport.view.detail.Export", {
     };
 
     var getErrorMessages = function(configValidationResult) {
-      return configValidationResult.messages;
+      return configValidationResult.violations;
     };
 
     var FULL_BTN = {

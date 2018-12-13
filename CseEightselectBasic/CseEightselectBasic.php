@@ -4,7 +4,6 @@ namespace CseEightselectBasic;
 use CseEightselectBasic\Components\ArticleExport;
 use CseEightselectBasic\Components\AWSUploader;
 use CseEightselectBasic\Components\ExportSetup;
-use CseEightselectBasic\Components\Config;
 use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Components\FieldHelper;
@@ -66,6 +65,14 @@ class CseEightselectBasic extends Plugin
         ];
     }
 
+    private function isPluginActive()
+    {
+        $provider = $this->container->get('cse_eightselect_basic.dependencies.provider');
+        $pluginConfig = $provider->getPluginConfig();
+
+        return $pluginConfig['CseEightselectBasicPluginActive'];
+    }
+
     public function onPreDispatch()
     {
         Shopware()->Template()->addTemplateDir($this->getPath() . '/Resources/views/');
@@ -105,9 +112,7 @@ class CseEightselectBasic extends Plugin
      */
     public function onFrontendPostDispatch(\Enlight_Event_EventArgs $args)
     {
-        $config = Shopware()->Config();
-
-        if (!$config->get('8s_enabled')) {
+        if ($this->isPluginActive() === false) {
             return;
         }
 
@@ -115,7 +120,7 @@ class CseEightselectBasic extends Plugin
         $controller = $args->get('subject');
         $view = $controller->View();
 
-        $htmlContainer = $config->get('8s_html_container_element');
+        $htmlContainer = $pluginConfig['CseEightselectBasicSysPsvContainer'];
         $view->assign('htmlContainer', explode('CSE_SYS', $htmlContainer));
     }
 
@@ -140,9 +145,9 @@ class CseEightselectBasic extends Plugin
      */
     public function onCheckoutConfirm(\Enlight_Event_EventArgs $args)
     {
-        $config = Shopware()->Config();
 
-        if (!$config->get('8s_enabled')) {
+        if ($this->isPluginActive() === false) {
+            dump('CSE is disabled -> stop');
             return;
         }
 
@@ -483,8 +488,9 @@ class CseEightselectBasic extends Plugin
 
     private function createDefaultConfig()
     {
-        Config::createTable();
-        Config::setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_DELTA);
+        $config = $this->container->get('cse_eightselect_basic.config.config');
+        $config->install();
+        $config->setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_DELTA);
     }
 
     /**
@@ -500,7 +506,8 @@ class CseEightselectBasic extends Plugin
         try {
             ExportSetup::createChangeQueueTriggers();
         } catch (\Zend_Db_Statement_Exception $exception) {
-            Config::setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_FULL);
+            $config = $this->container->get('cse_eightselect_basic.config.config');
+            $config->setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_FULL);
             ExportSetup::dropChangeQueueTable();
 
             $message = 'DB Trigger für Delta-Export nicht installiert. Fallback zu Vollexport.';
@@ -519,7 +526,8 @@ class CseEightselectBasic extends Plugin
         FeedLogger::deleteTable();
         ExportSetup::dropChangeQueueTriggers();
         ExportSetup::dropChangeQueueTable();
-        Config::dropTable();
+        $config = $this->container->get('cse_eightselect_basic.config.config');
+        $config->uninstall();
     }
 
     /**

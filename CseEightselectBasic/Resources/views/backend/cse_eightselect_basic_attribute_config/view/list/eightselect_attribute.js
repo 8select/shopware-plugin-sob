@@ -108,7 +108,7 @@ Ext.define("Shopware.apps.CseEightselectBasicAttributeConfig.view.list.Eightsele
     };
 
     var getErrorMessages = function(configValidationResult) {
-      return configValidationResult.messages;
+      return configValidationResult.violations;
     };
 
     function enableAttributeMapping() {
