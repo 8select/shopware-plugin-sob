@@ -53,46 +53,4 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         $lastRun = FeedLogger::getLastFeedUpdate(PropertyExport::CRON_NAME);
         $this->View()->assign(['lastPropertyExport' => $lastRun]);
     }
-
-    public function checkForActiveStateAction()
-    {
-        $isActive = ConfigValidator::isPluginActive();
-        $this->View()->assign(['active' => $isActive]);
-    }
-
-    public function checkForApiIdAction()
-    {
-        $apiId = ConfigValidator::getApiId();
-        $this->View()->assign(['apiId' => $apiId]);
-    }
-
-    public function checkForFeedIdAction()
-    {
-        $feedId = ConfigValidator::getFeedId();
-        $this->View()->assign(['feedId' => $feedId]);
-    }
-
-    public function checkForHtmlContainerAction()
-    {
-        $container = ConfigValidator::getHtmlContainer();
-        $this->View()->assign(['container' => $container]);
-    }
-
-    public function checkForSysAccAction()
-    {
-        $sysAcc = ConfigValidator::isSysAccActive();
-        $this->View()->assign(['sysAcc' => $sysAcc]);
-    }
-
-    public function checkForPreviewModeAction()
-    {
-        $previewMode = ConfigValidator::isPreviewModeActive();
-        $this->View()->assign(['previewMode' => $previewMode]);
-    }
-
-    public function checkForSizeDefinitionsAction()
-    {
-        $sizeDefinitions = ConfigValidator::hasSizeDefinitions();
-        $this->View()->assign(['sizeDefinitions' => $sizeDefinitions]);
-    }
 }
