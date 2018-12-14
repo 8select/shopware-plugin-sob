@@ -1,7 +1,7 @@
 <?php
+
 namespace CseEightselectBasic;
 
-use CseEightselectBasic\Components\AWSUploader;
 use CseEightselectBasic\Components\ExportSetup;
 use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Components\RunCronOnce;
@@ -21,17 +21,16 @@ use Shopware\Components\Plugin\Context\DeactivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
 use Shopware\Components\Plugin\Context\UpdateContext;
-use Shopware\Models\Shop\Shop;
 
 class CseEightselectBasic extends Plugin
 {
     /**
-     * array
+     * array.
      */
     private $installMessages = [];
 
     /**
-     * PluginConfigService
+     * PluginConfigService.
      */
     private $pluginConfigService;
 
@@ -39,21 +38,21 @@ class CseEightselectBasic extends Plugin
     {
         $provider = new Provider($this->container, $this->getPluginConfigService());
         $currentShop = $provider->getCurrentShop();
-        $shopUrl = $currentShop->getHost() . $currentShop->getBaseUrl() . $currentShop->getBasePath();
+        $shopUrl = $currentShop->getHost().$currentShop->getBaseUrl().$currentShop->getBasePath();
 
         try {
-            $this->installMessages[] = 'Shop-URL: ' . $shopUrl;
-            $this->installMessages[] = 'Shopware-Version: ' . $this->container->get('shopware.release')->getVersion();
-            $this->installMessages[] = 'CSE-Plugin-Version: ' . $context->getCurrentVersion();
+            $this->installMessages[] = 'Shop-URL: '.$shopUrl;
+            $this->installMessages[] = 'Shopware-Version: '.$this->container->get('shopware.release')->getVersion();
+            $this->installMessages[] = 'CSE-Plugin-Version: '.$context->getCurrentVersion();
         } catch (\Exception $exception) {
-            $this->installMessages[] = 'ERROR: initInstallLog ' . (string) $exception;
+            $this->installMessages[] = 'ERROR: initInstallLog '.(string) $exception;
         }
     }
 
     private function sendLog($type = 'install')
     {
-        $logMessage = implode(\PHP_EOL . \PHP_EOL, $this->installMessages);
-        AWSUploader::uploadLog($logMessage, $type);
+        $logMessage = implode(\PHP_EOL.\PHP_EOL, $this->installMessages);
+        Shopware()->PluginLogger()->info($logMessage);
     }
 
     /**
@@ -96,7 +95,7 @@ class CseEightselectBasic extends Plugin
 
     public function onPreDispatch()
     {
-        Shopware()->Template()->addTemplateDir($this->getPath() . '/Resources/views/');
+        Shopware()->Template()->addTemplateDir($this->getPath().'/Resources/views/');
     }
 
     /**
@@ -104,7 +103,7 @@ class CseEightselectBasic extends Plugin
      */
     public function onGetBackendCseEightselectBasicController()
     {
-        return $this->getPath() . '/Controllers/Backend/CseEightselectBasicAttributeConfig.php';
+        return $this->getPath().'/Controllers/Backend/CseEightselectBasicAttributeConfig.php';
     }
 
     /**
@@ -112,12 +111,13 @@ class CseEightselectBasic extends Plugin
      */
     public function onGetFrontendCseEightselectBasicController()
     {
-        return $this->getPath() . '/Controllers/Frontend/CseEightselectBasic.php';
+        return $this->getPath().'/Controllers/Frontend/CseEightselectBasic.php';
     }
 
     /**
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     *
      * @return string
      */
     public function getVersion()
@@ -156,7 +156,7 @@ class CseEightselectBasic extends Plugin
         $controller = $args->getSubject();
         $view = $controller->View();
 
-        $view->addTemplateDir($this->getPath() . '/Resources/views/');
+        $view->addTemplateDir($this->getPath().'/Resources/views/');
         $view->extendsTemplate('backend/emotion/model/translations.js');
         $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/sys_psv.js');
         $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/psp_psv.js');
@@ -165,6 +165,7 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param \Enlight_Event_EventArgs $args
+     *
      * @throws \Enlight_Exception
      */
     public function onCheckoutConfirm(\Enlight_Event_EventArgs $args)
@@ -210,6 +211,7 @@ class CseEightselectBasic extends Plugin
     /**
      * @param $itemProperty
      * @param $factor
+     *
      * @return mixed
      */
     protected function calculatePrice($itemProperty, $factor)
@@ -229,6 +231,7 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param InstallContext $context
+     *
      * @throws \Exception
      */
     public function install(InstallContext $context)
@@ -260,6 +263,7 @@ class CseEightselectBasic extends Plugin
     {
         $this->initInstallLog($context);
         $this->sendLog('activate');
+
         return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
 
@@ -270,6 +274,7 @@ class CseEightselectBasic extends Plugin
     {
         $this->initInstallLog($context);
         $this->sendLog('deactivate');
+
         return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
 
@@ -283,16 +288,22 @@ class CseEightselectBasic extends Plugin
         switch (true) {
             case version_compare($context->getCurrentVersion(), '1.0.1', '<='):
                 $this->update_1_0_1();
+                // no break
             case version_compare($context->getCurrentVersion(), '1.5.0', '<='):
                 $this->update_1_5_0();
+                // no break
             case version_compare($context->getCurrentVersion(), '1.5.2', '<='):
                 $this->update_1_5_2();
+                // no break
             case version_compare($context->getCurrentVersion(), '1.6.3', '<='):
                 $this->update_1_6_3();
+                // no break
             case version_compare($context->getCurrentVersion(), '1.6.4', '<='):
                 $this->update_1_6_4();
+                // no break
             case version_compare($context->getCurrentVersion(), '1.8.0', '<='):
                 $this->update_1_8_0();
+                // no break
             case version_compare($context->getCurrentVersion(), '1.11.0', '<='):
                 $update = new Update_1_11_0(
                     $this->container->get('config'),
@@ -302,7 +313,7 @@ class CseEightselectBasic extends Plugin
                 $update->update();
         }
 
-        $this->installMessages[] = 'Update auf CSE-Plugin-Version: ' . $context->getUpdateVersion();
+        $this->installMessages[] = 'Update auf CSE-Plugin-Version: '.$context->getUpdateVersion();
         $this->sendLog('update');
 
         return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
@@ -352,7 +363,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * Create attributes
+     * Create attributes.
      *
      * @throws \Exception
      */
@@ -482,6 +493,7 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param UninstallContext $context
+     *
      * @throws \Exception
      */
     public function uninstall(UninstallContext $context)
@@ -526,6 +538,7 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param InstallContext $context
+     *
      * @throws \Zend_Db_Adapter_Exception
      */
     private function createDatabase(InstallContext $context)
@@ -574,6 +587,7 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param ModelManager $modelManager
+     *
      * @return array
      */
     private function getClasses(ModelManager $modelManager)
@@ -585,6 +599,7 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param \Shopware_Components_Cron_CronJob $job
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
@@ -609,6 +624,7 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param \Shopware_Components_Cron_CronJob $job
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
@@ -631,6 +647,7 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @param \Shopware_Components_Cron_CronJob $job
+     *
      * @throws \Exception
      */
     public function cseEightselectBasicPropertyExport(\Shopware_Components_Cron_CronJob $job)
@@ -650,7 +667,8 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * @param  \Shopware_Components_Cron_CronJob $job
+     * @param \Shopware_Components_Cron_CronJob $job
+     *
      * @throws \Exception
      */
     public function cseEightselectBasicPropertyExportOnce(\Shopware_Components_Cron_CronJob $job)
@@ -669,15 +687,15 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * Provide the file collection for js files
+     * Provide the file collection for js files.
      *
      * @return ArrayCollection
      */
     public function addJsFiles()
     {
-        $jsDir = __DIR__ . '/Resources/views/frontend/_public/src/js/';
+        $jsDir = __DIR__.'/Resources/views/frontend/_public/src/js/';
         $jsFiles = [
-            $jsDir . 'jquery.8select-csePlugin.js',
+            $jsDir.'jquery.8select-csePlugin.js',
         ];
 
         return new ArrayCollection($jsFiles);
@@ -748,7 +766,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * add cron job for exporting all properties
+     * add cron job for exporting all properties.
      */
     public function addPropertyCron()
     {
@@ -780,7 +798,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * add cron job for exporting all properties
+     * add cron job for exporting all properties.
      */
     public function addPropertyOnceCron()
     {
@@ -812,7 +830,7 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
-     * quick update remove methods for version <= 1.5.2
+     * quick update remove methods for version <= 1.5.2.
      */
     public function removeQuickUpdateCron()
     {
@@ -1050,6 +1068,7 @@ class CseEightselectBasic extends Plugin
 
     /**
      * @throws \Exception
+     *
      * @return \DateTime
      */
     private function getNextMidnight()
