@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.11.0](https://github.com/8select/shopware-plugin-sob/tree/1.11.0) (2018-12-14)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.10.0...1.11.0)
+
+**Implemented Features:**
+
+- [CSE-1409](https://8select.atlassian.net/browse/CSE-1409) enable sys acc [\#63](https://github.com/8select/shopware-plugin-sob/pull/63) ([voodoods](https://github.com/voodoods))
+- [CSE-1600](https://8select.atlassian.net/browse/CSE-1600) shopware plugin installation manual docs [\#69](https://github.com/8select/shopware-plugin-sob/pull/69) ([Codilot](https://github.com/Codilot))
+
 ## [1.10.0](https://github.com/8select/shopware-plugin-sob/tree/1.10.0) (2018-11-27)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.9.5...1.10.0)
