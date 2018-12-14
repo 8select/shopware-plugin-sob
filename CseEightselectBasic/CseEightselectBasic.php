@@ -15,12 +15,14 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Shopware;
 use Shopware\Components\Emotion\ComponentInstaller;
 use Shopware\Components\Model\ModelManager;
+use Shopware\Components\ConfigWriter;
 use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\ActivateContext;
 use Shopware\Components\Plugin\Context\DeactivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
 use Shopware\Components\Plugin\Context\UpdateContext;
+use Shopware\Models\Shop\Shop;
 
 
         // validierung überall anpassen - done
@@ -83,7 +85,7 @@ class CseEightselectBasic extends Plugin
             'shop-name' => $shop->getName(),
             'shop-category' => $shop->getCategory()->getId(),
             'shop-host' => $shop->getHost(),
-            'api-id' => $provider->getPluginConfig()
+            'plugin-config' => $provider->getPluginConfig()
         ]);
     }
 
@@ -308,7 +310,7 @@ class CseEightselectBasic extends Plugin
             case version_compare($context->getCurrentVersion(), '1.8.0', '<='):
                 $this->update_1_8_0();
             case version_compare($context->getCurrentVersion(), '1.10.0', '<='):
-                $this->update_1_10_0();
+                $this->update_1_10_0($context);
         }
 
         $this->installMessages[] = 'Update auf CSE-Plugin-Version: ' . $context->getUpdateVersion();
@@ -360,18 +362,59 @@ class CseEightselectBasic extends Plugin
         $this->createDefaultConfig();
     }
 
-    private function update_1_10_0()
+    private function update_1_10_0($context)
     {
+
+        dump($context->getPlugin()->getConfigForms());
         //für jeden shop die config holen und migrieren
+        //alternativ wieder alte config keys nehmen
         $container = Shopware()->Container();
+
+        $shopRepository = Shopware()->Container()->get('models')->getRepository(Shop::class);
+        $shops = $shopRepository->findAll();
+        $config = Shopware()->Config();
+        $cw = new ConfigWriter($container->get('dbal_connection'));
+
+        dump('CseEightselectBasicPluginActive: ' . $config->get('8s_enabled'));
+        dump('CseEightselectBasicApiId: ' . $config->get('8s_merchant_id'));
+        dump('CseEightselectBasicFeedId: ' . $config->get('8s_feed_id'));
+        dump('CseEightselectBasicSysPsvBlock: ' . $config->get('8s_selected_detail_block'));
+        dump('CseEightselectBasicSysPsvPosition: ' . $config->get('8s_widget_placement'));
+        dump('CseEightselectBasicSysPsvContainer: ' . $config->get('8s_html_container_element'));
+        dump('CseEightselectBasicSysAccActive: ' . $config->get('8s_sys_acc_enabled'));
+        dump('CseEightselectBasicCustomCss: ' . $config->get('8s_custom_css'));
+        dump('CseEightselectBasicPreviewActive: ' . $config->get('8s_preview_mode_enabled'));
+        $cw->save('CseEightselectBasicPluginActive', $config->get('8s_enabled'));
+        $cw->save('CseEightselectBasicApiId', $config->get('8s_merchant_id'));
+        $cw->save('CseEightselectBasicFeedId', $config->get('8s_feed_id'));
+        $cw->save('CseEightselectBasicSysPsvBlock', $config->get('8s_selected_detail_block'));
+        $cw->save('CseEightselectBasicSysPsvPosition', $config->get('8s_widget_placement'));
+        $cw->save('CseEightselectBasicSysPsvContainer', $config->get('8s_html_container_element'));
+        $cw->save('CseEightselectBasicSysAccActive', $config->get('8s_sys_acc_enabled'));
+        $cw->save('CseEightselectBasicCustomCss', $config->get('8s_custom_css'));
+        $cw->save('CseEightselectBasicPreviewActive', $config->get('8s_preview_mode_enabled'));
+        // 8s_enabled
+        // 8s_merchant_id
+        // 8s_feed_id
+        // 8s_selected_detail_block
+        // 8s_widget_placement
+        // 8s_custom_css
+        // 8s_html_container_element
+        // 8s_sys_acc_enabled
+        // 8s_preview_mode_enabled
+
+        $oldConfig = Shopware()->Container()->get('shopware.plugin.config_reader')->getByPluginName($this->getName());
+        dump('oldconfig');
+        dump($oldConfig);
+
         $provider = new Provider(
             $container,
             $container->get('shopware.plugin.cached_config_reader'),
             $this->getName(),
             $container->get('dbal_connection')
         );
+        dump('$provider->getPluginConfig()');
         dump($provider->getPluginConfig());
-        $form = $this->Form();
     }
 
     /**
