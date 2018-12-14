@@ -10,8 +10,8 @@
  */
 
 use CseEightselectBasic\Components\ExportHelper;
-
-class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controller_Action
+use Shopware\Components\CSRFWhitelistAware;
+class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controller_Action implements CSRFWhitelistAware
 {
     /**
      * Provides the cart of the current user as JSON API.
@@ -97,4 +97,11 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
             $this->Response()->setHttpResponseCode(500);
         }
     }
+
+    public function getWhitelistedCSRFActions() {
+		return [
+			'all',
+			'delta'
+		];
+	}
 }
