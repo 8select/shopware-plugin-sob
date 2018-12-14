@@ -43,6 +43,14 @@ class ConfigValidator {
   }
 
   /**
+  * @return string
+  */
+  public static function getSysAccHtmlContainer()
+  {
+    return self::getCseEightselectBasicConfiguration()['8s_html_sysacc_container_element'];
+  }
+
+  /**
   * @return boolean
   */
   public static function isSysAccActive()

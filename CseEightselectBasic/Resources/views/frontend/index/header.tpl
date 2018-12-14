@@ -23,6 +23,13 @@
                 _eightselect_shop_plugin.showSys();
             }
         }
+
+        _eightselect_config['sys-acc'] = _eightselect_config['sys-acc'] || {};
+        _eightselect_config['sys-acc'].callback = function (error) {
+            if (!error) {
+                _eightselect_shop_plugin.showSwCrossSelling();
+            }
+        }
     </script>
 
     <script type="text/javascript">
@@ -147,6 +154,25 @@
             } else {
                 window.addEventListener('DOMContentLoaded', domListener);
             }
+        </script>
+    {/if}
+
+    {if !{config name="8s_preview_mode_enabled"} || ({config name="8s_preview_mode_enabled"} && {$smarty.get.preview})}
+        <script>
+            if (typeof _eightselect_shop_plugin === "undefined") {
+                var _eightselect_shop_plugin = {};
+            }
+
+            _eightselect_shop_plugin.showSwCrossSelling = function(sysAccWasCalled) {
+                var crossSellingContainer = document.querySelector('.eightselect-sw-cross-selling-container');
+                var eightselectSysAccHtml = document.querySelectorAll('.eightselect-sysacc-html');
+
+                for (let i = 0; i < eightselectSysAccHtml.length; i++) {
+                    eightselectSysAccHtml[i].style.display = "block";
+                }
+
+                crossSellingContainer.setAttribute("style", "display: none");
+            };
         </script>
     {/if}
 {/block}

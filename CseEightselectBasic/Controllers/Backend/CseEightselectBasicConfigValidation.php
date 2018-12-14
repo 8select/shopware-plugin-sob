@@ -13,6 +13,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicConfigValidation extends \
         $apiId = ConfigValidator::getApiId();
         $feedId = ConfigValidator::getFeedId();
         $htmlContainer = ConfigValidator::getHtmlContainer();
+        $htmlSysAccContainer = ConfigValidator::getSysAccHtmlContainer();
         $sizeDefinitions = ConfigValidator::hasSizeDefinitions();
 
         if ( !$isActive ) {
@@ -42,7 +43,12 @@ class Shopware_Controllers_Backend_CseEightselectBasicConfigValidation extends \
 
         if ( strlen($htmlContainer) === 0 || strpos($htmlContainer, 'CSE_SYS') === false ) {
             $isValid = false;
-            array_push($messages, "Kein Widget-Platzhalter (CSE_SYS) im HTML-Container");
+            array_push($messages, "Kein Widget-Platzhalter (CSE_SYS) im SYS-PSV HTML-Container");
+        }
+
+        if ( strlen($htmlSysAccContainer) === 0 || strpos($htmlSysAccContainer, 'CSE_SYS') === false ) {
+            $isValid = false;
+            array_push($messages, "Kein Widget-Platzhalter (CSE_SYS) im SYS-ACC HTML-Container");
         }
 
         if ( !$sizeDefinitions ) {

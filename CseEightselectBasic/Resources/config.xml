@@ -24,11 +24,21 @@
             <description lang="de">Ihre Feed ID erhalten Sie von 8select</description>
             <description lang="en">Your Feed ID is provided by 8select</description>
         </element>
+        <!-- PREVIEW-MODE -->
+        <element type="boolean" scope="shop">
+            <name>8s_preview_mode_enabled</name>
+            <label lang="de">Alle Widgets: Vorschau-Modus an</label>
+            <label lang="en">All Widgets: Enable Preview-Mode</label>
+            <value>true</value>
+            <description lang="de">Bei aktivem Preview-Modus können Sie über einen zusätzlichen Parameter "?preview=1" an der Shop-Adresse zu Ihrer Produktansicht aktive 8select Widgets testen. Beispiel: http://meinshop.de/fashion/145/mein-produkt?preview=1. Um das Modul SYS-ACC auch in der Preview zu sehen, müssen Sie es in den Plugin-Einstellungen aktivieren.</description>
+            <description lang="en">When the preview-mode is active, you can test the widgets by adding the parameter "?preview=1" to the URL. Example: http://meinshop.de/fashion/145/mein-produkt?preview=1. To also preview the SYS-ACC module, you need to activate it in the plugin-config.
+            </description>
+        </element>
         <!-- SELECTED DETAIL BLOCK -->
         <element type="select" required="true" scope="shop">
             <name>8s_selected_detail_block</name>
-            <label lang="de">Position an der das SYS-Widget platziert wird:</label>
-            <label lang="en">Position where SYS-widget will be placed:</label>
+            <label lang="de">SYS-PSV: Position an der das Widget platziert wird:</label>
+            <label lang="en">SYS-PSV: Position where the widget will be placed:</label>
             <value>frontend_detail_index_detail</value>
             <description lang="de">Geben Sie an, in welchem Block bzw. an welcher Stelle der Produktdetailseite das SYS-Widget platziert werden soll.</description>
             <description lang="en">Select a block of the product detail page in which the SYS widget will be placed.</description>
@@ -63,8 +73,8 @@
         <!-- WIDGET PLACEMENT-->
         <element type="select" required="true" scope="shop">
             <name>8s_widget_placement</name>
-            <label lang="de">Widget am Block-Anfang oder -Ende einfügen:</label>
-            <label lang="en">Attach widget to the block start or end:</label>
+            <label lang="de">SYS-PSV: Widget am Block-Anfang oder -Ende einfügen:</label>
+            <label lang="en">SYS-PSV: Attach widget to the block start or end:</label>
             <value>widget_after</value>
             <description lang="de">Geben Sie an, ob das Widget am Anfang oder am Ende des ausgewählten Blocks positioniert werden soll.</description>
             <description lang="en">Choose if the widget should be placed at the start or the end of the selected block.</description>
@@ -86,30 +96,28 @@
             <name>8s_custom_css</name>
             <label lang="de">Eigenes CSS:</label>
             <label lang="en">Custom CSS:</label>
+            <value><![CDATA[[data-8select-widget-id="sys-psv"] { padding: 10px; }]]></value>
         </element>
-        <!-- CONTAINER ELEMENT -->
+        <!-- CONTAINER ELEMENTS -->
         <element type="textarea" required="true" scope="shop">
             <name>8s_html_container_element</name>
-            <label lang="de">HTML container, CSE_SYS wird durch das SYS-Widget ersetzt:</label>
-            <label lang="en">HTML container CSE_SYS will be replaced by the SYS widget:</label>
+            <label lang="de">SYS-PSV: HTML container, CSE_SYS wird durch das Widget ersetzt:</label>
+            <label lang="en">SYS-PSV: HTML container CSE_SYS will be replaced by the widget:</label>
             <value>CSE_SYS</value>
         </element>
         <!-- SYS-ACC WIDGET -->
         <element type="boolean" required="true" scope="shop">
             <name>8s_sys_acc_enabled</name>
-            <label lang="de">Zeige SYS-ACC Widget</label>
-            <label lang="en">Display SYS-ACC Widget</label>
+            <label lang="de">SYS-ACC: Zeige Widget in der Warenkorb-Bestätigung an</label>
+            <label lang="en">SYS-ACC: Show Widget in cart confirmation</label>
             <value>false</value>
         </element>
-        <!-- PREVIEW-MODE -->
-        <element type="boolean" scope="shop">
-            <name>8s_preview_mode_enabled</name>
-            <label lang="de">Vorschau-Modus an</label>
-            <label lang="en">Enable Preview-Mode</label>
-            <value>true</value>
-            <description lang="de">Bei aktivem Preview-Modus können Sie über einen zusätzlichen Parameter "?preview=1" an der Shop-Adresse zu Ihrer Produktansicht aktive 8select Widgets testen. Beispiel: http://meinshop.de/fashion/145/mein-produkt?preview=1. Um das Modul SYS-ACC auch in der Preview zu sehen, müssen Sie es in den Plugin-Einstellungen aktivieren.</description>
-            <description lang="en">When the preview-mode is active, you can test the widgets by adding the parameter "?preview=1" to the URL. Example: http://meinshop.de/fashion/145/mein-produkt?preview=1. To also preview the SYS-ACC module, you need to activate it in the plugin-config.
-            </description>
+
+        <element type="textarea" required="true" scope="shop">
+            <name>8s_html_sysacc_container_element</name>
+            <label lang="de">SYS-ACC: HTML container, CSE_SYS wird durch das Widget ersetzt:</label>
+            <label lang="en">SYS-ACC: HTML container CSE_SYS will be replaced by the widget:</label>
+            <value><![CDATA[<h1>Das passt dazu</h1> CSE_SYS]]></value>
         </element>
     </elements>
 </config>
