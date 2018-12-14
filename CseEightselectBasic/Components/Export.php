@@ -1,9 +1,7 @@
 <?php
+
 namespace CseEightselectBasic\Components;
 
-use CseEightselectBasic\Components\AWSUploader;
-use CseEightselectBasic\Components\FeedLogger;
-use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Services\Config\Config;
 use CseEightselectBasic\Services\Config\Validator;
 use CseEightselectBasic\Services\Dependencies\Provider;
@@ -12,7 +10,7 @@ use League\Csv\Writer;
 abstract class Export
 {
     /**
-     * @var integer
+     * @var int
      */
     private $currentProgress = 0;
 
@@ -69,6 +67,7 @@ abstract class Export
                 // we need to remove products from shops that are not active for cse because those products are still logged here
                 $this->emptyQueue();
                 RunCronOnce::finishCron(static::CRON_NAME);
+
                 return;
             }
 
@@ -98,6 +97,7 @@ abstract class Export
     {
         if (!RunCronOnce::isScheduled(static::CRON_NAME)) {
             $message = sprintf('%s nicht ausgeführt, es ist kein Export in der Warteschleife.', static::CRON_NAME);
+
             return false;
         }
 
@@ -117,6 +117,7 @@ abstract class Export
 
         if (RunCronOnce::isRunning(static::CRON_NAME)) {
             $message = sprintf('%s nicht ausgeführt, es läuft bereits ein Export.', static::CRON_NAME);
+
             return false;
         }
 
@@ -125,14 +126,15 @@ abstract class Export
 
     private function generateExportCSV()
     {
-        if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-            require_once __DIR__ . '/../vendor/autoload.php';
+        if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+            require_once __DIR__.'/../vendor/autoload.php';
         }
 
         try {
             $path = $this->createTempFile();
         } catch (\Exception $exception) {
             Shopware()->PluginLogger()->error($exception->getMessage());
+
             return false;
         }
 
@@ -143,7 +145,6 @@ abstract class Export
 
         $this->writeFile($csvWriter);
 
-        AWSUploader::upload($path, static::FEED_TYPE);
         unlink($path);
     }
 
@@ -175,6 +176,7 @@ abstract class Export
             $message = sprintf('%s nicht ausgeführt, temporäre Datei in Fallback Verzeichnis für Export konnte nicht erstellt werden.', static::CRON_NAME);
             throw new \Exception($message);
         }
+
         return $path;
     }
 
@@ -195,6 +197,7 @@ abstract class Export
 
     /**
      * @param Writer $csvWriter
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
@@ -224,10 +227,12 @@ abstract class Export
 
     /**
      * @param string $mapping
-     * @param int $offset
-     * @param int $limit
+     * @param int    $offset
+     * @param int    $limit
+     *
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     *
      * @return array
      */
     protected function getArticles($mapping, $offset, $limit)
@@ -279,7 +284,8 @@ abstract class Export
     /**
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
-     * @return integer
+     *
+     * @return int
      */
     protected function getNumArticles()
     {
@@ -317,6 +323,7 @@ abstract class Export
     /**
      * @param $numArticles
      * @param $currentArticle
+     *
      * @throws \Zend_Db_Adapter_Exception
      */
     private function updateStatus($numArticles, $currentArticle)
