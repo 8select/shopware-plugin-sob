@@ -28,45 +28,73 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     }
 
     /**
-     * The API is available at /eight-select/export
+     * The API is available at /eight-select/exportProduct
      */
-    public function exportAction()
+    public function exportProductAction()
     {
-        $this->Front()->Plugins()->ViewRenderer()->setNoRender();
-        
-        $isTidAndFidInRequest = ExportHelper::isTidAndFidInRequest($this->Request());
-        if (!$isTidAndFidInRequest) {
-            $this->Response()->setBody('not found');
-            $this->Response()->setHttpResponseCode(404);
-            return false;
-        }
-        
-        $config = Shopware()->Container()->get('cse_eightselect_basic.dependencies.provider')->getPluginConfig();
-        $isTidAndFidConfigured = ExportHelper::isTidAndFidConfigured($config);
-        if (!$isTidAndFidConfigured) {
-            $this->Response()->setHeader('Content-Type', 'text/html');
-            $this->Response()->setBody('plugin is not configured');
-            $this->Response()->setHttpResponseCode(500);
-            return false;
-        }
-        
-        $areTidAndFidValid = ExportHelper::isTidAndFidValid($this->Request(), $config);
-        if (!$areTidAndFidValid) {
-            $this->Response()->setHeader('Content-Type', 'text/html');
-            $this->Response()->setBody('wrong tid or fid');
-            $this->Response()->setHttpResponseCode(400);
-            return false;
-        }
-        
-        $offsetAndLimit = ExportHelper::getOffsetAndLimit($this->Request());
-        if (!$offsetAndLimit) {
-            $this->Response()->setHeader('Content-Type', 'text/html');
-            $this->Response()->setBody('offset or limit missing');
-            $this->Response()->setHttpResponseCode(400);
-            return false;
-        }
+        try {
+            $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+            $requestWasValid = ExportHelper::validateExportRequest($this->Response(), $this->Request());
 
-        $this->Response()->setHeader('Content-Type', 'text/html');
-        $this->Response()->setBody('request looks ok');
+            if (!$requestWasValid) {
+                return false;
+            }
+            
+            $offsetAndLimit = ExportHelper::getOffsetAndLimit($this->Request());
+
+            $this->Response()->setHeader('Content-Type', 'text/html');
+            $this->Response()->setBody('request looks ok');
+            return true;
+        } catch (Exception $e) {
+            $this->Response()->setHeader('Content-Type', 'text/html');
+            $this->Response()->setBody($e->getMessage());
+            $this->Response()->setHttpResponseCode(500);
+        }
+    }
+
+    /**
+     * The API is available at /eight-select/exportProperty
+     */
+    public function exportPropertyAction()
+    {
+        try {
+            $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+            $requestWasValid = ExportHelper::validateExportRequest($this->Response(), $this->Request());
+
+            if (!$requestWasValid) {
+                return false;
+            }
+
+            $this->Response()->setHeader('Content-Type', 'text/html');
+            $this->Response()->setBody('request looks ok');
+            return true;
+        } catch (Exception $e) {
+            $this->Response()->setHeader('Content-Type', 'text/html');
+            $this->Response()->setBody($e->getMessage());
+            $this->Response()->setHttpResponseCode(500);
+        }
+    }
+
+    /**
+     * The API is available at /eight-select/exportStatus
+     */
+    public function exportStatusAction()
+    {
+        try {
+            $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+            $requestWasValid = ExportHelper::validateExportRequest($this->Response(), $this->Request());
+
+            if (!$requestWasValid) {
+                return false;
+            }
+
+            $this->Response()->setHeader('Content-Type', 'text/html');
+            $this->Response()->setBody('request looks ok');
+            return true;
+        } catch (Exception $e) {
+            $this->Response()->setHeader('Content-Type', 'text/html');
+            $this->Response()->setBody($e->getMessage());
+            $this->Response()->setHttpResponseCode(500);
+        }
     }
 }
