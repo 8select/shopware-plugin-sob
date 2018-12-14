@@ -9,7 +9,6 @@
  * @author      Onedrop GmbH & Co KG
  */
 
-use CseEightselectBasic\Components\ExportHelper;
 use Shopware\Components\CSRFWhitelistAware;
 class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controller_Action implements CSRFWhitelistAware
 {
@@ -30,11 +29,12 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     /**
      * The API is available at /eight-select/exportProduct
      */
-    public function exportProductAction()
-    {
+    public function exportProductAction() {
         try {
+            $container = Shopware()->Container();
             $this->Front()->Plugins()->ViewRenderer()->setNoRender();
-            $requestWasValid = ExportHelper::validateExportRequest($this->Response(), $this->Request());
+            $export = $container->get('cse_eightselect_basic.export.export');
+            $requestWasValid = $export->validateExportRequest($this->Response(), $this->Request());
 
             if (!$requestWasValid) {
                 return false;
