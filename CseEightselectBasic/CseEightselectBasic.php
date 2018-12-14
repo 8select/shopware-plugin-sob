@@ -1,7 +1,6 @@
 <?php
 namespace CseEightselectBasic;
 
-use CseEightselectBasic\Components\AWSUploader;
 use CseEightselectBasic\Components\ExportSetup;
 use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Components\RunCronOnce;
