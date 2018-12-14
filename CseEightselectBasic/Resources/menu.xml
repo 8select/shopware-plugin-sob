@@ -21,14 +21,6 @@
                     <class>sprite-gear</class>
                 </entry>
                 <entry>
-                    <name>Manueller Export</name>
-                    <label lang="en">Manual Export</label>
-                    <label lang="de">Manueller Export</label>
-                    <controller>CseEightselectBasicManualExport</controller>
-                    <action>index</action>
-                    <class>sprite-document-export</class>
-                </entry>
-                <entry>
                     <name>Management Console</name>
                     <label lang="en">Management Console</label>
                     <label lang="de">Management Console</label>
