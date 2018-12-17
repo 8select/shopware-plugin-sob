@@ -29,10 +29,11 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     /**
      * The API is available at /eight-select/exportProduct
      */
-    public function exportProductAction() {
+    public function productsAction() {
         try {
             $container = Shopware()->Container();
             $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+
             $export = $container->get('cse_eightselect_basic.export.export');
             $requestWasValid = $export->validateExportRequest($this->Response(), $this->Request());
 
@@ -40,56 +41,11 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
                 return false;
             }
             
-            $offsetAndLimit = ExportHelper::getOffsetAndLimit($this->Request());
+            $offsetAndLimit = $export->getOffsetAndLimit($this->Request());
 
             $this->Response()->setHeader('Content-Type', 'text/html');
             $this->Response()->setBody('request looks ok');
-            return true;
-        } catch (Exception $e) {
-            $this->Response()->setHeader('Content-Type', 'text/html');
-            $this->Response()->setBody($e->getMessage());
-            $this->Response()->setHttpResponseCode(500);
-        }
-    }
-
-    /**
-     * The API is available at /eight-select/exportProperty
-     */
-    public function exportPropertyAction()
-    {
-        try {
-            $this->Front()->Plugins()->ViewRenderer()->setNoRender();
-            $requestWasValid = ExportHelper::validateExportRequest($this->Response(), $this->Request());
-
-            if (!$requestWasValid) {
-                return false;
-            }
-
-            $this->Response()->setHeader('Content-Type', 'text/html');
-            $this->Response()->setBody('request looks ok');
-            return true;
-        } catch (Exception $e) {
-            $this->Response()->setHeader('Content-Type', 'text/html');
-            $this->Response()->setBody($e->getMessage());
-            $this->Response()->setHttpResponseCode(500);
-        }
-    }
-
-    /**
-     * The API is available at /eight-select/exportStatus
-     */
-    public function exportStatusAction()
-    {
-        try {
-            $this->Front()->Plugins()->ViewRenderer()->setNoRender();
-            $requestWasValid = ExportHelper::validateExportRequest($this->Response(), $this->Request());
-
-            if (!$requestWasValid) {
-                return false;
-            }
-
-            $this->Response()->setHeader('Content-Type', 'text/html');
-            $this->Response()->setBody('request looks ok');
+            
             return true;
         } catch (Exception $e) {
             $this->Response()->setHeader('Content-Type', 'text/html');
