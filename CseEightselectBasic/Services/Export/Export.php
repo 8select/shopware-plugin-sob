@@ -4,12 +4,14 @@ namespace CseEightselectBasic\Services\Export;
 use Shopware;
 
 class Export {
-
   public function __construct() {
     $container = Shopware()->Container();
     $this->configValidator = $container->get('cse_eightselect_basic.config.validator');
     $this->pluginConfig = $container->get('cse_eightselect_basic.dependencies.provider')->getPluginConfig();
-    
+  }
+
+  private function getFormatParam($request) {
+    return $request->getParam('format');
   }
 
   private function isTidAndFidInRequest ($request) {
@@ -17,6 +19,19 @@ class Export {
     $feedId = $request->getHeader('8select-com-fid');
     
     return $tenantId != null && $feedId != null;
+  }
+
+  private function isValidFormatSpecified ($request) {
+    $format = self::getFormatParam($request);
+    
+    if ($format == null) {
+      return false;
+    }
+    
+    $validFormats = ['product_feed', 'property_feed', 'status_feed'];
+    $isFormatValid = in_array($format, $validFormats, true);
+    
+    return $isFormatValid;
   }
 
   private function isTidAndFidValid ($request) {
@@ -45,9 +60,11 @@ class Export {
 
   public function validateExportRequest($response, $request) {
     $isTidAndFidInRequest = self::isTidAndFidInRequest($request);
-    if (!$isTidAndFidInRequest) {
-        $response->setHttpResponseCode(404);
-        return false;
+    $isValidFormatSpecified = self::isValidFormatSpecified($request);
+
+    if (!$isTidAndFidInRequest || !$isValidFormatSpecified) {
+      $response->setHttpResponseCode(404);
+      return false;
     }
     
     $validationResult = $this->configValidator->validateExportConfig();
@@ -73,14 +90,14 @@ class Export {
         $response->setHttpResponseCode(400);
         return false;
     }
-
     return true;
   } 
 
   public function getArticlesByOffsetAndLimit($offsetAndLimit) {
     $offset = $offsetAndLimit['offset'];
     $limit = $offsetAndLimit['limit'];
-
+    $exportFormat = self::getFormatParam($request);
+    
     //return articles
   }
 }
