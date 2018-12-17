@@ -35,7 +35,9 @@ class Export {
   }
 
   private function isTidAndFidValid ($request) {
-    return $request->getHeader('8select-com-tid') != $this->pluginConfig['8s_merchant_id'] || $request->getHeader('8select-com-fid') != $this->pluginConfig['8s_merchant_id'];
+    $tenantIdMatches = $request->getHeader('8select-com-tid') === $this->pluginConfig['CseEightselectBasicApiId'];
+    $feedIdMatches = $request->getHeader('8select-com-fid') === $this->pluginConfig['CseEightselectBasicFeedId'];
+    return $tenantIdMatches && $feedIdMatches;
   }
 
   public function getOffsetAndLimit ($request) {
