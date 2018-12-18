@@ -27,37 +27,54 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     }
 
     /**
-     * The API is available at /eight-select/exportProduct
+     * The API is available at /eight-select/products
      */
     public function productsAction() {
+        $responseErrorBody = $this->container->get('cse_eightselect_basic.response.error_body');
+        
         try {
-            $container = Shopware()->Container();
+            $requestValidator = $this->container->get('cse_eightselect_basic.request.validator');
             $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+            $authorizationValidation = $requestValidator->checkAuthorizationForExport($this->Request());
 
-            $export = $container->get('cse_eightselect_basic.export.export');
-            $requestWasValid = $export->validateExportRequest($this->Response(), $this->Request());
-
-            if (!$requestWasValid) {
-                return false;
+            if (!$authorizationValidation['isAuthorized']) {
+                $this->Response()->setHttpResponseCode(404);
+                return;
             }
             
-            $offsetAndLimit = $export->getOffsetAndLimit($this->Request());
-
-            $this->Response()->setHeader('Content-Type', 'text/html');
-            $this->Response()->setBody('request looks ok');
+            $this->Response()->setHeader('Content-Type', 'application/json');
+            $queryParamValidation = $requestValidator->checkQueryStringParamsForExport($this->Request());
             
-            return true;
+            if (!$queryParamValidation['isValid']) {
+                $errorBody = $responseErrorBody->getBadRequestBody($queryParamValidation['violations']);
+                $this->Response()->setBody($errorBody);
+                $this->Response()->setHttpResponseCode(400);
+                return;
+            }
+            
+            $configValidator = $this->container->get('cse_eightselect_basic.config.validator');
+            $configValidation = $configValidator->validateConfig();
+
+            if (!$configValidation['isValid']) {
+                $errorBody = $responseErrorBody->getInternalServerErrorBody($configValidation['violations']);
+                $this->Response()->setBody($errorBody);
+                $this->Response()->setHttpResponseCode(500);
+                return;
+            }
+
+            $this->Response()->setBody('return export here');
+            $this->Response()->setHttpResponseCode(200);
         } catch (Exception $e) {
-            $this->Response()->setHeader('Content-Type', 'text/html');
-            $this->Response()->setBody($e->getMessage());
+            $errorBody = $responseErrorBody->getInternalServerErrorBody($e->getMessage());
+            $this->Response()->setHeader('Content-Type', 'application/json');
+            $this->Response()->setBody();
             $this->Response()->setHttpResponseCode(500);
         }
     }
 
     public function getWhitelistedCSRFActions() {
-		return [
-			'all',
-			'delta'
-		];
+        return [
+            'products',
+        ];
 	}
 }
