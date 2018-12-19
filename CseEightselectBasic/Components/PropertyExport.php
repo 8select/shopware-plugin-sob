@@ -1,9 +1,7 @@
 <?php
 namespace CseEightselectBasic\Components;
 
-use League\Csv\Writer;
 use CseEightselectBasic\Components\Export;
-use CseEightselectBasic\Components\RunCronOnce;
 
 class PropertyExport extends Export
 {
@@ -28,7 +26,7 @@ class PropertyExport extends Export
         'prop_color' => 'farbe',
         'prop_url' => 'produkt_url',
         'prop_description' => 'beschreibung',
-        'images' => 'bilder'
+        'images' => 'bilder',
     ];
 
     /**
@@ -41,7 +39,8 @@ class PropertyExport extends Export
         'prop_retailPrice' => 'streich_preis',
     ];
 
-    public function __construct() {
+    public function __construct()
+    {
         $fieldMapping = $this->fieldMappingPriceAndStock;
         if ($this->isDeltaExport()) {
             $fieldMapping = $this->fieldMappingComplete;
@@ -82,7 +81,7 @@ class PropertyExport extends Export
         $sql = sprintf($sqlTemplate, $limit, $offset);
 
         if (getenv('ES_DEBUG')) {
-            echo  \PHP_EOL . 'SQL'  . \PHP_EOL;
+            echo \PHP_EOL . 'SQL' . \PHP_EOL;
             echo $sql . \PHP_EOL;
         }
 

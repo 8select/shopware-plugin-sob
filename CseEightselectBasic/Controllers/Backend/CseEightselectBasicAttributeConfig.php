@@ -17,7 +17,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
      * @throws Zend_Db_Statement_Exception
      * @return array
      */
-    protected function getArticleAttributes()
+    private function getArticleAttributes()
     {
         $fixedAttributes = [
             // articles attributes
@@ -55,7 +55,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
 
         return [
             'success' => true,
-            'data'    => $attributesComplete,
+            'data' => $attributesComplete,
         ];
     }
 }

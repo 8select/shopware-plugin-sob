@@ -1,11 +1,10 @@
 <?php
 
 use CseEightselectBasic\Components\ArticleExport;
+use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Components\ForceFullPropertyExport;
 use CseEightselectBasic\Components\PropertyExport;
 use CseEightselectBasic\Components\RunCronOnce;
-use CseEightselectBasic\Components\FeedLogger;
-use CseEightselectBasic\Components\ConfigValidator;
 
 class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shopware_Controllers_Backend_ExtJs
 {
@@ -49,7 +48,8 @@ class Shopware_Controllers_Backend_CseEightselectBasicManualExport extends \Shop
         $this->View()->assign(['lastFullExport' => $lastRun]);
     }
 
-    public function getLastPropertyExportDateAction() {
+    public function getLastPropertyExportDateAction()
+    {
         $lastRun = FeedLogger::getLastFeedUpdate(PropertyExport::CRON_NAME);
         $this->View()->assign(['lastPropertyExport' => $lastRun]);
     }

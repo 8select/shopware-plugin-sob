@@ -74,7 +74,8 @@ abstract class Export
     /**
      * @return array
      */
-    protected function canRunCron() {
+    protected function canRunCron()
+    {
         if (!RunCronOnce::isScheduled(static::CRON_NAME)) {
             $message = sprintf('%s nicht ausgeführt, es ist kein Export in der Warteschleife.', static::CRON_NAME);
             if (getenv('ES_DEBUG')) {
@@ -113,7 +114,8 @@ abstract class Export
         return true;
     }
 
-    private function generateExportCSV() {
+    private function generateExportCSV()
+    {
         if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
             require_once __DIR__ . '/../vendor/autoload.php';
         }
