@@ -2,41 +2,41 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="../../../engine/Shopware/Components/Plugin/schema/config.xsd">
     <elements>
-        <element type="boolean" required="true" scope="shop">
-            <name>8s_enabled</name>
+        <element type="boolean" required="true" scope="locale">
+            <name>CseEightselectBasicPluginActive</name>
             <label lang="de">Aktiviert</label>
             <label lang="en">Enabled</label>
             <value>true</value>
         </element>
         <!-- MERCHANT ID -->
-        <element type="text" required="true" scope="shop">
-            <name>8s_merchant_id</name>
+        <element type="text" required="true" scope="locale">
+            <name>CseEightselectBasicApiId</name>
             <label lang="de">API ID:</label>
             <label lang="en">API ID:</label>
             <description lang="de">Ihre API ID erhalten Sie von 8select</description>
             <description lang="en">Your API ID is provided by 8select</description>
         </element>
         <!-- FEED ID -->
-        <element type="text" required="true" scope="shop">
-            <name>8s_feed_id</name>
+        <element type="text" required="true" scope="locale">
+            <name>CseEightselectBasicFeedId</name>
             <label lang="de">Feed ID:</label>
             <label lang="en">Feed ID:</label>
             <description lang="de">Ihre Feed ID erhalten Sie von 8select</description>
             <description lang="en">Your Feed ID is provided by 8select</description>
         </element>
         <!-- PREVIEW-MODE -->
-        <element type="boolean" scope="shop">
-            <name>8s_preview_mode_enabled</name>
-            <label lang="de">Alle Widgets: Vorschau-Modus an</label>
-            <label lang="en">All Widgets: Enable Preview-Mode</label>
+        <element type="boolean" scope="locale">
+            <name>CseEightselectBasicPreviewActive</name>
+            <label lang="de">Vorschau-Modus an</label>
+            <label lang="en">Enable Preview-Mode</label>
             <value>true</value>
             <description lang="de">Bei aktivem Preview-Modus können Sie über einen zusätzlichen Parameter "?preview=1" an der Shop-Adresse zu Ihrer Produktansicht aktive 8select Widgets testen. Beispiel: http://meinshop.de/fashion/145/mein-produkt?preview=1. Um das Modul SYS-ACC auch in der Preview zu sehen, müssen Sie es in den Plugin-Einstellungen aktivieren.</description>
             <description lang="en">When the preview-mode is active, you can test the widgets by adding the parameter "?preview=1" to the URL. Example: http://meinshop.de/fashion/145/mein-produkt?preview=1. To also preview the SYS-ACC module, you need to activate it in the plugin-config.
             </description>
         </element>
         <!-- SELECTED DETAIL BLOCK -->
-        <element type="select" required="true" scope="shop">
-            <name>8s_selected_detail_block</name>
+        <element type="select" required="true" scope="locale">
+            <name>CseEightselectBasicSysPsvBlock</name>
             <label lang="de">SYS-PSV: Position an der das Widget platziert wird:</label>
             <label lang="en">SYS-PSV: Position where the widget will be placed:</label>
             <value>frontend_detail_index_detail</value>
@@ -71,8 +71,8 @@
             </store>
         </element>
         <!-- WIDGET PLACEMENT-->
-        <element type="select" required="true" scope="shop">
-            <name>8s_widget_placement</name>
+        <element type="select" required="true" scope="locale">
+            <name>CseEightselectBasicSysPsvPosition</name>
             <label lang="de">SYS-PSV: Widget am Block-Anfang oder -Ende einfügen:</label>
             <label lang="en">SYS-PSV: Attach widget to the block start or end:</label>
             <value>widget_after</value>
@@ -92,32 +92,32 @@
             </store>
         </element>
         <!-- CUSTOM CSS -->
-        <element type="textarea" required="false" scope="shop">
-            <name>8s_custom_css</name>
+        <element type="textarea" required="false" scope="locale">
+            <name>CseEightselectBasicCustomCss</name>
             <label lang="de">Eigenes CSS:</label>
             <label lang="en">Custom CSS:</label>
             <value><![CDATA[[data-8select-widget-id="sys-psv"] { padding: 10px; }]]></value>
         </element>
-        <!-- CONTAINER ELEMENTS -->
-        <element type="textarea" required="true" scope="shop">
-            <name>8s_html_container_element</name>
+        <!-- CONTAINER ELEMENT -->
+        <element type="textarea" required="true" scope="locale">
+            <name>CseEightselectBasicSysPsvContainer</name>
             <label lang="de">SYS-PSV: HTML container, CSE_SYS wird durch das Widget ersetzt:</label>
             <label lang="en">SYS-PSV: HTML container CSE_SYS will be replaced by the widget:</label>
             <value>CSE_SYS</value>
         </element>
         <!-- SYS-ACC WIDGET -->
-        <element type="boolean" required="true" scope="shop">
-            <name>8s_sys_acc_enabled</name>
+        <element type="boolean" required="true" scope="locale">
+            <name>CseEightselectBasicSysAccActive</name>
             <label lang="de">SYS-ACC: Zeige Widget in der Warenkorb-Bestätigung an</label>
             <label lang="en">SYS-ACC: Show Widget in cart confirmation</label>
             <value>false</value>
         </element>
-
-        <element type="textarea" required="true" scope="shop">
-            <name>8s_html_sysacc_container_element</name>
+        <element type="textarea" required="true" scope="locale">
+            <name>CseEightselectBasicSysAccContainer</name>
             <label lang="de">SYS-ACC: HTML container, CSE_SYS wird durch das Widget ersetzt:</label>
             <label lang="en">SYS-ACC: HTML container CSE_SYS will be replaced by the widget:</label>
             <value><![CDATA[<h1>Das passt dazu</h1> CSE_SYS]]></value>
         </element>
+
     </elements>
 </config>

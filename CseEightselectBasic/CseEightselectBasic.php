@@ -9,6 +9,7 @@ use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Components\FieldHelper;
 use CseEightselectBasic\Models\EightselectAttribute;
+use CseEightselectBasic\Setup\Database\Migrations\Update_1_11_0;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use Shopware;
@@ -268,6 +269,9 @@ class CseEightselectBasic extends Plugin
                 $this->update_1_6_4();
             case version_compare($context->getCurrentVersion(), '1.8.0', '<='):
                 $this->update_1_8_0();
+            case version_compare($context->getCurrentVersion(), '1.11.0', '<='):
+                $update = new Update_1_11_0($this->container->get('config'), $this->container->get('config_writer'));
+                $update->update();
         }
 
         $this->sendLog('update');
