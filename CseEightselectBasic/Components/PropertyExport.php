@@ -88,11 +88,6 @@ class PropertyExport extends Export
 
         $sql = sprintf($sqlTemplate, $limit, $offset);
 
-        if (getenv('ES_DEBUG')) {
-            echo \PHP_EOL . 'SQL' . \PHP_EOL;
-            echo $sql . \PHP_EOL;
-        }
-
         $articles = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
         return $articles;

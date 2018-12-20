@@ -72,9 +72,6 @@ abstract class Export
 
             $message = sprintf('Führe %s aus.', static::CRON_NAME);
             Shopware()->PluginLogger()->info($message);
-            if (getenv('ES_DEBUG')) {
-                echo $message . \PHP_EOL;
-            }
 
             RunCronOnce::runCron(static::CRON_NAME);
             $this->generateExportCSV();
@@ -84,15 +81,10 @@ abstract class Export
 
             $message = sprintf('%s abgeschlossen in %d s', static::CRON_NAME, (time() - $start));
             Shopware()->PluginLogger()->info($message);
-            if (getenv('ES_DEBUG')) {
-                echo $message;
-            }
         } catch (\Exception $exception) {
             Shopware()->PluginLogger()->error($exception);
             RunCronOnce::finishCron(static::CRON_NAME);
-            if (getenv('ES_DEBUG')) {
-                echo $exception;
-            }
+
             throw $exception;
         }
     }
@@ -104,9 +96,6 @@ abstract class Export
     {
         if (!RunCronOnce::isScheduled(static::CRON_NAME)) {
             $message = sprintf('%s nicht ausgeführt, es ist kein Export in der Warteschleife.', static::CRON_NAME);
-            if (getenv('ES_DEBUG')) {
-                echo $message . \PHP_EOL;
-            }
             return false;
         }
 
@@ -114,27 +103,18 @@ abstract class Export
         if ($validationResult['isValid'] === false) {
             $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::CRON_NAME);
             Shopware()->PluginLogger()->warning($message);
-            if (getenv('ES_DEBUG')) {
-                echo $message;
-            }
 
             return false;
         }
 
         if ($this->getNumArticles() <= 0) {
             $message = sprintf('%s nicht ausgeführt, es wurden keine Produkte für Export gefunden.', static::CRON_NAME);
-            if (getenv('ES_DEBUG')) {
-                echo $message . \PHP_EOL;
-            }
 
             return false;
         }
 
         if (RunCronOnce::isRunning(static::CRON_NAME)) {
             $message = sprintf('%s nicht ausgeführt, es läuft bereits ein Export.', static::CRON_NAME);
-            if (getenv('ES_DEBUG')) {
-                echo $message . \PHP_EOL;
-            }
             return false;
         }
 
@@ -151,9 +131,6 @@ abstract class Export
             $path = $this->createTempFile();
         } catch (\Exception $exception) {
             Shopware()->PluginLogger()->error($exception->getMessage());
-            if (getenv('ES_DEBUG')) {
-                echo $message . \PHP_EOL;
-            }
             return false;
         }
 
@@ -175,9 +152,6 @@ abstract class Export
 
             if (!$tempfile) {
                 $message = sprintf('%s nicht ausgeführt, temporäre Datei für Export konnte nicht erstellt werden.', static::CRON_NAME);
-                if (getenv('ES_DEBUG')) {
-                    echo $message . \PHP_EOL;
-                }
                 throw new \Exception($message);
             }
             $path = stream_get_meta_data($tempfile)['uri'];
@@ -189,9 +163,6 @@ abstract class Export
             }
             if (!$isDirCreated) {
                 $message = sprintf('%s nicht ausgeführt, Fallback Verzeichnis für Export konnte nicht erstellt werden.', static::CRON_NAME);
-                if (getenv('ES_DEBUG')) {
-                    echo $message . \PHP_EOL;
-                }
                 throw new \Exception($message, 500, $exception);
             }
             $path = tempnam($storagePath, static::FEED_TYPE);
@@ -200,9 +171,6 @@ abstract class Export
         $tempPath = new \SplFileInfo($path);
         if (!$tempPath->isWritable()) {
             $message = sprintf('%s nicht ausgeführt, temporäre Datei in Fallback Verzeichnis für Export konnte nicht erstellt werden.', static::CRON_NAME);
-            if (getenv('ES_DEBUG')) {
-                echo $message . \PHP_EOL;
-            }
             throw new \Exception($message);
         }
         return $path;
@@ -242,10 +210,6 @@ abstract class Export
             $top = $offset + ($batchSize - 1);
             if ($top > $numArticles) {
                 $top = $numArticles;
-            }
-
-            if (getenv('ES_DEBUG')) {
-                echo sprintf('Processing articles %d to %d from %d%s', $offset, $top, $numArticles, \PHP_EOL);
             }
 
             foreach ($articles as $article) {
@@ -305,11 +269,6 @@ abstract class Export
         $activeShop = $this->provider->getShopWithActiveCSE();
         $sql = sprintf($sqlTemplate, $mapping, $join, $activeShop->getCategory()->getId(), $limit, $offset);
 
-        if (getenv('ES_DEBUG')) {
-            echo \PHP_EOL . 'SQL' . \PHP_EOL;
-            echo $sql . \PHP_EOL;
-        }
-
         $articles = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
         return $articles;
@@ -347,11 +306,6 @@ abstract class Export
 
         $activeShop = $this->provider->getShopWithActiveCSE();
         $sql = sprintf($sqlTemplate, $join, $activeShop->getCategory()->getId(), $limit, $offset);
-
-        if (getenv('ES_DEBUG')) {
-            echo \PHP_EOL . 'SQL' . \PHP_EOL;
-            echo $sql . \PHP_EOL;
-        }
 
         $count = Shopware()->Db()->query($sql)->fetchColumn();
 

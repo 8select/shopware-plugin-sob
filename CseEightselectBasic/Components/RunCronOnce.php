@@ -8,9 +8,6 @@ class RunCronOnce
     public static function runOnce($cronName) {
         if (self::isScheduled($cronName) || self::isRunning($cronName)) {
             $message = sprintf('%s nicht eingereiht, ist bereits in der Warteschleife.', $cronName);
-            if (getenv('ES_DEBUG')) {
-                echo $message . \PHP_EOL;
-            }
             return;
         }
 
@@ -40,9 +37,6 @@ class RunCronOnce
     public static function finishCron($cronName)
     {
         $sql = 'DELETE FROM ' . self::TABLE_NAME . ' WHERE cron_name = "' . $cronName . '"';
-        if (getenv('ES_DEBUG')) {
-            echo $sql . \PHP_EOL;
-        }
         Shopware()->Db()->query($sql);
     }
 
