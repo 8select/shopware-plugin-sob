@@ -4,10 +4,10 @@ namespace CseEightselectBasic;
 use CseEightselectBasic\Components\AWSUploader;
 use CseEightselectBasic\Components\ExportSetup;
 use CseEightselectBasic\Components\FeedLogger;
-use CseEightselectBasic\Components\FieldHelper;
 use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Models\EightselectAttribute;
 use CseEightselectBasic\Services\Config\Config;
+use CseEightselectBasic\Services\Dependencies\Provider;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
 use CseEightselectBasic\Setup\Database\Migrations\Update_1_11_0;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -37,8 +37,12 @@ class CseEightselectBasic extends Plugin
 
     private function initInstallLog($context)
     {
+        $provider = new Provider($this->container, $this->getPluginConfigService());
+        $currentShop = $provider->getCurrentShop();
+        $shopUrl = $currentShop->getHost() . $currentShop->getBaseUrl() . $currentShop->getBasePath();
+
         try {
-            $this->installMessages[] = 'Shop-URL: ' . FieldHelper::getFallbackBaseUrl();
+            $this->installMessages[] = 'Shop-URL: ' . $shopUrl;
             $this->installMessages[] = 'Shopware-Version: ' . $this->container->get('shopware.release')->getVersion();
             $this->installMessages[] = 'CSE-Plugin-Version: ' . $context->getCurrentVersion();
         } catch (\Exception $exception) {
