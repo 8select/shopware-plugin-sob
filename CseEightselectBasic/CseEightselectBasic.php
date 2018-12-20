@@ -83,24 +83,6 @@ class CseEightselectBasic extends Plugin
         return $this->pluginConfigService;
     }
 
-    private function dumper()
-    {
-        // $provider = $this->container->get('cse_eightselect_basic.dependencies.provider');
-        // $shop = $provider->getCurrentShop();
-        // dump([
-        //     'message' => 'config check - onFrontendPostDispatch',
-        //     'shop-name' => $shop->getName(),
-        //     'shop-category' => $shop->getCategory()->getId(),
-        //     'shop-host' => $shop->getHost(),
-        //     'current-shop' => $shop,
-        //     'active-shop' => $provider->getShopWithActiveCSE(),
-        //     'cse-active-for-currentshop' => $this->getPluginConfigService()->isCseActiveForCurrentShop(),
-        //     'cse-config' =>  $this->getPluginConfigService()->debug(),
-        //     'shopware-config-sBASEFILE' =>  $this->container->get('config')['sBASEFILE'],
-        //     'link' => $link
-        // ]);
-    }
-
     public function onPreDispatch()
     {
         Shopware()->Template()->addTemplateDir($this->getPath() . '/Resources/views/');
@@ -141,13 +123,9 @@ class CseEightselectBasic extends Plugin
      */
     public function onFrontendPostDispatch(\Enlight_Event_EventArgs $args)
     {
-        $this->dumper();
         if ($this->getPluginConfigService()->isCseActiveForCurrentShop() === false) {
-            dump('CSE is disabled -> stop');
             return;
         }
-
-        dump('CSE is enabled -> proceed');
 
         $args->get('subject')->View()->assign(
             'htmlContainer',
@@ -164,14 +142,10 @@ class CseEightselectBasic extends Plugin
      */
     public function onPostDispatchBackendEmotion(\Enlight_Controller_ActionEventArgs $args)
     {
-        $this->dumper();
         // sollte ggf. immer aktiv sein damit emotion benutzt werden kann?
         if ($this->getPluginConfigService()->isCseActive() === false) {
-            dump('CSE is disabled -> stop');
             return;
         }
-
-        dump('CSE is enabled -> proceed');
 
         $controller = $args->getSubject();
         $view = $controller->View();
@@ -189,14 +163,9 @@ class CseEightselectBasic extends Plugin
      */
     public function onCheckoutConfirm(\Enlight_Event_EventArgs $args)
     {
-        $this->dumper();
-
         if ($this->getPluginConfigService()->isCseActiveForCurrentShop() === false) {
-            dump('CSE is disabled -> stop');
             return;
         }
-
-        dump('CSE is enabled -> proceed');
 
         $request = $args->getRequest();
         $controller = $args->get('subject');
@@ -611,13 +580,9 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicArticleExport(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->dumper();
         if ($this->getPluginConfigService()->isCseActive() === false) {
-            dump('CSE is disabled -> stop');
             return;
         }
-
-        dump('CSE is enabled -> proceed');
 
         try {
             $this->container->get('cse_eightselect_basic.article_export')->scheduleCron();
@@ -639,14 +604,9 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicArticleExportOnce(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->dumper();
-
         if ($this->getPluginConfigService()->isCseActive() === false) {
-            dump('CSE is disabled -> stop');
             return;
         }
-
-        dump('CSE is enabled -> proceed');
 
         try {
             $this->container->get('cse_eightselect_basic.article_export')->doCron();
@@ -664,14 +624,9 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicPropertyExport(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->dumper();
-
         if ($this->getPluginConfigService()->isCseActive() === false) {
-            dump('CSE is disabled -> stop');
             return;
         }
-
-        dump('CSE is enabled -> proceed');
 
         try {
             $this->container->get('cse_eightselect_basic.property_export')->scheduleCron();
@@ -689,14 +644,9 @@ class CseEightselectBasic extends Plugin
      */
     public function cseEightselectBasicPropertyExportOnce(\Shopware_Components_Cron_CronJob $job)
     {
-        $this->dumper();
-
         if ($this->getPluginConfigService()->isCseActive() === false) {
-            dump('CSE is disabled -> stop');
             return;
         }
-
-        dump('CSE is enabled -> proceed');
 
         try {
             $this->container->get('cse_eightselect_basic.property_export')->doCron();

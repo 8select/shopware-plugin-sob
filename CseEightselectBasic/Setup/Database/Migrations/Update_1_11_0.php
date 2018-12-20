@@ -24,16 +24,6 @@ class Update_1_11_0
 
     public function update()
     {
-        dump('CseEightselectBasicPluginActive: ' . $this->config->get('8s_enabled'));
-        dump('CseEightselectBasicApiId: ' . $this->config->get('8s_merchant_id'));
-        dump('CseEightselectBasicFeedId: ' . $this->config->get('8s_feed_id'));
-        dump('CseEightselectBasicSysPsvBlock: ' . $this->config->get('8s_selected_detail_block'));
-        dump('CseEightselectBasicSysPsvPosition: ' . $this->config->get('8s_widget_placement'));
-        dump('CseEightselectBasicSysPsvContainer: ' . $this->config->get('8s_html_container_element'));
-        dump('CseEightselectBasicSysAccActive: ' . $this->config->get('8s_sys_acc_enabled'));
-        dump('CseEightselectBasicCustomCss: ' . $this->config->get('8s_custom_css'));
-        dump('CseEightselectBasicPreviewActive: ' . $this->config->get('8s_preview_mode_enabled'));
-
         $this->configWriter->save('CseEightselectBasicPluginActive', $this->config->get('8s_enabled'));
         $this->configWriter->save('CseEightselectBasicApiId', $this->config->get('8s_merchant_id'));
         $this->configWriter->save('CseEightselectBasicFeedId', $this->config->get('8s_feed_id'));
@@ -50,9 +40,5 @@ class Update_1_11_0
             'CseEightselectBasicSysAccContainer',
             $this->config->get('8s_html_sysacc_container_element')
         );
-
-        $oldConfig = Shopware()->Container()->get('shopware.plugin.config_reader')->getByPluginName('CseEightselectBasic');
-        dump('oldconfig');
-        dump($oldConfig);
     }
 }
