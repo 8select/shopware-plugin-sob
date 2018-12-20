@@ -12,7 +12,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 {
     /**
      * Provides the cart of the current user as JSON API.
-     * The API is available at /eight-select/cart
+     * The API is available at /cse-eightselect-basic/cart
      */
     public function cartAction()
     {
