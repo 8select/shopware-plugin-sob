@@ -208,6 +208,21 @@ abstract class Export
     }
 
     /**
+     * @return string
+     */
+    private function getAttributeMapping()
+    {
+        $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping
+        FROM 8s_attribute_mapping
+        WHERE shopwareAttribute != "-"
+        AND shopwareAttribute != ""
+        AND shopwareAttribute IS NOT NULL
+        AND shopwareAttribute NOT LIKE "%id=%"';
+
+        return Shopware()->Db()->query($attributeMappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
+    }
+
+    /**
      * @param Writer $csvWriter
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
@@ -216,28 +231,20 @@ abstract class Export
      */
     private function writeFile(Writer $csvWriter)
     {
-        $attributeMappingQuery = 'SELECT GROUP_CONCAT(CONCAT(shopwareAttribute," AS ",eightselectAttribute)) as resultMapping
-                         FROM 8s_attribute_mapping
-                         WHERE shopwareAttribute != "-"
-                         AND shopwareAttribute != ""
-                         AND shopwareAttribute IS NOT NULL
-                         AND shopwareAttribute NOT LIKE "%id=%"';
-
-        $attributeMapping = Shopware()->Db()->query($attributeMappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
-
         $numArticles = $this->getNumArticles();
         $batchSize = 100;
 
+        $attributeMapping = $this->getAttributeMapping();
         for ($i = 0; $i < $numArticles; $i += $batchSize) {
             $articles = $this->getArticles($attributeMapping, $i, $batchSize);
 
-            $top = $i + ($batchSize - 1);
+            $top = $offset + ($batchSize - 1);
             if ($top > $numArticles) {
                 $top = $numArticles;
             }
 
             if (getenv('ES_DEBUG')) {
-                echo sprintf('Processing articles %d to %d from %d%s', $i, $top, $numArticles, \PHP_EOL);
+                echo sprintf('Processing articles %d to %d from %d%s', $offset, $top, $numArticles, \PHP_EOL);
             }
 
             foreach ($articles as $article) {
@@ -258,40 +265,47 @@ abstract class Export
      */
     protected function getArticles($mapping, $offset, $limit)
     {
-        $sqlTemplate = 'SELECT %s %s,
-                    s_articles_details.articleID,
-                    s_articles.laststock AS laststock,
-                    s_articles_details.id as detailID,
-                    s_articles_prices.price AS angebots_preis,
-                    s_articles_prices.pseudoprice AS streich_preis,
-                    s_articles_details.active AS active,
-                    s_articles_details.instock AS instock,
-                    s_articles_supplier.name as marke,
-                    ad2.ordernumber as mastersku,
-                    s_articles_details.ordernumber as sku,
-                    s_core_tax.tax AS tax
-                FROM s_articles_details
-                    %s
-                    INNER JOIN s_articles_details AS ad2 ON ad2.articleID = s_articles_details.articleID AND ad2.kind = 1
-                    INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
-                    INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
-                    INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1 AND s_articles_prices.pricegroup = "EK"
-                    INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
-                    INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
-                LIMIT %d OFFSET %d';
+        $sqlTemplate = "
+            SELECT %s,
+                s_articles_details.articleID,
+                s_articles.laststock AS laststock,
+                s_articles_details.id as detailID,
+                s_articles_prices.price AS angebots_preis,
+                s_articles_prices.pseudoprice AS streich_preis,
+                s_articles_details.active AS active,
+                s_articles_details.instock AS instock,
+                s_articles_supplier.name as marke,
+                ad2.ordernumber as mastersku,
+                s_articles_details.ordernumber as sku,
+                s_core_tax.tax AS tax
+            FROM s_articles_details
+                %s
+                INNER JOIN s_articles_details AS ad2 ON ad2.articleID = s_articles_details.articleID AND ad2.kind = 1
+                INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
+                INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
+                INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1 AND s_articles_prices.pricegroup = 'EK'
+                INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
+                INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
+                INNER JOIN (
+                    SELECT articleID
+                    FROM s_articles_categories_ro
+                    WHERE categoryID = %s
+                    GROUP BY articleID
+                ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleId
+            LIMIT %d OFFSET %d;
+            ";
 
-        $distinct = '';
         $join = '';
 
         if (static::FEED_TYPE === PropertyExport::FEED_TYPE && $this->isDeltaExport()) {
-            $distinct = ' DISTINCT ';
             $join = ' INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id ';
         }
 
-        $sql = sprintf($sqlTemplate, $distinct, $mapping, $join, $limit, $offset);
+        $activeShop = $this->provider->getShopWithActiveCSE();
+        $sql = sprintf($sqlTemplate, $mapping, $join, $activeShop->getCategory()->getId(), $limit, $offset);
 
         if (getenv('ES_DEBUG')) {
-            echo  \PHP_EOL . 'SQL'  . \PHP_EOL;
+            echo \PHP_EOL . 'SQL' . \PHP_EOL;
             echo $sql . \PHP_EOL;
         }
 
@@ -307,13 +321,39 @@ abstract class Export
      */
     protected function getNumArticles()
     {
-        $sql = 'SELECT count(*) from s_articles_details';
+        $sqlTemplate = "
+            SELECT COUNT(s_articles_details.id)
+            FROM s_articles_details
+                %s
+                INNER JOIN s_articles_details AS ad2 ON ad2.articleID = s_articles_details.articleID AND ad2.kind = 1
+                INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
+                INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
+                INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1 AND s_articles_prices.pricegroup = 'EK'
+                INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
+                INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
+                INNER JOIN (
+                    SELECT articleID
+                    FROM s_articles_categories_ro
+                    WHERE categoryID = %s
+                    GROUP BY articleID
+                ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleId;";
+
+        $join = '';
 
         if (static::FEED_TYPE === PropertyExport::FEED_TYPE && $this->isDeltaExport()) {
-            $sql = 'SELECT COUNT(DISTINCT s_articles_details_id) as count FROM 8s_articles_details_change_queue';
+            $join = ' INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id ';
+        }
+
+        $activeShop = $this->provider->getShopWithActiveCSE();
+        $sql = sprintf($sqlTemplate, $join, $activeShop->getCategory()->getId(), $limit, $offset);
+
+        if (getenv('ES_DEBUG')) {
+            echo \PHP_EOL . 'SQL' . \PHP_EOL;
+            echo $sql . \PHP_EOL;
         }
 
         $count = Shopware()->Db()->query($sql)->fetchColumn();
+
         return intval($count);
     }
 

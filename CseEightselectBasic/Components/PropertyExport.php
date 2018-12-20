@@ -78,6 +78,12 @@ class PropertyExport extends Export
                     INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
                     INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1 AND s_articles_prices.pricegroup = "EK"
                     INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
+                    INNER JOIN (
+                        SELECT articleID
+                        FROM s_articles_categories_ro
+                        WHERE categoryID = %s
+                        GROUP BY articleID
+                    ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleId;";
                 LIMIT %d OFFSET %d';
 
         $sql = sprintf($sqlTemplate, $limit, $offset);
