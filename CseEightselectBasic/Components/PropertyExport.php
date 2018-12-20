@@ -41,6 +41,7 @@ class PropertyExport extends Export
 
     public function __construct()
     {
+        parent::__construct();
         $fieldMapping = $this->fieldMappingPriceAndStock;
         if ($this->isDeltaExport()) {
             $fieldMapping = $this->fieldMappingComplete;
@@ -48,8 +49,6 @@ class PropertyExport extends Export
 
         $this->header = array_keys($fieldMapping);
         $this->fields = array_values($fieldMapping);
-
-        parent::__construct();
     }
 
     /**
