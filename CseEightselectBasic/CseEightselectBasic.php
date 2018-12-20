@@ -21,7 +21,6 @@ use Shopware\Components\Plugin\Context\DeactivateContext;
 use Shopware\Components\Plugin\Context\InstallContext;
 use Shopware\Components\Plugin\Context\UninstallContext;
 use Shopware\Components\Plugin\Context\UpdateContext;
-use Shopware\Models\Shop\Repository as ShopRepository;
 use Shopware\Models\Shop\Shop;
 
 class CseEightselectBasic extends Plugin
@@ -78,7 +77,13 @@ class CseEightselectBasic extends Plugin
     {
         if (!isset($this->pluginConfigService)) {
             $configReader = $this->container->get('shopware.plugin.cached_config_reader');
-            $this->pluginConfigService = new PluginConfigService($this->container, $configReader, $this->getName());
+            $configWriter = $this->container->get('config_writer');
+            $this->pluginConfigService = new PluginConfigService(
+                $this->container,
+                $configReader,
+                $configWriter,
+                $this->getName()
+            );
         }
 
         return $this->pluginConfigService;
@@ -241,6 +246,7 @@ class CseEightselectBasic extends Plugin
         $this->installWidgets();
         $this->createDatabase($context);
         $this->createAttributes();
+        $this->getPluginConfigService()->setDefaults();
 
         $this->sendLog('install');
 
@@ -288,12 +294,10 @@ class CseEightselectBasic extends Plugin
             case version_compare($context->getCurrentVersion(), '1.8.0', '<='):
                 $this->update_1_8_0();
             case version_compare($context->getCurrentVersion(), '1.11.0', '<='):
-                /** @var ShopRepository $shopRepository */
-                $shopRepository = $this->container->get('models')->getRepository(Shop::class);
                 $update = new Update_1_11_0(
                     $this->container->get('config'),
                     $this->container->get('config_writer'),
-                    $shopRepository->getDefault()
+                    $this->getPluginConfigService()
                 );
                 $update->update();
         }

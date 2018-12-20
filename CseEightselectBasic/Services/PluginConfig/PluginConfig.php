@@ -2,6 +2,7 @@
 
 namespace CseEightselectBasic\Services\PluginConfig;
 
+use Shopware\Components\ConfigWriter;
 use Shopware\Components\DependencyInjection\Container;
 use Shopware\Components\Plugin\ConfigReader;
 use Shopware\Models\Shop\DetachedShop;
@@ -21,6 +22,11 @@ class PluginConfig
     private $currentShop;
 
     /**
+     * ConfigWriter
+     */
+    private $configWriter;
+
+    /**
      * @var array
      */
     private $pluginConfig;
@@ -28,16 +34,19 @@ class PluginConfig
     /**
      * @param Container $container
      * @param ConfigReader $configReader
+     * @param ConfigWriter $configWriter
      * @param string $pluginName
      */
     public function __construct(
         Container $container,
         ConfigReader $configReader,
+        ConfigWriter $configWriter,
         $pluginName
     ) {
         $this->container = $container;
         $this->currentShop = $this->getCurrentShop();
         $this->pluginConfig = $configReader->getByPluginName($pluginName);
+        $this->configWriter = $configWriter;
     }
 
     /**
@@ -47,11 +56,6 @@ class PluginConfig
     public function get($key)
     {
         return $this->pluginConfig[$key];
-    }
-
-    public function debug()
-    {
-        return $this->pluginConfig;
     }
 
     /**
@@ -86,5 +90,13 @@ class PluginConfig
         $shopRepository = $this->container->get('models')->getRepository(Shop::class);
 
         return $shopRepository->getActiveDefault();
+    }
+
+    public function setDefaults()
+    {
+        /** @var ShopRepository $shopRepository */
+        $shopRepository = $this->container->get('models')->getRepository(Shop::class);
+        $defaultShop = $shopRepository->getDefault();
+        $this->configWriter->save('CseEightselectBasicActiveShopId', $defaultShop->getId());
     }
 }

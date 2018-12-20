@@ -2,8 +2,8 @@
 
 namespace CseEightselectBasic\Setup\Database\Migrations;
 
+use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
 use Shopware\Components\ConfigWriter;
-use Shopware\Models\Shop\Shop;
 
 class Update_1_11_0
 {
@@ -18,23 +18,23 @@ class Update_1_11_0
     private $configWriter;
 
     /**
-     * @var Shop
+     * @var PluginConfigService
      */
-    private $defaultShop;
+    private $pluginConfigService;
 
     /**
      * @param \Shopware_Components_Config $config
      * @param ConfigWriter $configWriter
-     * @param Shop $defaultShop
+     * @param PluginConfigService $pluginConfigService
      */
     public function __construct(
         \Shopware_Components_Config $config,
         ConfigWriter $configWriter,
-        Shop $defaultShop
+        PluginConfigService $pluginConfigService
     ) {
         $this->config = $config;
         $this->configWriter = $configWriter;
-        $this->defaultShop = $defaultShop;
+        $this->pluginConfigService = $pluginConfigService;
     }
 
     public function update()
@@ -52,6 +52,8 @@ class Update_1_11_0
         );
         $this->configWriter->save('CseEightselectBasicSysAccActive', $this->config->get('8s_sys_acc_enabled'));
 
+        $this->pluginConfigService->setDefaults();
+
         // when migrating from versions < 1.11.0 this config value does not exist
         // we can set the default - that is what happens if someone updates to 1.11.0
         $sysAccContainer = $this->config->get('8s_html_sysacc_container_element');
@@ -62,6 +64,5 @@ class Update_1_11_0
             'CseEightselectBasicSysAccContainer',
             $sysAccContainer
         );
-        $this->configWriter->save('CseEightselectBasicActiveShopId', $this->defaultShop->getId());
     }
 }
