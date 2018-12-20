@@ -48,6 +48,8 @@ class PropertyExport extends Export
 
         $this->header = array_keys($fieldMapping);
         $this->fields = array_values($fieldMapping);
+
+        parent::__construct();
     }
 
     /**

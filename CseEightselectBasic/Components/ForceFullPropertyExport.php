@@ -33,6 +33,7 @@ class ForceFullPropertyExport extends Export
     {
         $this->header = array_keys($this->fieldMapping);
         $this->fields = array_values($this->fieldMapping);
+        parent::__construct();
     }
 
     /**

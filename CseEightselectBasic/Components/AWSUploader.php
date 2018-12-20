@@ -16,8 +16,9 @@ class AWSUploader
         if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
             require_once __DIR__ . '/../vendor/autoload.php';
         }
-        $config = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-        $feedId = $config->getByPluginName('CseEightselectBasic')['8s_feed_id'];
+
+        $pluginConfigService = Shopware()->Container()->get('cse_eightselect_basic.plugin_config.plugin_config');
+        $feedId = $pluginConfigService->get('CseEightselectBasicFeedId');
         $prefix = $feedId . '/' . $feedType . '/' . date('Y') . '/' . date('m') . '/' . date('d');
         $timestampInMillis = round(microtime(true) * 1000);
         $filename = sprintf('%s_%s_%d.csv', $feedId, $feedType, $timestampInMillis);

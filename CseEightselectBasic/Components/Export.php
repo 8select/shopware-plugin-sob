@@ -1,11 +1,13 @@
 <?php
 namespace CseEightselectBasic\Components;
 
-use League\Csv\Writer;
-use CseEightselectBasic\Components\Config;
-use CseEightselectBasic\Components\ConfigValidator;
+use CseEightselectBasic\Components\AWSUploader;
 use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Components\RunCronOnce;
+use CseEightselectBasic\Services\Config\Config;
+use CseEightselectBasic\Services\Config\Validator;
+use CseEightselectBasic\Services\Dependencies\Provider;
+use League\Csv\Writer;
 
 abstract class Export
 {
@@ -23,6 +25,29 @@ abstract class Export
      * @var string[]
      */
     protected $fields = [];
+
+    /**
+     * @var Provider
+     */
+    protected $provider;
+
+    /**
+     * @var Validator
+     */
+    protected $configValidator;
+
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    public function __construct()
+    {
+        $container = Shopware()->Container();
+        $this->provider = $container->get('cse_eightselect_basic.dependencies.provider');
+        $this->configValidator = $container->get('cse_eightselect_basic.config.validator');
+        $this->config = $container->get('cse_eightselect_basic.config.config');
+    }
 
     public function scheduleCron()
     {
@@ -84,7 +109,8 @@ abstract class Export
             return false;
         }
 
-        if (!ConfigValidator::isConfigValid()) {
+        $validationResult = $this->configValidator->validateExportConfig();
+        if ($validationResult['isValid'] === false) {
             $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::CRON_NAME);
             Shopware()->PluginLogger()->warning($message);
             if (getenv('ES_DEBUG')) {
@@ -307,9 +333,9 @@ abstract class Export
     }
 
     /**
-    * @throws \Zend_Db_Adapter_Exception
-    * @throws \Zend_Db_Statement_Exception
-    */
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     */
     private function emptyQueue()
     {
         if ($this->isDeltaExport() === false || static::FEED_TYPE !== PropertyExport::FEED_TYPE) {
@@ -320,7 +346,8 @@ abstract class Export
         Shopware()->Db()->query($sql);
     }
 
-    protected function isDeltaExport() {
-        return Config::getOption(Config::OPTION_EXPORT_TYPE) === Config::OPTION_EXPORT_TYPE_VALUE_DELTA;
+    protected function isDeltaExport()
+    {
+        return $this->config->getOption(Config::OPTION_EXPORT_TYPE) === Config::OPTION_EXPORT_TYPE_VALUE_DELTA;
     }
 }

@@ -8,6 +8,14 @@
             <label lang="en">Enabled</label>
             <value>true</value>
         </element>
+        <element scope="locale" type="combo">
+            <name>CseEightselectBasicActiveShopId</name>
+            <label lang="de">Subshop für den die CSE aktiv ist</label>
+            <label lang="en">Subshop where the CSE is active</label>
+            <description lang="de">...</description>
+            <description lang="en">...</description>
+            <store>Shopware.apps.Base.store.ShopLanguage</store>
+        </element>
         <!-- MERCHANT ID -->
         <element type="text" required="true" scope="locale">
             <name>CseEightselectBasicApiId</name>

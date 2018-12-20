@@ -1,10 +1,6 @@
 <?php
 namespace CseEightselectBasic\Components;
 
-use League\Csv\Writer;
-use CseEightselectBasic\Components\RunCronOnce;
-use CseEightselectBasic\Components\FeedLogger;
-use CseEightselectBasic\Components\ConfigValidator;
 use CseEightselectBasic\Components\Export;
 
 class ArticleExport extends Export
@@ -67,7 +63,9 @@ class ArticleExport extends Export
         'sonstiges',
     ];
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->header = $this->fields;
+        parent::__construct();
     }
 }

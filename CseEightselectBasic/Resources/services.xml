@@ -11,5 +11,24 @@
             <argument>%cse_eightselect_basic.plugin_dir%</argument>
             <tag name="shopware.event_subscriber"/>
         </service>
+
+        <service id="cse_eightselect_basic.dependencies.provider" class="CseEightselectBasic\Services\Dependencies\Provider">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
+        </service>
+
+        <service id="cse_eightselect_basic.config.validator" class="CseEightselectBasic\Services\Config\Validator">
+            <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
+            <argument type="service" id="dbal_connection"/>
+        </service>
+        <service id="cse_eightselect_basic.config.config" class="CseEightselectBasic\Services\Config\Config">
+            <argument type="service" id="dbal_connection"/>
+        </service>
+
+        <service id="cse_eightselect_basic.plugin_config.plugin_config" class="CseEightselectBasic\Services\PluginConfig\PluginConfig">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="shopware.plugin.cached_config_reader"/>
+            <argument>%cse_eightselect_basic.plugin_name%</argument>
+        </service>
     </services>
 </container>
