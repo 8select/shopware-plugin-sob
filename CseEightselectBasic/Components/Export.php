@@ -66,6 +66,8 @@ abstract class Export
         try {
             $start = time();
             if ($this->canRunCron() === false) {
+                // we need to remove products from shops that are not active for cse because those products are still logged here
+                $this->emptyQueue();
                 RunCronOnce::finishCron(static::CRON_NAME);
                 return;
             }
