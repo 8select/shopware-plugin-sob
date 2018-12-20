@@ -44,7 +44,7 @@ class Validator
 
         return [
             'isValid' => empty($violationsWithoutNull),
-            'violations' => $violationsWithoutNull,
+            'violations' => array_values($violationsWithoutNull),
         ];
     }
 
@@ -65,7 +65,7 @@ class Validator
 
         return [
             'isValid' => empty($violationsWithoutNull),
-            'violations' => $violationsWithoutNull,
+            'violations' => array_values($violationsWithoutNull),
         ];
     }
 
