@@ -1,6 +1,6 @@
 {block name="widgets_emotion_components_sys_psv"}
-    {if ({config name="CseEightselectBasicPluginActive"} && !{config name="CseEightselectBasicPreviewActive"})
-        || ({config name="CseEightselectBasicPluginActive"} && {config name="CseEightselectBasicPreviewActive"} && {$smarty.get.preview})}
+    {if ($isCseWidgetConfigValid && !{config name="CseEightselectBasicPreviewActive"})
+        || ($isCseWidgetConfigValid && {config name="CseEightselectBasicPreviewActive"} && {$smarty.get.preview})}
         <div class="-eightselect-widget-container" style="display: none;">
             <div
                 data-sku="{$Data.sys_psv_ordernumber}"

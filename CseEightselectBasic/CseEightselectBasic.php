@@ -133,9 +133,9 @@ class CseEightselectBasic extends Plugin
      */
     public function onFrontendPostDispatch(\Enlight_Event_EventArgs $args)
     {
-        if ($this->container->get('cse_eightselect_basic.config.validator')->validateWidgetConfig()['isValid'] !== true) {
-            return;
-        }
+        $isCseWidgetConfigValid = $this->container->get('cse_eightselect_basic.config.validator')->validateWidgetConfig()['isValid'];
+
+        $args->get('subject')->View()->assign('isCseWidgetConfigValid', $isCseWidgetConfigValid);
 
         $args->get('subject')->View()->assign(
             'htmlContainer',

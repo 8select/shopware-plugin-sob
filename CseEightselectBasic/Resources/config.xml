@@ -10,10 +10,10 @@
         </element>
         <element scope="locale" type="combo">
             <name>CseEightselectBasicActiveShopId</name>
-            <label lang="de">Subshop für den die CSE aktiv ist</label>
-            <label lang="en">Subshop where the CSE is active</label>
-            <description lang="de">...</description>
-            <description lang="en">...</description>
+            <label lang="de">Shop für den die CSE aktiv ist</label>
+            <label lang="en">Shop where the CSE is active</label>
+            <description lang="de">Aktuell unterstützt das CSE Shopware-Plugin nur 1 Shop. Der Produkt-Export greift nur auf Produkte des gewählten Shops zu.</description>
+            <description lang="en">At this time, the CSE Shopware-Plugin only supports 1 Shop. The product export only exports the selected shop's products.</description>
             <store>Shopware.apps.Base.store.ShopLanguage</store>
         </element>
         <!-- MERCHANT ID -->
