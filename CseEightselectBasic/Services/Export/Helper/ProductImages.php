@@ -15,15 +15,13 @@ class ProductImages
     /**
      * @param Container $container
      * @param Provider $provider
-     * @param \Shopware_Components_Modules $router
      */
     public function __construct(
         Container $container,
-        Provider $provider,
-        \Shopware_Components_Modules $modules
+        Provider $provider
     ) {
         $container->set('shop', $provider->getShopWithActiveCSE());
-        $this->export = $modules->Export();
+        $this->export = Shopware()->Modules()->Export();
     }
 
     /**

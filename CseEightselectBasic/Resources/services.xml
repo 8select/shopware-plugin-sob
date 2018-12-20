@@ -40,7 +40,6 @@
         <service id="cse_eightselect_basic.export.helper.product_images" class="CseEightselectBasic\Services\Export\Helper\ProductImages">
             <argument type="service" id="service_container"/>
             <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
-            <argument type="service" id="modules"/>
         </service>
         <service id="cse_eightselect_basic.export.helper.mapper" class="CseEightselectBasic\Services\Export\Helper\Mapper">
             <argument type="service" id="cse_eightselect_basic.export.helper.product_url"/>
