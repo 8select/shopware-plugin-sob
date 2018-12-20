@@ -29,6 +29,26 @@ class Validator
     /**
      * @return array
      */
+    public function validateWidgetConfig()
+    {
+        $violations = [];
+        if ($this->pluginConfigService->isCseActiveForCurrentShop() === false) {
+            array_push($violations, "Plugin ist nicht aktiv");
+        }
+
+        array_push($violations, $this->validateApiId());
+
+        $violationsWithoutNull = array_filter($violations);
+
+        return [
+            'isValid' => empty($violationsWithoutNull),
+            'violations' => array_values($violationsWithoutNull),
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public function validateExportConfig()
     {
         $violations = [];

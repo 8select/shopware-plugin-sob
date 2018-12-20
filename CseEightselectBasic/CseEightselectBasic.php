@@ -133,7 +133,7 @@ class CseEightselectBasic extends Plugin
      */
     public function onFrontendPostDispatch(\Enlight_Event_EventArgs $args)
     {
-        if ($this->getPluginConfigService()->isCseActiveForCurrentShop() === false) {
+        if ($this->container->get('cse_eightselect_basic.config.validator')->validateWidgetConfig()['isValid'] !== true) {
             return;
         }
 
@@ -173,7 +173,7 @@ class CseEightselectBasic extends Plugin
      */
     public function onCheckoutConfirm(\Enlight_Event_EventArgs $args)
     {
-        if ($this->getPluginConfigService()->isCseActiveForCurrentShop() === false) {
+        if ($this->container->get('cse_eightselect_basic.config.validator')->validateWidgetConfig()['isValid'] !== true) {
             return;
         }
 
