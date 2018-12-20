@@ -47,6 +47,7 @@ abstract class Export
         $this->provider = $container->get('cse_eightselect_basic.dependencies.provider');
         $this->configValidator = $container->get('cse_eightselect_basic.config.validator');
         $this->config = $container->get('cse_eightselect_basic.config.config');
+        $this->mapper = $container->get('cse_eightselect_basic.export.helper.mapper');
     }
 
     public function scheduleCron()
@@ -248,7 +249,7 @@ abstract class Export
             }
 
             foreach ($articles as $article) {
-                $line = FieldHelper::getLine($article, $this->fields);
+                $line = $this->mapper->getLine($article, $this->fields);
                 $csvWriter->insertOne($line);
             }
             $this->updateStatus($numArticles, $top);

@@ -1,7 +1,8 @@
 <?php
-namespace CseEightselectBasic\Components;
 
-class PriceHelper
+namespace CseEightselectBasic\Services\Export\Helper;
+
+class ProductPrice
 {
     /**
      * @param $article

@@ -30,5 +30,21 @@
             <argument type="service" id="shopware.plugin.cached_config_reader"/>
             <argument>%cse_eightselect_basic.plugin_name%</argument>
         </service>
+
+        <service id="cse_eightselect_basic.export.helper.product_url" class="CseEightselectBasic\Services\Export\Helper\ProductUrl">
+            <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
+            <argument type="service" id="config"/>
+            <argument type="service" id="router"/>
+        </service>
+        <service id="cse_eightselect_basic.export.helper.product_images" class="CseEightselectBasic\Services\Export\Helper\ProductImages">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
+            <argument type="service" id="modules"/>
+        </service>
+        <service id="cse_eightselect_basic.export.helper.mapper" class="CseEightselectBasic\Services\Export\Helper\Mapper">
+            <argument type="service" id="cse_eightselect_basic.export.helper.product_url"/>
+            <argument type="service" id="cse_eightselect_basic.export.helper.product_images"/>
+            <argument type="service" id="db"/>
+        </service>
     </services>
 </container>
