@@ -206,7 +206,7 @@ abstract class Export
         $batchSize = 100;
 
         $attributeMapping = $this->getAttributeMapping();
-        for ($i = 0; $i < $numArticles; $i += $batchSize) {
+        for ($offset = 0; $offset < $numArticles; $offset += $batchSize) {
             $articles = $this->getArticles($attributeMapping, $i, $batchSize);
 
             $top = $offset + ($batchSize - 1);
