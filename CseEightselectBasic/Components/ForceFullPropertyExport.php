@@ -1,9 +1,7 @@
 <?php
 namespace CseEightselectBasic\Components;
 
-use League\Csv\Writer;
 use CseEightselectBasic\Components\Export;
-use CseEightselectBasic\Components\RunCronOnce;
 
 class ForceFullPropertyExport extends Export
 {
@@ -28,18 +26,21 @@ class ForceFullPropertyExport extends Export
         'prop_color' => 'farbe',
         'prop_url' => 'produkt_url',
         'prop_description' => 'beschreibung',
-        'images' => 'bilder'
+        'images' => 'bilder',
     ];
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->header = array_keys($this->fieldMapping);
         $this->fields = array_values($this->fieldMapping);
+        parent::__construct();
     }
 
     /**
      * @return array
      */
-    protected function canRunCron() {
+    protected function canRunCron()
+    {
         if ($this->isDeltaExport()) {
             return false;
         }

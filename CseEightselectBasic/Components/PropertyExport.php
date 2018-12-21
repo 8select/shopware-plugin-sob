@@ -1,9 +1,7 @@
 <?php
 namespace CseEightselectBasic\Components;
 
-use League\Csv\Writer;
 use CseEightselectBasic\Components\Export;
-use CseEightselectBasic\Components\RunCronOnce;
 
 class PropertyExport extends Export
 {
@@ -28,7 +26,7 @@ class PropertyExport extends Export
         'prop_color' => 'farbe',
         'prop_url' => 'produkt_url',
         'prop_description' => 'beschreibung',
-        'images' => 'bilder'
+        'images' => 'bilder',
     ];
 
     /**
@@ -41,7 +39,9 @@ class PropertyExport extends Export
         'prop_retailPrice' => 'streich_preis',
     ];
 
-    public function __construct() {
+    public function __construct()
+    {
+        parent::__construct();
         $fieldMapping = $this->fieldMappingPriceAndStock;
         if ($this->isDeltaExport()) {
             $fieldMapping = $this->fieldMappingComplete;
@@ -77,14 +77,15 @@ class PropertyExport extends Export
                     INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
                     INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1 AND s_articles_prices.pricegroup = "EK"
                     INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
+                    INNER JOIN (
+                        SELECT articleID
+                        FROM s_articles_categories_ro
+                        WHERE categoryID = %s
+                        GROUP BY articleID
+                    ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleId;";
                 LIMIT %d OFFSET %d';
 
         $sql = sprintf($sqlTemplate, $limit, $offset);
-
-        if (getenv('ES_DEBUG')) {
-            echo  \PHP_EOL . 'SQL'  . \PHP_EOL;
-            echo $sql . \PHP_EOL;
-        }
 
         $articles = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 

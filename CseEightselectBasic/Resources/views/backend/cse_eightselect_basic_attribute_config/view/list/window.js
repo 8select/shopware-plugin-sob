@@ -33,7 +33,7 @@ Ext.define(
       };
 
       var getErrorMessages = function(configValidationResult) {
-        return configValidationResult.messages;
+        return configValidationResult.violations;
       };
 
       if (!isConfigValid(configValidationResult)) {

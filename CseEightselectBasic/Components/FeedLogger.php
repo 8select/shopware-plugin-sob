@@ -17,11 +17,6 @@ class FeedLogger {
             ON DUPLICATE KEY UPDATE
               last_run = NOW();';
 
-    if (getenv('ES_DEBUG')) {
-      echo  \PHP_EOL . 'SQL'  . \PHP_EOL;
-      echo $sql . \PHP_EOL;
-    }
-
     Shopware()->Db()->query($sql);
   }
 

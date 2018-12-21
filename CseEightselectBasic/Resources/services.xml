@@ -11,5 +11,40 @@
             <argument>%cse_eightselect_basic.plugin_dir%</argument>
             <tag name="shopware.event_subscriber"/>
         </service>
+
+        <service id="cse_eightselect_basic.dependencies.provider" class="CseEightselectBasic\Services\Dependencies\Provider">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
+        </service>
+
+        <service id="cse_eightselect_basic.config.validator" class="CseEightselectBasic\Services\Config\Validator">
+            <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
+            <argument type="service" id="dbal_connection"/>
+        </service>
+        <service id="cse_eightselect_basic.config.config" class="CseEightselectBasic\Services\Config\Config">
+            <argument type="service" id="dbal_connection"/>
+        </service>
+
+        <service id="cse_eightselect_basic.plugin_config.plugin_config" class="CseEightselectBasic\Services\PluginConfig\PluginConfig">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="shopware.plugin.cached_config_reader"/>
+            <argument type="service" id="config_writer"/>
+            <argument>%cse_eightselect_basic.plugin_name%</argument>
+        </service>
+
+        <service id="cse_eightselect_basic.export.helper.product_url" class="CseEightselectBasic\Services\Export\Helper\ProductUrl">
+            <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
+            <argument type="service" id="config"/>
+            <argument type="service" id="router"/>
+        </service>
+        <service id="cse_eightselect_basic.export.helper.product_images" class="CseEightselectBasic\Services\Export\Helper\ProductImages">
+            <argument type="service" id="service_container"/>
+            <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
+        </service>
+        <service id="cse_eightselect_basic.export.helper.mapper" class="CseEightselectBasic\Services\Export\Helper\Mapper">
+            <argument type="service" id="cse_eightselect_basic.export.helper.product_url"/>
+            <argument type="service" id="cse_eightselect_basic.export.helper.product_images"/>
+            <argument type="service" id="db"/>
+        </service>
     </services>
 </container>

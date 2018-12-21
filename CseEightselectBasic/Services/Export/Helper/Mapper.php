@@ -1,26 +1,51 @@
 <?php
-namespace CseEightselectBasic\Components;
 
-use CseEightselectBasic\Components\ArticleImageMapper;
-use Shopware\Bundle\MediaBundle\MediaService;
-use Shopware\Models\Shop\Shop;
+namespace CseEightselectBasic\Services\Export\Helper;
 
-class FieldHelper
+class Mapper
 {
+
     /**
-     * @param $article
-     * @param $fields
+     * @var ProductUrl $urlHelper
+     */
+    private $urlHelper;
+
+    /**
+     * @var ProductImages $imageHelper
+     */
+    private $imageHelper;
+
+    /**
+     * @var \Enlight_Components_Db_Adapter_Pdo_Mysql $db
+     */
+    private $db;
+
+    /**
+     * @param ProductUrl $urlHelper
+     * @param ProductImages $imageHelper
+     * @param \Enlight_Components_Db_Adapter_Pdo_Mysql $db
+     */
+    public function __construct($urlHelper, $imageHelper, $db)
+    {
+        $this->urlHelper = $urlHelper;
+        $this->imageHelper = $imageHelper;
+        $this->db = $db;
+    }
+
+    /**
+     * @param array $article
+     * @param array $fields
      * @return array
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    public static function getLine($article, $fields)
+    public function getLine($article, $fields)
     {
         $line = [];
 
         /** @var array $categories */
-        $categories = self::getCategories($article['articleID']);
+        $categories = $this->getCategories($article['articleID']);
 
         foreach ($fields as $field) {
             switch ($field) {
@@ -45,27 +70,27 @@ class FieldHelper
                     break;
                 case 'streich_preis':
                 case 'angebots_preis':
-                    $value = PriceHelper::getGrossPrice($article, $field);
+                    $value = ProductPrice::getGrossPrice($article, $field);
                     break;
                 case 'produkt_url':
-                    $value = self::getUrl($article['articleID'], $article['sku']);
+                    $value = $this->urlHelper->getUrl($article['articleID'], $article['sku'], $article['name1']);
                     break;
                 case 'bilder':
-                    $value = self::getImageUrls($article['detailID'], $article['articleID']);
+                    $value = $this->imageHelper->getImageUrls($article['articleID'], $article['sku']);
                     break;
                 case 'status':
-                    $value = self::getStatus($article['active'], $article['instock'], $article['laststock']);
+                    $value = $this->getStatus($article['active'], $article['instock'], $article['laststock']);
                     break;
                 case 'groesse':
-                    $size = self::getSizeOptionByArticleDetailId($article['detailID']);
+                    $size = $this->getSizeOptionByArticleDetailId($article['detailID']);
                     $value = !empty($size) ? $size : 'onesize';
                     break;
                 case 'beschreibung':
-                    $withNewLines = self::getValue($article, $field);
+                    $withNewLines = $this->getValue($article, $field);
                     $value = str_replace(["\r\n", "\r", "\n"], ' ', $withNewLines);
                     break;
                 case 'beschreibung1':
-                    $withNewLines = self::getValue($article, 'beschreibung');
+                    $withNewLines = $this->getValue($article, 'beschreibung');
                     $withOutNewLines = str_replace(["\r\n", "\r", "\n"], '<br>', $withNewLines);
                     $withExtraSpaces = str_replace(">", '> ', $withOutNewLines);
                     $withOutHtml = strip_tags($withExtraSpaces);
@@ -73,7 +98,7 @@ class FieldHelper
                     $value = trim(preg_replace('/[\h\xa0\xc2]+/', ' ', $withOutHtmlEntities));
                     break;
                 default:
-                    $value = self::getValue($article, $field);
+                    $value = $this->getValue($article, $field);
             }
             $line[] = $value;
         }
@@ -88,7 +113,7 @@ class FieldHelper
      * @throws \Zend_Db_Statement_Exception
      * @return string
      */
-    private static function getValue($article, $field)
+    private function getValue($article, $field)
     {
         $value = $article[$field];
         if ($value) {
@@ -96,35 +121,36 @@ class FieldHelper
         }
 
         $attributes = array_filter(
-            explode(',', self::getGroupOrFilterAttribute($field))
+            explode(',', $this->getGroupOrFilterAttribute($field))
         );
 
         if ($attributes) {
-            $values = self::filterRelevantAttributeValues($attributes, $article);
+            $values = $this->filterRelevantAttributeValues($attributes, $article);
             return implode("|", array_filter($values));
         }
         return '';
     }
 
     /**
-    * @param array $attributes
-    * @param array $article
-    * @return array
-    */
-    private static function filterRelevantAttributeValues($attributes, $article) {
+     * @param array $attributes
+     * @param array $article
+     * @return array
+     */
+    private function filterRelevantAttributeValues($attributes, $article)
+    {
 
-        $groups = array_filter($attributes, function($attr) {
+        $groups = array_filter($attributes, function ($attr) {
             return strpos($attr, "group") !== false;
         });
 
         if ($groups) {
-            $groupIds = array_map( function($group) {
+            $groupIds = array_map(function ($group) {
                 return explode('id=', $group)[1];
             }, $groups);
 
             $groupValues = array_filter(
-                array_map(function($id) use ($article) {
-                    return self::getConfiguratorGroupValue($article['detailID'], $id);
+                array_map(function ($id) use ($article) {
+                    return $this->getConfiguratorGroupValue($article['detailID'], $id);
                 }, $groupIds)
             );
 
@@ -133,18 +159,18 @@ class FieldHelper
             }
         }
 
-        $filters = array_filter($attributes, function($attr) {
+        $filters = array_filter($attributes, function ($attr) {
             return strpos($attr, "filter");
         });
 
-        if($filters) {
-            $filterIds = array_filter(array_map( function($filter) {
+        if ($filters) {
+            $filterIds = array_filter(array_map(function ($filter) {
                 return explode('id=', $filter)[1];
             }, $filters));
 
             $filterValues = array_filter(
-                array_map(function($id) use ($article) {
-                    return self::getFilterValues($article['articleID'], $id);
+                array_map(function ($id) use ($article) {
+                    return $this->getFilterValues($article['articleID'], $id);
                 }, $filterIds)
             );
 
@@ -163,12 +189,12 @@ class FieldHelper
      * @throws \Zend_Db_Statement_Exception
      * @return array
      */
-    private static function getCategories($articleId)
+    private function getCategories($articleId)
     {
-        $categoryIDs = Shopware()->Db()->query('SELECT categoryID FROM s_articles_categories WHERE articleID = ?', [$articleId])->fetchAll();
+        $categoryIDs = $this->db->query('SELECT categoryID FROM s_articles_categories WHERE articleID = ?', [$articleId])->fetchAll();
         $categoriesList = [];
         foreach ($categoryIDs as $categorieID) {
-            $categoryPathResults = self::getCategoriesByParent((int)$categorieID['categoryID']);
+            $categoryPathResults = $this->getCategoriesByParent((int) $categorieID['categoryID']);
 
             $categoryNames = [];
             foreach ($categoryPathResults as $categoryPathResult) {
@@ -186,12 +212,12 @@ class FieldHelper
      * @throws \Doctrine\ORM\ORMException
      * @return array
      */
-    private static function getCategoriesByParent($categoryId)
+    private function getCategoriesByParent($categoryId)
     {
         $pathCategories = Shopware()->Models()->getRepository('Shopware\Models\Category\Category')->getPathById($categoryId, [
             'id',
             'name',
-            'parentId'
+            'parentId',
         ]);
         $categories = [];
 
@@ -206,51 +232,7 @@ class FieldHelper
         return $categories;
     }
 
-    /**
-     * @param  int $articleId
-     * @throws \Exception
-     * @return string
-     */
-    private static function getUrl($articleId, $sku)
-    {
-        $baseUrl = self::getFallbackBaseUrl();
-
-        $router = Shopware()->Container()->get('router');
-        $assembleParams = [
-            'module'    => 'frontend',
-            'sViewport' => 'detail',
-            'sArticle'  => $articleId,
-            'number'    => $sku
-         ];
-
-        $link = $router->assemble($assembleParams);
-
-        return str_replace('http://localhost', $baseUrl, $link);
-    }
-
-    /**
-     * @param  int $detailId
-     * @param  int $articleId
-     * @return string
-     */
-    private static function getImageUrls($detailId, $articleId)
-    {
-        $imagePaths = ArticleImageMapper::getImagePathsByVariant($detailId, $articleId);
-
-        /** @var MediaService $mediaService */
-        $mediaService = Shopware()->Container()->get('shopware_media.media_service');
-
-        $urlArray = [];
-        foreach ($imagePaths as $imagePath) {
-            $urlArray[] = $mediaService->getUrl($imagePath['path']);
-        }
-
-        $urlString = implode('|', $urlArray);
-
-        return $urlString;
-    }
-
-    private static function getStatus($active, $instock, $laststock)
+    private function getStatus($active, $instock, $laststock)
     {
         if ($active && (!$laststock || $instock > 0)) {
             return '1';
@@ -265,13 +247,14 @@ class FieldHelper
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    private static function getGroupOrFilterAttribute($field) {
+    private function getGroupOrFilterAttribute($field)
+    {
         $query = 'SELECT shopwareAttribute as groupId
                       FROM 8s_attribute_mapping
                       WHERE (shopwareAttribute LIKE "%group%" OR shopwareAttribute LIKE "%filter%")
                       AND eightselectAttribute = "' . $field . '"';
 
-        return Shopware()->Db()->query($query)->fetchColumn();
+        return $this->db->query($query)->fetchColumn();
     }
 
     /**
@@ -281,7 +264,7 @@ class FieldHelper
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    private static function getConfiguratorGroupValue($detailId, $groupId)
+    private function getConfiguratorGroupValue($detailId, $groupId)
     {
         $sql = 'SELECT s_article_configurator_options.name as name
                 FROM s_article_configurator_options
@@ -289,7 +272,7 @@ class FieldHelper
                 WHERE s_article_configurator_option_relations.article_id = ' . $detailId . '
                 AND s_article_configurator_options.group_id = ' . $groupId;
 
-        return Shopware()->Db()->query($sql)->fetchColumn();
+        return $this->db->query($sql)->fetchColumn();
     }
 
     /**
@@ -298,7 +281,7 @@ class FieldHelper
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    private static function getNonSizeConfiguratorOptionsByArticleDetailId($articleId)
+    private function getNonSizeConfiguratorOptionsByArticleDetailId($articleId)
     {
         /*
          * Query Explanation:
@@ -320,9 +303,8 @@ WHERE (s_article_configurator_groups_attributes.od_cse_eightselect_basic_is_size
 AND s_article_configurator_option_relations.article_id = $articleId
 SQL;
 
-        return array_column(Shopware()->Db()->query($sql)->fetchAll(\Zend_Db::FETCH_ASSOC), 'value');
+        return array_column($this->db->query($sql)->fetchAll(\Zend_Db::FETCH_ASSOC), 'value');
     }
-
 
     /**
      * @param int $articleId
@@ -330,7 +312,7 @@ SQL;
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    private static function getSizeOptionByArticleDetailId($articleId)
+    private function getSizeOptionByArticleDetailId($articleId)
     {
         $sql = <<<SQL
 SELECT s_article_configurator_options.name as value
@@ -342,7 +324,7 @@ WHERE s_article_configurator_option_relations.article_id = $articleId
 AND (s_article_configurator_groups_attributes.od_cse_eightselect_basic_is_size = 1);
 SQL;
 
-        return Shopware()->Db()->query($sql)->fetchColumn();
+        return $this->db->query($sql)->fetchColumn();
     }
 
     /**
@@ -352,7 +334,7 @@ SQL;
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    private static function getFilterValues($articleId, $filterId)
+    private function getFilterValues($articleId, $filterId)
     {
         if (!$articleId || !$filterId) {
             return '';
@@ -362,45 +344,8 @@ SQL;
                 INNER JOIN s_filter_articles on s_filter_articles.valueID = s_filter_values.id
                 WHERE s_filter_articles.articleID = ' . $articleId . '
                 AND s_filter_values.optionID = ' . $filterId;
-        $value = Shopware()->Db()->query($sql)->fetchAll();
+        $value = $this->db->query($sql)->fetchAll();
 
         return implode('|', array_column($value, 'name'));
-    }
-
-    /**
-     * @return string
-     * @throws \Exception
-     */
-    public static function getFallbackBaseUrl()
-    {
-        $container = Shopware()->Container();
-
-        if ($container->has('Shop')) {
-            /** @var Shop $shop */
-            $shop = $container->get('Shop');
-        } else {
-            /** @var Shop $shop */
-            $shop = $container->get('models')->getRepository(Shop::class)->getActiveDefault();
-        }
-
-        if ($shop->getMain()) {
-            $shop = $shop->getMain();
-        }
-
-        $shopwareInstance = Shopware();
-        $versionArray = explode('.', $shopwareInstance::VERSION);
-        if ($versionArray[0] >= '5' && $versionArray[1] >= '4') {
-            if ($shop->getSecure()) {
-                return 'https://' . $shop->getHost() . $shop->getBasePath();
-            } else {
-                return 'http://' . $shop->getHost() . $shop->getBasePath();
-            }
-        } else {
-            if ($shop->getAlwaysSecure()) {
-                return 'https://' . $shop->getSecureHost() . $shop->getSecureBasePath();
-            } else {
-                return 'http://' . $shop->getHost() . $shop->getBasePath();
-            }
-        }
     }
 }
