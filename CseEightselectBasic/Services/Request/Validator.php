@@ -1,126 +1,130 @@
 <?php
+
 namespace CseEightselectBasic\Services\Request;
 
-class Validator {
+class Validator
+{
+    /**
+     * @var PlugincConfig
+     */
+    private $pluginConfig;
 
-  /**
-   * @var Provider
-   */
-  private $provider;
+    /**
+     * @var int
+     */
+    private $MAX_LIMIT = 100;
 
-  /**
-   * @var array
-   */
-  private $pluginConfig;
+    /**
+     * @param PlugincConfig $pluginConfig
+     */
+    public function __construct($pluginConfig)
+    {
+        $this->pluginConfig = $pluginConfig;
+    }
 
-  /**
-   * @var int
-   */
-  private $MAX_LIMIT = 100;
-  
-  /**
-   * @param Provider $provider
-   */
-  public function __construct($provider) {
-    $this->provider = $provider;
-    $this->pluginConfig = $provider->getPluginConfig();
-  }
+    public function checkAuthorizationForExport($request)
+    {
+        $violations = [];
 
-  public function checkAuthorizationForExport($request) {
-    $violations = [];
+        array_push($violations, $this->validateTenantId($request));
+        array_push($violations, $this->validateFeedId($request));
 
-    array_push($violations, $this->validateTenantId($request));
-    array_push($violations, $this->validateFeedId($request));
+        $violationsWithoutNull = array_filter($violations);
 
-    $violationsWithoutNull = array_filter($violations);
-
-    return [
+        return [
       'isAuthorized' => empty($violationsWithoutNull),
-      'violations' => $violationsWithoutNull
+      'violations' => $violationsWithoutNull,
     ];
-  }
+    }
 
-  public function checkQueryStringParamsForExport($request) {
-    $violations = [];
+    public function checkQueryStringParamsForExport($request)
+    {
+        $violations = [];
 
-    array_push($violations, $this->validateOffset($request));
-    array_push($violations, $this->validateLimit($request));
-    array_push($violations, $this->validateFormat($request));
+        array_push($violations, $this->validateOffset($request));
+        array_push($violations, $this->validateLimit($request));
+        array_push($violations, $this->validateFormat($request));
 
-    $violationsWithoutNull = array_filter($violations);
+        $violationsWithoutNull = array_filter($violations);
 
-    return [
+        return [
       'isValid' => empty($violationsWithoutNull),
-      'violations' => $violationsWithoutNull
+      'violations' => $violationsWithoutNull,
     ];
-  }
-
-  private function validateTenantId($request) {    
-    $tenantId = $request->getHeader('8select-com-tid');
-    
-    if (!$tenantId) {
-      return '8select-com-tid fehlt im Request Header.';
     }
 
-    $pluginApiId = $this->pluginConfig['CseEightselectBasicApiId'];
+    private function validateTenantId($request)
+    {
+        $tenantId = $request->getHeader('8select-com-tid');
 
-    if ($tenantId !== $pluginApiId) {
-      return '8select-com-tid stimmt nicht mit CseEightselectBasicApiId überein.';
-    }
-  }
+        if (!$tenantId) {
+            return '8select-com-tid fehlt im Request Header.';
+        }
 
-  private function validateFeedId($request) {    
-    $feedId = $request->getHeader('8select-com-fid');
+        $pluginApiId = $this->pluginConfig->get('CseEightselectBasicApiId');
 
-    if(!$feedId) {
-      return '8select-com-fid fehlt im Request Header.';
-    }
-
-    $pluginFeedId = $this->pluginConfig['CseEightselectBasicFeedId'];
-
-    if ($feedId !== $pluginFeedId) {
-      return '8select-com-fid stimmt nicht mit CseEightselectBasicFeedId überein.';
-    }
-  }
-
-  private function validateOffset($request) {
-    if($this->getIntFromGetParam('offset', $request, 0) === null) {
-      return 'offset ist kein Integer.';
-    }
-  }
-
-  private function validateLimit($request) {
-    $limit = $this->getIntFromGetParam('limit', $request, 50);
-    
-    if($limit === null) {
-      return 'limit ist kein Integer.';
+        if ($tenantId !== $pluginApiId) {
+            return '8select-com-tid stimmt nicht mit CseEightselectBasicApiId überein.';
+        }
     }
 
-    if ($limit > $this->MAX_LIMIT) {
-      return "limit darf nicht $this->MAX_LIMIT übersteigen.";
-    }
-  }
+    private function validateFeedId($request)
+    {
+        $feedId = $request->getHeader('8select-com-fid');
 
-  private function validateFormat($request) {
-    $format = $request->getParam('format');
-    if (!$format) {
-      return 'format fehlt im Request Query String Parameter.';
-    }
+        if (!$feedId) {
+            return '8select-com-fid fehlt im Request Header.';
+        }
 
-    $validFormats = ['product_feed', 'property_feed', 'status_feed'];
+        $pluginFeedId = $this->pluginConfig->get('CseEightselectBasicFeedId');
 
-    if(!in_array($format, $validFormats, true)) {
-      return "$format is kein validates format.";
-    }
-  }
-
-  private function getIntFromGetParam($parameterName, $request, $default) {
-    $value = $request->getParam($parameterName, $default);
-
-    if (!is_numeric($value)) {
-      return null;
+        if ($feedId !== $pluginFeedId) {
+            return '8select-com-fid stimmt nicht mit CseEightselectBasicFeedId überein.';
+        }
     }
 
-    return $value;
-  }
+    private function validateOffset($request)
+    {
+        if ($this->getIntFromGetParam('offset', $request, 0) === null) {
+            return 'offset ist kein Integer.';
+        }
+    }
+
+    private function validateLimit($request)
+    {
+        $limit = $this->getIntFromGetParam('limit', $request, 50);
+
+        if ($limit === null) {
+            return 'limit ist kein Integer.';
+        }
+
+        if ($limit > $this->MAX_LIMIT) {
+            return "limit darf nicht $this->MAX_LIMIT übersteigen.";
+        }
+    }
+
+    private function validateFormat($request)
+    {
+        $format = $request->getParam('format');
+        if (!$format) {
+            return 'format fehlt im Request Query String Parameter.';
+        }
+
+        $validFormats = ['product_feed', 'property_feed', 'status_feed'];
+
+        if (!in_array($format, $validFormats, true)) {
+            return "$format is kein validates format.";
+        }
+    }
+
+    private function getIntFromGetParam($parameterName, $request, $default)
+    {
+        $value = $request->getParam($parameterName, $default);
+
+        if (!is_numeric($value)) {
+            return null;
+        }
+
+        return $value;
+    }
 }
