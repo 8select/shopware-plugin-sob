@@ -1,20 +1,19 @@
 <?php
 
 /**
- * Class Shopware_Controllers_Frontend_CseEightselectBasic
+ * Class Shopware_Controllers_Frontend_CseEightselectBasic.
  *
  * @category    Shopware
- * @package     Shopware_Plugins
- * @subpackage  CseEightselectBasic
+ *
  * @author      Onedrop GmbH & Co KG
  */
-
 use Shopware\Components\CSRFWhitelistAware;
+
 class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controller_Action implements CSRFWhitelistAware
 {
     /**
      * Provides the cart of the current user as JSON API.
-     * The API is available at /cse-eightselect-basic/cart
+     * The API is available at /cse-eightselect-basic/cart.
      */
     public function cartAction()
     {
@@ -27,11 +26,12 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     }
 
     /**
-     * The API is available at /eight-select/products
+     * The API is available at /eight-select/products.
      */
-    public function productsAction() {
+    public function productsAction()
+    {
         $responseErrorBody = $this->container->get('cse_eightselect_basic.response.error_body');
-        
+
         try {
             $requestValidator = $this->container->get('cse_eightselect_basic.request.validator');
             $this->Front()->Plugins()->ViewRenderer()->setNoRender();
@@ -39,19 +39,21 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 
             if (!$authorizationValidation['isAuthorized']) {
                 $this->Response()->setHttpResponseCode(404);
+
                 return;
             }
-            
+
             $this->Response()->setHeader('Content-Type', 'application/json');
             $queryParamValidation = $requestValidator->checkQueryStringParamsForExport($this->Request());
-            
+
             if (!$queryParamValidation['isValid']) {
                 $errorBody = $responseErrorBody->getBadRequestBody($queryParamValidation['violations']);
                 $this->Response()->setBody($errorBody);
                 $this->Response()->setHttpResponseCode(400);
+
                 return;
             }
-            
+
             $configValidator = $this->container->get('cse_eightselect_basic.config.validator');
             $configValidation = $configValidator->validateConfig();
 
@@ -59,6 +61,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
                 $errorBody = $responseErrorBody->getInternalServerErrorBody($configValidation['violations']);
                 $this->Response()->setBody($errorBody);
                 $this->Response()->setHttpResponseCode(500);
+
                 return;
             }
 
@@ -72,9 +75,10 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         }
     }
 
-    public function getWhitelistedCSRFActions() {
+    public function getWhitelistedCSRFActions()
+    {
         return [
             'products',
         ];
-	}
+    }
 }
