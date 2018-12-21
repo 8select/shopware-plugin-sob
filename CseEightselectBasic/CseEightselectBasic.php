@@ -68,6 +68,7 @@ class CseEightselectBasic extends Plugin
             'Enlight_Controller_Dispatcher_ControllerPath_Backend_CseEightselectBasic' => 'onGetBackendCseEightselectBasicController',
             'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion' => 'onPostDispatchBackendEmotion',
             'Enlight_Controller_Action_PostDispatchSecure_Frontend' => 'onFrontendPostDispatch',
+            'Enlight_Controller_Action_PostDispatchSecure_Widgets_Emotion' => 'onFrontendPostDispatch',
             'Enlight_Controller_Action_PostDispatch_Frontend_Checkout' => 'onCheckoutConfirm',
             'Shopware_CronJob_CseEightselectBasicArticleExport' => 'cseEightselectBasicArticleExport',
             'Shopware_CronJob_CseEightselectBasicArticleExportOnce' => 'cseEightselectBasicArticleExportOnce',
@@ -152,11 +153,6 @@ class CseEightselectBasic extends Plugin
      */
     public function onPostDispatchBackendEmotion(\Enlight_Controller_ActionEventArgs $args)
     {
-        // sollte ggf. immer aktiv sein damit emotion benutzt werden kann?
-        if ($this->getPluginConfigService()->isCseActive() === false) {
-            return;
-        }
-
         $controller = $args->getSubject();
         $view = $controller->View();
 
