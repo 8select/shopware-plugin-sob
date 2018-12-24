@@ -1,5 +1,4 @@
-
-//{namespace name=8select/main}
+//{block name="emotion_components/backend/sys_psv"}
 Ext.define('Shopware.apps.Emotion.view.components.SysPsv', {
 
     /**

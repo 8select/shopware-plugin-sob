@@ -1,3 +1,4 @@
+//{block name="emotion_components/backend/psp_tlv"}
 Ext.define('Shopware.apps.Emotion.view.components.PspTlv', {
 
     /**
