@@ -9,17 +9,16 @@ use CseEightselectBasic\Models\EightselectAttribute;
 use CseEightselectBasic\Services\Config\Config;
 use CseEightselectBasic\Services\Dependencies\Provider;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
-use CseEightselectBasic\Setup\Database\Migrations\Update_1_11_0;
+use CseEightselectBasic\Setup\Helpers\AttributeMapping;
+use CseEightselectBasic\Setup\Updates\Update_1_11_0;
+use CseEightselectBasic\Setup\Updates\Update_1_11_1;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use Shopware;
-use Shopware\Components\Emotion\ComponentInstaller;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Components\Plugin;
 use Shopware\Components\Plugin\Context\ActivateContext;
 use Shopware\Components\Plugin\Context\DeactivateContext;
-use Shopware\Components\Plugin\Context\InstallContext;
-use Shopware\Components\Plugin\Context\UninstallContext;
 use Shopware\Components\Plugin\Context\UpdateContext;
 
 class CseEightselectBasic extends Plugin
@@ -38,20 +37,20 @@ class CseEightselectBasic extends Plugin
     {
         $provider = new Provider($this->container, $this->getPluginConfigService());
         $currentShop = $provider->getCurrentShop();
-        $shopUrl = $currentShop->getHost().$currentShop->getBaseUrl().$currentShop->getBasePath();
+        $shopUrl = $currentShop->getHost() . $currentShop->getBaseUrl() . $currentShop->getBasePath();
 
         try {
-            $this->installMessages[] = 'Shop-URL: '.$shopUrl;
-            $this->installMessages[] = 'Shopware-Version: '.$this->container->get('shopware.release')->getVersion();
-            $this->installMessages[] = 'CSE-Plugin-Version: '.$context->getCurrentVersion();
+            $this->installMessages[] = 'Shop-URL: ' . $shopUrl;
+            $this->installMessages[] = 'Shopware-Version: ' . $this->container->get('shopware.release')->getVersion();
+            $this->installMessages[] = 'CSE-Plugin-Version: ' . $context->getCurrentVersion();
         } catch (\Exception $exception) {
-            $this->installMessages[] = 'ERROR: initInstallLog '.(string) $exception;
+            $this->installMessages[] = 'ERROR: initInstallLog ' . (string) $exception;
         }
     }
 
     private function sendLog($type = 'install')
     {
-        $logMessage = implode(\PHP_EOL.\PHP_EOL, $this->installMessages);
+        $logMessage = implode(\PHP_EOL . \PHP_EOL, $this->installMessages);
         Shopware()->PluginLogger()->info($logMessage);
     }
 
@@ -91,7 +90,7 @@ class CseEightselectBasic extends Plugin
 
     public function onPreDispatch()
     {
-        Shopware()->Template()->addTemplateDir($this->getPath().'/Resources/views/');
+        Shopware()->Template()->addTemplateDir($this->getPath() . '/Resources/views/');
     }
 
     /**
@@ -99,7 +98,7 @@ class CseEightselectBasic extends Plugin
      */
     public function onGetBackendCseEightselectBasicController()
     {
-        return $this->getPath().'/Controllers/Backend/CseEightselectBasicAttributeConfig.php';
+        return $this->getPath() . '/Controllers/Backend/CseEightselectBasicAttributeConfig.php';
     }
 
     /**
@@ -107,7 +106,7 @@ class CseEightselectBasic extends Plugin
      */
     public function onGetFrontendCseEightselectBasicController()
     {
-        return $this->getPath().'/Controllers/Frontend/CseEightselectBasic.php';
+        return $this->getPath() . '/Controllers/Frontend/CseEightselectBasic.php';
     }
 
     /**
@@ -152,7 +151,7 @@ class CseEightselectBasic extends Plugin
         $controller = $args->getSubject();
         $view = $controller->View();
 
-        $view->addTemplateDir($this->getPath().'/Resources/views/');
+        $view->addTemplateDir($this->getPath() . '/Resources/views/');
         $view->extendsTemplate('backend/emotion/model/translations.js');
         $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/sys_psv.js');
         $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/psp_psv.js');
@@ -233,15 +232,17 @@ class CseEightselectBasic extends Plugin
     public function install(InstallContext $context)
     {
         $this->initInstallLog($context);
-
-        $this->removeExportCron();
-        $this->removeExportOnceCron();
-        $this->removePropertyCron();
-        $this->removePropertyOnceCron();
-
-        $this->installWidgets();
+        $install = new Install(
+            $context,
+            new SizeAttribute(
+                $this->container->get('shopware_attribute.crud_service'),
+                Shopware()->Models()->getConfiguration()->getMetadataCacheImpl(),
+                Shopware()->Models()
+            ),
+            new EmotionComponents($this->container->get('shopware.emotion_component_installer'))
+        );
+        $install->execute();
         $this->createDatabase($context);
-        $this->createAttributes();
         $this->getPluginConfigService()->setDefaults();
 
         $this->sendLog('install');
@@ -279,49 +280,29 @@ class CseEightselectBasic extends Plugin
         $this->initInstallLog($context);
 
         switch (true) {
-            case version_compare($context->getCurrentVersion(), '1.0.1', '<='):
-                $this->update_1_0_1();
-                // no break
-            case version_compare($context->getCurrentVersion(), '1.5.2', '<='):
-                $this->update_1_5_2();
-                // no break
             case version_compare($context->getCurrentVersion(), '1.6.3', '<='):
                 $this->update_1_6_3();
-                // no break
-            case version_compare($context->getCurrentVersion(), '1.6.4', '<='):
-                $this->update_1_6_4();
-                // no break
             case version_compare($context->getCurrentVersion(), '1.8.0', '<='):
                 $this->update_1_8_0();
-                // no break
             case version_compare($context->getCurrentVersion(), '1.11.0', '<='):
                 $update = new Update_1_11_0(
                     $this->container->get('config'),
                     $this->container->get('config_writer'),
                     $this->getPluginConfigService()
                 );
-                $update->update();
+                $update->execute();
+            case version_compare($context->getCurrentVersion(), '1.11.1', '<='):
+                $update = new Update_1_11_1(
+                    $this->container->get('dbal_connection'),
+                    Shopware()->DocPath('files_8select')
+                );
+                $update->execute();
         }
 
-        $this->installMessages[] = 'Update auf CSE-Plugin-Version: '.$context->getUpdateVersion();
+        $this->installMessages[] = 'Update auf CSE-Plugin-Version: ' . $context->getUpdateVersion();
         $this->sendLog('update');
 
         return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
-    }
-
-    private function update_1_0_1()
-    {
-        $this->deleteExportDir();
-    }
-
-    private function update_1_5_2()
-    {
-        // remove quick update
-        $this->removeQuickUpdateCron();
-        $this->removeQuickUpdateOnceCron();
-        // update changeQueue triggers
-        ExportSetup::dropChangeQueueTriggers();
-        ExportSetup::createChangeQueueTriggers();
     }
 
     private function update_1_6_3()
@@ -333,143 +314,9 @@ class CseEightselectBasic extends Plugin
         ExportSetup::createChangeQueueTriggers();
     }
 
-    private function update_1_6_4()
-    {
-        $this->deleteExportDir();
-    }
-
     private function update_1_8_0()
     {
         $this->createDefaultConfig();
-    }
-
-    /**
-     * Create attributes.
-     *
-     * @throws \Exception
-     */
-    private function createAttributes()
-    {
-        /** @var \Shopware\Bundle\AttributeBundle\Service\CrudService $attributeService */
-        $attributeService = Shopware()->Container()->get('shopware_attribute.crud_service');
-
-        $attributeService->update('s_article_configurator_groups_attributes', 'od_cse_eightselect_basic_is_size', 'boolean', [
-            'label' => 'Definiert Größe',
-            'displayInBackend' => true,
-            'custom' => false,
-            'translatable' => false,
-            'position' => 0,
-        ]);
-
-        /** @var \Doctrine\Common\Cache\ClearableCache $metaDataCache */
-        $metaDataCache = Shopware()->Models()->getConfiguration()->getMetadataCacheImpl();
-        $metaDataCache->deleteAll();
-        Shopware()->Models()->generateAttributeModels(['s_filter_options_attributes']);
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function installWidgets()
-    {
-        /** @var ComponentInstaller $installer */
-        $installer = $this->container->get('shopware.emotion_component_installer');
-
-        // component SYS-PSV
-        $syspsvElement = $installer->createOrUpdate(
-            $this->getName(),
-            '8select SYS-PSV component',
-            [
-                'name' => 'SYS-PSV Component',
-                'template' => 'sys_psv',
-                'cls' => '8select--element--sys-psv',
-                'xtype' => 'emotion-8select-syspsv-element',
-            ]
-        );
-        $syspsvElement->createHiddenField(
-            [
-                'name' => 'sys_psv_ordernumber',
-                'fieldLabel' => 'Product Ordernumber',
-                'allowBlank' => false,
-            ]
-        );
-        $syspsvElement->createNumberField(
-            [
-                'name' => 'sys_psv_lazyload_factor',
-                'fieldLabel' => 'Lazy Load Distance Factor',
-                'defaultValue' => 0,
-                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
-                                sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden,
-                                sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
-                                sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
-                                befindet.',
-                'allowBlank' => true,
-            ]
-        );
-
-        // component PSP-TLV
-        $psptlvElement = $installer->createOrUpdate(
-            $this->getName(),
-            '8select PSP-TLV component',
-            [
-                'name' => 'PSP-TLV Component',
-                'template' => 'psp_tlv',
-                'cls' => '8select--element--psp-tlv',
-                'xtype' => 'emotion-8select-psptlv-element',
-            ]
-        );
-        $psptlvElement->createTextField(
-            [
-                'name' => 'psp_tlv_stylefactor',
-                'fieldLabel' => 'Stylefactor',
-                'allowBlank' => false,
-            ]
-        );
-        $psptlvElement->createNumberField(
-            [
-                'name' => 'psp_tlv_lazyload_factor',
-                'fieldLabel' => 'Lazy Load Distance Factor',
-                'defaultValue' => 0,
-                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
-                                sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden,
-                                sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
-                                sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
-                                befindet.',
-                'allowBlank' => true,
-            ]
-        );
-
-        // component PSP-PSV
-        $psppsvElement = $installer->createOrUpdate(
-            $this->getName(),
-            '8select PSP-PSV component',
-            [
-                'name' => 'PSP-PSV Component',
-                'template' => 'psp_psv',
-                'cls' => '8select--element--psp-psv',
-                'xtype' => 'emotion-8select-psppsv-element',
-            ]
-        );
-        $psppsvElement->createTextField(
-            [
-                'name' => 'psp_psv_set_id',
-                'fieldLabel' => 'Set-ID',
-                'allowBlank' => false,
-            ]
-        );
-        $psppsvElement->createNumberField(
-            [
-                'name' => 'psp_psv_lazyload_factor',
-                'fieldLabel' => 'Lazy Load Distance Factor',
-                'defaultValue' => 0,
-                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
-                                sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden,
-                                sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
-                                sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
-                                befindet.',
-                'allowBlank' => true,
-            ]
-        );
     }
 
     /**
@@ -481,17 +328,21 @@ class CseEightselectBasic extends Plugin
     {
         $this->initInstallLog($context);
 
-        $this->removeExportCron();
-        $this->removeExportOnceCron();
-        $this->removePropertyCron();
-        $this->removePropertyOnceCron();
+        $uninstall = new Uninstall(
+            $context,
+            new SizeAttribute(
+                $this->container->get('shopware_attribute.crud_service'),
+                Shopware()->Models()->getConfiguration()->getMetadataCacheImpl(),
+                Shopware()->Models()
+            ),
+            new EmotionComponents($this->container->get('shopware.emotion_component_installer'))
+        );
+        $uninstall->execute();
         $this->removeDatabase();
-        $this->deleteExportDir();
-        $this->removeAttributes();
 
         $this->sendLog('uninstall');
 
-        return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
+        $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
 
     private function updateSchema()
@@ -526,7 +377,8 @@ class CseEightselectBasic extends Plugin
     {
         $this->createDefaultConfig();
         $this->updateSchema();
-        $this->initAttributes();
+        $attributeMapping = new AttributeMapping(Shopware()->Db());
+        $attributeMapping->initAttributes();
         ExportSetup::createChangeQueueTable();
         try {
             ExportSetup::createChangeQueueTriggers();
@@ -551,17 +403,6 @@ class CseEightselectBasic extends Plugin
         ExportSetup::dropChangeQueueTable();
         $config = new Config($this->container->get('dbal_connection'));
         $config->uninstall();
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function removeAttributes()
-    {
-        /** @var \Shopware\Bundle\AttributeBundle\Service\CrudService $attributeService */
-        $attributeService = Shopware()->Container()->get('shopware_attribute.crud_service');
-
-        $attributeService->delete('s_article_configurator_groups_attributes', 'od_cse_eightselect_basic_is_size');
     }
 
     /**
@@ -672,277 +513,12 @@ class CseEightselectBasic extends Plugin
      */
     public function addJsFiles()
     {
-        $jsDir = __DIR__.'/Resources/views/frontend/_public/src/js/';
+        $jsDir = __DIR__ . '/Resources/views/frontend/_public/src/js/';
         $jsFiles = [
-            $jsDir.'jquery.8select-csePlugin.js',
+            $jsDir . 'jquery.8select-csePlugin.js',
         ];
 
         return new ArrayCollection($jsFiles);
-    }
-
-    public function removeExportCron()
-    {
-        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
-            'Shopware_CronJob_CseEightselectBasicArticleExport',
-        ]);
-    }
-
-    public function removeExportOnceCron()
-    {
-        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
-            'Shopware_CronJob_CseEightselectBasicArticleExportOnce',
-        ]);
-    }
-
-    public function removePropertyCron()
-    {
-        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
-            'Shopware_CronJob_CseEightselectBasicPropertyExport',
-        ]);
-    }
-
-    public function removePropertyOnceCron()
-    {
-        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
-            'Shopware_CronJob_CseEightselectBasicPropertyExportOnce',
-        ]);
-    }
-
-    /**
-     * quick update remove methods for version <= 1.5.2.
-     */
-    public function removeQuickUpdateCron()
-    {
-        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
-            'Shopware_CronJob_CseEightselectBasicQuickUpdate',
-        ]);
-    }
-
-    public function removeQuickUpdateOnceCron()
-    {
-        $this->container->get('dbal_connection')->executeQuery('DELETE FROM s_crontab WHERE `action` = ?', [
-            'Shopware_CronJob_CseEightselectBasicQuickUpdateOnce',
-        ]);
-    }
-
-    /**
-     * @throws \Zend_Db_Adapter_Exception
-     */
-    private function initAttributes()
-    {
-        $attributeList = [
-            [
-                'eightselectAttribute' => 'ean',
-                'eightselectAttributeLabel' => 'EAN-CODE',
-                'eightselectAttributeLabelDescr' => 'Standardisierte eindeutige Materialnummer nach EAN (European Article Number) oder UPC (Unified Product Code).',
-                'shopwareAttribute' => 's_articles_details.ean',
-            ],
-            [
-                'eightselectAttribute' => 'name1',
-                'eightselectAttributeLabel' => 'ARTIKELBEZEICHNUNG',
-                'eightselectAttributeLabelDescr' => 'Standardbezeichnung für den Artikel so wie er normalerweise in der Artikeldetailansicht genutzt wird (z.B. Sportliches Herren-Hemd "Arie")',
-                'shopwareAttribute' => 's_articles.name',
-            ],
-            [
-                'eightselectAttribute' => 'name2',
-                'eightselectAttributeLabel' => 'ALTERNATIVE ARTIKELBEZEICHNUNG',
-                'eightselectAttributeLabelDescr' => 'Oft als Kurzbezeichnung in Listenansichten verwendet (z.B. "Freizeit-Hemd") oder für Google mit mehr Infos zur besseren Suche',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'beschreibung',
-                'eightselectAttributeLabel' => 'BESCHREIBUNGSTEXT HTML',
-                'eightselectAttributeLabelDescr' => 'Der Beschreibungstext zum Artikel, auch "description long" genannt, im HTML-Format z.B. "<p>Federleichte Regenhose! </ br> ...</p>"',
-                'shopwareAttribute' => 's_articles.description_long',
-            ],
-            [
-                'eightselectAttribute' => 'beschreibung2',
-                'eightselectAttributeLabel' => 'ALTERNATIVER BESCHREIBUNGSTEXT',
-                'eightselectAttributeLabelDescr' => 'zusätzliche Informationen zum Produkt, technische Beschreibung, Kurzbeschreibung oder auch Keywords',
-                'shopwareAttribute' => 's_articles.keywords',
-            ],
-            [
-                'eightselectAttribute' => 'rubrik',
-                'eightselectAttributeLabel' => 'PRODUKTKATEGORIE / -RUBRIK',
-                'eightselectAttributeLabelDescr' => 'bezeichnet spezielle Artikelgruppen, die als Filter oder Shop-Navigation genutzt werden (z.B. Große Größen, Umstandsmode, Stillmode)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'typ',
-                'eightselectAttributeLabel' => 'PRODUKTTYP / UNTERKATEGORIE',
-                'eightselectAttributeLabelDescr' => 'verfeinerte Shop-Navigation oder Unterkategorie (z.B. Lederjacke, Blouson, Parka)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'abteilung',
-                'eightselectAttributeLabel' => 'ABTEILUNG',
-                'eightselectAttributeLabelDescr' => 'Einteilung der Sortimente nach Zielgruppen  (z.B. Damen, Herren, Kinder)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'kiko',
-                'eightselectAttributeLabel' => 'KIKO',
-                'eightselectAttributeLabelDescr' => 'Speziell für Kindersortimente: Einteilung nach Zielgruppen (z.B. Mädchen, Jungen, Baby)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'bereich',
-                'eightselectAttributeLabel' => 'BEREICH',
-                'eightselectAttributeLabelDescr' => 'Damit können Teilsortimente bezeichnet sein (z.B. Outdoor; Kosmetik; Trachten; Lifestyle)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'sportart',
-                'eightselectAttributeLabel' => 'SPORTART',
-                'eightselectAttributeLabelDescr' => 'speziell bei Sportartikeln (z.B. Handball, Bike, Bergsteigen)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'serie',
-                'eightselectAttributeLabel' => 'SERIE',
-                'eightselectAttributeLabelDescr' => 'Hier können Bezeichnungen für Serien übergeben werden, um Artikelfamilien oder Sondereditionen zu kennzeichnen (z.B. Expert Line, Mountain Professional)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'gruppe',
-                'eightselectAttributeLabel' => 'GRUPPE / BAUKAUSTEN',
-                'eightselectAttributeLabelDescr' => 'bezeichnet direkt zusammengehörige Artikel (z.B. Bikini-Oberteil "Aloha" und Bikini-Unterteil "Aloha" = Gruppe 1002918; Baukasten-Sakko "Ernie" und Baukasten-Hose "Bert" = Gruppe "E&B"). Dabei können auch mehr als 2 Artikel eine Gruppe bilden (z.B. Mix & Match: Gruppe "Hawaii" = 3 Bikini-Oberteile können mit 2 Bikini-Unterteilen frei kombiniert werden) . Die ID für eine Gruppe kann eine Nummer oder ein Name sein.',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'saison',
-                'eightselectAttributeLabel' => 'SAISON',
-                'eightselectAttributeLabelDescr' => 'Beschreibt zu welcher Saison bzw. saisonalen Kollektion der Artikel gehört (z.B. HW18/19; Sommer 2018; Winter)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'farbe',
-                'eightselectAttributeLabel' => 'FARBE',
-                'eightselectAttributeLabelDescr' => 'Die exakte Farbbezeichnung des Artikels (z.B. Gelb; Himbeerrot; Rosenrot)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'farbspektrum',
-                'eightselectAttributeLabel' => 'FARBSPEKTRUM',
-                'eightselectAttributeLabelDescr' => 'Farben sind einem Farbspektrum zugeordnet (z.B. Farbe: Himbeerrot > Farbspektrum: Rot)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'muster',
-                'eightselectAttributeLabel' => 'MUSTER',
-                'eightselectAttributeLabelDescr' => 'Farbmuster des Artikels (z.B. uni, einfarbig,  kariert, gestreift, Blumenmuster, einfarbig-strukturiert)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'waschung',
-                'eightselectAttributeLabel' => 'WASCHUNG',
-                'eightselectAttributeLabelDescr' => 'optische Wirkung des Materials (bei Jeans z.B.  used, destroyed, bleached, vintage)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'stil',
-                'eightselectAttributeLabel' => 'STIL',
-                'eightselectAttributeLabelDescr' => 'Stilrichtung des Artikels (z.B.  Business, Casual,  Ethno, Retro)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'detail',
-                'eightselectAttributeLabel' => 'DETAIL',
-                'eightselectAttributeLabelDescr' => 'erwähnenswerte Details an Artikeln (z.B. Reißverschluss seitlich am Saum, Brusttasche, Volants, Netzeinsatz, Kragen in Kontrastfarbe)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'passform',
-                'eightselectAttributeLabel' => 'PASSFORM',
-                'eightselectAttributeLabelDescr' => 'in Bezug auf die Körperform, wird häufig für  Hemden, Sakkos und Anzüge verwendet (z.B. schmal, bequeme Weite, slim-fit, regular-fit, comfort-fit, körpernah)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'schnitt',
-                'eightselectAttributeLabel' => 'SCHNITT',
-                'eightselectAttributeLabelDescr' => 'in Bezug auf die Form des Artikels  (z.B. Bootcut, gerades Bein, Oversized, spitzer Schuh)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'aermellaenge',
-                'eightselectAttributeLabel' => 'ÄRMELLÄNGE',
-                'eightselectAttributeLabelDescr' => 'speziell bei Oberbekleidung: Länge der Ärmel (z.B. normal, extra-lange Ärmel, ärmellos, 3/4 Arm)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'kragenform',
-                'eightselectAttributeLabel' => 'KRAGENFORM',
-                'eightselectAttributeLabelDescr' => 'speziell bei Oberbekleidung: Beschreibung des Kragens  oder Ausschnitts (z.B. Rollkragen, V-Ausschnitt, Blusenkragen, Haifischkragen)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'verschluss',
-                'eightselectAttributeLabel' => 'VERSCHLUSS',
-                'eightselectAttributeLabelDescr' => 'beschreibt Verschlussarten (z.B: geknöpft, Reißverschluss,  Druckknöpfe, Klettverschluss; Haken&Öse)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'obermaterial',
-                'eightselectAttributeLabel' => 'ART OBERMATERIAL',
-                'eightselectAttributeLabelDescr' => 'wesentliches Material des Artikels (z.B. Wildleder, Denim,  Edelstahl, Gewebe, Strick, Jersey, Sweat, Crash)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'material',
-                'eightselectAttributeLabel' => 'MATERIAL',
-                'eightselectAttributeLabelDescr' => 'bezeichnet die genaue Materialzusammensetzung (z.B. 98% Baumwolle, 2% Elasthan)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'funktion',
-                'eightselectAttributeLabel' => 'FUNKTION',
-                'eightselectAttributeLabelDescr' => 'beschreibt Materialfunktionen und -eigenschaften (z.b. schnelltrocknend, atmungsaktiv, 100% UV-Schutz; pflegeleicht, bügelleicht, körperformend)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'eigenschaft',
-                'eightselectAttributeLabel' => 'EIGENSCHAFT / EINSATZBEREICH',
-                'eightselectAttributeLabelDescr' => 'speziell für Sport und Outdoor. Hinweise zum Einsatzbereich (Bsp. Schlafsack geeignet für Temparaturbereich 1 °C bis -16 °C, kratzfest, wasserdicht)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'auspraegung',
-                'eightselectAttributeLabel' => 'AUSFÜHRUNG & MAßANGABEN',
-                'eightselectAttributeLabelDescr' => 'speziell für Sport und Outdoor. Wichtige Informationen,  die helfen, den Artikel in das Sortiment einzuordnen (Beispiele: bei Rucksäcken: Volumen "30-55 Liter"; bei Skistöcken: Größenangaben in Maßeinheit "Körpergröße 160 bis 175cm";  Sonderausführungen: "Linkshänder")',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'fuellmenge',
-                'eightselectAttributeLabel' => 'FUELLMENGE',
-                'eightselectAttributeLabelDescr' => 'bezieht sich auf die Menge des Inhalts des Artikels (z.B. 200ml; 0,5 Liter, 3kg, 150 Stück)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'absatzhoehe',
-                'eightselectAttributeLabel' => 'ABSATZHÖHE',
-                'eightselectAttributeLabelDescr' => 'speziell bei Schuhen: Höhe des Absatzes (Format mit oder ohne Maßeinheit z.B. 5,5 cm oder 5,5)',
-                'shopwareAttribute' => '-',
-            ],
-            [
-                'eightselectAttribute' => 'sonstiges',
-                'eightselectAttributeLabel' => 'SONSTIGES',
-                'eightselectAttributeLabelDescr' => 'zusätzliche Artikelinformationen, die keinem spezifischen Attribut zugeordnet werden können',
-                'shopwareAttribute' => '-',
-            ],
-        ];
-
-        foreach ($attributeList as $attributeEntry) {
-            $sql = 'INSERT INTO 8s_attribute_mapping (eightselectAttribute, eightselectAttributeLabel, eightselectAttributeLabelDescr, shopwareAttribute) VALUES (?, ?, ?, ?)';
-            Shopware()->Db()->query(
-                $sql,
-                [
-                    $attributeEntry['eightselectAttribute'],
-                    $attributeEntry['eightselectAttributeLabel'],
-                    $attributeEntry['eightselectAttributeLabelDescr'],
-                    $attributeEntry['shopwareAttribute'],
-                ]
-            );
-        }
     }
 
     /**
@@ -965,29 +541,5 @@ class CseEightselectBasic extends Plugin
         /** @var $cacheManager \Shopware\Components\CacheManager */
         $cacheManager = $this->container->get('shopware.cache_manager');
         $cacheManager->clearConfigCache();
-    }
-
-    private function deleteExportDir()
-    {
-        $this->rrmdir(Shopware()->DocPath('files_8select'));
-    }
-
-    private function rrmdir($dir)
-    {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object === '.' || $object === '..') {
-                    continue;
-                }
-
-                if (is_dir($object)) {
-                    rrmdir($dir);
-                } else {
-                    unlink(sprintf('%s/%s', $dir, $object));
-                }
-            }
-            rmdir($dir);
-        }
     }
 }
