@@ -48,11 +48,6 @@ abstract class Export
         $this->mapper = $container->get('cse_eightselect_basic.export.helper.mapper');
     }
 
-    public function scheduleCron()
-    {
-        RunCronOnce::runOnce(static::CRON_NAME);
-    }
-
     /**
      * @throws \Doctrine\ORM\ORMException
      * @throws \Enlight_Exception
@@ -66,25 +61,20 @@ abstract class Export
             if ($this->canRunCron() === false) {
                 // we need to remove products from shops that are not active for cse because those products are still logged here
                 $this->emptyQueue();
-                RunCronOnce::finishCron(static::CRON_NAME);
-
                 return;
             }
 
             $message = sprintf('Führe %s aus.', static::CRON_NAME);
             Shopware()->PluginLogger()->info($message);
 
-            RunCronOnce::runCron(static::CRON_NAME);
             $this->generateExportCSV();
             $this->emptyQueue();
             FeedLogger::logFeed(static::CRON_NAME);
-            RunCronOnce::finishCron(static::CRON_NAME);
 
             $message = sprintf('%s abgeschlossen in %d s', static::CRON_NAME, (time() - $start));
             Shopware()->PluginLogger()->info($message);
         } catch (\Exception $exception) {
             Shopware()->PluginLogger()->error($exception);
-            RunCronOnce::finishCron(static::CRON_NAME);
 
             throw $exception;
         }
@@ -95,12 +85,6 @@ abstract class Export
      */
     protected function canRunCron()
     {
-        if (!RunCronOnce::isScheduled(static::CRON_NAME)) {
-            $message = sprintf('%s nicht ausgeführt, es ist kein Export in der Warteschleife.', static::CRON_NAME);
-
-            return false;
-        }
-
         $validationResult = $this->configValidator->validateExportConfig();
         if ($validationResult['isValid'] === false) {
             $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::CRON_NAME);
@@ -115,19 +99,13 @@ abstract class Export
             return false;
         }
 
-        if (RunCronOnce::isRunning(static::CRON_NAME)) {
-            $message = sprintf('%s nicht ausgeführt, es läuft bereits ein Export.', static::CRON_NAME);
-
-            return false;
-        }
-
         return true;
     }
 
     private function generateExportCSV()
     {
-        if (file_exists(__DIR__.'/../vendor/autoload.php')) {
-            require_once __DIR__.'/../vendor/autoload.php';
+        if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+            require_once __DIR__ . '/../vendor/autoload.php';
         }
 
         try {
@@ -212,16 +190,10 @@ abstract class Export
         for ($offset = 0; $offset < $numArticles; $offset += $batchSize) {
             $articles = $this->getArticles($attributeMapping, $offset, $batchSize);
 
-            $top = $offset + ($batchSize - 1);
-            if ($top > $numArticles) {
-                $top = $numArticles;
-            }
-
             foreach ($articles as $article) {
                 $line = $this->mapper->getLine($article, $this->fields);
                 $csvWriter->insertOne($line);
             }
-            $this->updateStatus($numArticles, $top);
         }
     }
 
@@ -318,22 +290,6 @@ abstract class Export
         $count = Shopware()->Db()->query($sql)->fetchColumn();
 
         return intval($count);
-    }
-
-    /**
-     * @param $numArticles
-     * @param $currentArticle
-     *
-     * @throws \Zend_Db_Adapter_Exception
-     */
-    private function updateStatus($numArticles, $currentArticle)
-    {
-        $progress = floor($currentArticle / $numArticles * 100);
-
-        if ($progress !== $this->currentProgress) {
-            RunCronOnce::updateProgress(static::CRON_NAME, $progress);
-            $this->currentProgress = $progress;
-        }
     }
 
     /**
