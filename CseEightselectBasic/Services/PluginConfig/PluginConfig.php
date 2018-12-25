@@ -22,7 +22,7 @@ class PluginConfig
     private $currentShop;
 
     /**
-     * ConfigWriter
+     * @var ConfigWriter
      */
     private $configWriter;
 
