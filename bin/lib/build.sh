@@ -1,4 +1,4 @@
- PLUGIN_NAME="CseEightselectBasic"
+PLUGIN_NAME="CseEightselectBasic"
 
 DIST_DIR="dist"
 ZIP_NAME="${PLUGIN_NAME}_Shopware-5.2.17_${VERSION}.zip"
