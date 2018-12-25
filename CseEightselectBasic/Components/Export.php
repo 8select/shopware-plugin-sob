@@ -69,7 +69,6 @@ abstract class Export
 
             $this->generateExportCSV();
             $this->emptyQueue();
-            FeedLogger::logFeed(static::CRON_NAME);
 
             $message = sprintf('%s abgeschlossen in %d s', static::CRON_NAME, (time() - $start));
             Shopware()->PluginLogger()->info($message);
