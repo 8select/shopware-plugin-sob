@@ -3,7 +3,6 @@
 namespace CseEightselectBasic;
 
 use CseEightselectBasic\Components\ExportSetup;
-use CseEightselectBasic\Components\FeedLogger;
 use CseEightselectBasic\Models\EightselectAttribute;
 use CseEightselectBasic\Services\Config\Config;
 use CseEightselectBasic\Services\Dependencies\Provider;
@@ -386,7 +385,6 @@ class CseEightselectBasic extends Plugin
     private function removeDatabase()
     {
         $this->dropSchema();
-        FeedLogger::deleteTable();
         ExportSetup::dropChangeQueueTriggers();
         ExportSetup::dropChangeQueueTable();
         $config = new Config($this->container->get('dbal_connection'));

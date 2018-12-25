@@ -31,6 +31,7 @@ class Update_1_11_1 implements SetupInterface
     public function execute()
     {
         $this->deleteRunCronOnceTable();
+        $this->deleteFeedLoggerTable();
         $this->removeExportDir();
         $this->removeExportCron();
         $this->removeExportOnceCron();
@@ -67,6 +68,12 @@ class Update_1_11_1 implements SetupInterface
     private function deleteRunCronOnceTable()
     {
         $sql = 'DROP TABLE IF EXISTS `8s_cron_run_once`;';
+        $this->connection->query($sql);
+    }
+
+    private function deleteFeedLoggerTable()
+    {
+        $sql = 'DROP TABLE IF EXISTS `8s_feeds`;';
         $this->connection->query($sql);
     }
 
