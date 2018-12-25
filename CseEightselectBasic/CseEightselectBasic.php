@@ -4,7 +4,6 @@ namespace CseEightselectBasic;
 
 use CseEightselectBasic\Components\ExportSetup;
 use CseEightselectBasic\Components\FeedLogger;
-use CseEightselectBasic\Components\RunCronOnce;
 use CseEightselectBasic\Models\EightselectAttribute;
 use CseEightselectBasic\Services\Config\Config;
 use CseEightselectBasic\Services\Dependencies\Provider;
@@ -387,7 +386,6 @@ class CseEightselectBasic extends Plugin
     private function removeDatabase()
     {
         $this->dropSchema();
-        RunCronOnce::deleteTable();
         FeedLogger::deleteTable();
         ExportSetup::dropChangeQueueTriggers();
         ExportSetup::dropChangeQueueTable();
