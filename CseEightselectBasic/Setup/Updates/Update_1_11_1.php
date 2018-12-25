@@ -31,7 +31,6 @@ class Update_1_11_1 implements SetupInterface
     public function execute()
     {
         $this->deleteRunCronOnceTable();
-        $this->deleteFeedLoggerTable();
         $this->removeExportDir();
         $this->removeExportCron();
         $this->removeExportOnceCron();
@@ -71,15 +70,9 @@ class Update_1_11_1 implements SetupInterface
         $this->connection->query($sql);
     }
 
-    private function deleteFeedLoggerTable()
-    {
-        $sql = 'DROP TABLE IF EXISTS `8s_feeds`;';
-        $this->connection->query($sql);
-    }
-
     private function removeExportCron()
     {
-        $this->connection->executeQuery(
+        executeQuery(
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicArticleExport']
         );
