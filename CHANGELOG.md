@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.11.2](https://github.com/8select/shopware-plugin-sob/tree/1.11.2) (2018-12-27)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.1...1.11.2)
+
+**Fixed Bugs:**
+
+- [CSE-1726](https://8select.atlassian.net/browse/CSE-1726) add commented smarty blocks to emotion ExtJS [\#77](https://github.com/8select/shopware-plugin-sob/pull/77) ([akleiber](https://github.com/akleiber))
+
 ## [1.11.1](https://github.com/8select/shopware-plugin-sob/tree/1.11.1) (2018-12-27)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.0...1.11.1)
@@ -7,7 +15,7 @@
 **Fixed Bugs:**
 
 - [CSE-1595](https://8select.atlassian.net/browse/CSE-1595) subshop support [\#75](https://github.com/8select/shopware-plugin-sob/pull/75) ([akleiber](https://github.com/akleiber))
-- remove comment block from emotion components [\#76](https://github.com/8select/shopware-plugin-sob/pull/76) ([akleiber](https://github.com/akleiber))
+- [CSE-1726](https://8select.atlassian.net/browse/CSE-1726) remove comment block from emotion components [\#76](https://github.com/8select/shopware-plugin-sob/pull/76) ([akleiber](https://github.com/akleiber))
 
 ## [1.11.0](https://github.com/8select/shopware-plugin-sob/tree/1.11.0) (2018-12-14)
 
