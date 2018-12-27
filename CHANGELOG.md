@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.11.3](https://github.com/8select/shopware-plugin-sob/tree/1.11.3) (2018-12-27)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.2...1.11.3)
+
+**Fixed Bugs:**
+
+- [CSE-1732](https://8select.atlassian.net/browse/CSE-1732) add template dir via extra subscriber class [\#78](https://github.com/8select/shopware-plugin-sob/pull/78) ([akleiber](https://github.com/akleiber))
+
 ## [1.11.2](https://github.com/8select/shopware-plugin-sob/tree/1.11.2) (2018-12-27)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.1...1.11.2)
