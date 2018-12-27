@@ -1,3 +1,4 @@
+//{block name="emotion_components/backend/sys_psv"}
 Ext.define('Shopware.apps.Emotion.view.components.SysPsv', {
 
     extend: 'Shopware.apps.Emotion.view.components.Base',
@@ -82,3 +83,4 @@ Ext.define('Shopware.apps.Emotion.view.components.SysPsv', {
     }
 
 });
+//{/block}
