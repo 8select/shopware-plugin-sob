@@ -62,7 +62,6 @@ class CseEightselectBasic extends Plugin
     public static function getSubscribedEvents()
     {
         return [
-            'Enlight_Controller_Action_PreDispatch' => 'onPreDispatch',
             'Theme_Compiler_Collect_Plugin_Javascript' => 'addJsFiles',
             'Enlight_Controller_Dispatcher_ControllerPath_Frontend_CseEightselectBasic' => 'onGetFrontendCseEightselectBasicController',
             'Enlight_Controller_Dispatcher_ControllerPath_Backend_CseEightselectBasic' => 'onGetBackendCseEightselectBasicController',
@@ -92,11 +91,6 @@ class CseEightselectBasic extends Plugin
         }
 
         return $this->pluginConfigService;
-    }
-
-    public function onPreDispatch()
-    {
-        Shopware()->Template()->addTemplateDir($this->getPath() . '/Resources/views/');
     }
 
     /**

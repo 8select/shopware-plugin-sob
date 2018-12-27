@@ -3,6 +3,12 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
+        <service id="cse_eightselect_basic.subscriber.template_registration" class="CseEightselectBasic\Subscriber\TemplateRegistration">
+            <argument>%cse_eightselect_basic.plugin_dir%</argument>
+            <argument type="service" id="template"/>
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
         <service id="cse_eightselect_basic.article_export" class="CseEightselectBasic\Components\ArticleExport"> </service>
         <service id="cse_eightselect_basic.property_export" class="CseEightselectBasic\Components\PropertyExport"> </service>
         <service id="cse_eightselect_basic.force_full_property_export" class="CseEightselectBasic\Components\ForceFullPropertyExport"> </service>
