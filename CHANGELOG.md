@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.11.4](https://github.com/8select/shopware-plugin-sob/tree/1.11.4) (2018-12-31)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.3...1.11.4)
+
+**Fixed Bugs:**
+
+- [CSE-1737](https://8select.atlassian.net/browse/CSE-1737) use $offset instead of non existing $i [\#79](https://github.com/8select/shopware-plugin-sob/pull/79) ([akleiber](https://github.com/akleiber))
+
 ## [1.11.3](https://github.com/8select/shopware-plugin-sob/tree/1.11.3) (2018-12-27)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.2...1.11.3)
