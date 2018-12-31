@@ -1,6 +1,6 @@
 <?php
 
-namespace CseEightselectBasic\Setup\Updates;
+namespace CseEightselectBasic\Setup;
 
 interface SetupInterface
 {

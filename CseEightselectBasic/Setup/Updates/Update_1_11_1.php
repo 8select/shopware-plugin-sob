@@ -79,7 +79,7 @@ class Update_1_11_1 implements SetupInterface
 
     private function removeExportCron()
     {
-        executeQuery(
+        $this->connection->executeQuery(
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicArticleExport']
         );
