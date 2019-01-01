@@ -52,12 +52,9 @@
             <argument type="service" id="cse_eightselect_basic.export.helper.product_images"/>
             <argument type="service" id="db"/>
         </service>
-        <service id="cse_eightselect_basic.config.config" class="CseEightselectBasic\Services\Config\Config">
-            <argument type="service" id="dbal_connection"/>
-        </service>
-        <service id="cse_eightselect_basic.request.validator" class="CseEightselectBasic\Services\Request\Validator">
+
+        <service id="cse_eightselect_basic.request.auth" class="CseEightselectBasic\Services\Request\Auth">
             <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
         </service>
-        <service id="cse_eightselect_basic.response.error_body" class="CseEightselectBasic\Services\Response\ErrorBody"></service>
     </services>
 </container>
