@@ -42,8 +42,24 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 
         $this->Front()->Plugins()->ViewRenderer()->setNoRender();
         $this->Response()->setHeader('Content-Type', 'application/json');
+
         try {
-            $export = ['... exporting ...'];
+            $limit = $this->Request()->getParam('limit', 50);
+            $offset = $this->Request()->getParam('offset', 0);
+            // product_feed
+            // property_feed
+            // status_feed
+            $format = $this->Request()->getParam('format', 'status_feed');
+            $export = [
+                'limit' => $limit,
+                'offset' => $offset,
+                'total' => rand(0, 5000),
+                'data' => [
+                    ['sku' => 'SW42'],
+                    ['sku' => 'SW43'],
+                    ['sku' => 'SW44'],
+                ],
+            ];
 
             return $this->Response()->setBody(json_encode($export));
         } catch (\Exception $exception) {
