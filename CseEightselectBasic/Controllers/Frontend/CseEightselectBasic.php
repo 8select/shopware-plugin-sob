@@ -1,19 +1,15 @@
 <?php
 
-/**
- * Class Shopware_Controllers_Frontend_CseEightselectBasic.
- *
- * @category    Shopware
- *
- * @author      Onedrop GmbH & Co KG
- */
+use CseEightselectBasic\Services\Request\AuthException;
+use CseEightselectBasic\Services\Request\NotAuthorizedException;
 use Shopware\Components\CSRFWhitelistAware;
 
 class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controller_Action implements CSRFWhitelistAware
 {
+
     /**
      * Provides the cart of the current user as JSON API.
-     * The API is available at /cse-eightselect-basic/cart.
+     * The API is available at /cse-eightselect-basic/cart
      */
     public function cartAction()
     {
@@ -26,53 +22,53 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     }
 
     /**
-     * The API is available at /eight-select/products.
+     * The API is available at /cse-eightselect-basic/products
      */
     public function productsAction()
     {
-        $responseErrorBody = $this->container->get('cse_eightselect_basic.response.error_body');
-
         try {
-            $requestValidator = $this->container->get('cse_eightselect_basic.request.validator');
+            $auth = $this->container->get('cse_eightselect_basic.request.auth');
+            $auth->auth($this->Request());
+        } catch (NotAuthorizedException $exception) {
+            throw new \Enlight_Controller_Exception('hide export', 404);
+        } catch (AuthException $exception) {
             $this->Front()->Plugins()->ViewRenderer()->setNoRender();
-            $authorizationValidation = $requestValidator->checkAuthorizationForExport($this->Request());
-
-            if (!$authorizationValidation['isAuthorized']) {
-                $this->Response()->setHttpResponseCode(404);
-
-                return;
-            }
-
             $this->Response()->setHeader('Content-Type', 'application/json');
-            $queryParamValidation = $requestValidator->checkQueryStringParamsForExport($this->Request());
-
-            if (!$queryParamValidation['isValid']) {
-                $errorBody = $responseErrorBody->getBadRequestBody($queryParamValidation['violations']);
-                $this->Response()->setBody($errorBody);
-                $this->Response()->setHttpResponseCode(400);
-
-                return;
-            }
-
-            $configValidator = $this->container->get('cse_eightselect_basic.config.validator');
-            $configValidation = $configValidator->validateConfig();
-
-            if (!$configValidation['isValid']) {
-                $errorBody = $responseErrorBody->getInternalServerErrorBody($configValidation['violations']);
-                $this->Response()->setBody($errorBody);
-                $this->Response()->setHttpResponseCode(500);
-
-                return;
-            }
-
-            $this->Response()->setBody('return export here');
-            $this->Response()->setHttpResponseCode(200);
-        } catch (Exception $e) {
-            $errorBody = $responseErrorBody->getInternalServerErrorBody($e->getMessage());
-            $this->Response()->setHeader('Content-Type', 'application/json');
-            $this->Response()->setBody();
-            $this->Response()->setHttpResponseCode(500);
+            $this->Response()->setHttpResponseCode($exception->getCode());
+            $body = $this->httpBodyFromException($exception, 'AUTH_ERROR');
+            $this->Response()->setBody($body);
+            return;
         }
+
+        $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+        $this->Response()->setHeader('Content-Type', 'application/json');
+        try {
+            $export = ['... exporting ...'];
+
+            return $this->Response()->setBody(json_encode($export));
+        } catch (\Exception $exception) {
+            $this->Response()->setHttpResponseCode($exception->getCode());
+            $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
+            $this->Response()->setBody($body);
+
+            return;
+        }
+    }
+
+    /**
+     * @param \Exception $exception
+     * @param string $error
+     *
+     * @return string
+     */
+    private function httpBodyFromException($exception, $error)
+    {
+        return json_encode(
+            [
+                'error' => $error,
+                'message' => $exception->getMessage(),
+            ]
+        );
     }
 
     public function getWhitelistedCSRFActions()
