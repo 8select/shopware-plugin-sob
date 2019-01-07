@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false" backupStaticAttributes="false" bootstrap="./tests/Functional/Bootstrap.php">
+  <testsuite name="CseEightselectBasic Test Suite">
+    <directory>./tests</directory>
+  </testsuite>
+
+  <filter>
+    <whitelist>
+      <directory suffix=".php">./</directory>
+      <exclude>
+        <directory suffix=".php">./tests</directory>
+
+        <!-- Bootstrap -->
+        <file>CseEightselectBasic.php</file>
+        <directory>./vendor</directory>
+      </exclude>
+    </whitelist>
+  </filter>
+</phpunit>
