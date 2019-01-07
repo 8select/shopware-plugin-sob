@@ -11,6 +11,9 @@ class ProductPriceTest extends \PHPUnit\Framework\TestCase
      */
     private $service;
 
+    /**
+     * @before
+     */
     public function createServiceBefore()
     {
         $this->service = new ProductPrice();
