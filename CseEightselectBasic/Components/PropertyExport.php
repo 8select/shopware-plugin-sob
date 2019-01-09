@@ -1,7 +1,6 @@
 <?php
-namespace CseEightselectBasic\Components;
 
-use CseEightselectBasic\Components\Export;
+namespace CseEightselectBasic\Components;
 
 class PropertyExport extends Export
 {
@@ -39,11 +38,17 @@ class PropertyExport extends Export
         'prop_retailPrice' => 'streich_preis',
     ];
 
-    public function __construct()
+    /**
+     * @param bool $isStatusExport
+     */
+    public function __construct($isStatusExport)
     {
         parent::__construct();
+
         $fieldMapping = $this->fieldMappingPriceAndStock;
-        if ($this->isDeltaExport()) {
+        $isDeltaExport = $this->isDeltaExport();
+
+        if (!$isStatusExport || !$isDeltaExport) {
             $fieldMapping = $this->fieldMappingComplete;
         }
 
@@ -53,10 +58,12 @@ class PropertyExport extends Export
 
     /**
      * @param string $mapping
-     * @param int $offset
-     * @param int $limit
+     * @param int    $offset
+     * @param int    $limit
+     *
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     *
      * @return array
      */
     protected function getArticles($mapping, $offset, $limit)
