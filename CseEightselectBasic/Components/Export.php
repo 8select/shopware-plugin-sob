@@ -131,6 +131,8 @@ abstract class Export
             array_push($batch, $line);
         }
 
+        $this->deleteFromQueue($articles);
+
         return $batch;
     }
 
@@ -241,6 +243,28 @@ abstract class Export
 
         $sql = 'DELETE FROM 8s_articles_details_change_queue';
         Shopware()->Db()->query($sql);
+    }
+
+    /**
+     * @throws \Zend_Db_Adapter_Exception
+     * @throws \Zend_Db_Statement_Exception
+     *
+     * @param string $batch
+     */
+    private function deleteFromQueue($batch)
+    {
+        if (!$batch || count($batch) < 1) {
+            return;
+        }
+
+        $detailIDs = array_map(function ($article) {
+            return $article['detailID'];
+        }, $batch);
+
+        $joinedIDs = join(',', $detailIDs);
+        $sql = 'DELETE FROM 8s_articles_details_change_queue WHERE 8s_articles_details_change_queue.s_articles_details_id IN (?)';
+
+        Shopware()->Db()->query($sql, [$joinedIDs]);
     }
 
     protected function isDeltaExport()
