@@ -2,14 +2,15 @@
 
 use CseEightselectBasic\Services\Request\AuthException;
 use CseEightselectBasic\Services\Request\NotAuthorizedException;
+use CseEightselectBasic\Components\ArticleExport;
+use CseEightselectBasic\Components\PropertyExport;
 use Shopware\Components\CSRFWhitelistAware;
 
 class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controller_Action implements CSRFWhitelistAware
 {
-
     /**
      * Provides the cart of the current user as JSON API.
-     * The API is available at /cse-eightselect-basic/cart
+     * The API is available at /cse-eightselect-basic/cart.
      */
     public function cartAction()
     {
@@ -22,7 +23,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     }
 
     /**
-     * The API is available at /cse-eightselect-basic/products
+     * The API is available at /cse-eightselect-basic/products.
      */
     public function productsAction()
     {
@@ -37,6 +38,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
             $this->Response()->setHttpResponseCode($exception->getCode());
             $body = $this->httpBodyFromException($exception, 'AUTH_ERROR');
             $this->Response()->setBody($body);
+
             return;
         }
 
@@ -46,22 +48,23 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         try {
             $limit = $this->Request()->getParam('limit', 50);
             $offset = $this->Request()->getParam('offset', 0);
-            // product_feed
-            // property_feed
-            // status_feed
-            $format = $this->Request()->getParam('format', 'status_feed');
-            $export = [
-                'limit' => $limit,
-                'offset' => $offset,
-                'total' => rand(0, 5000),
-                'data' => [
-                    ['sku' => 'SW42'],
-                    ['sku' => 'SW43'],
-                    ['sku' => 'SW44'],
-                ],
-            ];
 
-            return $this->Response()->setBody(json_encode($export));
+            $format = $this->Request()->getParam('format', 'status_feed');
+
+            $isStatusExport = true;
+            $export = new PropertyExport($isStatusExport);
+
+            if ($format === 'product_feed') {
+                $export = new ArticleExport();
+            }
+            if ($format === 'property_feed') {
+                $isStatusExport = false;
+                $export = new PropertyExport($isStatusExport);
+            }
+
+            $responseData = $export->generateJsonResponse($limit, $offset);
+
+            return $this->Response()->setBody(json_encode($responseData));
         } catch (\Exception $exception) {
             $this->Response()->setHttpResponseCode($exception->getCode());
             $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
@@ -73,7 +76,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 
     /**
      * @param \Exception $exception
-     * @param string $error
+     * @param string     $error
      *
      * @return string
      */
