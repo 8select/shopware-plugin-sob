@@ -6,7 +6,7 @@ class PropertyExport extends Export
 {
     const FEED_TYPE = 'property_feed';
 
-    const CRON_NAME = '8select_property_export';
+    const FEED_NAME = '8select_property_export';
 
     /**
      * @var array

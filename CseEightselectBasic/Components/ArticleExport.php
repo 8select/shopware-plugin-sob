@@ -1,11 +1,10 @@
 <?php
-namespace CseEightselectBasic\Components;
 
-use CseEightselectBasic\Components\Export;
+namespace CseEightselectBasic\Components;
 
 class ArticleExport extends Export
 {
-    const CRON_NAME = '8select_article_export';
+    const FEED_NAME = '8select_article_export';
 
     const FEED_TYPE = 'product_feed';
 

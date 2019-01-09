@@ -1,13 +1,12 @@
 <?php
-namespace CseEightselectBasic\Components;
 
-use CseEightselectBasic\Components\Export;
+namespace CseEightselectBasic\Components;
 
 class ForceFullPropertyExport extends Export
 {
     const FEED_TYPE = 'property_feed';
 
-    const CRON_NAME = '8select_force_full_property_export';
+    const FEED_NAME = '8select_force_full_property_export';
 
     /**
      * @var array
