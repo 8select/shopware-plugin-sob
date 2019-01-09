@@ -5,7 +5,6 @@ namespace CseEightselectBasic\Components;
 use CseEightselectBasic\Services\Config\Config;
 use CseEightselectBasic\Services\Config\Validator;
 use CseEightselectBasic\Services\Dependencies\Provider;
-use League\Csv\Writer;
 
 abstract class Export
 {
@@ -49,51 +48,20 @@ abstract class Export
     }
 
     /**
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Enlight_Exception
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     */
-    public function doCron()
-    {
-        try {
-            $start = time();
-            if ($this->canRunCron() === false) {
-                // we need to remove products from shops that are not active for cse because those products are still logged here
-                $this->emptyQueue();
-                return;
-            }
-
-            $message = sprintf('Führe %s aus.', static::CRON_NAME);
-            Shopware()->PluginLogger()->info($message);
-
-            $this->generateExportCSV();
-            $this->emptyQueue();
-
-            $message = sprintf('%s abgeschlossen in %d s', static::CRON_NAME, (time() - $start));
-            Shopware()->PluginLogger()->info($message);
-        } catch (\Exception $exception) {
-            Shopware()->PluginLogger()->error($exception);
-
-            throw $exception;
-        }
-    }
-
-    /**
      * @return array
      */
-    protected function canRunCron()
+    protected function canGenerateResponse()
     {
         $validationResult = $this->configValidator->validateExportConfig();
         if ($validationResult['isValid'] === false) {
-            $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::CRON_NAME);
+            $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::FEED_NAME);
             Shopware()->PluginLogger()->warning($message);
 
             return false;
         }
 
         if ($this->getNumArticles() <= 0) {
-            $message = sprintf('%s nicht ausgeführt, es wurden keine Produkte für Export gefunden.', static::CRON_NAME);
+            $message = sprintf('%s nicht ausgeführt, es wurden keine Produkte für Export gefunden.', static::FEED_NAME);
 
             return false;
         }
@@ -101,60 +69,29 @@ abstract class Export
         return true;
     }
 
-    private function generateExportCSV()
+    /**
+     * @param int    $limit
+     * @param int    $offset
+     * @param string $format
+     */
+    public function generateJsonResponse($limit, $offset)
     {
-        if (file_exists(__DIR__.'/../vendor/autoload.php')) {
-            require_once __DIR__.'/../vendor/autoload.php';
+        if ($this->canGenerateResponse() === false) {
+            $this->emptyQueue();
+
+            return;
         }
 
-        try {
-            $path = $this->createTempFile();
-        } catch (\Exception $exception) {
-            Shopware()->PluginLogger()->error($exception->getMessage());
+        $productData = $this->getDataBatch($limit, $offset);
 
-            return false;
-        }
+        $response = [
+            'limit' => $limit,
+            'offset' => $offset,
+            'total' => $this->getNumArticles(),
+            'data' => $productData,
+        ];
 
-        $csvWriter = Writer::createFromPath($path, 'w');
-        $csvWriter->setDelimiter(';');
-
-        $csvWriter->insertOne($this->header);
-
-        $this->writeFile($csvWriter);
-
-        unlink($path);
-    }
-
-    private function createTempFile()
-    {
-        try {
-            $tempfile = tmpfile();
-
-            if (!$tempfile) {
-                $message = sprintf('%s nicht ausgeführt, temporäre Datei für Export konnte nicht erstellt werden.', static::CRON_NAME);
-                throw new \Exception($message);
-            }
-            $path = stream_get_meta_data($tempfile)['uri'];
-        } catch (\Exception $exception) {
-            $storagePath = Shopware()->DocPath('files_8select');
-            $isDirCreated = true;
-            if (!is_dir($storagePath)) {
-                $isDirCreated = mkdir($storagePath, 0775, true);
-            }
-            if (!$isDirCreated) {
-                $message = sprintf('%s nicht ausgeführt, Fallback Verzeichnis für Export konnte nicht erstellt werden.', static::CRON_NAME);
-                throw new \Exception($message, 500, $exception);
-            }
-            $path = tempnam($storagePath, static::FEED_TYPE);
-        }
-
-        $tempPath = new \SplFileInfo($path);
-        if (!$tempPath->isWritable()) {
-            $message = sprintf('%s nicht ausgeführt, temporäre Datei in Fallback Verzeichnis für Export konnte nicht erstellt werden.', static::CRON_NAME);
-            throw new \Exception($message);
-        }
-
-        return $path;
+        return $response;
     }
 
     /**
@@ -173,27 +110,28 @@ abstract class Export
     }
 
     /**
-     * @param Writer $csvWriter
+     * @param int $limit
+     * @param int $offset
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      * @throws \League\Csv\CannotInsertRecord
      */
-    private function writeFile(Writer $csvWriter)
+    private function getDataBatch($limit, $offset)
     {
-        $numArticles = $this->getNumArticles();
-        $batchSize = 100;
+        $batch = [];
+        $total = $this->getNumArticles();
 
         $attributeMapping = $this->getAttributeMapping();
-        for ($offset = 0; $offset < $numArticles; $offset += $batchSize) {
-            $articles = $this->getArticles($attributeMapping, $offset, $batchSize);
+        $articles = $this->getArticles($attributeMapping, $offset, $limit);
 
-            foreach ($articles as $article) {
-                $line = $this->mapper->getLine($article, $this->fields);
-                $csvWriter->insertOne($line);
-            }
+        for ($i = 0; $i < count($articles); ++$i) {
+            $line = $this->mapper->getLine($articles[$i], $this->fields);
+            array_push($batch, $line);
         }
+
+        return $batch;
     }
 
     /**
