@@ -40,3 +40,16 @@ pandoc --standalone --toc --metadata=title:"8select Curated Shopping Engine - Mo
 ### 3. Debugging
 
 - use https://github.com/FriendsOfShopware/FroshProfiler
+
+### 4. Run Unit Tests
+
+**Note: Running PHP Unit Tests for the 8select CSE plugin requires PHP 7.0 or higher. Please check the PHP version installed on your local web server before installing or using [phpunit](https://phpunit.de/)**
+- for compatibility with PHP v7.1 or higher use phpunit v6.5 or higher
+- for compatibilty with PHP v7.0 use phpunit max. v6.4.44
+- for more information see https://github.com/sebastianbergmann/phpunit/wiki 
+
+**How to run:** 
+- Make sure to have [phpunit](https://phpunit.de/) installed on your local web server
+- Make sure you have the 8select CSE plugin installed in your local shopware environment
+- Open a terminal to your server and move to directory `/shopware/custom/plugins/CseEightSelectBasic`
+- run `phpunit`
