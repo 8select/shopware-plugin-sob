@@ -258,13 +258,13 @@ abstract class Export
         }
 
         $detailIDs = array_map(function ($article) {
-            return $article['detailID'];
+            return intval($article['detailID']);
         }, $batch);
 
         $joinedIDs = join(',', $detailIDs);
-        $sql = 'DELETE FROM 8s_articles_details_change_queue WHERE 8s_articles_details_change_queue.s_articles_details_id IN (?)';
+        $sql = "DELETE FROM 8s_articles_details_change_queue WHERE 8s_articles_details_change_queue.s_articles_details_id IN ($joinedIDs)";
 
-        Shopware()->Db()->query($sql, [$joinedIDs]);
+        Shopware()->Db()->query($sql);
     }
 
     protected function isDeltaExport()
