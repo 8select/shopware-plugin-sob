@@ -377,6 +377,12 @@ class CseEightselectBasic extends Plugin
         /** @var ComponentInstaller $installer */
         $installer = $this->container->get('shopware.emotion_component_installer');
 
+        $lazyLoadHelpText = 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
+                            sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden,
+                            sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
+                            sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
+                            befindet.';
+
         // component SYS-PSV
         $syspsvElement = $installer->createOrUpdate(
             $this->getName(),
@@ -422,8 +428,9 @@ class CseEightselectBasic extends Plugin
         );
         $psptlvElement->createTextField(
             [
-                'name' => 'psp_tlv_stylefactor',
-                'fieldLabel' => 'Stylefactor',
+                'name'       => 'psp_tlv_tags',
+                'fieldLabel' => 'Tags',
+                'helpText'   => 'Liste von Komma separierten Tags der Produkt-Sets die angezeigt werden sollen. Zum Beispiel "winterzauber, nikolaus, schneeballschlacht" - die Liste kann max. 10 Teaser-Sets enthalten.',
                 'allowBlank' => false,
             ]
         );
@@ -432,12 +439,8 @@ class CseEightselectBasic extends Plugin
                 'name' => 'psp_tlv_lazyload_factor',
                 'fieldLabel' => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
-                                sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden,
-                                sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
-                                sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
-                                befindet.',
-                'allowBlank' => true,
+                'helpText'     => $lazyLoadHelpText,
+                'allowBlank'   => true,
             ]
         );
 
@@ -464,12 +467,8 @@ class CseEightselectBasic extends Plugin
                 'name' => 'psp_psv_lazyload_factor',
                 'fieldLabel' => 'Lazy Load Distance Factor',
                 'defaultValue' => 0,
-                'helpText' => 'Definiert einen Faktor auf Basis der Fensterhöhe, ab dem das Widget unterhalb des
-                                sichtbaren Scrollbereiches vorgeladen werden soll ("lazy loading"). Beispiel: 0 = Laden,
-                                sobald sich das Widget direkt unterhalb des sichtbaren Bereiches befindet; 1 = Laden,
-                                sobald sich das Widget eine Fensterhöhe weit unterhalb des sichtbaren Bereiches
-                                befindet.',
-                'allowBlank' => true,
+                'helpText'     => $lazyLoadHelpText,
+                'allowBlank'   => true,
             ]
         );
     }
