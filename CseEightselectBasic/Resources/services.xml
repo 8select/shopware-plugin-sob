@@ -38,6 +38,13 @@
             <argument>%cse_eightselect_basic.plugin_name%</argument>
         </service>
 
+        <!-- Export  -->
+        <service id="cse_eightselect_basic.export.connector" class="CseEightselectBasic\Services\Export\Connector">
+            <argument type="service" id="guzzle_http_client_factory"/>
+            <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
+            <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
+        </service>
+
         <service id="cse_eightselect_basic.export.helper.product_url" class="CseEightselectBasic\Services\Export\Helper\ProductUrl">
             <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
             <argument type="service" id="config"/>

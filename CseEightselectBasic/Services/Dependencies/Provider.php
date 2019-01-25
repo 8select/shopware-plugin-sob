@@ -68,4 +68,16 @@ class Provider
     {
         return $this->container->has('shop');
     }
+
+    /**
+     * @return string
+     */
+    public function getShopwareRelease()
+    {
+        if ($this->container->has('shopware.release')) {
+            return $this->container->get('shopware.release')->getVersion();
+        }
+
+        return \Shopware::VERSION;
+    }
 }
