@@ -13,18 +13,25 @@ class EmotionComponents
     private $componentInstaller;
 
     /**
-     * @param ComponentInstaller $componentInstaller
+     * @var string
      */
-    public function __construct(ComponentInstaller $componentInstaller)
+    private $pluginName;
+
+    /**
+     * @param ComponentInstaller $componentInstaller
+     * @param string $pluginName
+     */
+    public function __construct(ComponentInstaller $componentInstaller, $pluginName)
     {
         $this->componentInstaller = $componentInstaller;
+        $this->pluginName = $pluginName;
     }
 
     public function create()
     {
         // component SYS-PSV
         $syspsvElement = $this->componentInstaller->createOrUpdate(
-            $this->getName(),
+            $this->pluginName,
             '8select SYS-PSV component',
             [
                 'name' => 'SYS-PSV Component',
@@ -59,7 +66,7 @@ class EmotionComponents
 
         // component PSP-TLV
         $psptlvElement = $this->componentInstaller->createOrUpdate(
-            $this->getName(),
+            $this->pluginName,
             '8select PSP-TLV component',
             [
                 'name' => 'PSP-TLV Component',
@@ -88,7 +95,7 @@ class EmotionComponents
 
         // component PSP-PSV
         $psppsvElement = $this->componentInstaller->createOrUpdate(
-            $this->getName(),
+            $this->pluginName,
             '8select PSP-PSV component',
             [
                 'name' => 'PSP-PSV Component',

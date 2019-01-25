@@ -59,6 +59,15 @@ class PluginConfig
     }
 
     /**
+     * @param string $key ConfigKey
+     * @return mixed
+     */
+    public function set($key, $value)
+    {
+        $this->pluginConfig[$key] = $value;
+    }
+
+    /**
      * @return bool
      */
     public function isCseActive()
@@ -98,5 +107,16 @@ class PluginConfig
         $shopRepository = $this->container->get('models')->getRepository(Shop::class);
         $defaultShop = $shopRepository->getDefault();
         $this->configWriter->save('CseEightselectBasicActiveShopId', $defaultShop->getId());
+    }
+
+    /**
+     * @return bool
+     */
+    public function areCseCredentialsConfigured()
+    {
+        $isApiIdValid = strlen($this->get('CseEightselectBasicApiId')) === 36;
+        $isFeedIdValid = strlen($this->get('CseEightselectBasicFeedId')) === 36;
+
+        return $isApiIdValid && $isFeedIdValid;
     }
 }

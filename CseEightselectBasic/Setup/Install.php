@@ -2,6 +2,8 @@
 
 namespace CseEightselectBasic\Setup;
 
+use CseEightselectBasic\Setup\Helpers\EmotionComponents;
+use CseEightselectBasic\Setup\Helpers\SizeAttribute;
 use Shopware\Components\Plugin\Context\InstallContext;
 
 class Install implements SetupInterface

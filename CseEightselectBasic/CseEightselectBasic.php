@@ -6,8 +6,14 @@ use CseEightselectBasic\Components\ExportSetup;
 use CseEightselectBasic\Models\EightselectAttribute;
 use CseEightselectBasic\Services\Config\Config;
 use CseEightselectBasic\Services\Dependencies\Provider;
+use CseEightselectBasic\Services\Export\Connector;
+use CseEightselectBasic\Services\Export\CseCredentialsMissingException;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
 use CseEightselectBasic\Setup\Helpers\AttributeMapping;
+use CseEightselectBasic\Setup\Helpers\EmotionComponents;
+use CseEightselectBasic\Setup\Helpers\SizeAttribute;
+use CseEightselectBasic\Setup\Install;
+use CseEightselectBasic\Setup\Uninstall;
 use CseEightselectBasic\Setup\Updates\Update_1_11_0;
 use CseEightselectBasic\Setup\Updates\Update_1_11_1;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -34,6 +40,16 @@ class CseEightselectBasic extends Plugin
      */
     private $pluginConfigService;
 
+    /**
+     * integer
+     */
+    private $numberOfConfigElementsSaved = 0;
+
+    /**
+     * integer
+     */
+    private $numberOfConfigElements;
+
     private function initInstallLog($context)
     {
         $provider = new Provider($this->container, $this->getPluginConfigService());
@@ -42,7 +58,7 @@ class CseEightselectBasic extends Plugin
 
         try {
             $this->installMessages[] = 'Shop-URL: ' . $shopUrl;
-            $this->installMessages[] = 'Shopware-Version: ' . $this->container->get('shopware.release')->getVersion();
+            $this->installMessages[] = 'Shopware-Version: ' . $provider->getShopwareRelease();
             $this->installMessages[] = 'CSE-Plugin-Version: ' . $context->getCurrentVersion();
         } catch (\Exception $exception) {
             $this->installMessages[] = 'ERROR: initInstallLog ' . (string) $exception;
@@ -74,18 +90,19 @@ class CseEightselectBasic extends Plugin
 
     private function getPluginConfigService()
     {
-        if (!isset($this->pluginConfigService)) {
+        if (!$this->container->has('cse_eightselect_basic.plugin_config.plugin_config')) {
             $configReader = $this->container->get('shopware.plugin.cached_config_reader');
             $configWriter = $this->container->get('config_writer');
-            $this->pluginConfigService = new PluginConfigService(
+            $pluginConfigService = new PluginConfigService(
                 $this->container,
                 $configReader,
                 $configWriter,
                 $this->getName()
             );
+            $this->container->set('cse_eightselect_basic.plugin_config.plugin_config', $pluginConfigService);
         }
 
-        return $this->pluginConfigService;
+        return $this->container->get('cse_eightselect_basic.plugin_config.plugin_config');
     }
 
     /**
@@ -112,7 +129,6 @@ class CseEightselectBasic extends Plugin
      */
     public function getVersion()
     {
-        // brauchen wir das hier? wo wird das benutzt?
         return Shopware()->Db()->query(
             'SELECT version FROM s_core_plugins WHERE name = ?',
             [$this->getName()]
@@ -232,11 +248,12 @@ class CseEightselectBasic extends Plugin
                 Shopware()->Models()->getConfiguration()->getMetadataCacheImpl(),
                 Shopware()->Models()
             ),
-            new EmotionComponents($this->container->get('shopware.emotion_component_installer'))
+            new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName())
         );
         $install->execute();
         $this->createDatabase($context);
         $this->getPluginConfigService()->setDefaults();
+        $this->connectCse();
 
         $this->sendLog('install');
 
@@ -249,6 +266,7 @@ class CseEightselectBasic extends Plugin
     public function activate(ActivateContext $context)
     {
         $this->initInstallLog($context);
+        $this->connectCse();
         $this->sendLog('activate');
         return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
@@ -259,6 +277,7 @@ class CseEightselectBasic extends Plugin
     public function deactivate(DeactivateContext $context)
     {
         $this->initInstallLog($context);
+        $this->disconnectCse();
         $this->sendLog('deactivate');
         return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
@@ -288,6 +307,8 @@ class CseEightselectBasic extends Plugin
                     Shopware()->DocPath('files_8select')
                 );
                 $update->execute();
+            case version_compare($context->getCurrentVersion(), '1.11.4', '<='):
+                $this->connectCse();
         }
 
         $this->installMessages[] = 'Update auf CSE-Plugin-Version: ' . $context->getUpdateVersion();
@@ -319,17 +340,22 @@ class CseEightselectBasic extends Plugin
     {
         $this->initInstallLog($context);
 
-        $uninstall = new Uninstall(
-            $context,
-            new SizeAttribute(
-                $this->container->get('shopware_attribute.crud_service'),
-                Shopware()->Models()->getConfiguration()->getMetadataCacheImpl(),
-                Shopware()->Models()
-            ),
-            new EmotionComponents($this->container->get('shopware.emotion_component_installer'))
-        );
-        $uninstall->execute();
-        $this->removeDatabase();
+        try {
+            $uninstall = new Uninstall(
+                $context,
+                new SizeAttribute(
+                    $this->container->get('shopware_attribute.crud_service'),
+                    Shopware()->Models()->getConfiguration()->getMetadataCacheImpl(),
+                    Shopware()->Models()
+                ),
+                new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName()),
+                $this->getCseConnector()
+            );
+            $uninstall->execute();
+            $this->removeDatabase();
+        } catch (\Exception $exception) {
+            $this->installMessages[] = 'ERROR: uninstall ' . (string) $exception;
+        }
 
         $this->sendLog('uninstall');
 
@@ -433,11 +459,123 @@ class CseEightselectBasic extends Plugin
         return $date;
     }
 
-    public function onBackendConfigSave()
+    /**
+     * this is invoked for each config element, see https://github.com/shopware/shopware/blob/5.2/engine/Shopware/Controllers/Backend/Config.php#L1270
+     * @param \Enlight_Event_EventArgs $args
+     */
+    public function onBackendConfigSave(\Enlight_Event_EventArgs $args)
     {
-        // @todo config loggen
+        $this->updateCachedPluginConfig($args);
+
+        $this->numberOfConfigElementsSaved++;
+        if (!$this->isConfigSaveComplete($args)) {
+            return;
+        }
+
         /** @var $cacheManager \Shopware\Components\CacheManager */
         $cacheManager = $this->container->get('shopware.cache_manager');
         $cacheManager->clearConfigCache();
+
+        $this->connectCse();
+    }
+
+    /**
+     * @param \Enlight_Event_EventArgs $args
+     */
+    private function isConfigSaveComplete(\Enlight_Event_EventArgs $args)
+    {
+        try {
+            if (!isset($this->numberOfConfigElements)) {
+                $formElement = $args->get('element');
+                $querybuilder = Shopware()->Models()->createQueryBuilder();
+                $querybuilder
+                    ->select('count(configelement.id)')
+                    ->from('Shopware\Models\Config\Element', 'configelement')
+                    ->where('configelement.form = :form_id')
+                    ->setParameter('form_id', $formElement->getForm()->getId());
+                $this->numberOfConfigElements = $querybuilder->getQuery()->getSingleScalarResult();
+            }
+
+            return $this->numberOfConfigElementsSaved >= $this->numberOfConfigElements;
+        } catch (\Exception $exception) {
+            $this->container->get('pluginlogger')->error($exception);
+
+            return true;
+        }
+    }
+
+    /**
+     * @param \Enlight_Event_EventArgs $args
+     */
+    private function updateCachedPluginConfig(\Enlight_Event_EventArgs $args)
+    {
+        $elementsToUpdate = [
+            'CseEightselectBasicActiveShopId' => true,
+            'CseEightselectBasicApiId' => true,
+            'CseEightselectBasicFeedId' => true,
+        ];
+
+        $formElement = $args->get('element');
+        $name = $formElement->getName();
+
+        if (!isset($elementsToUpdate[$name])) {
+            return;
+        }
+
+        $value = $formElement->getValues()->current();
+        if ($value === false) {
+            $this->getPluginConfigService()->set($name, null);
+        } else {
+            $this->getPluginConfigService()->set($name, $value->getValue());
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function connectCse()
+    {
+        try {
+            $this->getCseConnector()->connect();
+        } catch (CseCredentialsMissingException $exception) {
+            $this->container->get('pluginlogger')->info('Kann keine Verbindung zu 8select herstellen. Api ID / Feed ID nicht gültig.');
+        } catch (\Exception $exception) {
+            $this->container->get('pluginlogger')->error($exception);
+            throw new \Exception('Formular konnte nicht gespeichert werden. Bitte das Plugin Log prüfen.');
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function disconnectCse()
+    {
+        try {
+            $this->getCseConnector()->disconnect();
+        } catch (CseCredentialsMissingException $exception) {
+            $this->container->get('pluginlogger')->info('Kann keine Verbindung zu 8select herstellen. Api ID / Feed ID nicht gültig.');
+        } catch (\Exception $exception) {
+            $this->container->get('pluginlogger')->error($exception);
+            throw new \Exception('Formular konnte nicht gespeichert werden. Bitte das Plugin Log prüfen.');
+        }
+    }
+
+    /**
+     * @return Connector
+     */
+    private function getCseConnector()
+    {
+        if (!$this->container->has('cse_eightselect_basic.export.connector')) {
+            $guzzleFactory = $this->container->get('guzzle_http_client_factory');
+            $provider = new Provider($this->container, $this->getPluginConfigService());
+            $cseConnector = new Connector(
+                $guzzleFactory,
+                $this->getPluginConfigService(),
+                $provider
+            );
+            $this->container->set('cse_eightselect_basic.export.connector', $cseConnector);
+        }
+
+        return $this->container->get('cse_eightselect_basic.export.connector');
     }
 }
