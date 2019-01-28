@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.12.0-beta.0](https://github.com/8select/shopware-plugin-sob/tree/1.12.0-beta.0) (2019-1-28)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.4...1.12.0-beta.0)
+
+**Implemented Features:**
+
+- [CSE-836](https://8select.atlassian.net/browse/CSE-836) php unit tests [\#80](https://github.com/8select/shopware-plugin-sob/pull/80) ([voodoods](https://github.com/voodoods))
+- [CSE-1695](https://8select.atlassian.net/browse/CSE-1695) rename stylefactor to tags [\#81](https://github.com/8select/shopware-plugin-sob/pull/81) ([dominikstoetter](https://github.com/dominikstoetter))
+
 ## [1.11.4](https://github.com/8select/shopware-plugin-sob/tree/1.11.4) (2018-12-31)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.3...1.11.4)
