@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.12.0-beta.1](https://github.com/8select/shopware-plugin-sob/tree/1.12.0-beta.1) (2019-1-30)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.4...1.12.0-beta.1)
+
+**Implemented Features:**
+
+- [CSE-1804](https://8select.atlassian.net/browse/CSE-1804) use replacement s3 user [\#83](https://github.com/8select/shopware-plugin-sob/pull/83) ([akleiber](https://github.com/akleiber))
+
 ## [1.12.0-beta.0](https://github.com/8select/shopware-plugin-sob/tree/1.12.0-beta.0) (2019-1-28)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.4...1.12.0-beta.0)
