@@ -538,10 +538,14 @@ class CseEightselectBasic extends Plugin
         try {
             $this->getCseConnector()->connect();
         } catch (CseCredentialsMissingException $exception) {
-            $this->container->get('pluginlogger')->info('Kann keine Verbindung zu 8select herstellen. Api ID / Feed ID nicht gültig.');
+            $message = 'Kann keine Verbindung zu 8select herstellen. Api ID / Feed ID nicht gültig.';
+            $context = array('exception' => $exception);
+            $this->container->get('pluginlogger')->info($message, $context);
         } catch (\Exception $exception) {
-            $this->container->get('pluginlogger')->error($exception);
-            throw new \Exception('Formular konnte nicht gespeichert werden. Bitte das Plugin Log prüfen.');
+            $message = sprintf('8select Verbindung Exception: %s', $exception->getMessage());
+            $context = array('exception' => $exception);
+            $this->container->get('pluginlogger')->error($message, $context);
+            throw new \Exception('Verbindung zu 8select konnte nicht hergestellt werden. Bitte das Plugin Log prüfen.');
         }
     }
 
@@ -553,10 +557,14 @@ class CseEightselectBasic extends Plugin
         try {
             $this->getCseConnector()->disconnect();
         } catch (CseCredentialsMissingException $exception) {
-            $this->container->get('pluginlogger')->info('Kann keine Verbindung zu 8select herstellen. Api ID / Feed ID nicht gültig.');
+            $message = 'Kann keine Verbindung zu 8select herstellen. Api ID / Feed ID nicht gültig.';
+            $context = array('exception' => $exception);
+            $this->container->get('pluginlogger')->info($message, $context);
         } catch (\Exception $exception) {
-            $this->container->get('pluginlogger')->error($exception);
-            throw new \Exception('Formular konnte nicht gespeichert werden. Bitte das Plugin Log prüfen.');
+            $message = sprintf('8select Verbindung Exception: %s', $exception->getMessage());
+            $context = array('exception' => $exception);
+            $this->container->get('pluginlogger')->error($message, $context);
+            throw new \Exception('Verbindung zu 8select konnte nicht hergestellt werden. Bitte das Plugin Log prüfen.');
         }
     }
 
