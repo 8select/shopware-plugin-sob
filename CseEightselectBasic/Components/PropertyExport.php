@@ -85,7 +85,8 @@ class PropertyExport extends Export
                     ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleId;";
                 LIMIT %d OFFSET %d';
 
-        $sql = sprintf($sqlTemplate, $limit, $offset);
+        $activeShop = $this->provider->getShopWithActiveCSE();
+        $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId(), $limit, $offset);
 
         $articles = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
