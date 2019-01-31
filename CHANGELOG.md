@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.12.1](https://github.com/8select/shopware-plugin-sob/tree/1.12.1) (2019-1-31)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.12.0...1.12.1)
+
+**Fixed Bugs:**
+
+- [CSE-1817](https://8select.atlassian.net/browse/CSE-1817) add missing category id to query [\#84](https://github.com/8select/shopware-plugin-sob/pull/84) ([akleiber](https://github.com/akleiber))
+
 ## [1.12.0](https://github.com/8select/shopware-plugin-sob/tree/1.12.0) (2019-1-30)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.11.4...1.12.0)
