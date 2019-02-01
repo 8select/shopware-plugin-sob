@@ -73,7 +73,6 @@ abstract class Export implements ExportInterface
 
         $activeShop = $this->provider->getShopWithActiveCSE();
         $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId());
-        dump($sql);
 
         $count = Shopware()->Db()->query($sql)->fetchColumn();
 
@@ -96,51 +95,7 @@ abstract class Export implements ExportInterface
         }
 
         return $products;
-
-        // if ($this->canGenerateResponse() === false) {
-        //     // @todo fehler ausgeben - kann nur passieren wenn etwas nicht korrekt konfiguriert ist
-        //     return [
-        //         'limit' => $limit,
-        //         'offset' => $offset,
-        //         'total' => 0,
-        //         'data' => [],
-        //     ];
-        // }
-
-        // $productData = $this->getDataBatch($limit, $offset);
-
-        // $response = [
-        //     'limit' => $limit,
-        //     'offset' => $offset,
-        //     'total' => $this->getNumArticles(),
-        //     'data' => $productData,
-        // ];
-
-        // return $response;
     }
-
-    // /**
-    //  * @return array
-    //  */
-    // protected function canGenerateResponse()
-    // {
-    //     //@todo die API Antwort muss das hier enthalten, damit wir mitbekommen wenn was noch nicht richtig konfiguriert ist
-    //     $validationResult = $this->configValidator->validateExportConfig();
-    //     if ($validationResult['isValid'] === false) {
-    //         $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::FEED_NAME);
-    //         Shopware()->PluginLogger()->warning($message);
-
-    //         return false;
-    //     }
-
-    //     if ($this->getNumArticles() <= 0) {
-    //         $message = sprintf('%s nicht ausgeführt, es wurden keine Produkte für Export gefunden.', static::FEED_NAME);
-    //         Shopware()->PluginLogger()->info($message);
-    //         return false;
-    //     }
-
-    //     return true;
-    // }
 
     /**
      * @return string

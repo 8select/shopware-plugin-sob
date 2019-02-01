@@ -52,7 +52,7 @@ class Mapper
             switch ($fieldName) {
                 case 'mastersku':
                     $value = $article['mastersku'];
-                    $options = static::getNonSizeConfiguratorOptionsByArticleDetailId($article['detailID']);
+                    $options = $this->getNonSizeConfiguratorOptionsByArticleDetailId($article['detailID']);
                     if (!empty($options)) {
                         $value .= '-' . mb_strtolower(str_replace(' ', '-', implode('-', $options)));
                     }

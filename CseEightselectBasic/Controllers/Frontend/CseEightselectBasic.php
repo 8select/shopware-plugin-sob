@@ -47,6 +47,29 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         $this->Response()->setHeader('Content-Type', 'application/json');
 
         try {
+            $configValidator = $this->container->get('cse_eightselect_basic.config.validator');
+            $result = $configValidator->validateExportConfig();
+            if ($result['isValid'] === false) {
+                $this->Response()->setHttpResponseCode(500);
+                $body = json_encode(
+                    [
+                        'error' => 'CONFIGURATION_ERROR',
+                        'message' => $result['violations'],
+                    ]
+                );
+                $this->Response()->setBody($body);
+
+                return;
+            }
+        } catch (\Exception $exception) {
+            $this->Response()->setHttpResponseCode(500);
+            $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
+            $this->Response()->setBody($body);
+
+            return;
+        }
+
+        try {
             $format = $this->Request()->getParam('format');
             $export = $this->createExport($format);
             if (!$format || !$export) {
