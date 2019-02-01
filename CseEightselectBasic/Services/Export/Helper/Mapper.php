@@ -41,7 +41,7 @@ class Mapper
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    public function getLine($article, $fields)
+    public function map($article, $fields)
     {
         $line = [];
 

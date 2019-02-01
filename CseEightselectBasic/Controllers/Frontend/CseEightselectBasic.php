@@ -57,10 +57,17 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
             $limit = filter_var($this->Request()->getParam('limit', 50), FILTER_VALIDATE_INT);
             $offset = filter_var($this->Request()->getParam('offset', 0), FILTER_VALIDATE_INT);
             $isDeltaExport = filter_var($this->Request()->getParam('delta', true), FILTER_VALIDATE_BOOLEAN);
-            $products = $export->getProducts($limit, $offset, $isDeltaExport);
 
-            return $this->Response()->setBody(json_encode($products));
+            $response = json_encode(
+                [
+                    'limit' => $limit,
+                    'offset' => $offset,
+                    'total' => $export->getTotal($isDeltaExport),
+                    'data' => $export->getProducts($limit, $offset, $isDeltaExport),
+                ]
+            );
 
+            return $this->Response()->setBody($response);
         } catch (\Exception $exception) {
             $this->Response()->setHttpResponseCode(500);
             $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
@@ -80,7 +87,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
                 return new ArticleExport();
                 break;
             case 'property':
-                return new PropertyExport(false);
+                return new PropertyExport();
                 break;
             case 'status':
                 return $this->container->get('cse_eightselect_basic.export.status_export');

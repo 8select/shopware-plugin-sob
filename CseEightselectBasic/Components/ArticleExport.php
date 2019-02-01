@@ -61,10 +61,4 @@ class ArticleExport extends Export
         'beschreibung2' => 'beschreibung2',
         'sonstiges' => 'sonstiges',
     ];
-
-    public function __construct()
-    {
-        $this->header = $this->fields;
-        parent::__construct();
-    }
 }

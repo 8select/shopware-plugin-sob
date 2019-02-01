@@ -3,10 +3,11 @@
 namespace CseEightselectBasic\Services\Export;
 
 use CseEightselectBasic\Services\Dependencies\Provider;
+use CseEightselectBasic\Services\Export\ExportInterface;
 use CseEightselectBasic\Services\Export\StatusExportDelta;
 use Doctrine\DBAL\Connection;
 
-class StatusExport
+class StatusExport implements ExportInterface
 {
 
     /**
@@ -36,8 +37,70 @@ class StatusExport
      */
     public function getProducts($limit, $offset, $isDeltaExport = true)
     {
-        $sqlTemplate = 'SELECT
-                    s_articles_details.id as s_articles_details_id,
+        $productsSql = implode(
+            ' ',
+            [
+                $this->getSelectQueryString(false),
+                $this->getFromQueryString(),
+                $this->getDeltaConditionQueryString($isDeltaExport),
+                $this->getLimitQueryString($limit, $offset),
+                ';',
+            ]
+        );
+        $activeShop = $this->provider->getShopWithActiveCSE();
+        $params = [
+            'categoryId' => $activeShop->getCategory()->getId(),
+        ];
+
+        $products = $this->connection->fetchAll($productsSql, $params);
+
+        $deltaSql = implode(
+            ' ',
+            [
+                $this->getSelectQueryString(true),
+                $this->getFromQueryString(),
+                $this->getDeltaConditionQueryString($isDeltaExport),
+                $this->getLimitQueryString($limit, $offset),
+                ';',
+            ]
+        );
+        $deltaUpdate = new StatusExportDelta($this->connection);
+        $deltaUpdate->writeDeltaStatus($deltaSql, $params);
+
+        return $products;
+    }
+
+    public function getTotal($isDeltaExport = true)
+    {
+        $sql = implode(
+            ' ',
+            [
+                $this->getCountQueryString(),
+                $this->getFromQueryString(),
+                $this->getDeltaConditionQueryString($isDeltaExport),
+                ';',
+            ]
+        );
+
+        $activeShop = $this->provider->getShopWithActiveCSE();
+        $params = [
+            'categoryId' => $activeShop->getCategory()->getId(),
+        ];
+
+        $count = $this->connection->fetchColumn($sql, $params);
+
+        return intval($count);
+    }
+
+    private function getCountQueryString()
+    {
+        return 'SELECT COUNT(s_articles_details.id)';
+    }
+
+    private function getSelectQueryString($withArticleDetailId = false)
+    {
+        $template = 'SELECT
+                    %s
                     s_articles_details.ordernumber as prop_sku,
                     ROUND(
                         CAST(
@@ -59,8 +122,20 @@ class StatusExport
                         s_articles_details.active && (!s_articles.laststock || s_articles_details.instock > 0),
                         1,
                         0
-                    ) as prop_isInStock
-                FROM s_articles_details
+                    ) as prop_isInStock';
+
+        $detailSelect = '';
+
+        if ($withArticleDetailId) {
+            $detailSelect = 's_articles_details.id as s_articles_details_id,';
+        }
+
+        return sprintf($template, $detailSelect);
+    }
+
+    private function getFromQueryString()
+    {
+        return 'FROM s_articles_details
                     INNER JOIN s_articles
                         ON s_articles.id = s_articles_details.articleID
                     INNER JOIN s_articles_prices
@@ -75,13 +150,16 @@ class StatusExport
                         WHERE categoryID = :categoryId
                         GROUP BY articleID
                     ) categoryConstraint
-                        ON categoryConstraint.articleID = s_articles_details.articleID
-                    %s
-                LIMIT %d OFFSET %d';
+                        ON categoryConstraint.articleID = s_articles_details.articleID';
+    }
 
-        $deltaCondition = '';
-        if ($isDeltaExport) {
-            $deltaCondition = 'LEFT JOIN ' . StatusExportDelta::TABLE_NAME . ' delta
+    private function getDeltaConditionQueryString($isDeltaExport)
+    {
+        if (!$isDeltaExport) {
+            return '';
+        }
+
+        return 'LEFT JOIN ' . StatusExportDelta::TABLE_NAME . ' delta
                 ON
                     delta.s_articles_details_id = s_articles_details.id
                     AND
@@ -111,18 +189,10 @@ class StatusExport
                                 2
                             )
                 WHERE delta.s_articles_details_id IS NULL';
-        }
-        $sql = sprintf($sqlTemplate, $deltaCondition, $limit, $offset);
+    }
 
-        $activeShop = $this->provider->getShopWithActiveCSE();
-        $params = [
-            'categoryId' => $activeShop->getCategory()->getId(),
-        ];
-
-        $products = $this->connection->fetchAll($sql, $params);
-        $deltaUpdate = new StatusExportDelta($this->connection);
-        $deltaUpdate->writeDeltaStatus($sql, $params);
-
-        return $products;
+    private function getLimitQueryString($limit, $offset)
+    {
+        return sprintf('LIMIT %d OFFSET %d', $limit, $offset);
     }
 }
