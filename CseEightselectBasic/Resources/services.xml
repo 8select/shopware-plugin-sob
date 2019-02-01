@@ -60,6 +60,11 @@
             <argument type="service" id="db"/>
         </service>
 
+        <service id="cse_eightselect_basic.export.status_export" class="CseEightselectBasic\Services\Export\StatusExport">
+            <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
+            <argument type="service" id="db"/>
+        </service>
+
         <service id="cse_eightselect_basic.request.auth" class="CseEightselectBasic\Services\Request\Auth">
             <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
         </service>

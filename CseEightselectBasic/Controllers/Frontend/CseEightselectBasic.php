@@ -53,7 +53,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 
             $export = $this->createExport($format);
 
-            $responseData = $export->generateJsonResponse($limit, $offset);
+            $responseData = $export->getProducts($limit, $offset);
 
             return $this->Response()->setBody(json_encode($responseData));
         } catch (\Exception $exception) {
@@ -79,7 +79,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
                 break;
             case 'status':
             default:
-                return new PropertyExport(true);
+                return $this->container->get('cse_eightselect_basic.export.status_export');
         }
     }
 
