@@ -53,7 +53,7 @@ class Config
 
     public function setOption($option, $value)
     {
-        $sql = "REPLACE INTO " . self::TABLE_NAME . " VALUES(:option, :value)";
+        $sql = "REPLACE INTO " . self::TABLE_NAME . " (`option`, `value`) VALUES (:option, :value)";
         $this->connection->executeUpdate(
             $sql,
             ['option' => $option, 'value' => $value]

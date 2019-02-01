@@ -2,16 +2,17 @@
 
 namespace CseEightselectBasic\Setup\Updates;
 
+use CseEightselectBasic\Services\Export\StatusExportDelta;
 use CseEightselectBasic\Setup\SetupInterface;
 use Doctrine\DBAL\Connection;
 
-class Update_1_11_1 implements SetupInterface
+class Update_2_0_0 implements SetupInterface
 {
 
     /**
      * @var Connection
      */
-    private $config;
+    private $connection;
 
     /**
      * @var string
@@ -38,6 +39,7 @@ class Update_1_11_1 implements SetupInterface
         $this->removePropertyOnceCron();
         $this->removeQuickUpdateCron();
         $this->removeQuickUpdateOnceCron();
+        $this->createStatusExportDeltaTable();
     }
 
     private function removeExportDir()
@@ -116,5 +118,11 @@ class Update_1_11_1 implements SetupInterface
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicQuickUpdateOnce']
         );
+    }
+
+    private function createStatusExportDeltaTable()
+    {
+        $statusExportDelta = new StatusExportDelta($this->connection);
+        $statusExportDelta->install();
     }
 }

@@ -85,7 +85,7 @@ class PropertyExport extends Export
                         FROM s_articles_categories_ro
                         WHERE categoryID = %s
                         GROUP BY articleID
-                    ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleId;";
+                    ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleID
                 LIMIT %d OFFSET %d';
 
         $activeShop = $this->provider->getShopWithActiveCSE();

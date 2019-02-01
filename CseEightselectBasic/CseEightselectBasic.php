@@ -8,6 +8,7 @@ use CseEightselectBasic\Services\Config\Config;
 use CseEightselectBasic\Services\Dependencies\Provider;
 use CseEightselectBasic\Services\Export\Connector;
 use CseEightselectBasic\Services\Export\CseCredentialsMissingException;
+use CseEightselectBasic\Services\Export\StatusExportDelta;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
 use CseEightselectBasic\Setup\Helpers\AttributeMapping;
 use CseEightselectBasic\Setup\Helpers\EmotionComponents;
@@ -15,7 +16,6 @@ use CseEightselectBasic\Setup\Helpers\SizeAttribute;
 use CseEightselectBasic\Setup\Install;
 use CseEightselectBasic\Setup\Uninstall;
 use CseEightselectBasic\Setup\Updates\Update_1_11_0;
-use CseEightselectBasic\Setup\Updates\Update_1_11_1;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use Shopware;
@@ -248,7 +248,8 @@ class CseEightselectBasic extends Plugin
                 Shopware()->Models()->getConfiguration()->getMetadataCacheImpl(),
                 Shopware()->Models()
             ),
-            new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName())
+            new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName()),
+            new StatusExportDelta($this->container->get('dbal_connection'))
         );
         $install->execute();
         $this->createDatabase($context);
@@ -301,14 +302,14 @@ class CseEightselectBasic extends Plugin
                     $this->getPluginConfigService()
                 );
                 $update->execute();
-            case version_compare($context->getCurrentVersion(), '1.11.1', '<='):
-                $update = new Update_1_11_1(
+            case version_compare($context->getCurrentVersion(), '1.11.4', '<='):
+                $this->connectCse();
+            case version_compare($context->getCurrentVersion(), '2.0.0', '<'):
+                $update = new Update_2_0_0(
                     $this->container->get('dbal_connection'),
                     Shopware()->DocPath('files_8select')
                 );
                 $update->execute();
-            case version_compare($context->getCurrentVersion(), '1.11.4', '<='):
-                $this->connectCse();
         }
 
         $this->installMessages[] = 'Update auf CSE-Plugin-Version: ' . $context->getUpdateVersion();
@@ -349,7 +350,8 @@ class CseEightselectBasic extends Plugin
                     Shopware()->Models()
                 ),
                 new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName()),
-                $this->getCseConnector()
+                $this->getCseConnector(),
+                new StatusExportDelta($this->container->get('dbal_connection'))
             );
             $uninstall->execute();
             $this->removeDatabase();

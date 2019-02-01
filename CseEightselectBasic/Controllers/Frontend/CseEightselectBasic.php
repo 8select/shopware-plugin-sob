@@ -47,17 +47,22 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         $this->Response()->setHeader('Content-Type', 'application/json');
 
         try {
-            $limit = $this->Request()->getParam('limit', 50);
-            $offset = $this->Request()->getParam('offset', 0);
-            $format = $this->Request()->getParam('format', 'status');
-
+            $format = $this->Request()->getParam('format');
             $export = $this->createExport($format);
+            if (!$format || !$export) {
+                $this->Response()->setHttpResponseCode(204);
+                return;
+            }
 
-            $responseData = $export->getProducts($limit, $offset);
+            $limit = filter_var($this->Request()->getParam('limit', 50), FILTER_VALIDATE_INT);
+            $offset = filter_var($this->Request()->getParam('offset', 0), FILTER_VALIDATE_INT);
+            $isDeltaExport = filter_var($this->Request()->getParam('delta', true), FILTER_VALIDATE_BOOLEAN);
+            $products = $export->getProducts($limit, $offset, $isDeltaExport);
 
-            return $this->Response()->setBody(json_encode($responseData));
+            return $this->Response()->setBody(json_encode($products));
+
         } catch (\Exception $exception) {
-            $this->Response()->setHttpResponseCode($exception->getCode());
+            $this->Response()->setHttpResponseCode(500);
             $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
             $this->Response()->setBody($body);
 
@@ -71,15 +76,15 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     private function createExport($format)
     {
         switch ($format) {
-            case 'product':
+            case 'etl':
                 return new ArticleExport();
                 break;
             case 'property':
                 return new PropertyExport(false);
                 break;
             case 'status':
-            default:
                 return $this->container->get('cse_eightselect_basic.export.status_export');
+                break;
         }
     }
 

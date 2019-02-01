@@ -62,7 +62,7 @@
 
         <service id="cse_eightselect_basic.export.status_export" class="CseEightselectBasic\Services\Export\StatusExport">
             <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
-            <argument type="service" id="db"/>
+            <argument type="service" id="dbal_connection"/>
         </service>
 
         <service id="cse_eightselect_basic.request.auth" class="CseEightselectBasic\Services\Request\Auth">
