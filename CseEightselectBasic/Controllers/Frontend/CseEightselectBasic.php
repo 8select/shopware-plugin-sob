@@ -1,9 +1,10 @@
 <?php
 
+use CseEightselectBasic\Components\ArticleExport;
+use CseEightselectBasic\Components\Export;
+use CseEightselectBasic\Components\PropertyExport;
 use CseEightselectBasic\Services\Request\AuthException;
 use CseEightselectBasic\Services\Request\NotAuthorizedException;
-use CseEightselectBasic\Components\ArticleExport;
-use CseEightselectBasic\Components\PropertyExport;
 use Shopware\Components\CSRFWhitelistAware;
 
 class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controller_Action implements CSRFWhitelistAware
@@ -48,19 +49,9 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         try {
             $limit = $this->Request()->getParam('limit', 50);
             $offset = $this->Request()->getParam('offset', 0);
+            $format = $this->Request()->getParam('format', 'status');
 
-            $format = $this->Request()->getParam('format', 'status_feed');
-
-            $isStatusExport = true;
-            $export = new PropertyExport($isStatusExport);
-
-            if ($format === 'product_feed') {
-                $export = new ArticleExport();
-            }
-            if ($format === 'property_feed') {
-                $isStatusExport = false;
-                $export = new PropertyExport($isStatusExport);
-            }
+            $export = $this->createExport($format);
 
             $responseData = $export->generateJsonResponse($limit, $offset);
 
@@ -71,6 +62,24 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
             $this->Response()->setBody($body);
 
             return;
+        }
+    }
+
+    /**
+     * @return Export
+     */
+    private function createExport($format)
+    {
+        switch ($format) {
+            case 'product':
+                return new ArticleExport();
+                break;
+            case 'property':
+                return new PropertyExport(false);
+                break;
+            case 'status':
+            default:
+                return new PropertyExport(true);
         }
     }
 

@@ -38,12 +38,12 @@ class ForceFullPropertyExport extends Export
     /**
      * @return array
      */
-    protected function canRunCron()
+    protected function canGenerateResponse()
     {
         if ($this->isDeltaExport()) {
             return false;
         }
 
-        return parent::canRunCron();
+        return parent::canGenerateResponse();
     }
 }

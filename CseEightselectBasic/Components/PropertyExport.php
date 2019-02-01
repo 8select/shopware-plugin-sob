@@ -41,19 +41,15 @@ class PropertyExport extends Export
     /**
      * @param bool $isStatusExport
      */
-    public function __construct($isStatusExport)
+    public function __construct($isStatusExport = false)
     {
         parent::__construct();
 
-        $fieldMapping = $this->fieldMappingPriceAndStock;
-        $isDeltaExport = $this->isDeltaExport();
+        $this->fields = $this->fieldMappingPriceAndStock;
 
-        if (!$isStatusExport || !$isDeltaExport) {
-            $fieldMapping = $this->fieldMappingComplete;
+        if (!$isStatusExport && $this->isDeltaExport()) {
+            $this->fields = $this->fieldMappingComplete;
         }
-
-        $this->header = array_keys($fieldMapping);
-        $this->fields = array_values($fieldMapping);
     }
 
     /**

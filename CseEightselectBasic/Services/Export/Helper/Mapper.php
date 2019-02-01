@@ -48,13 +48,13 @@ class Mapper
         /** @var array $categories */
         $categories = $this->getCategories($article['articleID']);
 
-        foreach ($fields as $field) {
-            switch ($field) {
+        foreach ($fields as $mappedFieldName => $fieldName) {
+            switch ($fieldName) {
                 case 'mastersku':
                     $value = $article['mastersku'];
                     $options = static::getNonSizeConfiguratorOptionsByArticleDetailId($article['detailID']);
                     if (!empty($options)) {
-                        $value .= '-'.mb_strtolower(str_replace(' ', '-', implode('-', $options)));
+                        $value .= '-' . mb_strtolower(str_replace(' ', '-', implode('-', $options)));
                     }
                     break;
                 case 'model':
@@ -71,7 +71,7 @@ class Mapper
                     break;
                 case 'streich_preis':
                 case 'angebots_preis':
-                    $value = ProductPrice::getGrossPrice($article, $field);
+                    $value = ProductPrice::getGrossPrice($article, $fieldName);
                     break;
                 case 'produkt_url':
                     $value = $this->urlHelper->getUrl($article['articleID'], $article['sku'], $article['name1']);
@@ -87,7 +87,7 @@ class Mapper
                     $value = !empty($size) ? $size : 'onesize';
                     break;
                 case 'beschreibung':
-                    $withNewLines = $this->getValue($article, $field);
+                    $withNewLines = $this->getValue($article, $fieldName);
                     $value = str_replace(["\r\n", "\r", "\n"], ' ', $withNewLines);
                     break;
                 case 'beschreibung1':
@@ -99,10 +99,10 @@ class Mapper
                     $value = trim(preg_replace('/[\h\xa0\xc2]+/', ' ', $withOutHtmlEntities));
                     break;
                 default:
-                    $value = $this->getValue($article, $field);
+                    $value = $this->getValue($article, $fieldName);
             }
 
-            $line[$field] = $value;
+            $line[$mappedFieldName] = $value;
         }
 
         return $line;
@@ -264,7 +264,7 @@ class Mapper
         $query = 'SELECT shopwareAttribute as groupId
                       FROM 8s_attribute_mapping
                       WHERE (shopwareAttribute LIKE "%group%" OR shopwareAttribute LIKE "%filter%")
-                      AND eightselectAttribute = "'.$field.'"';
+                      AND eightselectAttribute = "' . $field . '"';
 
         return $this->db->query($query)->fetchColumn();
     }
@@ -283,8 +283,8 @@ class Mapper
         $sql = 'SELECT s_article_configurator_options.name as name
                 FROM s_article_configurator_options
                 INNER JOIN s_article_configurator_option_relations on s_article_configurator_option_relations.option_id = s_article_configurator_options.id
-                WHERE s_article_configurator_option_relations.article_id = '.$detailId.'
-                AND s_article_configurator_options.group_id = '.$groupId;
+                WHERE s_article_configurator_option_relations.article_id = ' . $detailId . '
+                AND s_article_configurator_options.group_id = ' . $groupId;
 
         return $this->db->query($sql)->fetchColumn();
     }
@@ -362,8 +362,8 @@ SQL;
         $sql = 'SELECT s_filter_values.value as name
                 FROM s_filter_values
                 INNER JOIN s_filter_articles on s_filter_articles.valueID = s_filter_values.id
-                WHERE s_filter_articles.articleID = '.$articleId.'
-                AND s_filter_values.optionID = '.$filterId;
+                WHERE s_filter_articles.articleID = ' . $articleId . '
+                AND s_filter_values.optionID = ' . $filterId;
         $value = $this->db->query($sql)->fetchAll();
 
         return implode('|', array_column($value, 'name'));

@@ -52,6 +52,7 @@ abstract class Export
      */
     protected function canGenerateResponse()
     {
+        //@todo die API Antwort muss das hier enthalten, damit wir mitbekommen wenn was noch nicht richtig konfiguriert ist
         $validationResult = $this->configValidator->validateExportConfig();
         if ($validationResult['isValid'] === false) {
             $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::FEED_NAME);
@@ -62,7 +63,7 @@ abstract class Export
 
         if ($this->getNumArticles() <= 0) {
             $message = sprintf('%s nicht ausgeführt, es wurden keine Produkte für Export gefunden.', static::FEED_NAME);
-
+            Shopware()->PluginLogger()->info($message);
             return false;
         }
 
@@ -77,12 +78,17 @@ abstract class Export
     public function generateJsonResponse($limit, $offset)
     {
         if ($this->canGenerateResponse() === false) {
-            $this->emptyQueue();
-
-            return;
+            // @todo fehler ausgeben - kann nur passieren wenn etwas nicht korrekt konfiguriert ist
+            return [
+                'limit' => $limit,
+                'offset' => $offset,
+                'total' => 0,
+                'data' => [],
+            ];
         }
 
         $productData = $this->getDataBatch($limit, $offset);
+        dump($productData);
 
         $response = [
             'limit' => $limit,
@@ -131,8 +137,6 @@ abstract class Export
             array_push($batch, $line);
         }
 
-        $this->deleteFromQueue($articles);
-
         return $batch;
     }
 
@@ -180,13 +184,13 @@ abstract class Export
 
         $join = '';
 
-        if (static::FEED_TYPE === PropertyExport::FEED_TYPE && $this->isDeltaExport()) {
-            $join = ' INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id ';
-        }
+        // if (static::FEED_TYPE === PropertyExport::FEED_TYPE && $this->isDeltaExport()) {
+        //     $join = ' INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id ';
+        // }
 
         $activeShop = $this->provider->getShopWithActiveCSE();
         $sql = sprintf($sqlTemplate, $mapping, $join, $activeShop->getCategory()->getId(), $limit, $offset);
-
+        dump($sql);
         $articles = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
         return $articles;
@@ -219,9 +223,9 @@ abstract class Export
 
         $join = '';
 
-        if (static::FEED_TYPE === PropertyExport::FEED_TYPE && $this->isDeltaExport()) {
-            $join = ' INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id ';
-        }
+        // if (static::FEED_TYPE === PropertyExport::FEED_TYPE && $this->isDeltaExport()) {
+        //     $join = ' INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id ';
+        // }
 
         $activeShop = $this->provider->getShopWithActiveCSE();
         $sql = sprintf($sqlTemplate, $join, $activeShop->getCategory()->getId(), $limit, $offset);
