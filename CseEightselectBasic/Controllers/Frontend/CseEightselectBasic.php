@@ -11,7 +11,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 {
     /**
      * Provides the cart of the current user as JSON API.
-     * The API is available at /cse-eightselect-basic/cart.
+     * The API is available at /cse-eightselect-basic/cart
      */
     public function cartAction()
     {
@@ -24,7 +24,45 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     }
 
     /**
-     * The API is available at /cse-eightselect-basic/products.
+     * The API is available at /cse-eightselect-basic/connect
+     */
+    public function connectAction()
+    {
+        try {
+            $auth = $this->container->get('cse_eightselect_basic.request.auth');
+            $auth->auth($this->Request());
+        } catch (NotAuthorizedException $exception) {
+            throw new \Enlight_Controller_Exception('hide export', 404);
+        } catch (AuthException $exception) {
+            $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+            $this->Response()->setHeader('Content-Type', 'application/json');
+            $this->Response()->setHttpResponseCode($exception->getCode());
+            $body = $this->httpBodyFromException($exception, 'AUTH_ERROR');
+            $this->Response()->setBody($body);
+
+            return;
+        }
+
+        $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+        $this->Response()->setHeader('Content-Type', 'application/json');
+
+        try {
+            $connector = $this->container->get('cse_eightselect_basic.export.connector');
+            $connection = $connector->getConnectDetails();
+            $this->Response()->setBody(json_encode($connection));
+
+            return;
+        } catch (\Exception $exception) {
+            $this->Response()->setHttpResponseCode(500);
+            $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
+            $this->Response()->setBody($body);
+
+            return;
+        }
+    }
+
+    /**
+     * The API is available at /cse-eightselect-basic/products
      */
     public function productsAction()
     {
@@ -137,6 +175,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     public function getWhitelistedCSRFActions()
     {
         return [
+            'connect',
             'products',
         ];
     }
