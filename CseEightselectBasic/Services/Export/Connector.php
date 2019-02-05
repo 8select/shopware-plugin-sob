@@ -3,7 +3,6 @@
 namespace CseEightselectBasic\Services\Export;
 
 use CseEightselectBasic\Services\Dependencies\Provider;
-use CseEightselectBasic\Services\Export\Helper\ShopUrl;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig;
 use GuzzleHttp\ClientInterface;
 use Shopware\Components\HttpClient\GuzzleFactory;
@@ -77,7 +76,7 @@ class Connector
                     'fid' => $this->pluginConfig->get('CseEightselectBasicFeedId'),
                 ],
                 'shop' => [
-                    'url' => $this->getShopUrl(),
+                    'url' => $this->provider->getShopUrl(),
                     'software' => 'Shopware',
                     'version' => $this->provider->getShopwareRelease(),
                 ],
@@ -85,7 +84,7 @@ class Connector
                     'version' => '__VERSION__',
                 ],
                 'api' => [
-                    'products' => $this->getShopUrl() . '/cse-eightselect-basic/products',
+                    'products' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/products',
                 ],
             ],
         ];
@@ -105,19 +104,5 @@ class Connector
             $this->pluginConfig->get('CseEightselectBasicFeedId')
         );
         $this->guzzleClient->delete();
-    }
-
-    /**
-     * return string
-     */
-    private function getShopUrl()
-    {
-        $shop = $this->provider->getShopWithActiveCSE();
-        if ($shop === null) {
-            $shop = $this->provider->getCurrentShop();
-        }
-
-        $shopUrlHelper = new ShopUrl();
-        return $shopUrlHelper->getUrl($shop);
     }
 }
