@@ -18,7 +18,6 @@ echo "Build at ${BUILD_DIR}"
 cp -r "${CURRENT_DIR}/../../${PLUGIN_NAME}" "${BUILD_DIR}/${PLUGIN_NAME}"
 cd ${PLUGIN_DIR}
 rm -rf vendor
-composer install --no-interaction --no-progress --ignore-platform-reqs --no-dev --optimize-autoloader
 cd ${BUILD_DIR}
 sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/plugin.xml
 sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/Resources/views/frontend/index/header.tpl
