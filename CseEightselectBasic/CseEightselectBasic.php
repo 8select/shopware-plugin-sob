@@ -2,9 +2,7 @@
 
 namespace CseEightselectBasic;
 
-use CseEightselectBasic\Components\ExportSetup;
 use CseEightselectBasic\Models\EightselectAttribute;
-use CseEightselectBasic\Services\Config\Config;
 use CseEightselectBasic\Services\Dependencies\Provider;
 use CseEightselectBasic\Services\Export\Connector;
 use CseEightselectBasic\Services\Export\CseCredentialsMissingException;
@@ -16,6 +14,7 @@ use CseEightselectBasic\Setup\Helpers\SizeAttribute;
 use CseEightselectBasic\Setup\Install;
 use CseEightselectBasic\Setup\Uninstall;
 use CseEightselectBasic\Setup\Updates\Update_1_11_0;
+use CseEightselectBasic\Setup\Updates\Update_2_0_0;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use Shopware;
@@ -291,10 +290,6 @@ class CseEightselectBasic extends Plugin
         $this->initInstallLog($context);
 
         switch (true) {
-            case version_compare($context->getCurrentVersion(), '1.6.3', '<='):
-                $this->update_1_6_3();
-            case version_compare($context->getCurrentVersion(), '1.8.0', '<='):
-                $this->update_1_8_0();
             case version_compare($context->getCurrentVersion(), '1.11.0', '<='):
                 $update = new Update_1_11_0(
                     $this->container->get('config'),
@@ -316,20 +311,6 @@ class CseEightselectBasic extends Plugin
         $this->sendLog('update');
 
         return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
-    }
-
-    private function update_1_6_3()
-    {
-        // update changeQueue table and triggers
-        ExportSetup::dropChangeQueueTriggers();
-        ExportSetup::dropChangeQueueTable();
-        ExportSetup::createChangeQueueTable();
-        ExportSetup::createChangeQueueTriggers();
-    }
-
-    private function update_1_8_0()
-    {
-        $this->createDefaultConfig();
     }
 
     /**
@@ -380,13 +361,6 @@ class CseEightselectBasic extends Plugin
         $tool->dropSchema($classes);
     }
 
-    private function createDefaultConfig()
-    {
-        $config = new Config($this->container->get('dbal_connection'));
-        $config->install();
-        $config->setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_DELTA);
-    }
-
     /**
      * @param InstallContext $context
      * @throws \Zend_Db_Adapter_Exception
@@ -397,28 +371,11 @@ class CseEightselectBasic extends Plugin
         $this->updateSchema();
         $attributeMapping = new AttributeMapping(Shopware()->Db());
         $attributeMapping->initAttributes();
-        ExportSetup::createChangeQueueTable();
-        try {
-            ExportSetup::createChangeQueueTriggers();
-        } catch (\Zend_Db_Statement_Exception $exception) {
-            $config = new Config($this->container->get('dbal_connection'));
-            $config->setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_FULL);
-            ExportSetup::dropChangeQueueTable();
-
-            $message = 'DB Trigger für Delta-Export nicht installiert. Fallback zu Vollexport.';
-            $context->scheduleMessage($message);
-            $this->installMessages[] = $message;
-            $this->installMessages[] = (string) $exception;
-        }
     }
 
     private function removeDatabase()
     {
         $this->dropSchema();
-        ExportSetup::dropChangeQueueTriggers();
-        ExportSetup::dropChangeQueueTable();
-        $config = new Config($this->container->get('dbal_connection'));
-        $config->uninstall();
     }
 
     /**

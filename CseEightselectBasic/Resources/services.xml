@@ -27,9 +27,6 @@
             <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
             <argument type="service" id="dbal_connection"/>
         </service>
-        <service id="cse_eightselect_basic.config.config" class="CseEightselectBasic\Services\Config\Config">
-            <argument type="service" id="dbal_connection"/>
-        </service>
 
         <service id="cse_eightselect_basic.plugin_config.plugin_config" class="CseEightselectBasic\Services\PluginConfig\PluginConfig">
             <argument type="service" id="service_container"/>

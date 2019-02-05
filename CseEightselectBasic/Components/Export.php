@@ -2,23 +2,13 @@
 
 namespace CseEightselectBasic\Components;
 
-use CseEightselectBasic\Services\Config\Config;
 use CseEightselectBasic\Services\Config\Validator;
 use CseEightselectBasic\Services\Dependencies\Provider;
 use CseEightselectBasic\Services\Export\ExportInterface;
+use CseEightselectBasic\Services\Export\Helper\Mapper;
 
 abstract class Export implements ExportInterface
 {
-    /**
-     * @var int
-     */
-    private $currentProgress = 0;
-
-    /**
-     * @var string[]
-     */
-    protected $header = [];
-
     /**
      * @var string[]
      */
@@ -35,21 +25,21 @@ abstract class Export implements ExportInterface
     protected $configValidator;
 
     /**
-     * @var Config
+     * @var Mapper
      */
-    protected $config;
+    protected $mapper;
 
     public function __construct()
     {
         $container = Shopware()->Container();
         $this->provider = $container->get('cse_eightselect_basic.dependencies.provider');
         $this->configValidator = $container->get('cse_eightselect_basic.config.validator');
-        $this->config = $container->get('cse_eightselect_basic.config.config');
         $this->mapper = $container->get('cse_eightselect_basic.export.helper.mapper');
     }
 
     /**
      * @param bool $isDeltaExport
+     * @return int
      */
     public function getTotal($isDeltaExport = true)
     {
@@ -83,6 +73,7 @@ abstract class Export implements ExportInterface
      * @param int $limit
      * @param int $offset
      * @param bool $isDeltaOffset
+     * @return array
      */
     public function getProducts($limit, $offset, $isDeltaExport = true)
     {
@@ -155,7 +146,6 @@ abstract class Export implements ExportInterface
 
         $activeShop = $this->provider->getShopWithActiveCSE();
         $sql = sprintf($sqlTemplate, $mapping, $activeShop->getCategory()->getId(), $limit, $offset);
-        dump($sql);
         $articles = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
         return $articles;

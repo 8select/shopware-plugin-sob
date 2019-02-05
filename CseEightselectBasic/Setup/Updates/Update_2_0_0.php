@@ -39,6 +39,8 @@ class Update_2_0_0 implements SetupInterface
         $this->removePropertyOnceCron();
         $this->removeQuickUpdateCron();
         $this->removeQuickUpdateOnceCron();
+        $this->removeChangeQueue();
+        $this->removeConfig();
         $this->createStatusExportDeltaTable();
     }
 
@@ -74,7 +76,7 @@ class Update_2_0_0 implements SetupInterface
 
     private function removeExportCron()
     {
-        executeQuery(
+        $this->connection->executeQuery(
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicArticleExport']
         );
@@ -118,6 +120,32 @@ class Update_2_0_0 implements SetupInterface
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicQuickUpdateOnce']
         );
+    }
+
+    private function removeChangeQueue()
+    {
+        $this->connection->executeQuery('DROP TABLE IF EXISTS `8s_articles_details_change_queue`');
+
+        $triggerQueries = [
+            'DROP TRIGGER IF EXISTS `8s_articles_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_articles_img_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_articles_attributes_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_article_configurator_option_relations_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_article_img_mappings_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_s_article_img_mapping_rules_change_queue_writer`',
+            'DROP TRIGGER IF EXISTS `8s_articles_supplier_change_queue_writer`',
+        ];
+
+        foreach ($triggerQueries as $query) {
+            $this->connection->executeQuery($query);
+        }
+    }
+
+    private function removeConfig()
+    {
+        $this->connection->executeQuery('DROP TABLE IF EXISTS `8s_plugin_cse_config`');
     }
 
     private function createStatusExportDeltaTable()
