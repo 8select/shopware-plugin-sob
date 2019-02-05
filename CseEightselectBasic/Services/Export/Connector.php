@@ -82,6 +82,7 @@ class Connector
                 ],
                 'plugin' => [
                     'version' => '__VERSION__',
+                    'config' => $this->pluginConfig->getAll(),
                 ],
                 'api' => [
                     'products' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/products',
