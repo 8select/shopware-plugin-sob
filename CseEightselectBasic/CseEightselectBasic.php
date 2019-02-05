@@ -337,6 +337,7 @@ class CseEightselectBasic extends Plugin
             $uninstall->execute();
             $this->removeDatabase();
         } catch (\Exception $exception) {
+            dump($exception);
             $this->installMessages[] = 'ERROR: uninstall ' . (string) $exception;
         }
 
@@ -368,7 +369,7 @@ class CseEightselectBasic extends Plugin
     private function createDatabase(InstallContext $context)
     {
         $this->updateSchema();
-        $attributeMapping = new AttributeMapping(Shopware()->Db());
+        $attributeMapping = new AttributeMapping($this->container->get('dbal_connection'));
         $attributeMapping->initAttributes();
     }
 
@@ -503,7 +504,6 @@ class CseEightselectBasic extends Plugin
             $message = sprintf('8select Verbindung Exception: %s', $exception->getMessage());
             $context = array('exception' => $exception);
             $this->container->get('pluginlogger')->error($message, $context);
-            throw new \Exception('Verbindung zu 8select konnte nicht hergestellt werden. Bitte das Plugin Log prüfen.');
         }
     }
 
@@ -522,7 +522,6 @@ class CseEightselectBasic extends Plugin
             $message = sprintf('8select Verbindung Exception: %s', $exception->getMessage());
             $context = array('exception' => $exception);
             $this->container->get('pluginlogger')->error($message, $context);
-            throw new \Exception('Verbindung zu 8select konnte nicht hergestellt werden. Bitte das Plugin Log prüfen.');
         }
     }
 

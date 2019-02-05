@@ -62,7 +62,18 @@ class Uninstall implements SetupInterface
         $this->sizeAttribute->remove();
         // @todo implement uninstall widgets ($this->emotionComponents->remove())
         $this->statusExportDelta->uninstall();
-        $this->cseConnector->disconnect();
+        $this->disconnectCse();
         $this->context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function disconnectCse()
+    {
+        try {
+            $this->cseConnector->disconnect();
+        } catch (\Exception $ignore) {
+        }
     }
 }
