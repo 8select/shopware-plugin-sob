@@ -41,6 +41,7 @@ class Update_2_0_0 implements SetupInterface
         $this->removeQuickUpdateOnceCron();
         $this->removeChangeQueue();
         $this->removeConfig();
+        $this->removeFeedLog();
         $this->createStatusExportDeltaTable();
     }
 
@@ -146,6 +147,11 @@ class Update_2_0_0 implements SetupInterface
     private function removeConfig()
     {
         $this->connection->executeQuery('DROP TABLE IF EXISTS `8s_plugin_cse_config`');
+    }
+
+    private function removeFeedLog()
+    {
+        $this->connection->executeQuery('DROP TABLE IF EXISTS `8s_feeds`;');
     }
 
     private function createStatusExportDeltaTable()
