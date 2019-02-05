@@ -22,8 +22,10 @@ cd ${BUILD_DIR}
 sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/plugin.xml
 sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/Resources/views/frontend/index/header.tpl
 sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/Services/Export/Connector.php
+sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/Setup/Helpers/Logger.php
 
 sed -i '' "s@__SHOP_CONNECTOR_URL__@${SHOP_CONNECTOR_URL}@g" ${PLUGIN_DIR}/Services/Export/Connector.php
+sed -i '' "s@__SHOP_CONNECTOR_URL__@${SHOP_CONNECTOR_URL}@g" ${PLUGIN_DIR}/Setup/Helpers/Logger.php
 
 if [ ${PROFILE} == 'production' ]
 then

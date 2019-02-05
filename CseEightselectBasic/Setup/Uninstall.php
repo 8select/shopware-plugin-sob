@@ -41,19 +41,17 @@ class Uninstall implements SetupInterface
      * @param UninstallContext $context
      * @param SizeAttribute $sizeAttribute
      * @param EmotionComponents $emotionComponents
-     * @param Connector $cseConnector
+     * @param StatusExportDelta $statusExportDelta
      */
     public function __construct(
         UninstallContext $context,
         SizeAttribute $sizeAttribute,
         EmotionComponents $emotionComponents,
-        Connector $cseConnector,
         StatusExportDelta $statusExportDelta
     ) {
         $this->context = $context;
         $this->sizeAttribute = $sizeAttribute;
         $this->emotionComponents = $emotionComponents;
-        $this->cseConnector = $cseConnector;
         $this->statusExportDelta = $statusExportDelta;
     }
 
@@ -62,18 +60,6 @@ class Uninstall implements SetupInterface
         $this->sizeAttribute->remove();
         // @todo implement uninstall widgets ($this->emotionComponents->remove())
         $this->statusExportDelta->uninstall();
-        $this->disconnectCse();
         $this->context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function disconnectCse()
-    {
-        try {
-            $this->cseConnector->disconnect();
-        } catch (\Exception $ignore) {
-        }
     }
 }
