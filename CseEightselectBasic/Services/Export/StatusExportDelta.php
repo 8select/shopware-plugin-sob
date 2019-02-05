@@ -35,13 +35,13 @@ class StatusExportDelta
             ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
         ";
 
-        $this->connection->executeUpdate($sql);
+        $this->connection->exec($sql);
     }
 
     public function uninstall()
     {
         $sql = "DROP TABLE IF EXISTS `" . self::TABLE_NAME . "`;";
-        $this->connection->executeUpdate($sql);
+        $this->connection->exec($sql);
     }
 
     /**

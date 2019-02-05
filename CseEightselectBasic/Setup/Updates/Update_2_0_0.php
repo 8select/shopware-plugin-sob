@@ -72,12 +72,12 @@ class Update_2_0_0 implements SetupInterface
     private function deleteRunCronOnceTable()
     {
         $sql = 'DROP TABLE IF EXISTS `8s_cron_run_once`;';
-        $this->connection->query($sql);
+        $this->connection->exec($sql);
     }
 
     private function removeExportCron()
     {
-        $this->connection->executeQuery(
+        $this->connection->executeUpdate(
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicArticleExport']
         );
@@ -85,7 +85,7 @@ class Update_2_0_0 implements SetupInterface
 
     private function removeExportOnceCron()
     {
-        $this->connection->executeQuery(
+        $this->connection->executeUpdate(
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicArticleExportOnce']
         );
@@ -93,7 +93,7 @@ class Update_2_0_0 implements SetupInterface
 
     private function removePropertyCron()
     {
-        $this->connection->executeQuery(
+        $this->connection->executeUpdate(
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicPropertyExport']
         );
@@ -101,7 +101,7 @@ class Update_2_0_0 implements SetupInterface
 
     private function removePropertyOnceCron()
     {
-        $this->connection->executeQuery(
+        $this->connection->executeUpdate(
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicPropertyExportOnce']
         );
@@ -109,7 +109,7 @@ class Update_2_0_0 implements SetupInterface
 
     private function removeQuickUpdateCron()
     {
-        $this->connection->executeQuery(
+        $this->connection->executeUpdate(
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicQuickUpdate']
         );
@@ -117,7 +117,7 @@ class Update_2_0_0 implements SetupInterface
 
     private function removeQuickUpdateOnceCron()
     {
-        $this->connection->executeQuery(
+        $this->connection->executeUpdate(
             'DELETE FROM s_crontab WHERE `action` = ?',
             ['Shopware_CronJob_CseEightselectBasicQuickUpdateOnce']
         );
@@ -125,7 +125,7 @@ class Update_2_0_0 implements SetupInterface
 
     private function removeChangeQueue()
     {
-        $this->connection->executeQuery('DROP TABLE IF EXISTS `8s_articles_details_change_queue`');
+        $this->connection->exec('DROP TABLE IF EXISTS `8s_articles_details_change_queue`');
 
         $triggerQueries = [
             'DROP TRIGGER IF EXISTS `8s_articles_change_queue_writer`',
@@ -140,18 +140,18 @@ class Update_2_0_0 implements SetupInterface
         ];
 
         foreach ($triggerQueries as $query) {
-            $this->connection->executeQuery($query);
+            $this->connection->exec($query);
         }
     }
 
     private function removeConfig()
     {
-        $this->connection->executeQuery('DROP TABLE IF EXISTS `8s_plugin_cse_config`');
+        $this->connection->exec('DROP TABLE IF EXISTS `8s_plugin_cse_config`');
     }
 
     private function removeFeedLog()
     {
-        $this->connection->executeQuery('DROP TABLE IF EXISTS `8s_feeds`;');
+        $this->connection->exec('DROP TABLE IF EXISTS `8s_feeds`;');
     }
 
     private function createStatusExportDeltaTable()
