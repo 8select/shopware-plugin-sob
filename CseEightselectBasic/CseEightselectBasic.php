@@ -367,7 +367,6 @@ class CseEightselectBasic extends Plugin
      */
     private function createDatabase(InstallContext $context)
     {
-        $this->createDefaultConfig();
         $this->updateSchema();
         $attributeMapping = new AttributeMapping(Shopware()->Db());
         $attributeMapping->initAttributes();
