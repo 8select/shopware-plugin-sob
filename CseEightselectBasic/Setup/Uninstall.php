@@ -3,6 +3,7 @@
 namespace CseEightselectBasic\Setup;
 
 use CseEightselectBasic\Services\Export\Connector;
+use CseEightselectBasic\Services\Export\StatusExportDelta;
 use CseEightselectBasic\Setup\Helpers\EmotionComponents;
 use CseEightselectBasic\Setup\Helpers\SizeAttribute;
 use Shopware\Components\Plugin\Context\InstallContext;
@@ -32,6 +33,11 @@ class Uninstall implements SetupInterface
     private $cseConnector;
 
     /**
+     * @var StatusExportDelta
+     */
+    private $statusExportDelta;
+
+    /**
      * @param UninstallContext $context
      * @param SizeAttribute $sizeAttribute
      * @param EmotionComponents $emotionComponents
@@ -41,19 +47,33 @@ class Uninstall implements SetupInterface
         UninstallContext $context,
         SizeAttribute $sizeAttribute,
         EmotionComponents $emotionComponents,
-        Connector $cseConnector
+        Connector $cseConnector,
+        StatusExportDelta $statusExportDelta
     ) {
         $this->context = $context;
         $this->sizeAttribute = $sizeAttribute;
         $this->emotionComponents = $emotionComponents;
         $this->cseConnector = $cseConnector;
+        $this->statusExportDelta = $statusExportDelta;
     }
 
     public function execute()
     {
-        $this->cseConnector->disconnect();
         $this->sizeAttribute->remove();
         // @todo implement uninstall widgets ($this->emotionComponents->remove())
+        $this->statusExportDelta->uninstall();
+        $this->disconnectCse();
         $this->context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function disconnectCse()
+    {
+        try {
+            $this->cseConnector->disconnect();
+        } catch (\Exception $ignore) {
+        }
     }
 }

@@ -7,8 +7,7 @@
     "installer-name": "CseEightselectBasic"
   },
   "require": {
-    "php": "^5.6.4",
-    "league/csv": "^8.2.3"
+    "php": "^5.6.4"
   },
   "config": {
     "platform": {
@@ -17,8 +16,8 @@
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.2",
-    "wimg/php-compatibility": "^8.1",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4"
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+    "phpcompatibility/php-compatibility": "^9.1"
   },
   "scripts": {
     "php-comp":

@@ -39,11 +39,11 @@ class Auth
         $pluginFeedId = $this->pluginConfig->get('CseEightselectBasicFeedId');
 
         if (!$pluginApiId || !$pluginFeedId) {
-            throw new AuthException('plugin is not configured', 500);
+            throw new AuthException('credentials not configured in plugin', 500);
         }
 
         if ($tenantId !== $pluginApiId || $feedId !== $pluginFeedId) {
-            throw new AuthException('auth failed', 403);
+            throw new AuthException('credential mismatch', 403);
         }
     }
 }

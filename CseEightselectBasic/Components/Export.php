@@ -2,23 +2,12 @@
 
 namespace CseEightselectBasic\Components;
 
-use CseEightselectBasic\Services\Config\Config;
-use CseEightselectBasic\Services\Config\Validator;
 use CseEightselectBasic\Services\Dependencies\Provider;
-use League\Csv\Writer;
+use CseEightselectBasic\Services\Export\ExportInterface;
+use CseEightselectBasic\Services\Export\Helper\Mapper;
 
-abstract class Export
+abstract class Export implements ExportInterface
 {
-    /**
-     * @var int
-     */
-    private $currentProgress = 0;
-
-    /**
-     * @var string[]
-     */
-    protected $header = [];
-
     /**
      * @var string[]
      */
@@ -30,131 +19,66 @@ abstract class Export
     protected $provider;
 
     /**
-     * @var Validator
+     * @var Mapper
      */
-    protected $configValidator;
-
-    /**
-     * @var Config
-     */
-    protected $config;
+    protected $mapper;
 
     public function __construct()
     {
         $container = Shopware()->Container();
         $this->provider = $container->get('cse_eightselect_basic.dependencies.provider');
-        $this->configValidator = $container->get('cse_eightselect_basic.config.validator');
-        $this->config = $container->get('cse_eightselect_basic.config.config');
         $this->mapper = $container->get('cse_eightselect_basic.export.helper.mapper');
     }
 
     /**
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Enlight_Exception
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
+     * @param bool $isDeltaExport
+     * @return int
      */
-    public function doCron()
+    public function getTotal($isDeltaExport = true)
     {
-        try {
-            $start = time();
-            if ($this->canRunCron() === false) {
-                // we need to remove products from shops that are not active for cse because those products are still logged here
-                $this->emptyQueue();
-                return;
-            }
+        $sqlTemplate = "
+            SELECT
+                COUNT(s_articles_details.id)
+            FROM s_articles_details
+                INNER JOIN s_articles_details AS ad2 ON ad2.articleID = s_articles_details.articleID AND ad2.kind = 1
+                INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
+                LEFT JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
+                INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1 AND s_articles_prices.pricegroup = 'EK'
+                INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
+                INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
+                INNER JOIN (
+                    SELECT articleID
+                    FROM s_articles_categories_ro
+                    WHERE categoryID = %s
+                    GROUP BY articleID
+                ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleID
+            ";
 
-            $message = sprintf('Führe %s aus.', static::CRON_NAME);
-            Shopware()->PluginLogger()->info($message);
+        $activeShop = $this->provider->getShopWithActiveCSE();
+        $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId());
 
-            $this->generateExportCSV();
-            $this->emptyQueue();
+        $count = Shopware()->Db()->query($sql)->fetchColumn();
 
-            $message = sprintf('%s abgeschlossen in %d s', static::CRON_NAME, (time() - $start));
-            Shopware()->PluginLogger()->info($message);
-        } catch (\Exception $exception) {
-            Shopware()->PluginLogger()->error($exception);
-
-            throw $exception;
-        }
+        return intval($count);
     }
 
     /**
+     * @param int $limit
+     * @param int $offset
+     * @param bool $isDeltaOffset
      * @return array
      */
-    protected function canRunCron()
+    public function getProducts($limit, $offset, $isDeltaExport = true)
     {
-        $validationResult = $this->configValidator->validateExportConfig();
-        if ($validationResult['isValid'] === false) {
-            $message = sprintf('%s nicht ausgeführt, da die Plugin Konfiguration ungültig ist.', static::CRON_NAME);
-            Shopware()->PluginLogger()->warning($message);
+        $attributeMapping = $this->getAttributeMapping();
+        $articles = $this->getArticles($attributeMapping, $offset, $limit);
 
-            return false;
+        $products = [];
+        foreach ($articles as $article) {
+            $products[] = $this->mapper->map($article, $this->fields);
         }
 
-        if ($this->getNumArticles() <= 0) {
-            $message = sprintf('%s nicht ausgeführt, es wurden keine Produkte für Export gefunden.', static::CRON_NAME);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    private function generateExportCSV()
-    {
-        if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-            require_once __DIR__ . '/../vendor/autoload.php';
-        }
-
-        try {
-            $path = $this->createTempFile();
-        } catch (\Exception $exception) {
-            Shopware()->PluginLogger()->error($exception->getMessage());
-
-            return false;
-        }
-
-        $csvWriter = Writer::createFromPath($path, 'w');
-        $csvWriter->setDelimiter(';');
-
-        $csvWriter->insertOne($this->header);
-
-        $this->writeFile($csvWriter);
-
-        unlink($path);
-    }
-
-    private function createTempFile()
-    {
-        try {
-            $tempfile = tmpfile();
-
-            if (!$tempfile) {
-                $message = sprintf('%s nicht ausgeführt, temporäre Datei für Export konnte nicht erstellt werden.', static::CRON_NAME);
-                throw new \Exception($message);
-            }
-            $path = stream_get_meta_data($tempfile)['uri'];
-        } catch (\Exception $exception) {
-            $storagePath = Shopware()->DocPath('files_8select');
-            $isDirCreated = true;
-            if (!is_dir($storagePath)) {
-                $isDirCreated = mkdir($storagePath, 0775, true);
-            }
-            if (!$isDirCreated) {
-                $message = sprintf('%s nicht ausgeführt, Fallback Verzeichnis für Export konnte nicht erstellt werden.', static::CRON_NAME);
-                throw new \Exception($message, 500, $exception);
-            }
-            $path = tempnam($storagePath, static::FEED_TYPE);
-        }
-
-        $tempPath = new \SplFileInfo($path);
-        if (!$tempPath->isWritable()) {
-            $message = sprintf('%s nicht ausgeführt, temporäre Datei in Fallback Verzeichnis für Export konnte nicht erstellt werden.', static::CRON_NAME);
-            throw new \Exception($message);
-        }
-
-        return $path;
+        return $products;
     }
 
     /**
@@ -170,30 +94,6 @@ abstract class Export
         AND shopwareAttribute NOT LIKE "%id=%"';
 
         return Shopware()->Db()->query($attributeMappingQuery)->fetch(\PDO::FETCH_ASSOC)['resultMapping'];
-    }
-
-    /**
-     * @param Writer $csvWriter
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     * @throws \League\Csv\CannotInsertRecord
-     */
-    private function writeFile(Writer $csvWriter)
-    {
-        $numArticles = $this->getNumArticles();
-        $batchSize = 100;
-
-        $attributeMapping = $this->getAttributeMapping();
-        for ($offset = 0; $offset < $numArticles; $offset += $batchSize) {
-            $articles = $this->getArticles($attributeMapping, $offset, $batchSize);
-
-            foreach ($articles as $article) {
-                $line = $this->mapper->getLine($article, $this->fields);
-                $csvWriter->insertOne($line);
-            }
-        }
     }
 
     /**
@@ -222,10 +122,9 @@ abstract class Export
                 s_articles_details.ordernumber as sku,
                 s_core_tax.tax AS tax
             FROM s_articles_details
-                %s
                 INNER JOIN s_articles_details AS ad2 ON ad2.articleID = s_articles_details.articleID AND ad2.kind = 1
                 INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
-                INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
+                LEFT JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
                 INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1 AND s_articles_prices.pricegroup = 'EK'
                 INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
                 INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
@@ -234,79 +133,14 @@ abstract class Export
                     FROM s_articles_categories_ro
                     WHERE categoryID = %s
                     GROUP BY articleID
-                ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleId
+                ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleID
             LIMIT %d OFFSET %d;
             ";
 
-        $join = '';
-
-        if (static::FEED_TYPE === PropertyExport::FEED_TYPE && $this->isDeltaExport()) {
-            $join = ' INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id ';
-        }
-
         $activeShop = $this->provider->getShopWithActiveCSE();
-        $sql = sprintf($sqlTemplate, $mapping, $join, $activeShop->getCategory()->getId(), $limit, $offset);
-
+        $sql = sprintf($sqlTemplate, $mapping, $activeShop->getCategory()->getId(), $limit, $offset);
         $articles = Shopware()->Db()->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
         return $articles;
-    }
-
-    /**
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     *
-     * @return int
-     */
-    protected function getNumArticles()
-    {
-        $sqlTemplate = "
-            SELECT COUNT(s_articles_details.id)
-            FROM s_articles_details
-                %s
-                INNER JOIN s_articles_details AS ad2 ON ad2.articleID = s_articles_details.articleID AND ad2.kind = 1
-                INNER JOIN s_articles ON s_articles.id = s_articles_details.articleID
-                INNER JOIN s_articles_attributes ON s_articles_attributes.articledetailsID = s_articles_details.id
-                INNER JOIN s_articles_prices ON s_articles_prices.articledetailsID = s_articles_details.id AND s_articles_prices.from = 1 AND s_articles_prices.pricegroup = 'EK'
-                INNER JOIN s_articles_supplier ON s_articles_supplier.id = s_articles.supplierID
-                INNER JOIN s_core_tax ON s_core_tax.id = s_articles.taxID
-                INNER JOIN (
-                    SELECT articleID
-                    FROM s_articles_categories_ro
-                    WHERE categoryID = %s
-                    GROUP BY articleID
-                ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleId;";
-
-        $join = '';
-
-        if (static::FEED_TYPE === PropertyExport::FEED_TYPE && $this->isDeltaExport()) {
-            $join = ' INNER JOIN 8s_articles_details_change_queue ON 8s_articles_details_change_queue.s_articles_details_id = s_articles_details.id ';
-        }
-
-        $activeShop = $this->provider->getShopWithActiveCSE();
-        $sql = sprintf($sqlTemplate, $join, $activeShop->getCategory()->getId(), $limit, $offset);
-
-        $count = Shopware()->Db()->query($sql)->fetchColumn();
-
-        return intval($count);
-    }
-
-    /**
-     * @throws \Zend_Db_Adapter_Exception
-     * @throws \Zend_Db_Statement_Exception
-     */
-    private function emptyQueue()
-    {
-        if ($this->isDeltaExport() === false || static::FEED_TYPE !== PropertyExport::FEED_TYPE) {
-            return;
-        }
-
-        $sql = 'DELETE FROM 8s_articles_details_change_queue';
-        Shopware()->Db()->query($sql);
-    }
-
-    protected function isDeltaExport()
-    {
-        return $this->config->getOption(Config::OPTION_EXPORT_TYPE) === Config::OPTION_EXPORT_TYPE_VALUE_DELTA;
     }
 }

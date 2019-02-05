@@ -2,12 +2,11 @@
 
 namespace CseEightselectBasic;
 
-use CseEightselectBasic\Components\ExportSetup;
 use CseEightselectBasic\Models\EightselectAttribute;
-use CseEightselectBasic\Services\Config\Config;
 use CseEightselectBasic\Services\Dependencies\Provider;
 use CseEightselectBasic\Services\Export\Connector;
 use CseEightselectBasic\Services\Export\CseCredentialsMissingException;
+use CseEightselectBasic\Services\Export\StatusExportDelta;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
 use CseEightselectBasic\Setup\Helpers\AttributeMapping;
 use CseEightselectBasic\Setup\Helpers\EmotionComponents;
@@ -15,7 +14,7 @@ use CseEightselectBasic\Setup\Helpers\SizeAttribute;
 use CseEightselectBasic\Setup\Install;
 use CseEightselectBasic\Setup\Uninstall;
 use CseEightselectBasic\Setup\Updates\Update_1_11_0;
-use CseEightselectBasic\Setup\Updates\Update_1_11_1;
+use CseEightselectBasic\Setup\Updates\Update_2_0_0;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use Shopware;
@@ -248,7 +247,8 @@ class CseEightselectBasic extends Plugin
                 Shopware()->Models()->getConfiguration()->getMetadataCacheImpl(),
                 Shopware()->Models()
             ),
-            new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName())
+            new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName()),
+            new StatusExportDelta($this->container->get('dbal_connection'))
         );
         $install->execute();
         $this->createDatabase($context);
@@ -290,10 +290,6 @@ class CseEightselectBasic extends Plugin
         $this->initInstallLog($context);
 
         switch (true) {
-            case version_compare($context->getCurrentVersion(), '1.6.3', '<='):
-                $this->update_1_6_3();
-            case version_compare($context->getCurrentVersion(), '1.8.0', '<='):
-                $this->update_1_8_0();
             case version_compare($context->getCurrentVersion(), '1.11.0', '<='):
                 $update = new Update_1_11_0(
                     $this->container->get('config'),
@@ -301,34 +297,20 @@ class CseEightselectBasic extends Plugin
                     $this->getPluginConfigService()
                 );
                 $update->execute();
-            case version_compare($context->getCurrentVersion(), '1.11.1', '<='):
-                $update = new Update_1_11_1(
+            case version_compare($context->getCurrentVersion(), '1.11.4', '<='):
+                $this->connectCse();
+            case version_compare($context->getCurrentVersion(), '2.0.0', '<'):
+                $update = new Update_2_0_0(
                     $this->container->get('dbal_connection'),
                     Shopware()->DocPath('files_8select')
                 );
                 $update->execute();
-            case version_compare($context->getCurrentVersion(), '1.11.4', '<='):
-                $this->connectCse();
         }
 
         $this->installMessages[] = 'Update auf CSE-Plugin-Version: ' . $context->getUpdateVersion();
         $this->sendLog('update');
 
         return $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
-    }
-
-    private function update_1_6_3()
-    {
-        // update changeQueue table and triggers
-        ExportSetup::dropChangeQueueTriggers();
-        ExportSetup::dropChangeQueueTable();
-        ExportSetup::createChangeQueueTable();
-        ExportSetup::createChangeQueueTriggers();
-    }
-
-    private function update_1_8_0()
-    {
-        $this->createDefaultConfig();
     }
 
     /**
@@ -349,11 +331,13 @@ class CseEightselectBasic extends Plugin
                     Shopware()->Models()
                 ),
                 new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName()),
-                $this->getCseConnector()
+                $this->getCseConnector(),
+                new StatusExportDelta($this->container->get('dbal_connection'))
             );
             $uninstall->execute();
             $this->removeDatabase();
         } catch (\Exception $exception) {
+            dump($exception);
             $this->installMessages[] = 'ERROR: uninstall ' . (string) $exception;
         }
 
@@ -378,45 +362,20 @@ class CseEightselectBasic extends Plugin
         $tool->dropSchema($classes);
     }
 
-    private function createDefaultConfig()
-    {
-        $config = new Config($this->container->get('dbal_connection'));
-        $config->install();
-        $config->setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_DELTA);
-    }
-
     /**
      * @param InstallContext $context
      * @throws \Zend_Db_Adapter_Exception
      */
     private function createDatabase(InstallContext $context)
     {
-        $this->createDefaultConfig();
         $this->updateSchema();
-        $attributeMapping = new AttributeMapping(Shopware()->Db());
+        $attributeMapping = new AttributeMapping($this->container->get('dbal_connection'));
         $attributeMapping->initAttributes();
-        ExportSetup::createChangeQueueTable();
-        try {
-            ExportSetup::createChangeQueueTriggers();
-        } catch (\Zend_Db_Statement_Exception $exception) {
-            $config = new Config($this->container->get('dbal_connection'));
-            $config->setOption(Config::OPTION_EXPORT_TYPE, Config::OPTION_EXPORT_TYPE_VALUE_FULL);
-            ExportSetup::dropChangeQueueTable();
-
-            $message = 'DB Trigger für Delta-Export nicht installiert. Fallback zu Vollexport.';
-            $context->scheduleMessage($message);
-            $this->installMessages[] = $message;
-            $this->installMessages[] = (string) $exception;
-        }
     }
 
     private function removeDatabase()
     {
         $this->dropSchema();
-        ExportSetup::dropChangeQueueTriggers();
-        ExportSetup::dropChangeQueueTable();
-        $config = new Config($this->container->get('dbal_connection'));
-        $config->uninstall();
     }
 
     /**
@@ -538,10 +497,13 @@ class CseEightselectBasic extends Plugin
         try {
             $this->getCseConnector()->connect();
         } catch (CseCredentialsMissingException $exception) {
-            $this->container->get('pluginlogger')->info('Kann keine Verbindung zu 8select herstellen. Api ID / Feed ID nicht gültig.');
+            $message = 'Kann keine Verbindung zu 8select herstellen. Api ID / Feed ID nicht gültig.';
+            $context = array('exception' => $exception);
+            $this->container->get('pluginlogger')->info($message, $context);
         } catch (\Exception $exception) {
-            $this->container->get('pluginlogger')->error($exception);
-            throw new \Exception('Formular konnte nicht gespeichert werden. Bitte das Plugin Log prüfen.');
+            $message = sprintf('8select Verbindung Exception: %s', $exception->getMessage());
+            $context = array('exception' => $exception);
+            $this->container->get('pluginlogger')->error($message, $context);
         }
     }
 
@@ -553,10 +515,13 @@ class CseEightselectBasic extends Plugin
         try {
             $this->getCseConnector()->disconnect();
         } catch (CseCredentialsMissingException $exception) {
-            $this->container->get('pluginlogger')->info('Kann keine Verbindung zu 8select herstellen. Api ID / Feed ID nicht gültig.');
+            $message = 'Kann keine Verbindung zu 8select herstellen. Api ID / Feed ID nicht gültig.';
+            $context = array('exception' => $exception);
+            $this->container->get('pluginlogger')->info($message, $context);
         } catch (\Exception $exception) {
-            $this->container->get('pluginlogger')->error($exception);
-            throw new \Exception('Formular konnte nicht gespeichert werden. Bitte das Plugin Log prüfen.');
+            $message = sprintf('8select Verbindung Exception: %s', $exception->getMessage());
+            $context = array('exception' => $exception);
+            $this->container->get('pluginlogger')->error($message, $context);
         }
     }
 

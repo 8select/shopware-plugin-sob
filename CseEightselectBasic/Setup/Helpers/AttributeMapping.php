@@ -2,18 +2,20 @@
 
 namespace CseEightselectBasic\Setup\Helpers;
 
+use Doctrine\DBAL\Connection;
+
 class AttributeMapping
 {
 
     /**
-     * @var \Enlight_Components_Db_Adapter_Pdo_Mysql
+     * @var Connection
      */
     private $connection;
 
     /**
-     * @param \Enlight_Components_Db_Adapter_Pdo_Mysql $connection
+     * @param Connection $connection
      */
-    public function __construct(\Enlight_Components_Db_Adapter_Pdo_Mysql $connection)
+    public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
@@ -226,7 +228,7 @@ class AttributeMapping
 
         foreach ($attributeList as $attributeEntry) {
             $sql = 'INSERT INTO 8s_attribute_mapping (eightselectAttribute, eightselectAttributeLabel, eightselectAttributeLabelDescr, shopwareAttribute) VALUES (?, ?, ?, ?)';
-            $this->connection->query(
+            $this->connection->executeUpdate(
                 $sql,
                 [
                     $attributeEntry['eightselectAttribute'],

@@ -61,7 +61,16 @@ class Connector
         if ($this->canConnect === false) {
             throw new CseCredentialsMissingException();
         }
-        $content = [
+        $content = $this->getConnectDetails();
+        $this->guzzleClient->put('/shops', $content);
+    }
+
+    /**
+     * @return array
+     */
+    public function getConnectDetails()
+    {
+        return [
             'json' => [
                 'tenant' => [
                     'tid' => $this->pluginConfig->get('CseEightselectBasicApiId'),
@@ -78,8 +87,8 @@ class Connector
                 'api' => [
                     'products' => $this->getShopUrl() . '/cse-eightselect-basic/products',
                 ],
-            ]];
-        $this->guzzleClient->put('/shops', $content);
+            ],
+        ];
     }
 
     /**

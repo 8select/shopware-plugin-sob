@@ -4,25 +4,24 @@ namespace CseEightselectBasic\Services\Export\Helper;
 
 class Mapper
 {
-
     /**
-     * @var ProductUrl $urlHelper
+     * @var ProductUrl
      */
     private $urlHelper;
 
     /**
-     * @var ProductImages $imageHelper
+     * @var ProductImages
      */
     private $imageHelper;
 
     /**
-     * @var \Enlight_Components_Db_Adapter_Pdo_Mysql $db
+     * @var \Enlight_Components_Db_Adapter_Pdo_Mysql
      */
     private $db;
 
     /**
-     * @param ProductUrl $urlHelper
-     * @param ProductImages $imageHelper
+     * @param ProductUrl                               $urlHelper
+     * @param ProductImages                            $imageHelper
      * @param \Enlight_Components_Db_Adapter_Pdo_Mysql $db
      */
     public function __construct($urlHelper, $imageHelper, $db)
@@ -35,23 +34,25 @@ class Mapper
     /**
      * @param array $article
      * @param array $fields
+     *
      * @return array
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
-    public function getLine($article, $fields)
+    public function map($article, $fields)
     {
         $line = [];
 
         /** @var array $categories */
         $categories = $this->getCategories($article['articleID']);
 
-        foreach ($fields as $field) {
-            switch ($field) {
+        foreach ($fields as $mappedFieldName => $fieldName) {
+            switch ($fieldName) {
                 case 'mastersku':
                     $value = $article['mastersku'];
-                    $options = static::getNonSizeConfiguratorOptionsByArticleDetailId($article['detailID']);
+                    $options = $this->getNonSizeConfiguratorOptionsByArticleDetailId($article['detailID']);
                     if (!empty($options)) {
                         $value .= '-' . mb_strtolower(str_replace(' ', '-', implode('-', $options)));
                     }
@@ -70,7 +71,7 @@ class Mapper
                     break;
                 case 'streich_preis':
                 case 'angebots_preis':
-                    $value = ProductPrice::getGrossPrice($article, $field);
+                    $value = ProductPrice::getGrossPrice($article, $fieldName);
                     break;
                 case 'produkt_url':
                     $value = $this->urlHelper->getUrl($article['articleID'], $article['sku'], $article['name1']);
@@ -86,21 +87,22 @@ class Mapper
                     $value = !empty($size) ? $size : 'onesize';
                     break;
                 case 'beschreibung':
-                    $withNewLines = $this->getValue($article, $field);
+                    $withNewLines = $this->getValue($article, $fieldName);
                     $value = str_replace(["\r\n", "\r", "\n"], ' ', $withNewLines);
                     break;
                 case 'beschreibung1':
                     $withNewLines = $this->getValue($article, 'beschreibung');
                     $withOutNewLines = str_replace(["\r\n", "\r", "\n"], '<br>', $withNewLines);
-                    $withExtraSpaces = str_replace(">", '> ', $withOutNewLines);
+                    $withExtraSpaces = str_replace('>', '> ', $withOutNewLines);
                     $withOutHtml = strip_tags($withExtraSpaces);
                     $withOutHtmlEntities = html_entity_decode($withOutHtml);
                     $value = trim(preg_replace('/[\h\xa0\xc2]+/', ' ', $withOutHtmlEntities));
                     break;
                 default:
-                    $value = $this->getValue($article, $field);
+                    $value = $this->getValue($article, $fieldName);
             }
-            $line[] = $value;
+
+            $line[$mappedFieldName] = $value;
         }
 
         return $line;
@@ -109,8 +111,10 @@ class Mapper
     /**
      * @param $article
      * @param $field
+     *
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     *
      * @return string
      */
     private function getValue($article, $field)
@@ -126,21 +130,23 @@ class Mapper
 
         if ($attributes) {
             $values = $this->filterRelevantAttributeValues($attributes, $article);
-            return implode("|", array_filter($values));
+
+            return implode('|', array_filter($values));
         }
+
         return '';
     }
 
     /**
      * @param array $attributes
      * @param array $article
+     *
      * @return array
      */
     private function filterRelevantAttributeValues($attributes, $article)
     {
-
         $groups = array_filter($attributes, function ($attr) {
-            return strpos($attr, "group") !== false;
+            return strpos($attr, 'group') !== false;
         });
 
         if ($groups) {
@@ -160,7 +166,7 @@ class Mapper
         }
 
         $filters = array_filter($attributes, function ($attr) {
-            return strpos($attr, "filter");
+            return strpos($attr, 'filter');
         });
 
         if ($filters) {
@@ -184,9 +190,11 @@ class Mapper
 
     /**
      * @param $articleId
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
+     *
      * @return array
      */
     private function getCategories($articleId)
@@ -209,7 +217,9 @@ class Mapper
 
     /**
      * @param $categoryId
+     *
      * @throws \Doctrine\ORM\ORMException
+     *
      * @return array
      */
     private function getCategoriesByParent($categoryId)
@@ -243,7 +253,9 @@ class Mapper
 
     /**
      * @param $field
+     *
      * @return string
+     *
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
@@ -260,7 +272,9 @@ class Mapper
     /**
      * @param $articleId
      * @param $groupId
+     *
      * @return string
+     *
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
@@ -277,7 +291,9 @@ class Mapper
 
     /**
      * @param int $articleId
+     *
      * @return array
+     *
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
@@ -308,7 +324,9 @@ SQL;
 
     /**
      * @param int $articleId
+     *
      * @return string
+     *
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
@@ -330,7 +348,9 @@ SQL;
     /**
      * @param $articleId
      * @param $filterId
+     *
      * @return string
+     *
      * @throws \Zend_Db_Adapter_Exception
      * @throws \Zend_Db_Statement_Exception
      */
