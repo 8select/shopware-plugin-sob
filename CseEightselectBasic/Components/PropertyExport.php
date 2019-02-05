@@ -4,10 +4,6 @@ namespace CseEightselectBasic\Components;
 
 class PropertyExport extends Export
 {
-    const FEED_TYPE = 'property_feed';
-
-    const FEED_NAME = '8select_property_export';
-
     /**
      * @var array
      */

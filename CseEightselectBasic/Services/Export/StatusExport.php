@@ -34,6 +34,7 @@ class StatusExport implements ExportInterface
      * @param int $limit
      * @param int $offset
      * @param bool $isDeltaExport = true
+     * @return array
      */
     public function getProducts($limit, $offset, $isDeltaExport = true)
     {
@@ -70,6 +71,10 @@ class StatusExport implements ExportInterface
         return $products;
     }
 
+    /**
+     * @param bool $isDeltaExport
+     * @return int
+     */
     public function getTotal($isDeltaExport = true)
     {
         $sql = implode(
@@ -92,11 +97,17 @@ class StatusExport implements ExportInterface
         return intval($count);
     }
 
+    /**
+     * @return string
+     */
     private function getCountQueryString()
     {
         return 'SELECT COUNT(s_articles_details.id)';
     }
 
+    /**
+     * @return string
+     */
     private function getSelectQueryString($withArticleDetailId = false)
     {
         $template = 'SELECT
@@ -133,6 +144,9 @@ class StatusExport implements ExportInterface
         return sprintf($template, $detailSelect);
     }
 
+    /**
+     * @return string
+     */
     private function getFromQueryString()
     {
         return 'FROM s_articles_details
@@ -153,6 +167,9 @@ class StatusExport implements ExportInterface
                         ON categoryConstraint.articleID = s_articles_details.articleID';
     }
 
+    /**
+     * @return string
+     */
     private function getDeltaConditionQueryString($isDeltaExport)
     {
         if (!$isDeltaExport) {
@@ -191,6 +208,9 @@ class StatusExport implements ExportInterface
                 WHERE delta.s_articles_details_id IS NULL';
     }
 
+    /**
+     * @return string
+     */
     private function getLimitQueryString($limit, $offset)
     {
         return sprintf('LIMIT %d OFFSET %d', $limit, $offset);

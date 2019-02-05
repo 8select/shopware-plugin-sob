@@ -2,7 +2,6 @@
 
 namespace CseEightselectBasic\Components;
 
-use CseEightselectBasic\Services\Config\Validator;
 use CseEightselectBasic\Services\Dependencies\Provider;
 use CseEightselectBasic\Services\Export\ExportInterface;
 use CseEightselectBasic\Services\Export\Helper\Mapper;
@@ -20,11 +19,6 @@ abstract class Export implements ExportInterface
     protected $provider;
 
     /**
-     * @var Validator
-     */
-    protected $configValidator;
-
-    /**
      * @var Mapper
      */
     protected $mapper;
@@ -33,7 +27,6 @@ abstract class Export implements ExportInterface
     {
         $container = Shopware()->Container();
         $this->provider = $container->get('cse_eightselect_basic.dependencies.provider');
-        $this->configValidator = $container->get('cse_eightselect_basic.config.validator');
         $this->mapper = $container->get('cse_eightselect_basic.export.helper.mapper');
     }
 

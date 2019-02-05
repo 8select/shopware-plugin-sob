@@ -44,8 +44,7 @@ class ShopUrl
     private function getHost(Shop $shop)
     {
         // this method was removed in Shopware 5.4
-        if (
-            method_exists($shop, 'getAlwaysSecure') &&
+        if (method_exists($shop, 'getAlwaysSecure') &&
             method_exists($shop, 'getSecureHost') &&
             $shop->getAlwaysSecure()
         ) {
