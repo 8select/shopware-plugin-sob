@@ -68,6 +68,14 @@ class PluginConfig
     }
 
     /**
+     * @return array
+     */
+    public function getAll()
+    {
+        return $this->pluginConfig;
+    }
+
+    /**
      * @return bool
      */
     public function isCseActive()

@@ -1,13 +1,13 @@
 <?php
 
-namespace CseEightselectBasic\Services\Export;
+namespace CseEightselectBasic\Setup\Helpers;
 
 use CseEightselectBasic\Services\Dependencies\Provider;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig;
 use GuzzleHttp\ClientInterface;
 use Shopware\Components\HttpClient\GuzzleFactory;
 
-class Connector
+class Logger
 {
 
     /**
@@ -26,11 +26,6 @@ class Connector
     private $provider;
 
     /**
-     * @var bool
-     */
-    private $canConnect = false;
-
-    /**
      * @param GuzzleFactory $guzzleFactory
      * @param PluginConfig $pluginConfig
      * @param Provider $container
@@ -42,34 +37,34 @@ class Connector
             'defaults' => [
                 'timeout' => 5,
                 'connect_timeout' => 5,
-                'headers' => [
-                    '8select-com-tid' => $pluginConfig->get('CseEightselectBasicApiId'),
-                    '8select-com-fid' => $pluginConfig->get('CseEightselectBasicFeedId'),
-                ],
             ],
         ]);
         $this->pluginConfig = $pluginConfig;
         $this->provider = $provider;
-
-        $this->canConnect = $pluginConfig->areCseCredentialsConfigured();
     }
 
     /**
-     * @throws CseCredentialsMissingException
+     * @param string $type
+     * @param array $messages
+     * @param bool $hasError
      */
-    public function connect()
+    public function log($type, $messages, $hasError = false)
     {
-        if ($this->canConnect === false) {
-            throw new CseCredentialsMissingException();
+        try {
+            $content = $this->getMessageDefaults();
+            $content['json']['type'] = $type;
+            $content['json']['hasError'] = $hasError;
+            $content['json']['messages'] = $messages;
+
+            $this->guzzleClient->post('/logs', $content);
+        } catch (\Exception $ignore) {
         }
-        $content = $this->getConnectDetails();
-        $this->guzzleClient->put('/shops', $content);
     }
 
     /**
      * @return array
      */
-    public function getConnectDetails()
+    public function getMessageDefaults()
     {
         return [
             'json' => [
@@ -86,26 +81,7 @@ class Connector
                     'version' => '__VERSION__',
                     'config' => $this->pluginConfig->getAll(),
                 ],
-                'api' => [
-                    'products' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/products',
-                ],
             ],
         ];
-    }
-
-    /**
-     * @throws CseCredentialsMissingException
-     */
-    public function disconnect()
-    {
-        if ($this->canConnect === false) {
-            throw new CseCredentialsMissingException();
-        }
-        $path = sprintf(
-            '/shops/%s/%s',
-            $this->pluginConfig->get('CseEightselectBasicApiId'),
-            $this->pluginConfig->get('CseEightselectBasicFeedId')
-        );
-        $this->guzzleClient->delete();
     }
 }
