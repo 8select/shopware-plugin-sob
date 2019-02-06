@@ -123,18 +123,25 @@ class CseEightselectBasic extends Plugin
      */
     public function onFrontendPostDispatch(\Enlight_Event_EventArgs $args)
     {
-        $isCseWidgetConfigValid = $this->container->get('cse_eightselect_basic.config.validator')->validateWidgetConfig()['isValid'];
+        try {
+            $result = $this->container->get('cse_eightselect_basic.config.validator')->validateWidgetConfig();
+            $isCseWidgetConfigValid = $result['isValid'];
 
-        $args->get('subject')->View()->assign('isCseWidgetConfigValid', $isCseWidgetConfigValid);
+            $args->get('subject')->View()->assign('isCseWidgetConfigValid', $isCseWidgetConfigValid);
 
-        $args->get('subject')->View()->assign(
-            'htmlContainer',
-            explode('CSE_SYS', $this->getPluginConfigService()->get('CseEightselectBasicSysPsvContainer'))
-        );
-        $args->get('subject')->View()->assign(
-            'htmlSysAccContainer',
-            explode('CSE_SYS', $this->getPluginConfigService()->get('CseEightselectBasicSysAccContainer'))
-        );
+            $args->get('subject')->View()->assign(
+                'htmlContainer',
+                explode('CSE_SYS', $this->getPluginConfigService()->get('CseEightselectBasicSysPsvContainer'))
+            );
+            $args->get('subject')->View()->assign(
+                'htmlSysAccContainer',
+                explode('CSE_SYS', $this->getPluginConfigService()->get('CseEightselectBasicSysAccContainer'))
+            );
+        } catch (\Exception $exception) {
+            $this->container->get('pluginlogger')->error($exception->getMessage, ['exception' => $exception]);
+            $this->logException('onFrontendPostDispatch', $exception);
+            $this->getCseLogger()->log('operation', $this->logMessages, $this->logHasError);
+        }
     }
 
     /**
@@ -142,14 +149,20 @@ class CseEightselectBasic extends Plugin
      */
     public function onPostDispatchBackendEmotion(\Enlight_Controller_ActionEventArgs $args)
     {
-        $controller = $args->getSubject();
-        $view = $controller->View();
+        try {
+            $controller = $args->getSubject();
+            $view = $controller->View();
 
-        $view->addTemplateDir($this->getPath() . '/Resources/views/');
-        $view->extendsTemplate('backend/emotion/model/translations.js');
-        $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/sys_psv.js');
-        $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/psp_psv.js');
-        $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/psp_tlv.js');
+            $view->addTemplateDir($this->getPath() . '/Resources/views/');
+            $view->extendsTemplate('backend/emotion/model/translations.js');
+            $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/sys_psv.js');
+            $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/psp_psv.js');
+            $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/psp_tlv.js');
+        } catch (\Exception $exception) {
+            $this->container->get('pluginlogger')->error($exception->getMessage, ['exception' => $exception]);
+            $this->logException('onPostDispatchBackendEmotion', $exception);
+            $this->getCseLogger()->log('operation', $this->logMessages, $this->logHasError);
+        }
     }
 
     /**
@@ -159,17 +172,35 @@ class CseEightselectBasic extends Plugin
      */
     public function onCheckoutConfirm(\Enlight_Event_EventArgs $args)
     {
-        if ($this->container->get('cse_eightselect_basic.config.validator')->validateWidgetConfig()['isValid'] !== true) {
-            return;
-        }
+        try {
+            $request = $args->getRequest();
+            $controller = $args->get('subject');
+            $view = $controller->View();
+            if ($request->getActionName() != 'finish') {
+                return;
+            }
 
-        $request = $args->getRequest();
-        $controller = $args->get('subject');
-        $view = $controller->View();
-        if ($request->getActionName() != 'finish') {
-            return;
-        }
+            $result = $this->container->get('cse_eightselect_basic.config.validator')->validateWidgetConfig();
+            $isCseWidgetConfigValid = $result['isValid'];
 
+            if ($isCseWidgetConfigValid === false) {
+                return;
+            }
+
+            $this->checkoutTracking($view);
+
+        } catch (\Exception $exception) {
+            $this->container->get('pluginlogger')->error($exception->getMessage, ['exception' => $exception]);
+            $this->logException('onCheckoutConfirm', $exception);
+            $this->getCseLogger()->log('operation', $this->logMessages, $this->logHasError);
+        }
+    }
+
+    /**
+     * @param \Enlight_View $view
+     */
+    private function checkoutTracking(\Enlight_View $view)
+    {
         /** @var \Shopware\Models\Shop\Currency $currentCurrency */
         $currentCurrency = Shopware()->Shop()->getCurrency();
 
@@ -200,9 +231,9 @@ class CseEightselectBasic extends Plugin
     /**
      * @param $itemProperty
      * @param $factor
-     * @return mixed
+     * @return array
      */
-    protected function calculatePrice($itemProperty, $factor)
+    private function calculatePrice($itemProperty, $factor)
     {
         $tempPrice = (strpos($itemProperty['price'], ',') != false) ? str_replace(
             ',',
