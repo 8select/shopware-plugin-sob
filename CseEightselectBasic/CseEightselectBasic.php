@@ -500,6 +500,7 @@ class CseEightselectBasic extends Plugin
             /** @var $cacheManager \Shopware\Components\CacheManager */
             $cacheManager = $this->container->get('shopware.cache_manager');
             $cacheManager->clearConfigCache();
+            $cacheManager->clearTemplateCache();
 
             $this->connectCse();
             $this->getCseLogger()->log('pluginconfig', $this->logMessages, $this->hasLogError);
