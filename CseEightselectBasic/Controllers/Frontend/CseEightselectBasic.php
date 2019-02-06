@@ -48,6 +48,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 
         try {
             $connector = $this->container->get('cse_eightselect_basic.export.connector');
+            $this->tryConnect($connector);
             $connection = $connector->getConnectDetails();
             $this->Response()->setBody(json_encode($connection));
 
@@ -58,6 +59,14 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
             $this->Response()->setBody($body);
 
             return;
+        }
+    }
+
+    private function tryConnect($connector)
+    {
+        try {
+            $connector->connect();
+        } catch (\Exception $ignore) {
         }
     }
 
