@@ -495,8 +495,6 @@ class CseEightselectBasic extends Plugin
                 $this->numberOfConfigElements = $querybuilder->getQuery()->getSingleScalarResult();
             }
 
-            dump($this->numberOfConfigElementsSaved);
-            dump($this->numberOfConfigElements);
             return $this->numberOfConfigElementsSaved >= $this->numberOfConfigElements;
         } catch (\Exception $exception) {
             $this->logException('saving plugin configuration', $exception);

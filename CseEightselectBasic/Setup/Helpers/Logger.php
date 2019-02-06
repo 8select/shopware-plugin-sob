@@ -34,6 +34,10 @@ class Logger
     {
         $this->guzzleClient = $guzzleFactory->createClient([
             'base_url' => rtrim('__SHOP_CONNECTOR_URL__', '/'),
+            'defaults' => [
+                'timeout' => 5,
+                'connect_timeout' => 5,
+            ],
         ]);
         $this->pluginConfig = $pluginConfig;
         $this->provider = $provider;
@@ -52,7 +56,6 @@ class Logger
             $content['json']['hasError'] = $hasError;
             $content['json']['messages'] = $messages;
 
-            dump($content);
             $this->guzzleClient->post('/logs', $content);
         } catch (\Exception $ignore) {
         }

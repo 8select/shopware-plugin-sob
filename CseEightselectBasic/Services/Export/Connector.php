@@ -40,6 +40,8 @@ class Connector
         $this->guzzleClient = $guzzleFactory->createClient([
             'base_url' => rtrim('__SHOP_CONNECTOR_URL__', '/'),
             'defaults' => [
+                'timeout' => 5,
+                'connect_timeout' => 5,
                 'headers' => [
                     '8select-com-tid' => $pluginConfig->get('CseEightselectBasicApiId'),
                     '8select-com-fid' => $pluginConfig->get('CseEightselectBasicFeedId'),
