@@ -379,6 +379,8 @@ class CseEightselectBasic extends Plugin
         } catch (\Exception $exception) {
             $this->logException('updating', $exception);
             $this->getCseLogger()->log('update', $this->logMessages, $this->hasLogError);
+
+            throw $exception;
         }
     }
 
