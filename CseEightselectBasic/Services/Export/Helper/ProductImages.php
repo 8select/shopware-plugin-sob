@@ -33,5 +33,4 @@ class ProductImages
     {
         return $this->export->sGetArticleImageLinks($articleId, $ordernumber, 'original', '|');
     }
-
 }

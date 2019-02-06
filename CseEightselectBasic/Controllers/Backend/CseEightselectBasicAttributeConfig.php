@@ -15,6 +15,7 @@ class Shopware_Controllers_Backend_CseEightselectBasicAttributeConfig extends \S
     /**
      * @throws Zend_Db_Adapter_Exception
      * @throws Zend_Db_Statement_Exception
+     *
      * @return array
      */
     private function getArticleAttributes()

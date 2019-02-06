@@ -3,6 +3,7 @@
 namespace CseEightselectBasic\Services\Dependencies;
 
 use CseEightselectBasic\Compatibility\Shopware\Models\Shop\Repository as ShopRepository;
+use CseEightselectBasic\Services\Export\Helper\ShopUrl;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
 use Shopware\Components\DependencyInjection\Container;
 use Shopware\Models\Shop\DetachedShop;
@@ -67,5 +68,35 @@ class Provider
     private function hasShop()
     {
         return $this->container->has('shop');
+    }
+
+    /**
+     * @return string
+     */
+    public function getShopwareRelease()
+    {
+        if ($this->container->has('shopware.release')) {
+            return $this->container->get('shopware.release')->getVersion();
+        }
+
+        return \Shopware::VERSION;
+    }
+
+    /**
+     * return string
+     */
+    public function getShopUrl($withActiveCse = false)
+    {
+        $shop = null;
+        if ($withActiveCse) {
+            $shop = $this->getShopWithActiveCSE();
+        }
+        if ($shop === null) {
+            $shop = $this->getCurrentShop();
+        }
+
+        $shopUrlHelper = new ShopUrl();
+
+        return $shopUrlHelper->getUrl($shop);
     }
 }

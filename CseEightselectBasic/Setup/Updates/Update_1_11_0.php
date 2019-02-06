@@ -1,11 +1,12 @@
 <?php
 
-namespace CseEightselectBasic\Setup\Database\Migrations;
+namespace CseEightselectBasic\Setup\Updates;
 
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
+use CseEightselectBasic\Setup\SetupInterface;
 use Shopware\Components\ConfigWriter;
 
-class Update_1_11_0
+class Update_1_11_0 implements SetupInterface
 {
     /**
      * @var \Shopware_Components_Config
@@ -37,7 +38,7 @@ class Update_1_11_0
         $this->pluginConfigService = $pluginConfigService;
     }
 
-    public function update()
+    public function execute()
     {
         $this->configWriter->save('CseEightselectBasicPluginActive', $this->config->get('8s_enabled'));
         $this->configWriter->save('CseEightselectBasicApiId', $this->config->get('8s_merchant_id'));
