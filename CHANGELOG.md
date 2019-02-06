@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.0.0-beta.0](https://github.com/8select/shopware-plugin-sob/tree/2.0.0-beta.0) (2019-2-6)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.12.1...2.0.0-beta.0)
+
+**Implemented Features:**
+
+- [CSE-1663](https://8select.atlassian.net/browse/CSE-1663) feature branch pull instead of cron [\#87](https://github.com/8select/shopware-plugin-sob/pull/87) ([akleiber](https://github.com/akleiber))
+
 ## [1.12.1](https://github.com/8select/shopware-plugin-sob/tree/1.12.1) (2019-1-31)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.12.0...1.12.1)
