@@ -52,7 +52,7 @@ class CseEightselectBasic extends Plugin
     /**
      * bool
      */
-    private $logHasError = false;
+    private $hasLogError = false;
 
     /**
      * @return array
@@ -140,7 +140,7 @@ class CseEightselectBasic extends Plugin
         } catch (\Exception $exception) {
             $this->container->get('pluginlogger')->error($exception->getMessage, ['exception' => $exception]);
             $this->logException('onFrontendPostDispatch', $exception);
-            $this->getCseLogger()->log('operation', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('operation', $this->logMessages, $this->hasLogError);
         }
     }
 
@@ -161,7 +161,7 @@ class CseEightselectBasic extends Plugin
         } catch (\Exception $exception) {
             $this->container->get('pluginlogger')->error($exception->getMessage, ['exception' => $exception]);
             $this->logException('onPostDispatchBackendEmotion', $exception);
-            $this->getCseLogger()->log('operation', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('operation', $this->logMessages, $this->hasLogError);
         }
     }
 
@@ -192,7 +192,7 @@ class CseEightselectBasic extends Plugin
         } catch (\Exception $exception) {
             $this->container->get('pluginlogger')->error($exception->getMessage, ['exception' => $exception]);
             $this->logException('onCheckoutConfirm', $exception);
-            $this->getCseLogger()->log('operation', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('operation', $this->logMessages, $this->hasLogError);
         }
     }
 
@@ -278,10 +278,10 @@ class CseEightselectBasic extends Plugin
             $this->connectCse();
 
             $this->logMessages[] = 'Plugin installation completed';
-            $this->getCseLogger()->log('install', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('install', $this->logMessages, $this->hasLogError);
         } catch (\Exception $exception) {
             $this->logException('installation', $exception);
-            $this->getCseLogger()->log('install', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('install', $this->logMessages, $this->hasLogError);
 
             throw $exception;
         }
@@ -305,10 +305,10 @@ class CseEightselectBasic extends Plugin
             $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
 
             $this->logMessages[] = 'Plugin activation completed';
-            $this->getCseLogger()->log('activate', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('activate', $this->logMessages, $this->hasLogError);
         } catch (\Exception $exception) {
             $this->logException('activation', $exception);
-            $this->getCseLogger()->log('activate', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('activate', $this->logMessages, $this->hasLogError);
 
             throw $exception;
         }
@@ -330,10 +330,10 @@ class CseEightselectBasic extends Plugin
             $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
 
             $this->logMessages[] = 'Plugin deactivation completed';
-            $this->getCseLogger()->log('deactivate', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('deactivate', $this->logMessages, $this->hasLogError);
         } catch (\Exception $exception) {
             $this->logException('deactivation', $exception);
-            $this->getCseLogger()->log('deactivate', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('deactivate', $this->logMessages, $this->hasLogError);
 
             throw $exception;
         }
@@ -375,10 +375,10 @@ class CseEightselectBasic extends Plugin
             $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
 
             $this->logMessages[] = 'Plugin update completed';
-            $this->getCseLogger()->log('update', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('update', $this->logMessages, $this->hasLogError);
         } catch (\Exception $exception) {
             $this->logException('updating', $exception);
-            $this->getCseLogger()->log('update', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('update', $this->logMessages, $this->hasLogError);
         }
     }
 
@@ -413,10 +413,10 @@ class CseEightselectBasic extends Plugin
             $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
 
             $this->logMessages[] = 'Plugin deinstallation completed';
-            $this->getCseLogger()->log('uninstall', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('uninstall', $this->logMessages, $this->hasLogError);
         } catch (\Exception $exception) {
             $this->logException('deinstallation', $exception);
-            $this->getCseLogger()->log('uninstall', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('uninstall', $this->logMessages, $this->hasLogError);
 
             throw $exception;
         }
@@ -502,10 +502,10 @@ class CseEightselectBasic extends Plugin
             $cacheManager->clearConfigCache();
 
             $this->connectCse();
-            $this->getCseLogger()->log('pluginconfig', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('pluginconfig', $this->logMessages, $this->hasLogError);
         } catch (\Exception $exception) {
             $this->logException('saving plugin configuration', $exception);
-            $this->getCseLogger()->log('pluginconfig', $this->logMessages, $this->logHasError);
+            $this->getCseLogger()->log('pluginconfig', $this->logMessages, $this->hasLogError);
         }
     }
 
@@ -638,7 +638,7 @@ class CseEightselectBasic extends Plugin
      */
     private function logException($action, $exception)
     {
-        $this->logHasError = true;
+        $this->hasLogError = true;
         $message = sprintf('%s failed due to exception: %s', $action, $exception->getMessage());
         $context = [
             'exception' => [
