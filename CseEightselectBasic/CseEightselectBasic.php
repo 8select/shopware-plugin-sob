@@ -275,8 +275,6 @@ class CseEightselectBasic extends Plugin
             $this->createDatabase($context);
             $this->getPluginConfigService()->setDefaults();
             $this->logMessages[] = 'PluginConfig defaults set';
-            $this->connectCse();
-
             $this->logMessages[] = 'Plugin installation completed';
             $this->getCseLogger()->log('install', $this->logMessages, $this->hasLogError);
         } catch (\Exception $exception) {
