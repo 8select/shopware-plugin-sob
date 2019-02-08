@@ -1,5 +1,19 @@
 # Change Log
 
+## [2.0.0](https://github.com/8select/shopware-plugin-sob/tree/2.0.0) (2019-2-8)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.12.1...2.0.0)
+
+**Fixed Bugs:**
+
+- [CSE-1844](https://8select.atlassian.net/browse/CSE-1844) also check parent products active state [\#89](https://github.com/8select/shopware-plugin-sob/pull/89) ([akleiber](https://github.com/akleiber))
+- [CSE-1663](https://8select.atlassian.net/browse/CSE-1663) add missing path to delete call [\#90](https://github.com/8select/shopware-plugin-sob/pull/90) ([akleiber](https://github.com/akleiber))
+
+**Implemented Features:**
+
+- [CSE-1663](https://8select.atlassian.net/browse/CSE-1663) feature branch pull instead of cron [\#87](https://github.com/8select/shopware-plugin-sob/pull/87) ([akleiber](https://github.com/akleiber))
+- [CSE-1663](https://8select.atlassian.net/browse/CSE-1663) use TUS interface for tenant object [\#88](https://github.com/8select/shopware-plugin-sob/pull/88) ([akleiber](https://github.com/akleiber))
+
 ## [2.0.0-beta.3](https://github.com/8select/shopware-plugin-sob/tree/2.0.0-beta.3) (2019-2-8)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.12.1...2.0.0-beta.3)
