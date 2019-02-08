@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.0.0-beta.2](https://github.com/8select/shopware-plugin-sob/tree/2.0.0-beta.2) (2019-2-8)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.12.1...2.0.0-beta.2)
+
+**Fixed Bugs:**
+
+- [CSE-1844](https://8select.atlassian.net/browse/CSE-1844) also check parent products active state [\#89](https://github.com/8select/shopware-plugin-sob/pull/89) ([akleiber](https://github.com/akleiber))
+
 ## [2.0.0-beta.1](https://github.com/8select/shopware-plugin-sob/tree/2.0.0-beta.1) (2019-2-8)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.12.1...2.0.0-beta.1)
