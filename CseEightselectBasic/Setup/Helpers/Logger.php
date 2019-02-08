@@ -69,8 +69,8 @@ class Logger
         return [
             'json' => [
                 'tenant' => [
-                    'tid' => $this->pluginConfig->get('CseEightselectBasicApiId'),
-                    'fid' => $this->pluginConfig->get('CseEightselectBasicFeedId'),
+                    'feedId' => $this->pluginConfig->get('CseEightselectBasicFeedId'),
+                    'id' => $this->pluginConfig->get('CseEightselectBasicApiId'),
                 ],
                 'shop' => [
                     'url' => $this->provider->getShopUrl(),
