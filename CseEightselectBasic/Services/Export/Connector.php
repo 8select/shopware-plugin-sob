@@ -106,6 +106,6 @@ class Connector
             $this->pluginConfig->get('CseEightselectBasicApiId'),
             $this->pluginConfig->get('CseEightselectBasicFeedId')
         );
-        $this->guzzleClient->delete();
+        $this->guzzleClient->delete($path);
     }
 }
