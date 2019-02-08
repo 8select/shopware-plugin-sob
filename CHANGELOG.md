@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.0.0-beta.1](https://github.com/8select/shopware-plugin-sob/tree/2.0.0-beta.1) (2019-2-8)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.12.1...2.0.0-beta.1)
+
+**Implemented Features:**
+
+- [CSE-1663](https://8select.atlassian.net/browse/CSE-1663) use TUS interface for tenant object [\#88](https://github.com/8select/shopware-plugin-sob/pull/88) ([akleiber](https://github.com/akleiber))
+
 ## [2.0.0-beta.0](https://github.com/8select/shopware-plugin-sob/tree/2.0.0-beta.0) (2019-2-6)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/1.12.1...2.0.0-beta.0)
