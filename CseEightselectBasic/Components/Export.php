@@ -115,7 +115,11 @@ abstract class Export implements ExportInterface
                 s_articles_details.id as detailID,
                 s_articles_prices.price AS angebots_preis,
                 s_articles_prices.pseudoprice AS streich_preis,
-                s_articles_details.active AS active,
+                IF (
+                    s_articles.active && s_articles_details.active,
+                    1,
+                    0
+                ) as active,
                 s_articles_details.instock AS instock,
                 s_articles_supplier.name as marke,
                 ad2.ordernumber as mastersku,

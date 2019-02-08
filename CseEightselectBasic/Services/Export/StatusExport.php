@@ -130,7 +130,9 @@ class StatusExport implements ExportInterface
                         2
                     ) as prop_retailPrice,
                     IF (
-                        s_articles_details.active && (!s_articles.laststock || s_articles_details.instock > 0),
+                        s_articles.active &&
+                        s_articles_details.active &&
+                        (!s_articles.laststock || s_articles_details.instock > 0),
                         1,
                         0
                     ) as prop_isInStock';
@@ -181,7 +183,9 @@ class StatusExport implements ExportInterface
                     delta.s_articles_details_id = s_articles_details.id
                     AND
                         delta.prop_isInStock = IF (
-                            s_articles_details.active && (!s_articles.laststock || s_articles_details.instock > 0),
+                            s_articles.active &&
+                            s_articles_details.active &&
+                            (!s_articles.laststock || s_articles_details.instock > 0),
                             1,
                             0
                         )
