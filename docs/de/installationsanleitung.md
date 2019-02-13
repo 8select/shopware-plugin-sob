@@ -2,9 +2,8 @@
 # Installationsanleitung
 
 ## System Anforderungen
-- Systemvoraussetzung: ab Shopware 5.2.17; 
-- Crontab-Eintrag auf dem Server, um regelmäßig Shopware-Cronjobs auszuführen. Vorzugweise via CLI `php bin/console sw:cron:run`
-  - Wie Sie Cronjobs für Shopware einrichten können sie [hier](https://community.shopware.com/Cronjobs_detail_1103.html#Setting_up_a_cronjob) nachlesen
+- ab Shopware 5.2.17
+- Shop muss aus dem Internet erreichbar sein
 
 ## Vorbereitung
 - Wählen Sie ein **8select service package** auf der [8select website](https://www.8select.com/cse-pricing) und vervollständigen Sie Ihre Registrierung. Nach erfolgreicher Registrierung erhalten Sie eine E-Mail mit **zwei Freischaltcodes** für das 8select plugin für Shopware und einen **weiteren Aktivierungslink** für Ihre Zugangsdaten zu der 8select Management Console.
@@ -45,20 +44,13 @@ Sie haben die Freischaltcodes bereits per E-Mail erhalten, nachdem Sie erfolgrei
      [Define Attribute Mapping](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/de/eng-export-settings-farbvariant.mp4)
 
 5. **Start der Feed Verarbeitung**
-    Um den Datenfeed erfolgreich verarbeiten zu können, muss ein Crontab Eintrag auf Ihrem Server hinterlegt sein der die Shopware Cronjobs in regelmäßigen Abständen ausführt. Bitte stellen Sie sicher, dass der Crontab Eintrag ordnungsgemäß eingerichtet ist bevor Sie mit der Installation fortfahren.
     
-    Sie können einen vollständigen Export aller Produkte manuell anstoßen:
-    - Gehen Sie auf „Einstellungen“ > „8select“ > „Manueller Export“.
-    - Wählen Sie „Produkt Voll-Export anstoßen.
-    
-    ![manual product export](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/de/manual_product_export.png)
-       
-    > **Hinweis für Testshops:** Wenn Sie das 8select CSE Plugin in Ihrem Testshop testen und kein Crontab Eintrag auf Ihrem Server hinterlegt haben können Sie den 8select-Cronjob auf Ihrem Server mit folgendem Befehl ausführen:  
-    `php bin/console sw:cron:run Shopware_CronJob_CseEightselectBasicArticleExport -f`
+Sofern die Plugin-Konfiguration (2. und 3.) korrekt erfolg ist, werden die Produktdaten automatisch abgefragt.
 
-    >Der PHP Prozess muss dazu Rechte haben im Shopware-Installationsverzeichnis Dateien anzulegen, da hier der Produkt-Export zwischengespeichert wird
+    - 01:00 Uhr UTC ein voller Produktdatenexport 
+    - 01:30 Uhr UTC ein voller Propertydatenexport 
+    - alle 15 Minuten ein Status- und Preisexport aller geänderten Produkte seit dem letzten Export
     
-
 6. **Sie haben die 8select Curated Shopping Engine erfolgreich installiert**  
     Sie können verifizieren ob Ihre Installation Erfolgreich war indem Sie den Vorschaumodus im 8select Plugin aufrufen.
     - Rufen Sie eine Seite in Ihrem Shop auf wo das Widget angezeigt werden soll
