@@ -138,7 +138,6 @@ class CseEightselectBasic extends Plugin
                 explode('CSE_SYS', $this->getPluginConfigService()->get('CseEightselectBasicSysAccContainer'))
             );
         } catch (\Exception $exception) {
-            $this->container->get('pluginlogger')->error($exception->getMessage, ['exception' => $exception]);
             $this->logException('onFrontendPostDispatch', $exception);
             $this->getCseLogger()->log('operation', $this->logMessages, $this->hasLogError);
         }
@@ -159,7 +158,6 @@ class CseEightselectBasic extends Plugin
             $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/psp_psv.js');
             $view->extendsTemplate('backend/emotion/cse_eightselect_basic/view/detail/elements/psp_tlv.js');
         } catch (\Exception $exception) {
-            $this->container->get('pluginlogger')->error($exception->getMessage, ['exception' => $exception]);
             $this->logException('onPostDispatchBackendEmotion', $exception);
             $this->getCseLogger()->log('operation', $this->logMessages, $this->hasLogError);
         }
@@ -190,7 +188,6 @@ class CseEightselectBasic extends Plugin
             $this->checkoutTracking($view);
 
         } catch (\Exception $exception) {
-            $this->container->get('pluginlogger')->error($exception->getMessage, ['exception' => $exception]);
             $this->logException('onCheckoutConfirm', $exception);
             $this->getCseLogger()->log('operation', $this->logMessages, $this->hasLogError);
         }
@@ -652,5 +649,6 @@ class CseEightselectBasic extends Plugin
             'message' => $message,
             'context' => $context,
         ];
+        $this->container->get('pluginlogger')->error($message, $context);
     }
 }
