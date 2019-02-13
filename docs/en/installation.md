@@ -3,9 +3,8 @@
 
 ## System requirements
 
-- Shopware version 5.2.17 or higher.
-- A crontab entry on your server, that runs Shopware cronjobs regularly. Preferably via CLI `php bin/console sw:cron:run`
-  - How to set up a crontab entry with regular cronjobs you can read [here](https://en-community.shopware.com/Cronjobs_detail_1103.html#Setting_up_a_cronjob) 
+- Shopware version 5.2.17 or higher
+- Your shop has to be reachable from the internet
 
 
 ## Before Getting Started
@@ -50,18 +49,11 @@
 
 5. **Start processing your feed**
 
-   To process the data feed successfully, you need to have a crontab entry set up on your server that runs Shopware cronjobs regularly. Please make sure a crontab entry is set up correctly before continuing. 
+If you have configured the plugin successfully (2. and 3.) product data will be pulled automatically.
 
-   You can start the full export of all products manually directly: 
-   - Go to "Configuration" > "8select" > "Manueller Export". 
-   - Choose „Produkt Voll-Export anstoßen“.  
-
-    ![manual product export](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/en/manual_product_export.png)
-
-    > **Note for test shops:** if you are testing the 8select plugin in a test shop, where no Crontab entry is present, you can also call the 8select-Cron on your server with this code:  
-    `php bin/console sw:cron:run Shopware_CronJob_CseEightselectBasicArticleExport -f`
-
-    >The PHP process has to have access rights to store files inside the Shopware installation directory, because the product export is temporarily saved there
+    - 01:00 UTC a full product export
+    - 01:30 UTC a full property export 
+    - every 15 minutes a status and price export of all changed products since the last export
 
 6. **You have now successfully installed the 8select Curated Shopping Engine**  
     You can check if your installation was successful through the default preview mode of the 8select CSE plugin.
