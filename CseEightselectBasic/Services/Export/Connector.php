@@ -38,7 +38,6 @@ class Connector
     public function __construct(GuzzleFactory $guzzleFactory, PluginConfig $pluginConfig, Provider $provider)
     {
         $this->guzzleClient = $guzzleFactory->createClient([
-            'base_url' => rtrim('__SHOP_CONNECTOR_URL__', '/'),
             'defaults' => [
                 'timeout' => 5,
                 'connect_timeout' => 5,
@@ -63,7 +62,7 @@ class Connector
             throw new CseCredentialsMissingException();
         }
         $content = $this->getConnectDetails();
-        $this->guzzleClient->put('/shops', $content);
+        $this->guzzleClient->put($this->getUrl('shops'), $content);
     }
 
     /**
@@ -106,6 +105,18 @@ class Connector
             $this->pluginConfig->get('CseEightselectBasicApiId'),
             $this->pluginConfig->get('CseEightselectBasicFeedId')
         );
-        $this->guzzleClient->delete($path);
+        $this->guzzleClient->delete($this->getUrl($path));
+    }
+
+    /**
+     * @return string
+     */
+    private function getUrl($path)
+    {
+        return sprintf(
+            '%s/%s',
+            rtrim('__SHOP_CONNECTOR_URL__', '/'),
+            ltrim($path, '/')
+        );
     }
 }
