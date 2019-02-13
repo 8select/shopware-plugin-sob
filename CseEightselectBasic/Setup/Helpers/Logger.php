@@ -33,7 +33,6 @@ class Logger
     public function __construct(GuzzleFactory $guzzleFactory, PluginConfig $pluginConfig, Provider $provider)
     {
         $this->guzzleClient = $guzzleFactory->createClient([
-            'base_url' => rtrim('__SHOP_CONNECTOR_URL__', '/'),
             'defaults' => [
                 'timeout' => 5,
                 'connect_timeout' => 5,
@@ -56,7 +55,7 @@ class Logger
             $content['json']['hasError'] = $hasError;
             $content['json']['messages'] = $messages;
 
-            $this->guzzleClient->post('/logs', $content);
+            $this->guzzleClient->post($this->getUrl('logs'), $content);
         } catch (\Exception $ignore) {
         }
     }
@@ -83,5 +82,17 @@ class Logger
                 ],
             ],
         ];
+    }
+
+    /**
+     * @return string
+     */
+    private function getUrl($path)
+    {
+        return sprintf(
+            '%s/%s',
+            rtrim('__SHOP_CONNECTOR_URL__', '/'),
+            ltrim($path, '/')
+        );
     }
 }

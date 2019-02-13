@@ -12,6 +12,7 @@ echo "=========================="
 echo "BUILDING"
 echo "VERSION: ${VERSION}"
 echo "PROFILE: ${PROFILE}"
+echo "SHOP_CONNECTOR_URL: ${SHOP_CONNECTOR_URL}"
 echo "=========================="
 
 echo "Build at ${BUILD_DIR}"
