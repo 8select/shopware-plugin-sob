@@ -86,17 +86,10 @@ class Mapper
                     $size = $this->getSizeOptionByArticleDetailId($article['detailID']);
                     $value = !empty($size) ? $size : 'onesize';
                     break;
-                case 'beschreibung':
-                    $withNewLines = $this->getValue($article, $fieldName);
-                    $value = str_replace(["\r\n", "\r", "\n"], ' ', $withNewLines);
-                    break;
                 case 'beschreibung1':
-                    $withNewLines = $this->getValue($article, 'beschreibung');
-                    $withOutNewLines = str_replace(["\r\n", "\r", "\n"], '<br>', $withNewLines);
-                    $withExtraSpaces = str_replace('>', '> ', $withOutNewLines);
-                    $withOutHtml = strip_tags($withExtraSpaces);
-                    $withOutHtmlEntities = html_entity_decode($withOutHtml);
-                    $value = trim(preg_replace('/[\h\xa0\xc2]+/', ' ', $withOutHtmlEntities));
+                    $withHtml = $this->getValue($article, 'beschreibung');
+                    $withOutHtml = strip_tags($withHtml);
+                    $value = html_entity_decode($withOutHtml);
                     break;
                 default:
                     $value = $this->getValue($article, $fieldName);
