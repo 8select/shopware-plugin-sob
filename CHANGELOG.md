@@ -1,5 +1,17 @@
 # Change Log
 
+## [2.0.2](https://github.com/8select/shopware-plugin-sob/tree/2.0.2) (2019-2-18)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.0.1...2.0.2)
+
+**Fixed Bugs:**
+
+- [CSE-1874](https://8select.atlassian.net/browse/CSE-1874) do not destroy utf8 chars [\#93](https://github.com/8select/shopware-plugin-sob/pull/93) ([akleiber](https://github.com/akleiber))
+
+**Merged Pull Requests:**
+
+- [CSE-1735](https://8select.atlassian.net/browse/CSE-1735) remove CRON info from docs [\#92](https://github.com/8select/shopware-plugin-sob/pull/92) ([akleiber](https://github.com/akleiber))
+
 ## [2.0.1](https://github.com/8select/shopware-plugin-sob/tree/2.0.1) (2019-2-13)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.0.0...2.0.1)
