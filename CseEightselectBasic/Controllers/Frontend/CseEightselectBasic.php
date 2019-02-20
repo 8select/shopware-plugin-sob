@@ -117,7 +117,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         }
 
         try {
-            $format = $this->Request()->getParam('format');
+            $format = $this->Request()->getParam('format', 'raw');
             $export = $this->createExport($format);
             if (!$format || !$export) {
                 $this->Response()->setHttpResponseCode(204);
@@ -192,6 +192,9 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
                 break;
             case 'status':
                 return $this->container->get('cse_eightselect_basic.export.status_export');
+                break;
+            case 'raw':
+                return $this->container->get('cse_eightselect_basic.export.raw_export');
                 break;
         }
     }
