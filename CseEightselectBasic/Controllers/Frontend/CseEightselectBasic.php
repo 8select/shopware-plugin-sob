@@ -139,7 +139,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
             );
 
             if ($response === false) {
-                $message = sprintf('json error while exporting');
+                $message = 'json error while exporting';
                 $context = [
                     'error' => [
                         'json_last_error' => json_last_error(),
@@ -156,6 +156,19 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 
             return $this->Response()->setBody($response);
         } catch (\Exception $exception) {
+            $logger = $this->container->get('cse_eightselect_basic.setup.helpers.logger');
+            $context = [
+                'exception' => [
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'trace' => $exception->getTrace(),
+                ],
+            ];
+            $logger->log('export', [[
+                'message' => 'error while exporting',
+                'context' => $context,
+            ]], true);
+
             $this->Response()->setHttpResponseCode(500);
             $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
             $this->Response()->setBody($body);
