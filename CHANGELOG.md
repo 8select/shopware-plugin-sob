@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.1.0](https://github.com/8select/shopware-plugin-sob/tree/2.1.0) (2019-2-22)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.0.2...2.1.0)
+
+**Implemented Features:**
+
+- [CSE-1835](https://8select.atlassian.net/browse/CSE-1835) export raw product-data for dynamic productsets outside fashion scope [\#94](https://github.com/8select/shopware-plugin-sob/pull/94) ([akleiber](https://github.com/akleiber))
+
 ## [2.0.2](https://github.com/8select/shopware-plugin-sob/tree/2.0.2) (2019-2-18)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.0.1...2.0.2)
