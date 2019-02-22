@@ -62,6 +62,11 @@
             <argument type="service" id="dbal_connection"/>
         </service>
 
+        <service id="cse_eightselect_basic.export.raw_export" class="CseEightselectBasic\Services\Export\RawExport">
+            <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
+            <argument type="service" id="dbal_connection"/>
+        </service>
+
         <service id="cse_eightselect_basic.request.auth" class="CseEightselectBasic\Services\Request\Auth">
             <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
         </service>
