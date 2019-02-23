@@ -216,7 +216,7 @@ class RawExport implements ExportInterface
             FROM
                 s_articles_details
             INNER JOIN
-                s_filter_articles on s_filter_articles.articleID = s_articles_details.id
+                s_filter_articles on s_filter_articles.articleID = s_articles_details.articleID
             INNER JOIN
                 s_filter_values on s_filter_values.id = s_filter_articles.valueID
             INNER JOIN
