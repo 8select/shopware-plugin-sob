@@ -240,30 +240,91 @@ class RawExport implements ExportInterface
      */
     private function getCategories($articleIds)
     {
+        $categoryNamesByCategoryId = $this->getCategoryNamesByCategoryId($articleIds);
+        $categoryPathsListBySku = $this->getCategoryPathsListBySku($articleIds);
+
+        $categoryPathsStrings = [];
+        foreach ($categoryPathsListBySku as $sku => $categoryPathsList) {
+            $strings = [];
+            $string = '';
+            $isFirst = true;
+            foreach ($categoryPathsList as $categoryId) {
+                if (!$isFirst) {
+                    $string .= ' > ';
+                }
+                $string .= $categoryNamesByCategoryId[$categoryId];
+                $strings[] = $string;
+                $isFirst = false;
+            }
+            $categoryPathsStrings[$sku] = [
+                's_categories' => [
+                    'label' => 'Kategorie',
+                    'value' => $strings,
+                ],
+            ];
+        }
+
+        return $categoryPathsStrings;
+    }
+
+    private function getCategoryPathsListBySku($articleIds)
+    {
         $sql = "SELECT
                 s_articles_details.ordernumber as `sku`,
-                deepestCategory.id as `detailSlugSuffix`,
-                CONCAT('Kategorie ', deepestCategory.id) as `detailLabel`,
-                s_categories.description as `detailValue`
+                CONCAT(s_articles_categories_ro.categoryID, deepestCategory.path) as `path`
+            FROM
+                s_articles_details
+            INNER JOIN
+                s_articles_categories_ro on s_articles_categories_ro.articleID = s_articles_details.articleID
+            INNER JOIN
+                s_categories as deepestCategory on deepestCategory.id = s_articles_categories_ro.parentCategoryID AND s_articles_categories_ro.parentCategoryID = s_articles_categories_ro.categoryID
+            WHERE
+                s_articles_details.id IN (?);
+        ";
+
+        $categoryPaths = $this->connection->fetchAll(
+            $sql,
+            array($articleIds),
+            array(Connection::PARAM_INT_ARRAY)
+        );
+
+        $categoryPathsListBySku = [];
+        foreach ($categoryPaths as $categoryPath) {
+            $categoryPathList = explode('|', trim($categoryPath['path'], '|'));
+            $categoryPathsListBySku[$categoryPath['sku']] = array_reverse($categoryPathList);
+        }
+
+        return $categoryPathsListBySku;
+    }
+
+    private function getCategoryNamesByCategoryId($articleIds)
+    {
+        $sql = "SELECT
+                s_categories.id,
+                s_categories.description as `name`
             FROM
                 s_articles_details
             INNER JOIN
                 s_articles_categories_ro on s_articles_categories_ro.articleID = s_articles_details.articleID
             INNER JOIN
                 s_categories on s_categories.id = s_articles_categories_ro.categoryID
-            INNER JOIN
-                s_categories as deepestCategory on deepestCategory.id = s_articles_categories_ro.parentCategoryID
             WHERE
-                s_articles_details.id IN (?);
+                s_articles_details.id IN (?)
+            GROUP BY  s_categories.id;
         ";
 
-        $categories = $this->connection->fetchAll(
+        $categoryNames = $this->connection->fetchAll(
             $sql,
             array($articleIds),
             array(Connection::PARAM_INT_ARRAY)
         );
 
-        return $this->mergeBySku($categories, 's_categories.id=');
+        $categoryNamesById = [];
+        foreach ($categoryNames as $categoryName) {
+            $categoryNamesById[$categoryName['id']] = $categoryName['name'];
+        }
+
+        return $categoryNamesById;
     }
 
     private function mergeBySku($details, $detailSlugPrefix, $isVariantDetail = false)
