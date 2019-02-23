@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.1.1](https://github.com/8select/shopware-plugin-sob/tree/2.1.1) (2019-2-23)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.0...2.1.1)
+
+**Fixed Bugs:**
+
+- [CSE-1835](https://8select.atlassian.net/browse/CSE-1835) add categories as list of category paths [\#95](https://github.com/8select/shopware-plugin-sob/pull/95) ([akleiber](https://github.com/akleiber))
+
 ## [2.1.0](https://github.com/8select/shopware-plugin-sob/tree/2.1.0) (2019-2-22)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.0.2...2.1.0)
