@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.1.2](https://github.com/8select/shopware-plugin-sob/tree/2.1.2) (2019-2-23)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.1...2.1.2)
+
+**Fixed Bugs:**
+
+- [CSE-1835](https://8select.atlassian.net/browse/CSE-1835) use s_articles.id to join s_filters_articles [\#96](https://github.com/8select/shopware-plugin-sob/pull/96) ([akleiber](https://github.com/akleiber))
+
 ## [2.1.1](https://github.com/8select/shopware-plugin-sob/tree/2.1.1) (2019-2-23)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.0...2.1.1)
