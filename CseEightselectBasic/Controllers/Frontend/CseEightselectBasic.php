@@ -276,8 +276,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     {
         return [
             'connect',
-            'configuration',
             'products',
+            'validate',
         ];
     }
 }
