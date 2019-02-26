@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.1.3](https://github.com/8select/shopware-plugin-sob/tree/2.1.3) (2019-2-26)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.2...2.1.3)
+
+**Fixed Bugs:**
+
+- Add debug output for version and config [\#98](https://github.com/8select/shopware-plugin-sob/pull/98) ([akleiber](https://github.com/akleiber))
+- whitelist correct action [\#99](https://github.com/8select/shopware-plugin-sob/pull/99) ([akleiber](https://github.com/akleiber))
+
 ## [2.1.2](https://github.com/8select/shopware-plugin-sob/tree/2.1.2) (2019-2-23)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.1...2.1.2)
