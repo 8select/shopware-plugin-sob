@@ -74,6 +74,9 @@ class Validator
     public function validateConfig()
     {
         $violations = [];
+        if ($this->pluginConfigService->isCseActive() === false) {
+            array_push($violations, "Plugin ist nicht aktiv");
+        }
 
         array_push($violations, $this->validateApiId());
         array_push($violations, $this->validateFeedId());

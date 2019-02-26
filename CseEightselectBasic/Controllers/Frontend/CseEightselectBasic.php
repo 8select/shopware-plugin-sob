@@ -23,6 +23,50 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         Shopware()->Plugins()->Controller()->Json()->setPadding();
     }
 
+    public function validateAction()
+    {
+        try {
+            $auth = $this->container->get('cse_eightselect_basic.request.auth');
+            $auth->auth($this->Request());
+        } catch (NotAuthorizedException $exception) {
+            throw new \Enlight_Controller_Exception('hide export', 404);
+        } catch (AuthException $exception) {
+            $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+            $this->Response()->setHeader('Content-Type', 'application/json');
+            $this->Response()->setHttpResponseCode($exception->getCode());
+            $body = $this->httpBodyFromException($exception, 'AUTH_ERROR');
+            $this->Response()->setBody($body);
+
+            return;
+        }
+
+        $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+        $this->Response()->setHeader('Content-Type', 'application/json');
+
+        $configValidator = $this->container->get('cse_eightselect_basic.config.validator');
+        $result = $configValidator->validateConfig();
+        if ($result['isValid'] === false) {
+            $this->Response()->setHttpResponseCode(500);
+            $body = json_encode(
+                [
+                    'error' => 'CONFIGURATION_ERROR',
+                    'message' => $result['violations'],
+                ]
+            );
+            $this->Response()->setBody($body);
+
+            return;
+        }
+
+        $this->Response()->setHttpResponseCode(200);
+        $body = json_encode(
+            [
+                'message' => 'CONFIGURATION_VALID',
+            ]
+        );
+        $this->Response()->setBody($body);
+    }
+
     /**
      * The API is available at /cse-eightselect-basic/connect
      */
@@ -232,6 +276,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     {
         return [
             'connect',
+            'configuration',
             'products',
         ];
     }
