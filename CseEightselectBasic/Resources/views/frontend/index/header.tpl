@@ -11,6 +11,12 @@
 
 {block name='frontend_index_header_javascript_tracking'}
     {$smarty.block.parent}
+    <script type="text/javascript">
+        // 8select CSE - Shopware Plugin __VERSION__
+        var _eightselect_shop_plugin = {
+            version: '__VERSION__'
+        };
+    </script>
     {if $isCseWidgetConfigValid}
         <script type="text/javascript">
             if (typeof _eightselect_config === "undefined") {
@@ -34,7 +40,6 @@
         </script>
 
         <script type="text/javascript">
-            /* 8select CSE - Shopware Plugin __VERSION__ */
             (function(d, s, w) {
                 function getUrlParameter(name) {
                     try {
