@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.1.4](https://github.com/8select/shopware-plugin-sob/tree/2.1.4) (2019-3-4)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.3...2.1.4)
+
+**Fixed Bugs:**
+
+- export all categories [\#100](https://github.com/8select/shopware-plugin-sob/pull/100) ([akleiber](https://github.com/akleiber))
+
 ## [2.1.3](https://github.com/8select/shopware-plugin-sob/tree/2.1.3) (2019-2-26)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.2...2.1.3)
