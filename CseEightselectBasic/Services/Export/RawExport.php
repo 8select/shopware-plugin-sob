@@ -263,7 +263,7 @@ class RawExport implements ExportInterface
             $categoryPathsStrings[$sku] = [
                 's_categories' => [
                     'label' => 'Kategorie',
-                    'value' => $strings,
+                    'value' => array_values(array_unique($strings)),
                 ],
             ];
         }
