@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.1.5](https://github.com/8select/shopware-plugin-sob/tree/2.1.5) (2019-3-4)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.4...2.1.5)
+
+**Fixed Bugs:**
+
+- return unique category paths [\#101](https://github.com/8select/shopware-plugin-sob/pull/101) ([akleiber](https://github.com/akleiber))
+
 ## [2.1.4](https://github.com/8select/shopware-plugin-sob/tree/2.1.4) (2019-3-4)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.3...2.1.4)
