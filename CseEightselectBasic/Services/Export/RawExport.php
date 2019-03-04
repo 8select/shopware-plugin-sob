@@ -241,21 +241,25 @@ class RawExport implements ExportInterface
     private function getCategories($articleIds)
     {
         $categoryNamesByCategoryId = $this->getCategoryNamesByCategoryId($articleIds);
-        $categoryPathsListBySku = $this->getCategoryPathsListBySku($articleIds);
+        $categoryPathsListsBySku = $this->getCategoryPathsListsBySku($articleIds);
 
         $categoryPathsStrings = [];
-        foreach ($categoryPathsListBySku as $sku => $categoryPathsList) {
+        foreach ($categoryPathsListsBySku as $sku => $categoryPathsLists) {
             $strings = [];
-            $string = '';
-            $isFirst = true;
-            foreach ($categoryPathsList as $categoryId) {
-                if (!$isFirst) {
-                    $string .= ' > ';
+
+            foreach ($categoryPathsLists as $categoryPathsList) {
+                $string = '';
+                $isFirst = true;
+                foreach ($categoryPathsList as $categoryId) {
+                    if (!$isFirst) {
+                        $string .= ' > ';
+                    }
+                    $string .= $categoryNamesByCategoryId[$categoryId];
+                    $strings[] = $string;
+                    $isFirst = false;
                 }
-                $string .= $categoryNamesByCategoryId[$categoryId];
-                $strings[] = $string;
-                $isFirst = false;
             }
+
             $categoryPathsStrings[$sku] = [
                 's_categories' => [
                     'label' => 'Kategorie',
@@ -267,7 +271,7 @@ class RawExport implements ExportInterface
         return $categoryPathsStrings;
     }
 
-    private function getCategoryPathsListBySku($articleIds)
+    private function getCategoryPathsListsBySku($articleIds)
     {
         $sql = "SELECT
                 s_articles_details.ordernumber as `sku`,
@@ -288,13 +292,18 @@ class RawExport implements ExportInterface
             array(Connection::PARAM_INT_ARRAY)
         );
 
-        $categoryPathsListBySku = [];
+        $categoryPathsListsBySku = [];
         foreach ($categoryPaths as $categoryPath) {
             $categoryPathList = explode('|', trim($categoryPath['path'], '|'));
-            $categoryPathsListBySku[$categoryPath['sku']] = array_reverse($categoryPathList);
+            $categoryPathLists = [];
+            if (array_key_exists($categoryPath['sku'], $categoryPathsListsBySku)) {
+                $categoryPathLists = $categoryPathsListsBySku[$categoryPath['sku']];
+            }
+            $categoryPathLists[] = array_reverse($categoryPathList);
+            $categoryPathsListsBySku[$categoryPath['sku']] = $categoryPathLists;
         }
 
-        return $categoryPathsListBySku;
+        return $categoryPathsListsBySku;
     }
 
     private function getCategoryNamesByCategoryId($articleIds)
