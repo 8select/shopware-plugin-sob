@@ -49,7 +49,7 @@
             {$smarty.block.parent}
         {/if}
 
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs" && {config name="CseEightselectBasicSysPsvBlock"} != "none"}
+        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
         {block name="frontend_detail_tabs_cse"}
             {if (!{config name="CseEightselectBasicPreviewActive"} && !$smarty.get.preview) || ({config name="CseEightselectBasicPreviewActive"}  && $smarty.get.preview)}
                 <a href="#" class="tab--link" title="Dazu passt" data-tabName="cse" style="display: none;">Dazu passt</a>
