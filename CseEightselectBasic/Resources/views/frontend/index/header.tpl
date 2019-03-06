@@ -22,6 +22,8 @@
             if (typeof _eightselect_config === "undefined") {
                 var _eightselect_config = {};
             }
+
+            {if !{config name="CseEightselectBasicPreviewActive"} || ({config name="CseEightselectBasicPreviewActive"} && {$smarty.get.preview})}
             _eightselect_config.sys = _eightselect_config.sys || {};
             _eightselect_config.sys.callback = function (error) {
                 if (error) {
@@ -30,6 +32,7 @@
                     _eightselect_shop_plugin.showSys();
                 }
             }
+            {/if}
 
             _eightselect_config['sys-acc'] = _eightselect_config['sys-acc'] || {};
             _eightselect_config['sys-acc'].callback = function (error) {
@@ -73,13 +76,6 @@
                 var _eightselect_shop_plugin = {};
             }
 
-            _eightselect_shop_plugin.showSys = function () {
-                return;
-            };
-            _eightselect_shop_plugin.hideSys = function () {
-                return;
-            };
-
             _eightselect_shop_plugin.addToCart = function (sku, quantity, Promise) {
                 try {
                     var eightselectCartForm = document.querySelector('#eightselect_cart_trigger_form');
@@ -105,65 +101,61 @@
         </script>
 
         {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
-            {* Activate description tab - SYS tab will be activated when CSE finds a set *}
-            <script type="text/javascript">
-                _eightselect_shop_plugin.hideSys = function () {
-                    var tabs = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
+            {if !{config name="CseEightselectBasicPreviewActive"} || ({config name="CseEightselectBasicPreviewActive"} && {$smarty.get.preview})}
+                {* Activate description tab - SYS tab will be activated when CSE finds a set *}
+                <script type="text/javascript">
+                    _eightselect_shop_plugin.hideSys = function () {
+                        var tabs = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
 
-                    {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_before"}
-                        var tabToActivate = tabs && tabs[1];
-                    {/if}
-
-                    {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_after"}
                         var tabToActivate = tabs && tabs[0];
-                    {/if}
+                
+                        if (tabToActivate) {
+                            tabToActivate.click();
+                        }
+                        var cseTab = document.querySelector('a[data-tabname=cse]');
+                        var cseContainer = document.querySelector('div.-eightselect-widget-sw-tab-container');
 
-                    if (tabToActivate) {
-                        tabToActivate.click();
+                        if (cseTab && cseTab.style.display !== 'none') {
+                            cseTab.style.display = 'none';
+                        }
+                        if (cseContainer && cseContainer.style.display !== 'none') {
+                            cseContainer.style.display = 'none';
+                        }
+                    };
+
+                    _eightselect_shop_plugin.showSys = function () {
+                        if (window.document.readyState === 'loading') {
+                            window.addEventListener('DOMContentLoaded', _eightselect_shop_plugin.showSys);
+                            return;
+                        }
+
+                        var cseTab = document.querySelector('a[data-tabname=cse]');
+                        var cseContainer = document.querySelector('div.-eightselect-widget-sw-tab-container');
+
+                        if (!cseTab || !cseContainer) {
+                            return;
+                        }
+
+                        cseTab.style.display = '';
+                        cseContainer.style.display = '';
+                        cseTab.click();
+                    };
+
+                    var domListener = function () {
+                        window.removeEventListener('DOMContentLoaded', domListener);
+                        _eightselect_shop_plugin.hideSys();
+                    };
+
+                    if (window.document.readyState !== 'loading') {
+                        domListener();
+                    } else {
+                        window.addEventListener('DOMContentLoaded', domListener);
                     }
-                    var cseTab = document.querySelector('a[data-tabname=cse]');
-                    var cseContainer = document.querySelector('div.-eightselect-widget-sw-tab-container');
-
-                    if (cseTab && cseTab.style.display !== 'none') {
-                        cseTab.style.display = 'none';
-                    }
-                    if (cseContainer && cseContainer.style.display !== 'none') {
-                        cseContainer.style.display = 'none';
-                    }
-                };
-
-                _eightselect_shop_plugin.showSys = function () {
-                    if (window.document.readyState === 'loading') {
-                        window.addEventListener('DOMContentLoaded', _eightselect_shop_plugin.showSys);
-                        return;
-                    }
-
-                    var cseTab = document.querySelector('a[data-tabname=cse]');
-                    var cseContainer = document.querySelector('div.-eightselect-widget-sw-tab-container');
-
-                    if (!cseTab || !cseContainer) {
-                        return;
-                    }
-
-                    cseTab.style.display = '';
-                    cseContainer.style.display = '';
-                    cseTab.click();
-                };
-
-                var domListener = function () {
-                    window.removeEventListener('DOMContentLoaded', domListener);
-                    _eightselect_shop_plugin.hideSys();
-                };
-
-                if (window.document.readyState !== 'loading') {
-                    domListener();
-                } else {
-                    window.addEventListener('DOMContentLoaded', domListener);
-                }
-            </script>
+                </script>
+            {/if}
         {/if}
 
-        {if !{config name="8s_preview_mode_enabled"} || ({config name="8s_preview_mode_enabled"} && {$smarty.get.preview})}
+        {if !{config name="CseEightselectBasicPreviewActive"} || ({config name="CseEightselectBasicPreviewActive"} && {$smarty.get.preview})}
             <script>
                 if (typeof _eightselect_shop_plugin === "undefined") {
                     var _eightselect_shop_plugin = {};
