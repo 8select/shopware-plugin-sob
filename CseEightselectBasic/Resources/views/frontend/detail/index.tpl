@@ -49,9 +49,11 @@
             {$smarty.block.parent}
         {/if}
 
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs" && {config name="CseEightselectBasicSysPsvBlock"} != "none"}
+        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
         {block name="frontend_detail_tabs_cse"}
+            {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
                 <a href="#" class="tab--link" title="Dazu passt" data-tabName="cse" style="display: none;">Dazu passt</a>
+            {/if}
         {/block}
         {/if}
 
@@ -71,41 +73,44 @@
 
         {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
             {block name="frontend_detail_tabs_content_cse"}
-                    <div class="tab--container -eightselect-widget-sw-tab-container" style="display: none;">
-                    {block name="frontend_detail_tabs_content_cse_inner"}
-                        {block name="frontend_detail_tabs_content_cse_title"}
-                                <div class="tab--header">
-                                {block name="frontend_detail_tabs_content_cse_title_inner"}
-                                        <a href="#" class="tab--title" title="Dazu passt">Dazu passt</a>
-                                {/block}
-                                </div>
-                        {/block}
+                {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
 
-                        {block name="frontend_detail_tabs_cse_preview"}
-                                <div class="tab--preview">
-                                    Dazu passt
-                                </div>
-                        {/block}
-
-                        {block name="frontend_detail_tabs_content_cse_description"}
-                                <div class="tab--content">
-                                {* Offcanvas buttons *}
-                                {block name='frontend_detail_cse_buttons_offcanvas'}
-                                        <div class="buttons--off-canvas">
-                                    {block name='frontend_detail_cse_buttons_offcanvas_inner'}
-                                            <a href="#" title="{"{s name="OffcanvasCloseMenu" namespace="frontend/detail/description"}{/s}"|escape}" class="close--off-canvas">
-                                        <i class="icon--arrow-left"></i>
-                                        {s name="OffcanvasCloseMenu" namespace="frontend/detail/description"}{/s}
-                                        </a>
+                        <div class="tab--container -eightselect-widget-sw-tab-container" style="display: none;">
+                        {block name="frontend_detail_tabs_content_cse_inner"}
+                            {block name="frontend_detail_tabs_content_cse_title"}
+                                    <div class="tab--header">
+                                    {block name="frontend_detail_tabs_content_cse_title_inner"}
+                                            <a href="#" class="tab--title" title="Dazu passt">Dazu passt</a>
                                     {/block}
                                     </div>
-                                {/block}
-                                {include file="frontend/detail/custom/cse.tpl"}
-                                </div>
-                        {/block}
+                            {/block}
 
-                    {/block}
-                    </div>
+                            {block name="frontend_detail_tabs_cse_preview"}
+                                    <div class="tab--preview">
+                                        Dazu passt
+                                    </div>
+                            {/block}
+
+                            {block name="frontend_detail_tabs_content_cse_description"}
+                                    <div class="tab--content">
+                                    {* Offcanvas buttons *}
+                                    {block name='frontend_detail_cse_buttons_offcanvas'}
+                                            <div class="buttons--off-canvas">
+                                        {block name='frontend_detail_cse_buttons_offcanvas_inner'}
+                                                <a href="#" title="{"{s name="OffcanvasCloseMenu" namespace="frontend/detail/description"}{/s}"|escape}" class="close--off-canvas">
+                                            <i class="icon--arrow-left"></i>
+                                            {s name="OffcanvasCloseMenu" namespace="frontend/detail/description"}{/s}
+                                            </a>
+                                        {/block}
+                                        </div>
+                                    {/block}
+                                    {include file="frontend/detail/custom/cse.tpl"}
+                                    </div>
+                            {/block}
+
+                        {/block}
+                        </div>
+                {/if}
             {/block}
         {/if}
 
