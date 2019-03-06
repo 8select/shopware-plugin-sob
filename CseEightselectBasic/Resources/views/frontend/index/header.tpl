@@ -106,8 +106,12 @@
                 <script type="text/javascript">
                     _eightselect_shop_plugin.hideSys = function () {
                         var tabs = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
-
-                        var tabToActivate = tabs && tabs[0];
+                        var tabToActivate = tabs && Array.prototype.slice
+                            .call(tabs)
+                            .filter(function(tab) { 
+                                    return tab.style.display !== 'none' 
+                                }
+                            )[0];
                 
                         if (tabToActivate) {
                             tabToActivate.click();
