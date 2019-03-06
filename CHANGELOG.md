@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.1.6](https://github.com/8select/shopware-plugin-sob/tree/2.1.6) (2019-3-7)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.5...2.1.6)
+
+**Fixed Bugs:**
+
+- [CSE-1918](https://8select.atlassian.net/browse/CSE-1918) activate description tab in preview mode [\#102](https://github.com/8select/shopware-plugin-sob/pull/102) ([voodoods](https://github.com/voodoods))
+- only drop old DB triggers if they exist [\#103](https://github.com/8select/shopware-plugin-sob/pull/103) ([akleiber](https://github.com/akleiber))
+
 ## [2.1.5](https://github.com/8select/shopware-plugin-sob/tree/2.1.5) (2019-3-4)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.4...2.1.5)
