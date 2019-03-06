@@ -23,7 +23,6 @@
                 var _eightselect_config = {};
             }
 
-            {if !{config name="CseEightselectBasicPreviewActive"} || ({config name="CseEightselectBasicPreviewActive"} && {$smarty.get.preview})}
             _eightselect_config.sys = _eightselect_config.sys || {};
             _eightselect_config.sys.callback = function (error) {
                 if (error) {
@@ -32,7 +31,6 @@
                     _eightselect_shop_plugin.showSys();
                 }
             }
-            {/if}
 
             _eightselect_config['sys-acc'] = _eightselect_config['sys-acc'] || {};
             _eightselect_config['sys-acc'].callback = function (error) {
@@ -75,6 +73,13 @@
             if (typeof _eightselect_shop_plugin === "undefined") {
                 var _eightselect_shop_plugin = {};
             }
+
+            _eightselect_shop_plugin.showSys = function () {
+                return;
+            };
+            _eightselect_shop_plugin.hideSys = function () {
+                return;
+            };
 
             _eightselect_shop_plugin.addToCart = function (sku, quantity, Promise) {
                 try {
