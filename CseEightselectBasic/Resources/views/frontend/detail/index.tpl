@@ -51,7 +51,7 @@
 
         {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
         {block name="frontend_detail_tabs_cse"}
-            {if (!{config name="CseEightselectBasicPreviewActive"} && !$smarty.get.preview) || ({config name="CseEightselectBasicPreviewActive"}  && $smarty.get.preview)}
+            {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
                 <a href="#" class="tab--link" title="Dazu passt" data-tabName="cse" style="display: none;">Dazu passt</a>
             {/if}
         {/block}
@@ -72,8 +72,9 @@
         {/if}
 
         {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
-            {if (!{config name="CseEightselectBasicPreviewActive"} && !$smarty.get.preview) || ({config name="CseEightselectBasicPreviewActive"}  && $smarty.get.preview)}
-                {block name="frontend_detail_tabs_content_cse"}
+            {block name="frontend_detail_tabs_content_cse"}
+                {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
+
                         <div class="tab--container -eightselect-widget-sw-tab-container" style="display: none;">
                         {block name="frontend_detail_tabs_content_cse_inner"}
                             {block name="frontend_detail_tabs_content_cse_title"}
@@ -109,8 +110,8 @@
 
                         {/block}
                         </div>
-                {/block}
-            {/if}
+                {/if}
+            {/block}
         {/if}
 
         {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_before"}

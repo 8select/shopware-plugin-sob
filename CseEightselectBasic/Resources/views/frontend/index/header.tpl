@@ -101,7 +101,7 @@
         </script>
 
         {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
-            {if !{config name="CseEightselectBasicPreviewActive"} || ({config name="CseEightselectBasicPreviewActive"} && {$smarty.get.preview})}
+            {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
                 {* Activate description tab - SYS tab will be activated when CSE finds a set *}
                 <script type="text/javascript">
                     _eightselect_shop_plugin.hideSys = function () {
@@ -159,7 +159,7 @@
             {/if}
         {/if}
 
-        {if !{config name="CseEightselectBasicPreviewActive"} || ({config name="CseEightselectBasicPreviewActive"} && {$smarty.get.preview})}
+        {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
             <script>
                 if (typeof _eightselect_shop_plugin === "undefined") {
                     var _eightselect_shop_plugin = {};
