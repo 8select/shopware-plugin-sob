@@ -113,11 +113,11 @@
                         var tabs = document.querySelectorAll('.tab-menu--product .tab--navigation .tab--link');
                         var tabToActivate = tabs && Array.prototype.slice
                             .call(tabs)
-                            .filter(function(tab) { 
-                                    return tab.style.display !== 'none' 
+                            .filter(function(tab) {
+                                    return tab.style.display !== 'none';
                                 }
                             )[0];
-                
+
                         if (tabToActivate) {
                             tabToActivate.click();
                         }
