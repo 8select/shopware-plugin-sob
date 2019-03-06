@@ -125,22 +125,89 @@ class Update_2_0_0 implements SetupInterface
 
     private function removeChangeQueue()
     {
+        if ($this->areTriggersInstalled() === false) {
+            return;
+        }
+
+        $this->tryDropTriggers();
+
         $this->connection->exec('DROP TABLE IF EXISTS `8s_articles_details_change_queue`');
+    }
 
-        $triggerQueries = [
-            'DROP TRIGGER IF EXISTS `8s_articles_change_queue_writer`',
-            'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
-            'DROP TRIGGER IF EXISTS `8s_articles_img_change_queue_writer`',
-            'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
-            'DROP TRIGGER IF EXISTS `8s_s_articles_attributes_change_queue_writer`',
-            'DROP TRIGGER IF EXISTS `8s_s_article_configurator_option_relations_change_queue_writer`',
-            'DROP TRIGGER IF EXISTS `8s_s_article_img_mappings_change_queue_writer`',
-            'DROP TRIGGER IF EXISTS `8s_s_article_img_mapping_rules_change_queue_writer`',
-            'DROP TRIGGER IF EXISTS `8s_articles_supplier_change_queue_writer`',
-        ];
+    private function areTriggersInstalled()
+    {
+        $ourTriggersAreInstalled = false;
 
-        foreach ($triggerQueries as $query) {
-            $this->connection->exec($query);
+        try {
+            $triggers = [
+                '8s_articles_change_queue_writer',
+                '8s_articles_details_change_queue_writer',
+                '8s_articles_img_change_queue_writer',
+                '8s_s_articles_prices_change_queue_writer',
+                '8s_s_articles_attributes_change_queue_writer',
+                '8s_s_article_configurator_option_relations_change_queue_writer',
+                '8s_s_article_img_mappings_change_queue_writer',
+                '8s_s_article_img_mapping_rules_change_queue_writer',
+                '8s_articles_supplier_change_queue_writer',
+            ];
+
+            $query = "SHOW TRIGGERS WHERE `Trigger` LIKE '8s_%';";
+            $result = Shopware()->Db()->query($query)->fetchAll();
+            foreach ($result as $trigger) {
+                if (array_search($trigger['Trigger'], $triggers) !== false) {
+                    $ourTriggersAreInstalled = true;
+                    break;
+                }
+            }
+
+            return $ourTriggersAreInstalled;
+        } catch (\Exception $exception) {
+            $template = 'could not check for installed 8select DB trigger due to exception: %s';
+            $message = sprintf($template, $exception->getMessage());
+            $context = [
+                'exception' => [
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'trace' => $exception->getTrace(),
+                ],
+            ];
+            Shopware()->Container()->get('pluginlogger')->warning($message, $context);
+
+            return $ourTriggersAreInstalled;
+        }
+    }
+
+    private function tryDropTriggers()
+    {
+        try {
+            $triggerQueries = [
+                'DROP TRIGGER IF EXISTS `8s_articles_change_queue_writer`',
+                'DROP TRIGGER IF EXISTS `8s_articles_details_change_queue_writer`',
+                'DROP TRIGGER IF EXISTS `8s_articles_img_change_queue_writer`',
+                'DROP TRIGGER IF EXISTS `8s_s_articles_prices_change_queue_writer`',
+                'DROP TRIGGER IF EXISTS `8s_s_articles_attributes_change_queue_writer`',
+                'DROP TRIGGER IF EXISTS `8s_s_article_configurator_option_relations_change_queue_writer`',
+                'DROP TRIGGER IF EXISTS `8s_s_article_img_mappings_change_queue_writer`',
+                'DROP TRIGGER IF EXISTS `8s_s_article_img_mapping_rules_change_queue_writer`',
+                'DROP TRIGGER IF EXISTS `8s_articles_supplier_change_queue_writer`',
+            ];
+
+            foreach ($triggerQueries as $query) {
+                $this->connection->exec($query);
+            }
+        } catch (\Exception $exception) {
+            $template = 'unable to remove installed 8select DB triggers due to exception: %s';
+            $message = sprintf($template, $exception->getMessage());
+            $context = [
+                'exception' => [
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine(),
+                    'trace' => $exception->getTrace(),
+                ],
+            ];
+            Shopware()->Container()->get('pluginlogger')->error($message, $context);
+
+            throw new \Exception('Entschuldigung! Die 8select DB Trigger konnten nicht entfernt werden. Bitte wenden Sie sich an service@8select.de und fügen Sie das aktuelle Plugin Log an. Vielen Dank.');
         }
     }
 
