@@ -357,13 +357,13 @@ class CseEightselectBasic extends Plugin
                     $this->logMessages[] = 'Update_1_11_0 executed';
                 // no break
                 case version_compare($context->getCurrentVersion(), '2.0.0', '<'):
-                    $this->connectCse();
                     $update = new Update_2_0_0(
                         $this->container->get('dbal_connection'),
                         Shopware()->DocPath('files_8select')
                     );
                     $update->execute();
                     $this->logMessages[] = 'Update_2_0_0 executed';
+                    $this->connectCse();
                     // no break
             }
 
