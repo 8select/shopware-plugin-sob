@@ -88,7 +88,8 @@ class Mapper
                     break;
                 case 'beschreibung1':
                     $withHtml = $this->getValue($article, 'beschreibung');
-                    $withOutHtml = strip_tags($withHtml);
+                    $withExtraSpaces = str_replace('>', '> ', $withHtml);
+                    $withOutHtml = strip_tags($withExtraSpaces);
                     $value = html_entity_decode($withOutHtml);
                     break;
                 default:
