@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.1.7](https://github.com/8select/shopware-plugin-sob/tree/2.1.7) (2019-3-22)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.6...2.1.7)
+
+**Fixed Bugs:**
+
+- add extra space to make sure words are separated by spaces [\#104](https://github.com/8select/shopware-plugin-sob/pull/104) ([akleiber](https://github.com/akleiber))
+- [CSE-1878](https://8select.atlassian.net/browse/CSE-1878) use normalized price in checkout tracking [\#105](https://github.com/8select/shopware-plugin-sob/pull/105) ([akleiber](https://github.com/akleiber))
+
 ## [2.1.6](https://github.com/8select/shopware-plugin-sob/tree/2.1.6) (2019-3-7)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.5...2.1.6)
