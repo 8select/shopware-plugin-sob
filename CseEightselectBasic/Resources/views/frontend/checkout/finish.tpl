@@ -14,7 +14,7 @@
                             {ldelim}
                                 sku: '{$sBasketItem.ordernumber}',
                                 amount: {$sBasketItem.quantity},
-                                price: {$sBasketItem.intprice}
+                                price: {$sBasketItem.priceNumeric / $sBasketItem.currencyFactor * 100}
                             {rdelim},
                         {/foreach}
                     ]

@@ -184,65 +184,10 @@ class CseEightselectBasic extends Plugin
             if ($isCseWidgetConfigValid === false) {
                 return;
             }
-
-            $this->checkoutTracking($view);
-
         } catch (\Exception $exception) {
             $this->logException('onCheckoutConfirm', $exception);
             $this->getCseLogger()->log('operation', $this->logMessages, $this->hasLogError);
         }
-    }
-
-    /**
-     * @param \Enlight_View $view
-     */
-    private function checkoutTracking(\Enlight_View $view)
-    {
-        /** @var \Shopware\Models\Shop\Currency $currentCurrency */
-        $currentCurrency = Shopware()->Shop()->getCurrency();
-
-        if ($currentCurrency->getCurrency() == 'EUR' && $currentCurrency->getDefault()) {
-            $factor = $currentCurrency->getFactor();
-        } else {
-            $currencies = Shopware()->Shop()->getCurrencies();
-            /** @var \Shopware\Models\Shop\Currency $loopCurrency */
-            foreach ($currencies as $loopCurrency) {
-                if ($loopCurrency->getCurrency() == 'EUR') {
-                    $factor = $loopCurrency->getFactor();
-                }
-            }
-        }
-
-        $sBasket = $view->sBasket;
-        foreach ($sBasket as &$basketItem) {
-            foreach ($basketItem as &$itemProperty) {
-                if ($itemProperty['price'] != null) {
-                    $itemProperty = $this->calculatePrice($itemProperty, $factor);
-                }
-            }
-        }
-        $view->assign('sBasket', $sBasket);
-        $view->assign('checkoutFinish', true);
-    }
-
-    /**
-     * @param $itemProperty
-     * @param $factor
-     * @return array
-     */
-    private function calculatePrice($itemProperty, $factor)
-    {
-        $tempPrice = (strpos($itemProperty['price'], ',') != false) ? str_replace(
-            ',',
-            '.',
-            $itemProperty['price']
-        ) : $itemProperty['price'];
-        if ($itemProperty['currencyFactor'] > 0) {
-            $tempPrice = $tempPrice / $itemProperty['currencyFactor'];
-        }
-        $itemProperty['intprice'] = round($tempPrice * 100 * $factor);
-
-        return $itemProperty;
     }
 
     /**
