@@ -61,7 +61,10 @@ class Connector
         if ($this->canConnect === false) {
             throw new CseCredentialsMissingException();
         }
-        $content = $this->getConnectDetails();
+        $content = [
+            'json' => $this->getConnectDetails(),
+        ];
+
         $this->guzzleClient->put($this->getUrl('shops'), $content);
     }
 
@@ -71,23 +74,21 @@ class Connector
     public function getConnectDetails()
     {
         return [
-            'json' => [
-                'tenant' => [
-                    'feedId' => $this->pluginConfig->get('CseEightselectBasicFeedId'),
-                    'id' => $this->pluginConfig->get('CseEightselectBasicApiId'),
-                ],
-                'shop' => [
-                    'url' => $this->provider->getShopUrl(),
-                    'software' => 'Shopware',
-                    'version' => $this->provider->getShopwareRelease(),
-                ],
-                'plugin' => [
-                    'version' => '__VERSION__',
-                    'config' => $this->pluginConfig->getAll(),
-                ],
-                'api' => [
-                    'products' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/products',
-                ],
+            'tenant' => [
+                'feedId' => $this->pluginConfig->get('CseEightselectBasicFeedId'),
+                'id' => $this->pluginConfig->get('CseEightselectBasicApiId'),
+            ],
+            'shop' => [
+                'url' => $this->provider->getShopUrl(),
+                'software' => 'Shopware',
+                'version' => $this->provider->getShopwareRelease(),
+            ],
+            'plugin' => [
+                'version' => '__VERSION__',
+                'config' => $this->pluginConfig->getAll(),
+            ],
+            'api' => [
+                'products' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/products',
             ],
         ];
     }
