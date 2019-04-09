@@ -59,6 +59,10 @@ class RawExport implements ExportInterface
         return $products;
     }
 
+    /**
+     * @param integer $limit
+     * @param integer $offset
+     */
     private function getArticleIds($limit, $offset)
     {
         $sqlTemplate = "
