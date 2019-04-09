@@ -25,13 +25,13 @@ class VariantDimensions
      * @param int $offset
      * @return array
      */
-    public function getDimensions($limit = 1000, $offset = 0)
+    public function get($limit = 1000, $offset = 0)
     {
         $dimenions = [];
         foreach ($this->getConfiguratorGroups($limit, $offset) as $dimension) {
             $dimenions[] = [
-                'name' => 's_article_configurator_groups.id=' . $dimension['detailSlugSuffix'],
-                'label' => $dimension['detailLabel'],
+                'name' => 's_article_configurator_groups.id=' . $dimension['nameSuffix'],
+                'label' => $dimension['label'],
             ];
         }
 
@@ -47,8 +47,8 @@ class VariantDimensions
     {
         $sqlTemplate = "
             SELECT
-                s_article_configurator_groups.id as detailSlugSuffix,
-                s_article_configurator_groups.name as detailLabel
+                s_article_configurator_groups.id as nameSuffix,
+                s_article_configurator_groups.name as label
             FROM
                 s_article_configurator_groups
             LIMIT %d OFFSET %d;
