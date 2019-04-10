@@ -88,7 +88,9 @@ class Connector
                 'config' => $this->pluginConfig->getAll(),
             ],
             'api' => [
+                'attributes' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/attributes',
                 'products' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/products',
+                'variantDimensions' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/variant-dimensions',
             ],
         ];
     }
