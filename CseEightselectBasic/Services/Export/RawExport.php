@@ -27,15 +27,26 @@ class RawExport implements ExportInterface
     private $attributes;
 
     /**
+     * @var RawExportMapper
+     */
+    private $mapper;
+
+    /**
      * @param Provider $container
      * @param Connection $connection
      * @param Attributes $attributes
+     * @param RawExportMapper $mapper
      */
-    public function __construct(Provider $provider, Connection $connection, Attributes $attributes)
-    {
+    public function __construct(
+        Provider $provider,
+        Connection $connection,
+        Attributes $attributes,
+        RawExportMapper $mapper
+    ) {
         $this->provider = $provider;
         $this->connection = $connection;
         $this->attributes = $attributes;
+        $this->mapper = $mapper;
     }
 
     /**
@@ -141,6 +152,7 @@ class RawExport implements ExportInterface
     {
         $sql = "SELECT
                 s_articles_details.id as `id`,
+                s_articles_details.articleID as `articleID`,
                 s_articles_details.ordernumber as `sku`,
                 s_articles_details.ordernumber as `s_articles_details.ordernumber`,
                 parentArticle.ordernumber as `parentArticle.ordernumber`,
@@ -210,9 +222,7 @@ class RawExport implements ExportInterface
             array(Connection::PARAM_INT_ARRAY)
         );
 
-        $mapper = new RawExportMapper();
-
-        return array_map(array($mapper, 'map'), $articles);
+        return array_map(array($this->mapper, 'map'), $articles);
     }
 
     /**

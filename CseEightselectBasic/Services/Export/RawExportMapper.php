@@ -2,8 +2,33 @@
 
 namespace CseEightselectBasic\Services\Export;
 
+use CseEightselectBasic\Services\Export\Helper\ProductImages;
+use CseEightselectBasic\Services\Export\Helper\ProductUrl;
+
 class RawExportMapper
 {
+
+    /**
+     * @var ProductUrl
+     */
+    private $urlHelper;
+
+    /**
+     * @var ProductImages
+     */
+    private $imageHelper;
+
+    /**
+     * @param ProductUrl $urlHelper
+     * @param ProductImages $imageHelper
+     */
+    public function __construct(
+        ProductUrl $urlHelper,
+        ProductImages $imageHelper
+    ) {
+        $this->urlHelper = $urlHelper;
+        $this->imageHelper = $imageHelper;
+    }
 
     /**
      * @var array
@@ -44,14 +69,14 @@ class RawExportMapper
      */
     public function map($product)
     {
-        $mapped = [];
+        $mapped = [
+            'id' => $product['id'],
+            'sku' => $product['sku'],
+            'url' => $this->urlHelper->getUrl($product['articleID'], $product['sku'], $product['s_articles.name']),
+            'images' => $this->imageHelper->getImageUrls($product['articleID'], $product['sku'], true),
+        ];
         foreach ($product as $slug => $detailValue) {
-            if ($slug === 'articleID') {
-                continue;
-            }
-
-            if ($slug === 'sku' || $slug === 'id') {
-                $mapped[$slug] = $detailValue;
+            if ($slug === 'articleID' || $slug === 'sku' || $slug === 'id') {
                 continue;
             }
 

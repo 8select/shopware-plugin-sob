@@ -25,12 +25,19 @@ class ProductImages
     }
 
     /**
-     * @param  int $articleId
-     * @param  string $ordernumber
+     * @param int $articleId
+     * @param string $ordernumber
+     * @param boolean $asArray
      * @return string
      */
-    public function getImageUrls($articleId, $ordernumber)
+    public function getImageUrls($articleId, $ordernumber, $asArray = false)
     {
-        return $this->export->sGetArticleImageLinks($articleId, $ordernumber, 'original', '|');
+        $imageUrls = $this->export->sGetArticleImageLinks($articleId, $ordernumber, 'original', '|');
+
+        if ($asArray) {
+            return explode('|', $imageUrls);
+        }
+
+        return $imageUrls;
     }
 }
