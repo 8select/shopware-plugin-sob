@@ -73,15 +73,22 @@ class RawExportMapper
             'id' => $product['id'],
             'parentId' => $product['parentId'],
             'sku' => $product['sku'],
-            'url' => $this->urlHelper->getUrl($product['articleID'], $product['sku'], $product['s_articles.name']),
-            'images' => $this->imageHelper->getImageUrls($product['articleID'], $product['sku'], true),
         ];
         foreach ($product as $slug => $detailValue) {
             if ($slug === 'articleID' || $slug === 'sku' || $slug === 'id' || $slug === 'parentId') {
                 continue;
             }
-
             if (is_null($detailValue) || $detailValue === '') {
+                continue;
+            }
+
+            if ($slug === 'url') {
+                $mapped['url'] = $this->urlHelper->getUrl($product['articleID'], $product['sku'], $product['s_articles.name']);
+                continue;
+            }
+
+            if ($slug === 'images') {
+                $mapped['images'] = $this->imageHelper->getImageUrls($product['articleID'], $product['sku'], true);
                 continue;
             }
 

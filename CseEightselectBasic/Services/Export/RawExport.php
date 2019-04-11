@@ -5,6 +5,7 @@ namespace CseEightselectBasic\Services\Export;
 use CseEightselectBasic\Services\Dependencies\Provider;
 use CseEightselectBasic\Services\Export\Attributes;
 use CseEightselectBasic\Services\Export\ExportInterface;
+use CseEightselectBasic\Services\Export\Helper\Fields;
 use CseEightselectBasic\Services\Export\RawExportMapper;
 use Doctrine\DBAL\Connection;
 
@@ -32,21 +33,29 @@ class RawExport implements ExportInterface
     private $mapper;
 
     /**
+     * @var Fields
+     */
+    private $fields;
+
+    /**
      * @param Provider $container
      * @param Connection $connection
      * @param Attributes $attributes
      * @param RawExportMapper $mapper
+     * @param Fields $mapper
      */
     public function __construct(
         Provider $provider,
         Connection $connection,
         Attributes $attributes,
-        RawExportMapper $mapper
+        RawExportMapper $mapper,
+        Fields $fields
     ) {
         $this->provider = $provider;
         $this->connection = $connection;
         $this->attributes = $attributes;
         $this->mapper = $mapper;
+        $this->fields = $fields;
     }
 
     /**
@@ -83,17 +92,35 @@ class RawExport implements ExportInterface
      * @param int $limit
      * @param int $offset
      * @param bool $isDeltaExport = true
+     * @param array $fields = null
      * @return array
      */
-    public function getProducts($limit, $offset, $isDeltaExport = true)
+    public function getProducts($limit, $offset, $isDeltaExport = true, $fields = null)
     {
         $articleIds = $this->getArticleIds($limit, $offset);
 
-        $rootData = $this->getRootData($articleIds);
-        $configuratorGroups = $this->getConfiguratorGroups($articleIds);
-        $filterOptions = $this->getFilterOptions($articleIds);
-        $categories = $this->getCategories($articleIds);
-        $attributes = $this->getAttributes($articleIds);
+        $rootData = $this->getRootData($articleIds, $fields);
+
+        if (!is_null($fields) && $this->fields->onlyContainsFieldsOfType($fields, Fields::FIELD_TYPES_ROOT_FIELDS)) {
+            return $rootData;
+        }
+
+        $configuratorGroups = [];
+        if (is_null($fields) || $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_CONFIGURATOR_GROUPS_FIELDS)) {
+            $configuratorGroups = $this->getConfiguratorGroups($articleIds);
+        }
+        $filterOptions = [];
+        if (is_null($fields) || $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_FILTER_OPTIONS_FIELDS)) {
+            $filterOptions = $this->getFilterOptions($articleIds);
+        }
+        $categories = [];
+        if (is_null($fields) || $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_CATEGORIES_FIELDS)) {
+            $categories = $this->getCategories($articleIds);
+        }
+        $attributes = [];
+        if (is_null($fields) || $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_ATTRIBUTES_FIELDS)) {
+            $attributes = $this->getAttributes($articleIds);
+        }
 
         $products = [];
         foreach ($rootData as $product) {
@@ -146,59 +173,76 @@ class RawExport implements ExportInterface
 
     /**
      * @param array $articleIds
+     * @param array $fields = null
      * @return array
      */
-    private function getRootData($articleIds)
+    private function getRootData($articleIds, $fields = null)
     {
-        $sql = "SELECT
-                s_articles_details.id as `id`,
-                parentArticle.id as `parentId`,
-                s_articles_details.articleID as `articleID`,
-                s_articles_details.ordernumber as `sku`,
-                s_articles_details.ordernumber as `s_articles_details.ordernumber`,
-                parentArticle.ordernumber as `parentArticle.ordernumber`,
-                s_articles_details.suppliernumber as `s_articles_details.suppliernumber`,
-                s_articles.name as `s_articles.name`,
-                s_articles_supplier.name as `s_articles_supplier.name`,
-                s_articles_details.additionaltext as `s_articles_details.additionaltext`,
-                s_articles_details.weight as `s_articles_details.weight`,
-                s_articles_details.width as `s_articles_details.width`,
-                s_articles_details.height as `s_articles_details.height`,
-                s_articles_details.length as `s_articles_details.length`,
-                s_articles_details.ean as `s_articles_details.ean`,
-                s_core_units.unit as `s_core_units.unit`,
-                s_articles_details.purchaseunit as `s_articles_details.purchaseunit`,
-                s_articles_details.referenceunit as `s_articles_details.referenceunit`,
-                s_articles_details.packunit as `s_articles_details.packunit`,
-                s_articles_details.releasedate as `s_articles_details.releasedate`,
-                s_articles_details.shippingfree as `s_articles_details.shippingfree`,
-                s_articles_details.shippingtime as `s_articles_details.shippingtime`,
-                s_articles.active as `s_articles.active`,
-                s_articles_details.active as `s_articles_details.active`,
-                s_articles.laststock as `s_articles.laststock`,
-                s_articles_details.instock as `s_articles_details.instock`,
-                CAST(
-                    s_articles_prices.price * (100 + s_core_tax.tax) AS DECIMAL(10,0)
-                )
-                as `s_articles_prices.price`,
-                CAST(
-                    IF(
-                        s_articles_prices.pseudoprice = 0,
-                        s_articles_prices.price,
-                        s_articles_prices.pseudoprice
-                    ) * (100 + s_core_tax.tax) AS DECIMAL(10,0)
-                ) as `s_articles_prices.pseudoprice`,
-                IF (
-                    s_articles.active &&
-                    s_articles_details.active &&
-                    (!s_articles.laststock || s_articles_details.instock > 0),
-                    1,
-                    0
-                ) as `s_articles_details.isInStock`,
-                s_articles.metaTitle as `s_articles.metaTitle`,
-                s_articles.keywords as `s_articles.keywords`,
-                s_articles.description as `s_articles.description`,
-                s_articles.description_long as `s_articles.description_long`
+        $basicSelect = [
+            's_articles_details.id as `id`',
+            'parentArticle.id as `parentId`',
+            's_articles_details.articleID as `articleID`',
+            's_articles_details.ordernumber as `sku`',
+        ];
+
+        $additionalSelect = [
+            'url' => '"url" as `url`',
+            'images' => '"images" as `images`',
+            's_articles_details.ordernumber' => 's_articles_details.ordernumber as `s_articles_details.ordernumber`',
+            'parentArticle.ordernumber' => 'parentArticle.ordernumber as `parentArticle.ordernumber`',
+            's_articles_details.suppliernumber' => 's_articles_details.suppliernumber as `s_articles_details.suppliernumber`',
+            's_articles.name' => 's_articles.name as `s_articles.name`',
+            's_articles_supplier.name' => 's_articles_supplier.name as `s_articles_supplier.name`',
+            's_articles_details.additionaltext' => 's_articles_details.additionaltext as `s_articles_details.additionaltext`',
+            's_articles_details.weight' => 's_articles_details.weight as `s_articles_details.weight`',
+            's_articles_details.width' => 's_articles_details.width as `s_articles_details.width`',
+            's_articles_details.height' => 's_articles_details.height as `s_articles_details.height`',
+            's_articles_details.length' => 's_articles_details.length as `s_articles_details.length`',
+            's_articles_details.ean' => 's_articles_details.ean as `s_articles_details.ean`',
+            's_core_units.unit' => 's_core_units.unit as `s_core_units.unit`',
+            's_articles_details.purchaseunit' => 's_articles_details.purchaseunit as `s_articles_details.purchaseunit`',
+            's_articles_details.referenceunit' => 's_articles_details.referenceunit as `s_articles_details.referenceunit`',
+            's_articles_details.packunit' => 's_articles_details.packunit as `s_articles_details.packunit`',
+            's_articles_details.releasedate' => 's_articles_details.releasedate as `s_articles_details.releasedate`',
+            's_articles_details.shippingfree' => 's_articles_details.shippingfree as `s_articles_details.shippingfree`',
+            's_articles_details.shippingtime' => 's_articles_details.shippingtime as `s_articles_details.shippingtime`',
+            's_articles.active' => 's_articles.active as `s_articles.active`',
+            's_articles_details.active' => 's_articles_details.active as `s_articles_details.active`',
+            's_articles.laststock' => 's_articles.laststock as `s_articles.laststock`',
+            's_articles_details.instock' => 's_articles_details.instock as `s_articles_details.instock`',
+
+            's_articles_prices.price' => 'CAST(
+ s_articles_prices.price * (100 + s_core_tax.tax) AS DECIMAL(10,0)
+) as `s_articles_prices.price`',
+
+            's_articles_prices.pseudoprice' => 'CAST(
+ IF(
+ s_articles_prices.pseudoprice = 0,
+ s_articles_prices.price,
+ s_articles_prices.pseudoprice
+ ) * (100 + s_core_tax.tax) AS DECIMAL(10,0) ) as `s_articles_prices.pseudoprice`',
+
+            's_articles_details.isInStock' => 'IF (
+ s_articles.active &&
+ s_articles_details.active &&
+ (!s_articles.laststock || s_articles_details.instock > 0),
+ 1,
+ 0 ) as `s_articles_details.isInStock`',
+            's_articles.metaTitle' => 's_articles.metaTitle as `s_articles.metaTitle`',
+            's_articles.keywords' => 's_articles.keywords as `s_articles.keywords`',
+            's_articles.description' => 's_articles.description as `s_articles.description`',
+            's_articles.description_long' => 's_articles.description_long as `s_articles.description_long`',
+        ];
+
+        if (is_null($fields)) {
+            $filteredSelect = $additionalSelect;
+        } else {
+            $filteredSelect = array_intersect_key($additionalSelect, array_flip($fields));
+        }
+        $select = array_merge($basicSelect, $filteredSelect);
+
+        $sqlTemplate = "SELECT
+                %s
             FROM
                 s_articles_details
             INNER JOIN
@@ -219,6 +263,7 @@ class RawExport implements ExportInterface
                 s_articles_details.id IN (?);
         ";
 
+        $sql = sprintf($sqlTemplate, implode(',', $select));
         $articles = $this->connection->fetchAll(
             $sql,
             array($articleIds),

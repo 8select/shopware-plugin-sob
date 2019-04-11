@@ -51,6 +51,8 @@
             <argument type="service" id="service_container"/>
             <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
         </service>
+        <service id="cse_eightselect_basic.export.helper.fields" class="CseEightselectBasic\Services\Export\Helper\Fields">
+        </service>
         <service id="cse_eightselect_basic.export.helper.mapper" class="CseEightselectBasic\Services\Export\Helper\Mapper">
             <argument type="service" id="cse_eightselect_basic.export.helper.product_url"/>
             <argument type="service" id="cse_eightselect_basic.export.helper.product_images"/>
@@ -67,6 +69,7 @@
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="cse_eightselect_basic.export.attributes"/>
             <argument type="service" id="cse_eightselect_basic.export.raw_export_mapper"/>
+            <argument type="service" id="cse_eightselect_basic.export.helper.fields"/>
         </service>
 
         <service id="cse_eightselect_basic.export.raw_export_mapper" class="CseEightselectBasic\Services\Export\RawExportMapper">
