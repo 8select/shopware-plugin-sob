@@ -49,10 +49,12 @@ class RawExportMapper
             if ($slug === 'articleID') {
                 continue;
             }
-            if ($slug === 'sku') {
+
+            if ($slug === 'sku' || $slug === 'id') {
                 $mapped[$slug] = $detailValue;
                 continue;
             }
+
             $mapped[$slug] = [
                 'label' => $this->getLabel($slug),
                 'value' => $detailValue,

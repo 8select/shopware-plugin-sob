@@ -140,6 +140,7 @@ class RawExport implements ExportInterface
     private function getRootData($articleIds)
     {
         $sql = "SELECT
+                s_articles_details.id as `id`,
                 s_articles_details.ordernumber as `sku`,
                 s_articles_details.ordernumber as `s_articles_details.ordernumber`,
                 parentArticle.ordernumber as `parentArticle.ordernumber`,
