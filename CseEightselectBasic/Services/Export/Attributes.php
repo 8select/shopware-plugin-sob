@@ -55,6 +55,7 @@ class Attributes
             ['name' => 's_articles_details.length', 'label' => 'Länge'],
             ['name' => 's_articles_details.ean', 'label' => 'EAN'],
             ['name' => 's_core_units.unit', 'label' => 'Maßeinheit'],
+            ['name' => 's_categories', 'label' => 'Kategorie'],
         ];
     }
 
