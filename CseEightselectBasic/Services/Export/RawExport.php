@@ -152,6 +152,7 @@ class RawExport implements ExportInterface
     {
         $sql = "SELECT
                 s_articles_details.id as `id`,
+                parentArticle.id as `parentId`,
                 s_articles_details.articleID as `articleID`,
                 s_articles_details.ordernumber as `sku`,
                 s_articles_details.ordernumber as `s_articles_details.ordernumber`,

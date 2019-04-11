@@ -71,12 +71,13 @@ class RawExportMapper
     {
         $mapped = [
             'id' => $product['id'],
+            'parentId' => $product['parentId'],
             'sku' => $product['sku'],
             'url' => $this->urlHelper->getUrl($product['articleID'], $product['sku'], $product['s_articles.name']),
             'images' => $this->imageHelper->getImageUrls($product['articleID'], $product['sku'], true),
         ];
         foreach ($product as $slug => $detailValue) {
-            if ($slug === 'articleID' || $slug === 'sku' || $slug === 'id') {
+            if ($slug === 'articleID' || $slug === 'sku' || $slug === 'id' || $slug === 'parentId') {
                 continue;
             }
 
