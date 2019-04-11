@@ -398,6 +398,10 @@ class RawExport implements ExportInterface
     {
         $detailsPerArticle = [];
         foreach ($details as $detail) {
+            if (is_null($detail['detailValue']) || $detail['detailValue'] === '') {
+                continue;
+            }
+
             $detailsOfArticle = [];
             if (array_key_exists($detail['sku'], $detailsPerArticle)) {
                 $detailsOfArticle = $detailsPerArticle[$detail['sku']];
@@ -445,7 +449,6 @@ class RawExport implements ExportInterface
             $attributeColumnsArray[] = $name . ' as "' . $name . '"';
             $attributeMetaByName[$name] = $attributeCentiMeta;
         }
-        dump($attributeMeta);
 
         $attributeColumns = implode(', ', $attributeColumnsArray);
 
@@ -468,8 +471,6 @@ class RawExport implements ExportInterface
             array(Connection::PARAM_INT_ARRAY)
         );
 
-        dump($attributes);
-
         $attributesPerArticle = [];
         foreach ($attributes as $attributesOfArticle) {
             $sku = $attributesOfArticle['sku'];
@@ -489,6 +490,10 @@ class RawExport implements ExportInterface
         $attributes = [];
         foreach ($attributesOfArticle as $name => $value) {
             if (array_key_exists($name, $attributeMetaByName) === false) {
+                continue;
+            }
+
+            if (is_null($value) || $value === '') {
                 continue;
             }
 

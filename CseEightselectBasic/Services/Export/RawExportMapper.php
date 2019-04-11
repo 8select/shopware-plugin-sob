@@ -81,6 +81,10 @@ class RawExportMapper
                 continue;
             }
 
+            if (is_null($detailValue) || $detailValue === '') {
+                continue;
+            }
+
             $mapped[$slug] = [
                 'label' => $this->getLabel($slug),
                 'value' => $detailValue,
