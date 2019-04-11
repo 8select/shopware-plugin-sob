@@ -60,11 +60,9 @@ class Attributes
     }
 
     /**
-     * @param int $limit
-     * @param int $offset
      * @return array
      */
-    private function getFilterOptions($limit, $offset)
+    private function getFilterOptions()
     {
         $sql = "
             SELECT
@@ -86,11 +84,9 @@ class Attributes
     }
 
     /**
-     * @param int $limit
-     * @param int $offset
      * @return array
      */
-    private function getAttributeConfiguration($limit, $offset)
+    public function getAttributeConfiguration()
     {
         $sql = "
             SELECT

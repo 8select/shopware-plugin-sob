@@ -65,6 +65,7 @@
         <service id="cse_eightselect_basic.export.raw_export" class="CseEightselectBasic\Services\Export\RawExport">
             <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
             <argument type="service" id="dbal_connection"/>
+            <argument type="service" id="cse_eightselect_basic.export.attributes"/>
         </service>
 
         <service id="cse_eightselect_basic.export.variant_dimensions" class="CseEightselectBasic\Services\Export\VariantDimensions">

@@ -3,6 +3,7 @@
 namespace CseEightselectBasic\Services\Export;
 
 use CseEightselectBasic\Services\Dependencies\Provider;
+use CseEightselectBasic\Services\Export\Attributes;
 use CseEightselectBasic\Services\Export\ExportInterface;
 use CseEightselectBasic\Services\Export\RawExportMapper;
 use Doctrine\DBAL\Connection;
@@ -21,13 +22,50 @@ class RawExport implements ExportInterface
     private $connection;
 
     /**
+     * @var Attributes
+     */
+    private $attributes;
+
+    /**
      * @param Provider $container
      * @param Connection $connection
+     * @param Attributes $attributes
      */
-    public function __construct(Provider $provider, Connection $connection)
+    public function __construct(Provider $provider, Connection $connection, Attributes $attributes)
     {
         $this->provider = $provider;
         $this->connection = $connection;
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * @param bool $isDeltaExport
+     * @return int
+     */
+    public function getTotal($isDeltaExport = true)
+    {
+        $sqlTemplate = "
+            SELECT
+                COUNT(s_articles_details.id)
+            FROM
+                s_articles_details
+            INNER JOIN (
+                SELECT
+                    articleID
+                FROM
+                    s_articles_categories_ro
+                WHERE
+                    categoryID = %s
+                GROUP BY
+                    articleID
+            ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleID;
+        ";
+        $activeShop = $this->provider->getShopWithActiveCSE();
+        $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId());
+
+        $count = $this->connection->fetchColumn($sql);
+
+        return intval($count);
     }
 
     /**
@@ -44,6 +82,7 @@ class RawExport implements ExportInterface
         $configuratorGroups = $this->getConfiguratorGroups($articleIds);
         $filterOptions = $this->getFilterOptions($articleIds);
         $categories = $this->getCategories($articleIds);
+        $attributes = $this->getAttributes($articleIds);
 
         $products = [];
         foreach ($rootData as $product) {
@@ -52,7 +91,8 @@ class RawExport implements ExportInterface
                 $product,
                 $configuratorGroups[$sku] ? $configuratorGroups[$sku] : [],
                 $filterOptions[$sku] ? $filterOptions[$sku] : [],
-                $categories[$sku] ? $categories[$sku] : []
+                $categories[$sku] ? $categories[$sku] : [],
+                $attributes[$sku] ? $attributes[$sku] : []
             );
         }
 
@@ -377,29 +417,73 @@ class RawExport implements ExportInterface
         return $detailsPerArticle;
     }
 
-    public function getTotal($isDeltaExport = true)
+    /**
+     * @param array $articleIds
+     * @return array
+     */
+    private function getAttributes($articleIds)
     {
-        $sqlTemplate = "
-            SELECT
-                COUNT(s_articles_details.id)
-            FROM
-                s_articles_details
-            INNER JOIN (
-                SELECT
-                    articleID
-                FROM
-                    s_articles_categories_ro
-                WHERE
-                    categoryID = %s
-                GROUP BY
-                    articleID
-            ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleID;
+        $attributeMeta = $this->attributes->getAttributeConfiguration();
+        $attributeColumnsArray = [];
+        $attributeMetaByName = [];
+        foreach ($attributeMeta as $attributeCentiMeta) {
+            $name = $attributeCentiMeta['name'];
+            $attributeColumnsArray[] = $name . ' as "' . $name . '"';
+            $attributeMetaByName[$name] = $attributeCentiMeta;
+        }
+        dump($attributeMeta);
+
+        $attributeColumns = implode(', ', $attributeColumnsArray);
+
+        $sqlTemplate = "SELECT
+            s_articles_details.ordernumber as `sku`,
+            %s
+        FROM
+            s_articles_details
+        INNER JOIN
+            s_articles_attributes on s_articles_attributes.articledetailsID = s_articles_details.id
+        WHERE
+            s_articles_details.id IN (?)
         ";
-        $activeShop = $this->provider->getShopWithActiveCSE();
-        $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId());
 
-        $count = $this->connection->fetchColumn($sql);
+        $sql = sprintf($sqlTemplate, $attributeColumns);
 
-        return intval($count);
+        $attributes = $this->connection->fetchAll(
+            $sql,
+            array($articleIds),
+            array(Connection::PARAM_INT_ARRAY)
+        );
+
+        dump($attributes);
+
+        $attributesPerArticle = [];
+        foreach ($attributes as $attributesOfArticle) {
+            $sku = $attributesOfArticle['sku'];
+            $attributesPerArticle[$sku] = $this->transformAttribute($attributesOfArticle, $attributeMetaByName);
+        }
+
+        return $attributesPerArticle;
+    }
+
+    /**
+     * @param array $attributesOfArticle
+     * @param array $attributeMetaByName
+     * @return array
+     */
+    private function transformAttribute($attributesOfArticle, $attributeMetaByName)
+    {
+        $attributes = [];
+        foreach ($attributesOfArticle as $name => $value) {
+            if (array_key_exists($name, $attributeMetaByName) === false) {
+                continue;
+            }
+
+            $attributes[$name] = [
+                'label' => $attributeMetaByName[$name]['label'],
+                'value' => $value,
+            ];
+        }
+
+        return $attributes;
     }
 }
