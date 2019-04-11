@@ -1,12 +1,12 @@
 #!/usr/bin/env bash -e
 . $(dirname "$0")/lib/common.sh
 
-if [ "$#" -ne 3 ]; then
+if [ "$#" -ne 4 ]; then
     echo "Illegal number of parameters"
     echo "Usage:"
-    echo "bin/copy2dev.sh <version> <profile> <container-id>"
+    echo "bin/copy2dev.sh <version> <profile> <stage> <container-id>"
     echo "Example:"
-    echo "bin/copy2dev.sh 1.11.0-staging staging b7f42c7b1b73"
+    echo "bin/copy2dev.sh 1.11.0-staging staging prod b7f42c7b1b73"
     exit 1
 fi
 
@@ -18,7 +18,7 @@ fi
 
 . $(dirname "$0")/lib/build.sh
 
-CONTAINER=${3}
+CONTAINER=${4}
 
 PLUGINDIR="/shopware/custom/plugins"
 SHOPWARE_CLI_BIN="bin/console"
