@@ -196,7 +196,9 @@ class RawExport implements ExportInterface
                     0
                 ) as `s_articles_details.isInStock`,
                 s_articles.metaTitle as `s_articles.metaTitle`,
-                s_articles.keywords as `s_articles.keywords`
+                s_articles.keywords as `s_articles.keywords`,
+                s_articles.description as `s_articles.description`,
+                s_articles.description_long as `s_articles.description_long`
             FROM
                 s_articles_details
             INNER JOIN
