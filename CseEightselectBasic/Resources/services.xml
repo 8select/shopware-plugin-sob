@@ -67,6 +67,15 @@
             <argument type="service" id="dbal_connection"/>
         </service>
 
+        <service id="cse_eightselect_basic.export.variant_dimensions" class="CseEightselectBasic\Services\Export\VariantDimensions">
+            <argument type="service" id="dbal_connection"/>
+        </service>
+
+        <service id="cse_eightselect_basic.export.attributes" class="CseEightselectBasic\Services\Export\Attributes">
+            <argument type="service" id="dbal_connection"/>
+            <argument type="service" id="cse_eightselect_basic.export.variant_dimensions"/>
+        </service>
+
         <service id="cse_eightselect_basic.request.auth" class="CseEightselectBasic\Services\Request\Auth">
             <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
         </service>
