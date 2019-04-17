@@ -34,6 +34,10 @@ class RawExportMapper
      * @var array
      */
     private $map = [
+        's_articles_details.id' => 'id',
+        's_articles_details.articleID' => 'parentId',
+        'url' => 'URL',
+        'images' => 'Bilder',
         's_articles_details.ordernumber' => 'Artikelnummer',
         's_articles_details.suppliernumber' => 'Herstellernummer',
         's_articles_details.additionaltext' => 'Zusätzlicher Text',
@@ -69,27 +73,26 @@ class RawExportMapper
      */
     public function map($product)
     {
-        $mapped = [
-            'id' => $product['id'],
-            'parentId' => $product['parentId'],
-            'sku' => $product['sku'],
-        ];
+        $mapped = [];
         foreach ($product as $slug => $detailValue) {
-            if ($slug === 'articleID' || $slug === 'sku' || $slug === 'id' || $slug === 'parentId') {
-                continue;
-            }
             if (is_null($detailValue) || $detailValue === '') {
                 continue;
             }
 
             if ($slug === 'url') {
-                $mapped['url'] = $this->urlHelper->getUrl($product['articleID'], $product['sku'], $product['s_articles.name']);
-                continue;
+                $detailValue = $this->urlHelper->getUrl(
+                    $product['s_articles_details.articleID'],
+                    $product['s_articles_details.ordernumber'],
+                    $product['s_articles.name']
+                );
             }
 
             if ($slug === 'images') {
-                $mapped['images'] = $this->imageHelper->getImageUrls($product['articleID'], $product['sku'], true);
-                continue;
+                $detailValue = $this->imageHelper->getImageUrls(
+                    $product['s_articles_details.articleID'],
+                    $product['s_articles_details.ordernumber'],
+                    true
+                );
             }
 
             $mapped[$slug] = [

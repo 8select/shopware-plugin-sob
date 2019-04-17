@@ -336,7 +336,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     {
         $skus = [];
         foreach ($products as $product) {
-            $skus[] = $product['sku'];
+            $skus[] = $product['s_articles_details.ordernumber']['value'];
         }
 
         return $skus;

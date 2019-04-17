@@ -106,25 +106,36 @@ class RawExport implements ExportInterface
         }
 
         $configuratorGroups = [];
-        if (is_null($fields) || $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_CONFIGURATOR_GROUPS_FIELDS)) {
+        if (is_null($fields) ||
+            $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_CONFIGURATOR_GROUPS_FIELDS)
+        ) {
             $configuratorGroups = $this->getConfiguratorGroups($articleIds);
         }
+
         $filterOptions = [];
-        if (is_null($fields) || $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_FILTER_OPTIONS_FIELDS)) {
+        if (is_null($fields) ||
+            $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_FILTER_OPTIONS_FIELDS)
+        ) {
             $filterOptions = $this->getFilterOptions($articleIds);
         }
+
         $categories = [];
-        if (is_null($fields) || $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_CATEGORIES_FIELDS)) {
+        if (is_null($fields) ||
+            $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_CATEGORIES_FIELDS)
+        ) {
             $categories = $this->getCategories($articleIds);
         }
+
         $attributes = [];
-        if (is_null($fields) || $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_ATTRIBUTES_FIELDS)) {
+        if (is_null($fields) ||
+            $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_ATTRIBUTES_FIELDS)
+        ) {
             $attributes = $this->getAttributes($articleIds);
         }
 
         $products = [];
         foreach ($rootData as $product) {
-            $sku = $product['sku'];
+            $sku = $product['s_articles_details.ordernumber']['value'];
             $products[] = array_merge(
                 $product,
                 $configuratorGroups[$sku] ? $configuratorGroups[$sku] : [],
@@ -179,17 +190,15 @@ class RawExport implements ExportInterface
     private function getRootData($articleIds, $fields = null)
     {
         $basicSelect = [
-            's_articles_details.id as `id`',
-            'parentArticle.id as `parentId`',
-            's_articles_details.articleID as `articleID`',
-            's_articles_details.ordernumber as `sku`',
+            's_articles_details.id as `s_articles_details.id`',
+            's_articles_details.articleID as `s_articles_details.articleID`',
+            's_articles_details.ordernumber as `s_articles_details.ordernumber`',
         ];
 
         $additionalSelect = [
             'url' => '"url" as `url`',
             'images' => '"images" as `images`',
             's_articles_details.ordernumber' => 's_articles_details.ordernumber as `s_articles_details.ordernumber`',
-            'parentArticle.ordernumber' => 'parentArticle.ordernumber as `parentArticle.ordernumber`',
             's_articles_details.suppliernumber' => 's_articles_details.suppliernumber as `s_articles_details.suppliernumber`',
             's_articles.name' => 's_articles.name as `s_articles.name`',
             's_articles_supplier.name' => 's_articles_supplier.name as `s_articles_supplier.name`',
@@ -234,7 +243,7 @@ class RawExport implements ExportInterface
             's_articles.description_long' => 's_articles.description_long as `s_articles.description_long`',
         ];
 
-        if (is_null($fields)) {
+        if (is_null($fields) || !is_array($fields)) {
             $filteredSelect = $additionalSelect;
         } else {
             $filteredSelect = array_intersect_key($additionalSelect, array_flip($fields));
@@ -245,8 +254,6 @@ class RawExport implements ExportInterface
                 %s
             FROM
                 s_articles_details
-            INNER JOIN
-                s_articles_details AS parentArticle ON parentArticle.articleID = s_articles_details.articleID AND parentArticle.kind = 1
             INNER JOIN
                 s_articles ON s_articles.id = s_articles_details.articleID
             LEFT JOIN s_articles_prices
@@ -280,7 +287,7 @@ class RawExport implements ExportInterface
     private function getConfiguratorGroups($articleIds)
     {
         $sql = "SELECT
-                s_articles_details.ordernumber as `sku`,
+                s_articles_details.ordernumber as `s_articles_details.ordernumber`,
                 s_article_configurator_groups.id as detailSlugSuffix,
                 s_article_configurator_groups.name as detailLabel,
                 s_article_configurator_options.name as detailValue
@@ -312,7 +319,7 @@ class RawExport implements ExportInterface
     private function getFilterOptions($articleIds)
     {
         $sql = "SELECT
-                s_articles_details.ordernumber as `sku`,
+                s_articles_details.ordernumber as `s_articles_details.ordernumber`,
                 s_filter_options.id as `detailSlugSuffix`,
                 s_filter_options.name as `detailLabel`,
                 s_filter_values.value as `detailValue`
@@ -377,7 +384,7 @@ class RawExport implements ExportInterface
     private function getCategoryPathsListsBySku($articleIds)
     {
         $sql = "SELECT
-                s_articles_details.ordernumber as `sku`,
+                s_articles_details.ordernumber as `s_articles_details.ordernumber`,
                 CONCAT(s_articles_categories_ro.categoryID, deepestCategory.path) as `path`
             FROM
                 s_articles_details
@@ -399,11 +406,11 @@ class RawExport implements ExportInterface
         foreach ($categoryPaths as $categoryPath) {
             $categoryPathList = explode('|', trim($categoryPath['path'], '|'));
             $categoryPathLists = [];
-            if (array_key_exists($categoryPath['sku'], $categoryPathsListsBySku)) {
-                $categoryPathLists = $categoryPathsListsBySku[$categoryPath['sku']];
+            if (array_key_exists($categoryPath['s_articles_details.ordernumber'], $categoryPathsListsBySku)) {
+                $categoryPathLists = $categoryPathsListsBySku[$categoryPath['s_articles_details.ordernumber']];
             }
             $categoryPathLists[] = array_reverse($categoryPathList);
-            $categoryPathsListsBySku[$categoryPath['sku']] = $categoryPathLists;
+            $categoryPathsListsBySku[$categoryPath['s_articles_details.ordernumber']] = $categoryPathLists;
         }
 
         return $categoryPathsListsBySku;
@@ -448,8 +455,8 @@ class RawExport implements ExportInterface
             }
 
             $detailsOfArticle = [];
-            if (array_key_exists($detail['sku'], $detailsPerArticle)) {
-                $detailsOfArticle = $detailsPerArticle[$detail['sku']];
+            if (array_key_exists($detail['s_articles_details.ordernumber'], $detailsPerArticle)) {
+                $detailsOfArticle = $detailsPerArticle[$detail['s_articles_details.ordernumber']];
             }
 
             $detailOfArticle = [
@@ -474,7 +481,7 @@ class RawExport implements ExportInterface
             }
 
             $detailsOfArticle[$detailSlug] = $detailOfArticle;
-            $detailsPerArticle[$detail['sku']] = $detailsOfArticle;
+            $detailsPerArticle[$detail['s_articles_details.ordernumber']] = $detailsOfArticle;
         }
 
         return $detailsPerArticle;
@@ -498,7 +505,7 @@ class RawExport implements ExportInterface
         $attributeColumns = implode(', ', $attributeColumnsArray);
 
         $sqlTemplate = "SELECT
-            s_articles_details.ordernumber as `sku`,
+            s_articles_details.ordernumber as `s_articles_details.ordernumber`,
             %s
         FROM
             s_articles_details
@@ -518,7 +525,7 @@ class RawExport implements ExportInterface
 
         $attributesPerArticle = [];
         foreach ($attributes as $attributesOfArticle) {
-            $sku = $attributesOfArticle['sku'];
+            $sku = $attributesOfArticle['s_articles_details.ordernumber'];
             $attributesPerArticle[$sku] = $this->transformAttribute($attributesOfArticle, $attributeMetaByName);
         }
 
