@@ -43,28 +43,36 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         $this->Front()->Plugins()->ViewRenderer()->setNoRender();
         $this->Response()->setHeader('Content-Type', 'application/json');
 
-        $configValidator = $this->container->get('cse_eightselect_basic.config.validator');
-        $result = $configValidator->validateConfig();
-        if ($result['isValid'] === false) {
-            $this->Response()->setHttpResponseCode(500);
+        try {
+            $configValidator = $this->container->get('cse_eightselect_basic.config.validator');
+            $result = $configValidator->validateConfig();
+            if ($result['isValid'] === false) {
+                $this->Response()->setHttpResponseCode(500);
+                $body = json_encode(
+                    [
+                        'error' => 'CONFIGURATION_ERROR',
+                        'message' => $result['violations'],
+                    ]
+                );
+                $this->Response()->setBody($body);
+
+                return;
+            }
+
+            $this->Response()->setHttpResponseCode(200);
             $body = json_encode(
                 [
-                    'error' => 'CONFIGURATION_ERROR',
-                    'message' => $result['violations'],
+                    'message' => 'CONFIGURATION_VALID',
                 ]
             );
+            $this->Response()->setBody($body);
+        } catch (\Exception $exception) {
+            $this->Response()->setHttpResponseCode(500);
+            $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
             $this->Response()->setBody($body);
 
             return;
         }
-
-        $this->Response()->setHttpResponseCode(200);
-        $body = json_encode(
-            [
-                'message' => 'CONFIGURATION_VALID',
-            ]
-        );
-        $this->Response()->setBody($body);
     }
 
     /**
