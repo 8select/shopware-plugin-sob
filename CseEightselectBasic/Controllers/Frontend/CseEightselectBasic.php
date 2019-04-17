@@ -1,8 +1,6 @@
 <?php
 
-use CseEightselectBasic\Components\ArticleExport;
 use CseEightselectBasic\Components\Export;
-use CseEightselectBasic\Components\PropertyExport;
 use CseEightselectBasic\Services\Request\AuthException;
 use CseEightselectBasic\Services\Request\NotAuthorizedException;
 use Shopware\Components\CSRFWhitelistAware;
@@ -348,12 +346,6 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     private function createExport($format)
     {
         switch ($format) {
-            case 'etl':
-                return new ArticleExport();
-                break;
-            case 'property':
-                return new PropertyExport();
-                break;
             case 'status':
                 return $this->container->get('cse_eightselect_basic.export.status_export');
                 break;
@@ -384,6 +376,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         return [
             'connect',
             'products',
+            'attributes',
+            'variantDimensions',
             'validate',
         ];
     }
