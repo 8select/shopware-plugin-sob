@@ -3,7 +3,9 @@
 namespace CseEightselectBasic\Services\Export;
 
 use CseEightselectBasic\Services\Dependencies\Provider;
+use CseEightselectBasic\Services\Export\Attributes;
 use CseEightselectBasic\Services\Export\ExportInterface;
+use CseEightselectBasic\Services\Export\Helper\Fields;
 use CseEightselectBasic\Services\Export\RawExportMapper;
 use Doctrine\DBAL\Connection;
 
@@ -21,38 +23,125 @@ class RawExport implements ExportInterface
     private $connection;
 
     /**
+     * @var Attributes
+     */
+    private $attributes;
+
+    /**
+     * @var RawExportMapper
+     */
+    private $mapper;
+
+    /**
+     * @var Fields
+     */
+    private $fields;
+
+    /**
      * @param Provider $container
      * @param Connection $connection
+     * @param Attributes $attributes
+     * @param RawExportMapper $mapper
+     * @param Fields $mapper
      */
-    public function __construct(Provider $provider, Connection $connection)
-    {
+    public function __construct(
+        Provider $provider,
+        Connection $connection,
+        Attributes $attributes,
+        RawExportMapper $mapper,
+        Fields $fields
+    ) {
         $this->provider = $provider;
         $this->connection = $connection;
+        $this->attributes = $attributes;
+        $this->mapper = $mapper;
+        $this->fields = $fields;
+    }
+
+    /**
+     * @param bool $isDeltaExport
+     * @return int
+     */
+    public function getTotal($isDeltaExport = true)
+    {
+        $sqlTemplate = "
+            SELECT
+                COUNT(s_articles_details.id)
+            FROM
+                s_articles_details
+            INNER JOIN (
+                SELECT
+                    articleID
+                FROM
+                    s_articles_categories_ro
+                WHERE
+                    categoryID = %s
+                GROUP BY
+                    articleID
+            ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleID;
+        ";
+        $activeShop = $this->provider->getShopWithActiveCSE();
+        $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId());
+
+        $count = $this->connection->fetchColumn($sql);
+
+        return intval($count);
     }
 
     /**
      * @param int $limit
      * @param int $offset
      * @param bool $isDeltaExport = true
+     * @param array $fields = null
      * @return array
      */
-    public function getProducts($limit, $offset, $isDeltaExport = true)
+    public function getProducts($limit, $offset, $isDeltaExport = true, $fields = null)
     {
         $articleIds = $this->getArticleIds($limit, $offset);
 
-        $rootData = $this->getRootData($articleIds);
-        $configuratorGroups = $this->getConfiguratorGroups($articleIds);
-        $filterOptions = $this->getFilterOptions($articleIds);
-        $categories = $this->getCategories($articleIds);
+        $rootData = $this->getRootData($articleIds, $fields);
+
+        if (!is_null($fields) && $this->fields->onlyContainsFieldsOfType($fields, Fields::FIELD_TYPES_ROOT_FIELDS)) {
+            return $rootData;
+        }
+
+        $configuratorGroups = [];
+        if (is_null($fields) ||
+            $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_CONFIGURATOR_GROUPS_FIELDS)
+        ) {
+            $configuratorGroups = $this->getConfiguratorGroups($articleIds);
+        }
+
+        $filterOptions = [];
+        if (is_null($fields) ||
+            $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_FILTER_OPTIONS_FIELDS)
+        ) {
+            $filterOptions = $this->getFilterOptions($articleIds);
+        }
+
+        $categories = [];
+        if (is_null($fields) ||
+            $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_CATEGORIES_FIELDS)
+        ) {
+            $categories = $this->getCategories($articleIds);
+        }
+
+        $attributes = [];
+        if (is_null($fields) ||
+            $this->fields->containsFieldOfType($fields, Fields::FIELD_TYPES_ATTRIBUTES_FIELDS)
+        ) {
+            $attributes = $this->getAttributes($articleIds);
+        }
 
         $products = [];
         foreach ($rootData as $product) {
-            $sku = $product['sku'];
+            $sku = $product['s_articles_details.ordernumber']['value'];
             $products[] = array_merge(
                 $product,
                 $configuratorGroups[$sku] ? $configuratorGroups[$sku] : [],
                 $filterOptions[$sku] ? $filterOptions[$sku] : [],
-                $categories[$sku] ? $categories[$sku] : []
+                $categories[$sku] ? $categories[$sku] : [],
+                $attributes[$sku] ? $attributes[$sku] : []
             );
         }
 
@@ -95,58 +184,76 @@ class RawExport implements ExportInterface
 
     /**
      * @param array $articleIds
+     * @param array $fields = null
      * @return array
      */
-    private function getRootData($articleIds)
+    private function getRootData($articleIds, $fields = null)
     {
-        $sql = "SELECT
-                s_articles_details.ordernumber as `sku`,
-                s_articles_details.ordernumber as `s_articles_details.ordernumber`,
-                parentArticle.ordernumber as `parentArticle.ordernumber`,
-                s_articles_details.suppliernumber as `s_articles_details.suppliernumber`,
-                s_articles.name as `s_articles.name`,
-                s_articles_supplier.name as `s_articles_supplier.name`,
-                s_articles_details.additionaltext as `s_articles_details.additionaltext`,
-                s_articles_details.weight as `s_articles_details.weight`,
-                s_articles_details.width as `s_articles_details.width`,
-                s_articles_details.height as `s_articles_details.height`,
-                s_articles_details.length as `s_articles_details.length`,
-                s_articles_details.ean as `s_articles_details.ean`,
-                s_core_units.unit as `s_core_units.unit`,
-                s_articles_details.purchaseunit as `s_articles_details.purchaseunit`,
-                s_articles_details.referenceunit as `s_articles_details.referenceunit`,
-                s_articles_details.packunit as `s_articles_details.packunit`,
-                s_articles_details.releasedate as `s_articles_details.releasedate`,
-                s_articles_details.shippingfree as `s_articles_details.shippingfree`,
-                s_articles_details.shippingtime as `s_articles_details.shippingtime`,
-                s_articles.active as `s_articles.active`,
-                s_articles_details.active as `s_articles_details.active`,
-                s_articles.laststock as `s_articles.laststock`,
-                s_articles_details.instock as `s_articles_details.instock`,
-                CAST(
-                    s_articles_prices.price * (100 + s_core_tax.tax) AS DECIMAL(10,0)
-                )
-                as `s_articles_prices.price`,
-                CAST(
-                    IF(
-                        s_articles_prices.pseudoprice = 0,
-                        s_articles_prices.price,
-                        s_articles_prices.pseudoprice
-                    ) * (100 + s_core_tax.tax) AS DECIMAL(10,0)
-                ) as `s_articles_prices.pseudoprice`,
-                IF (
-                    s_articles.active &&
-                    s_articles_details.active &&
-                    (!s_articles.laststock || s_articles_details.instock > 0),
-                    1,
-                    0
-                ) as `s_articles_details.isInStock`,
-                s_articles.metaTitle as `s_articles.metaTitle`,
-                s_articles.keywords as `s_articles.keywords`
+        $basicSelect = [
+            's_articles_details.id as `s_articles_details.id`',
+            's_articles_details.articleID as `s_articles_details.articleID`',
+            's_articles_details.ordernumber as `s_articles_details.ordernumber`',
+        ];
+
+        $additionalSelect = [
+            'url' => '"url" as `url`',
+            'images' => '"images" as `images`',
+            's_articles_details.ordernumber' => 's_articles_details.ordernumber as `s_articles_details.ordernumber`',
+            's_articles_details.suppliernumber' => 's_articles_details.suppliernumber as `s_articles_details.suppliernumber`',
+            's_articles.name' => 's_articles.name as `s_articles.name`',
+            's_articles_supplier.name' => 's_articles_supplier.name as `s_articles_supplier.name`',
+            's_articles_details.additionaltext' => 's_articles_details.additionaltext as `s_articles_details.additionaltext`',
+            's_articles_details.weight' => 's_articles_details.weight as `s_articles_details.weight`',
+            's_articles_details.width' => 's_articles_details.width as `s_articles_details.width`',
+            's_articles_details.height' => 's_articles_details.height as `s_articles_details.height`',
+            's_articles_details.length' => 's_articles_details.length as `s_articles_details.length`',
+            's_articles_details.ean' => 's_articles_details.ean as `s_articles_details.ean`',
+            's_core_units.unit' => 's_core_units.unit as `s_core_units.unit`',
+            's_articles_details.purchaseunit' => 's_articles_details.purchaseunit as `s_articles_details.purchaseunit`',
+            's_articles_details.referenceunit' => 's_articles_details.referenceunit as `s_articles_details.referenceunit`',
+            's_articles_details.packunit' => 's_articles_details.packunit as `s_articles_details.packunit`',
+            's_articles_details.releasedate' => 's_articles_details.releasedate as `s_articles_details.releasedate`',
+            's_articles_details.shippingfree' => 's_articles_details.shippingfree as `s_articles_details.shippingfree`',
+            's_articles_details.shippingtime' => 's_articles_details.shippingtime as `s_articles_details.shippingtime`',
+            's_articles.active' => 's_articles.active as `s_articles.active`',
+            's_articles_details.active' => 's_articles_details.active as `s_articles_details.active`',
+            's_articles.laststock' => 's_articles.laststock as `s_articles.laststock`',
+            's_articles_details.instock' => 's_articles_details.instock as `s_articles_details.instock`',
+
+            's_articles_prices.price' => 'CAST(
+ s_articles_prices.price * (100 + s_core_tax.tax) AS DECIMAL(10,0)
+) as `s_articles_prices.price`',
+
+            's_articles_prices.pseudoprice' => 'CAST(
+ IF(
+ s_articles_prices.pseudoprice = 0,
+ s_articles_prices.price,
+ s_articles_prices.pseudoprice
+ ) * (100 + s_core_tax.tax) AS DECIMAL(10,0) ) as `s_articles_prices.pseudoprice`',
+
+            's_articles_details.isInStock' => 'IF (
+ s_articles.active &&
+ s_articles_details.active &&
+ (!s_articles.laststock || s_articles_details.instock > 0),
+ 1,
+ 0 ) as `s_articles_details.isInStock`',
+            's_articles.metaTitle' => 's_articles.metaTitle as `s_articles.metaTitle`',
+            's_articles.keywords' => 's_articles.keywords as `s_articles.keywords`',
+            's_articles.description' => 's_articles.description as `s_articles.description`',
+            's_articles.description_long' => 's_articles.description_long as `s_articles.description_long`',
+        ];
+
+        if (is_null($fields) || !is_array($fields)) {
+            $filteredSelect = $additionalSelect;
+        } else {
+            $filteredSelect = array_intersect_key($additionalSelect, array_flip($fields));
+        }
+        $select = array_merge($basicSelect, $filteredSelect);
+
+        $sqlTemplate = "SELECT
+                %s
             FROM
                 s_articles_details
-            INNER JOIN
-                s_articles_details AS parentArticle ON parentArticle.articleID = s_articles_details.articleID AND parentArticle.kind = 1
             INNER JOIN
                 s_articles ON s_articles.id = s_articles_details.articleID
             LEFT JOIN s_articles_prices
@@ -163,15 +270,14 @@ class RawExport implements ExportInterface
                 s_articles_details.id IN (?);
         ";
 
+        $sql = sprintf($sqlTemplate, implode(',', $select));
         $articles = $this->connection->fetchAll(
             $sql,
             array($articleIds),
             array(Connection::PARAM_INT_ARRAY)
         );
 
-        $mapper = new RawExportMapper();
-
-        return array_map(array($mapper, 'map'), $articles);
+        return array_map(array($this->mapper, 'map'), $articles);
     }
 
     /**
@@ -181,7 +287,7 @@ class RawExport implements ExportInterface
     private function getConfiguratorGroups($articleIds)
     {
         $sql = "SELECT
-                s_articles_details.ordernumber as `sku`,
+                s_articles_details.ordernumber as `s_articles_details.ordernumber`,
                 s_article_configurator_groups.id as detailSlugSuffix,
                 s_article_configurator_groups.name as detailLabel,
                 s_article_configurator_options.name as detailValue
@@ -213,7 +319,7 @@ class RawExport implements ExportInterface
     private function getFilterOptions($articleIds)
     {
         $sql = "SELECT
-                s_articles_details.ordernumber as `sku`,
+                s_articles_details.ordernumber as `s_articles_details.ordernumber`,
                 s_filter_options.id as `detailSlugSuffix`,
                 s_filter_options.name as `detailLabel`,
                 s_filter_values.value as `detailValue`
@@ -278,7 +384,7 @@ class RawExport implements ExportInterface
     private function getCategoryPathsListsBySku($articleIds)
     {
         $sql = "SELECT
-                s_articles_details.ordernumber as `sku`,
+                s_articles_details.ordernumber as `s_articles_details.ordernumber`,
                 CONCAT(s_articles_categories_ro.categoryID, deepestCategory.path) as `path`
             FROM
                 s_articles_details
@@ -300,11 +406,11 @@ class RawExport implements ExportInterface
         foreach ($categoryPaths as $categoryPath) {
             $categoryPathList = explode('|', trim($categoryPath['path'], '|'));
             $categoryPathLists = [];
-            if (array_key_exists($categoryPath['sku'], $categoryPathsListsBySku)) {
-                $categoryPathLists = $categoryPathsListsBySku[$categoryPath['sku']];
+            if (array_key_exists($categoryPath['s_articles_details.ordernumber'], $categoryPathsListsBySku)) {
+                $categoryPathLists = $categoryPathsListsBySku[$categoryPath['s_articles_details.ordernumber']];
             }
             $categoryPathLists[] = array_reverse($categoryPathList);
-            $categoryPathsListsBySku[$categoryPath['sku']] = $categoryPathLists;
+            $categoryPathsListsBySku[$categoryPath['s_articles_details.ordernumber']] = $categoryPathLists;
         }
 
         return $categoryPathsListsBySku;
@@ -344,9 +450,13 @@ class RawExport implements ExportInterface
     {
         $detailsPerArticle = [];
         foreach ($details as $detail) {
+            if (is_null($detail['detailValue']) || $detail['detailValue'] === '') {
+                continue;
+            }
+
             $detailsOfArticle = [];
-            if (array_key_exists($detail['sku'], $detailsPerArticle)) {
-                $detailsOfArticle = $detailsPerArticle[$detail['sku']];
+            if (array_key_exists($detail['s_articles_details.ordernumber'], $detailsPerArticle)) {
+                $detailsOfArticle = $detailsPerArticle[$detail['s_articles_details.ordernumber']];
             }
 
             $detailOfArticle = [
@@ -371,35 +481,80 @@ class RawExport implements ExportInterface
             }
 
             $detailsOfArticle[$detailSlug] = $detailOfArticle;
-            $detailsPerArticle[$detail['sku']] = $detailsOfArticle;
+            $detailsPerArticle[$detail['s_articles_details.ordernumber']] = $detailsOfArticle;
         }
 
         return $detailsPerArticle;
     }
 
-    public function getTotal($isDeltaExport = true)
+    /**
+     * @param array $articleIds
+     * @return array
+     */
+    private function getAttributes($articleIds)
     {
-        $sqlTemplate = "
-            SELECT
-                COUNT(s_articles_details.id)
-            FROM
-                s_articles_details
-            INNER JOIN (
-                SELECT
-                    articleID
-                FROM
-                    s_articles_categories_ro
-                WHERE
-                    categoryID = %s
-                GROUP BY
-                    articleID
-            ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleID;
+        $attributeMeta = $this->attributes->getAttributeConfiguration();
+        $attributeColumnsArray = [];
+        $attributeMetaByName = [];
+        foreach ($attributeMeta as $attributeCentiMeta) {
+            $name = $attributeCentiMeta['name'];
+            $attributeColumnsArray[] = $name . ' as "' . $name . '"';
+            $attributeMetaByName[$name] = $attributeCentiMeta;
+        }
+
+        $attributeColumns = implode(', ', $attributeColumnsArray);
+
+        $sqlTemplate = "SELECT
+            s_articles_details.ordernumber as `s_articles_details.ordernumber`,
+            %s
+        FROM
+            s_articles_details
+        INNER JOIN
+            s_articles_attributes on s_articles_attributes.articledetailsID = s_articles_details.id
+        WHERE
+            s_articles_details.id IN (?)
         ";
-        $activeShop = $this->provider->getShopWithActiveCSE();
-        $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId());
 
-        $count = $this->connection->fetchColumn($sql);
+        $sql = sprintf($sqlTemplate, $attributeColumns);
 
-        return intval($count);
+        $attributes = $this->connection->fetchAll(
+            $sql,
+            array($articleIds),
+            array(Connection::PARAM_INT_ARRAY)
+        );
+
+        $attributesPerArticle = [];
+        foreach ($attributes as $attributesOfArticle) {
+            $sku = $attributesOfArticle['s_articles_details.ordernumber'];
+            $attributesPerArticle[$sku] = $this->transformAttribute($attributesOfArticle, $attributeMetaByName);
+        }
+
+        return $attributesPerArticle;
+    }
+
+    /**
+     * @param array $attributesOfArticle
+     * @param array $attributeMetaByName
+     * @return array
+     */
+    private function transformAttribute($attributesOfArticle, $attributeMetaByName)
+    {
+        $attributes = [];
+        foreach ($attributesOfArticle as $name => $value) {
+            if (array_key_exists($name, $attributeMetaByName) === false) {
+                continue;
+            }
+
+            if (is_null($value) || $value === '') {
+                continue;
+            }
+
+            $attributes[$name] = [
+                'label' => $attributeMetaByName[$name]['label'],
+                'value' => $value,
+            ];
+        }
+
+        return $attributes;
     }
 }

@@ -1,8 +1,6 @@
 <?php
 
-use CseEightselectBasic\Components\ArticleExport;
 use CseEightselectBasic\Components\Export;
-use CseEightselectBasic\Components\PropertyExport;
 use CseEightselectBasic\Services\Request\AuthException;
 use CseEightselectBasic\Services\Request\NotAuthorizedException;
 use Shopware\Components\CSRFWhitelistAware;
@@ -43,28 +41,36 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         $this->Front()->Plugins()->ViewRenderer()->setNoRender();
         $this->Response()->setHeader('Content-Type', 'application/json');
 
-        $configValidator = $this->container->get('cse_eightselect_basic.config.validator');
-        $result = $configValidator->validateConfig();
-        if ($result['isValid'] === false) {
-            $this->Response()->setHttpResponseCode(500);
+        try {
+            $configValidator = $this->container->get('cse_eightselect_basic.config.validator');
+            $result = $configValidator->validateConfig();
+            if ($result['isValid'] === false) {
+                $this->Response()->setHttpResponseCode(500);
+                $body = json_encode(
+                    [
+                        'error' => 'CONFIGURATION_ERROR',
+                        'message' => $result['violations'],
+                    ]
+                );
+                $this->Response()->setBody($body);
+
+                return;
+            }
+
+            $this->Response()->setHttpResponseCode(200);
             $body = json_encode(
                 [
-                    'error' => 'CONFIGURATION_ERROR',
-                    'message' => $result['violations'],
+                    'message' => 'CONFIGURATION_VALID',
                 ]
             );
+            $this->Response()->setBody($body);
+        } catch (\Exception $exception) {
+            $this->Response()->setHttpResponseCode(500);
+            $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
             $this->Response()->setBody($body);
 
             return;
         }
-
-        $this->Response()->setHttpResponseCode(200);
-        $body = json_encode(
-            [
-                'message' => 'CONFIGURATION_VALID',
-            ]
-        );
-        $this->Response()->setBody($body);
     }
 
     /**
@@ -268,9 +274,10 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 
             $limit = filter_var($this->Request()->getParam('limit', 50), FILTER_VALIDATE_INT);
             $offset = filter_var($this->Request()->getParam('offset', 0), FILTER_VALIDATE_INT);
-            $isDeltaExport = filter_var($this->Request()->getParam('delta', true), FILTER_VALIDATE_BOOLEAN);
+            $isDeltaExport = filter_var($this->Request()->getParam('delta', false), FILTER_VALIDATE_BOOLEAN);
+            $fields = $this->Request()->getParam('fields');
 
-            $data = $export->getProducts($limit, $offset, $isDeltaExport);
+            $data = $export->getProducts($limit, $offset, $isDeltaExport, $fields);
             $response = json_encode(
                 [
                     'limit' => $limit,
@@ -327,7 +334,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     {
         $skus = [];
         foreach ($products as $product) {
-            $skus[] = $product['sku'];
+            $skus[] = $product['s_articles_details.ordernumber']['value'];
         }
 
         return $skus;
@@ -339,12 +346,6 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     private function createExport($format)
     {
         switch ($format) {
-            case 'etl':
-                return new ArticleExport();
-                break;
-            case 'property':
-                return new PropertyExport();
-                break;
             case 'status':
                 return $this->container->get('cse_eightselect_basic.export.status_export');
                 break;
@@ -375,6 +376,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         return [
             'connect',
             'products',
+            'attributes',
+            'variantDimensions',
             'validate',
         ];
     }

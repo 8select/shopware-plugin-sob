@@ -2,13 +2,42 @@
 
 namespace CseEightselectBasic\Services\Export;
 
+use CseEightselectBasic\Services\Export\Helper\ProductImages;
+use CseEightselectBasic\Services\Export\Helper\ProductUrl;
+
 class RawExportMapper
 {
+
+    /**
+     * @var ProductUrl
+     */
+    private $urlHelper;
+
+    /**
+     * @var ProductImages
+     */
+    private $imageHelper;
+
+    /**
+     * @param ProductUrl $urlHelper
+     * @param ProductImages $imageHelper
+     */
+    public function __construct(
+        ProductUrl $urlHelper,
+        ProductImages $imageHelper
+    ) {
+        $this->urlHelper = $urlHelper;
+        $this->imageHelper = $imageHelper;
+    }
 
     /**
      * @var array
      */
     private $map = [
+        's_articles_details.id' => 'id',
+        's_articles_details.articleID' => 'parentId',
+        'url' => 'URL',
+        'images' => 'Bilder',
         's_articles_details.ordernumber' => 'Artikelnummer',
         's_articles_details.suppliernumber' => 'Herstellernummer',
         's_articles_details.additionaltext' => 'Zusätzlicher Text',
@@ -46,13 +75,26 @@ class RawExportMapper
     {
         $mapped = [];
         foreach ($product as $slug => $detailValue) {
-            if ($slug === 'articleID') {
+            if (is_null($detailValue) || $detailValue === '') {
                 continue;
             }
-            if ($slug === 'sku') {
-                $mapped[$slug] = $detailValue;
-                continue;
+
+            if ($slug === 'url') {
+                $detailValue = $this->urlHelper->getUrl(
+                    $product['s_articles_details.articleID'],
+                    $product['s_articles_details.ordernumber'],
+                    $product['s_articles.name']
+                );
             }
+
+            if ($slug === 'images') {
+                $detailValue = $this->imageHelper->getImageUrls(
+                    $product['s_articles_details.articleID'],
+                    $product['s_articles_details.ordernumber'],
+                    true
+                );
+            }
+
             $mapped[$slug] = [
                 'label' => $this->getLabel($slug),
                 'value' => $detailValue,
