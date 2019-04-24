@@ -292,6 +292,9 @@ class CseEightselectBasic extends Plugin
             );
 
             switch (true) {
+                case version_compare($context->getCurrentVersion(), '3.0.0', '<'):
+                    throw new \Exception('Upgrade auf Version 3 erst mit Release 3.1.0 möglich. </br></br></br></br>Bitte aktivieren sie die aktuelle Version wieder!');
+                    break;
                 case version_compare($context->getCurrentVersion(), '1.11.0', '<='):
                     $update = new Update_1_11_0(
                         $this->container->get('config'),
