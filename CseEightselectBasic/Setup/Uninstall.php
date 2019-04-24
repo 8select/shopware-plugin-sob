@@ -57,7 +57,6 @@ class Uninstall implements SetupInterface
 
     public function execute()
     {
-        $this->sizeAttribute->remove();
         // @todo implement uninstall widgets ($this->emotionComponents->remove())
         $this->statusExportDelta->uninstall();
         $this->context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);

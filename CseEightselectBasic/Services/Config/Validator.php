@@ -58,7 +58,6 @@ class Validator
 
         array_push($violations, $this->validateApiId());
         array_push($violations, $this->validateFeedId());
-        array_push($violations, $this->validateMappedSizeAttribute());
 
         $violationsWithoutNull = array_filter($violations);
 
@@ -82,7 +81,6 @@ class Validator
         array_push($violations, $this->validateFeedId());
         array_push($violations, $this->validateSysPsvContainer());
         array_push($violations, $this->validateSysAccContainer());
-        array_push($violations, $this->validateMappedSizeAttribute());
 
         $violationsWithoutNull = array_filter($violations);
 
@@ -119,18 +117,6 @@ class Validator
         $container = $this->pluginConfigService->get('CseEightselectBasicSysAccContainer');
         if (strlen($container) === 0 || strpos($container, 'CSE_SYS') === false) {
             return "Kein Widget-Platzhalter (CSE_SYS) im SYS-ACC HTML-Container";
-        }
-    }
-
-    private function validateMappedSizeAttribute()
-    {
-        $sql = "SELECT count(*) FROM s_article_configurator_groups_attributes WHERE od_cse_eightselect_basic_is_size = 1;";
-        $result = $this->connection->fetchColumn($sql);
-        $hasMappedSizeAttribute = (bool) $result;
-
-        if ($hasMappedSizeAttribute === false) {
-            return "Größenrelevante Attributegruppen wurden nicht definiert. Mehr Infos finden Sie in der " .
-                "<a href='https://www.8select.com/8select-cse-installationsanleitung-shopware#5-konfiguration-attributfelder' target='_blank'>Installationsanleitung</a>";
         }
     }
 }

@@ -51,7 +51,6 @@ class Install implements SetupInterface
     public function execute()
     {
         $this->emotionComponents->create();
-        $this->sizeAttribute->create();
         $this->statusExportDelta->install();
         $this->context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
     }
