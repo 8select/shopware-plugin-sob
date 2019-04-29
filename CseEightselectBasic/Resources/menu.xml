@@ -13,14 +13,6 @@
             <parent identifiedBy="controller">ConfigurationMenu</parent>
             <children>
                 <entry>
-                    <name>Export Einstellungen</name>
-                    <label lang="en">Export Settings</label>
-                    <label lang="de">Export Einstellungen</label>
-                    <controller>CseEightselectBasicAttributeConfig</controller>
-                    <action>index</action>
-                    <class>sprite-gear</class>
-                </entry>
-                <entry>
                     <name>Management Console</name>
                     <label lang="en">Management Console</label>
                     <label lang="de">Management Console</label>

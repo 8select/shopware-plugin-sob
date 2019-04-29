@@ -7,7 +7,6 @@ use CseEightselectBasic\Services\Dependencies\Provider;
 use CseEightselectBasic\Services\Export\Connector;
 use CseEightselectBasic\Services\Export\StatusExportDelta;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
-use CseEightselectBasic\Setup\Helpers\AttributeMapping;
 use CseEightselectBasic\Setup\Helpers\EmotionComponents;
 use CseEightselectBasic\Setup\Helpers\Logger;
 use CseEightselectBasic\Setup\Helpers\SizeAttribute;
@@ -62,7 +61,6 @@ class CseEightselectBasic extends Plugin
         return [
             'Theme_Compiler_Collect_Plugin_Javascript' => 'addJsFiles',
             'Enlight_Controller_Dispatcher_ControllerPath_Frontend_CseEightselectBasic' => 'onGetFrontendCseEightselectBasicController',
-            'Enlight_Controller_Dispatcher_ControllerPath_Backend_CseEightselectBasic' => 'onGetBackendCseEightselectBasicController',
             'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion' => 'onPostDispatchBackendEmotion',
             'Enlight_Controller_Action_PostDispatchSecure_Frontend' => 'onFrontendPostDispatch',
             'Enlight_Controller_Action_PostDispatchSecure_Widgets_Emotion' => 'onFrontendPostDispatch',
@@ -86,14 +84,6 @@ class CseEightselectBasic extends Plugin
         }
 
         return $this->container->get('cse_eightselect_basic.plugin_config.plugin_config');
-    }
-
-    /**
-     * @return string
-     */
-    public function onGetBackendCseEightselectBasicController()
-    {
-        return $this->getPath() . '/Controllers/Backend/CseEightselectBasicAttributeConfig.php';
     }
 
     /**
@@ -214,7 +204,6 @@ class CseEightselectBasic extends Plugin
             );
             $install->execute();
             $this->logMessages[] = 'Plugin components installed';
-            $this->createDatabase($context);
             $this->getPluginConfigService()->setDefaults();
             $this->logMessages[] = 'PluginConfig defaults set';
             $this->logMessages[] = 'Plugin installation completed';
@@ -383,18 +372,6 @@ class CseEightselectBasic extends Plugin
         $classes = $this->getClasses($modelManager);
         $tool->dropSchema($classes);
         $this->logMessages[] = 'Database scheme dropped';
-    }
-
-    /**
-     * @param InstallContext $context
-     * @throws \Zend_Db_Adapter_Exception
-     */
-    private function createDatabase(InstallContext $context)
-    {
-        $this->updateSchema();
-        $attributeMapping = new AttributeMapping($this->container->get('dbal_connection'));
-        $attributeMapping->initAttributes();
-        $this->logMessages[] = 'default attributeMapping inserted';
     }
 
     private function removeDatabase()
