@@ -39,27 +39,6 @@ class SizeAttribute
         $this->modelManager = $modelManager;
     }
 
-    public function create()
-    {
-        $this->attributeService->update(
-            's_article_configurator_groups_attributes',
-            'od_cse_eightselect_basic_is_size',
-            'boolean',
-            [
-                'label' => 'Definiert Größe',
-                'displayInBackend' => true,
-                'custom' => false,
-                'translatable' => false,
-                'position' => 0,
-            ],
-            null,
-            true
-        );
-
-        $this->metaDataCache->deleteAll();
-        $this->modelManager->generateAttributeModels(['s_article_configurator_groups_attributes']);
-    }
-
     public function remove()
     {
         $this->attributeService->delete(

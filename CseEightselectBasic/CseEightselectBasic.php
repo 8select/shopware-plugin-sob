@@ -9,7 +9,6 @@ use CseEightselectBasic\Services\Export\StatusExportDelta;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
 use CseEightselectBasic\Setup\Helpers\EmotionComponents;
 use CseEightselectBasic\Setup\Helpers\Logger;
-use CseEightselectBasic\Setup\Helpers\SizeAttribute;
 use CseEightselectBasic\Setup\Install;
 use CseEightselectBasic\Setup\Uninstall;
 use CseEightselectBasic\Setup\Updates\Update_1_11_0;
@@ -194,11 +193,6 @@ class CseEightselectBasic extends Plugin
 
             $install = new Install(
                 $context,
-                new SizeAttribute(
-                    $this->container->get('shopware_attribute.crud_service'),
-                    Shopware()->Models()->getConfiguration()->getMetadataCacheImpl(),
-                    Shopware()->Models()
-                ),
                 new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName()),
                 new StatusExportDelta($this->container->get('dbal_connection'))
             );
@@ -331,11 +325,6 @@ class CseEightselectBasic extends Plugin
 
             $uninstall = new Uninstall(
                 $context,
-                new SizeAttribute(
-                    $this->container->get('shopware_attribute.crud_service'),
-                    Shopware()->Models()->getConfiguration()->getMetadataCacheImpl(),
-                    Shopware()->Models()
-                ),
                 new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName()),
                 new StatusExportDelta($this->container->get('dbal_connection'))
             );
