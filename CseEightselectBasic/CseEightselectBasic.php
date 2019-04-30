@@ -8,6 +8,7 @@ use CseEightselectBasic\Services\Export\Connector;
 use CseEightselectBasic\Services\Export\StatusExportDelta;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
 use CseEightselectBasic\Setup\Helpers\EmotionComponents;
+use CseEightselectBasic\Setup\Helpers\MenuEntry;
 use CseEightselectBasic\Setup\Helpers\Logger;
 use CseEightselectBasic\Setup\Install;
 use CseEightselectBasic\Setup\Uninstall;
@@ -60,6 +61,7 @@ class CseEightselectBasic extends Plugin
         return [
             'Theme_Compiler_Collect_Plugin_Javascript' => 'addJsFiles',
             'Enlight_Controller_Dispatcher_ControllerPath_Frontend_CseEightselectBasic' => 'onGetFrontendCseEightselectBasicController',
+            'Enlight_Controller_Action_PostDispatch_Backend_Index' => 'onPostDispatchBackendIndex',
             'Enlight_Controller_Action_PostDispatchSecure_Backend_Emotion' => 'onPostDispatchBackendEmotion',
             'Enlight_Controller_Action_PostDispatchSecure_Frontend' => 'onFrontendPostDispatch',
             'Enlight_Controller_Action_PostDispatchSecure_Widgets_Emotion' => 'onFrontendPostDispatch',
@@ -153,6 +155,25 @@ class CseEightselectBasic extends Plugin
     }
 
     /**
+     * @param \Enlight_Controller_ActionEventArgs $args
+     *
+     * @throws \Enlight_Exception
+     */
+    public function onPostDispatchBackendIndex(\Enlight_Controller_ActionEventArgs $args)
+    {
+        $controller = $args->getSubject();
+        $view = $controller->View();
+
+        try {
+            $view->addTemplateDir($this->getPath() . '/Resources/views/');
+            $view->extendsTemplate('backend/index/header.tpl');
+        } catch (\Exception $exception) {
+            $this->logException('onPostDispatchBackendIndex', $exception);
+            $this->getCseLogger()->log('operation', $this->logMessages, $this->hasLogError);
+        }
+    }
+
+    /**
      * @param \Enlight_Event_EventArgs $args
      *
      * @throws \Enlight_Exception
@@ -194,7 +215,11 @@ class CseEightselectBasic extends Plugin
             $install = new Install(
                 $context,
                 new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName()),
-                new StatusExportDelta($this->container->get('dbal_connection'))
+                new StatusExportDelta($this->container->get('dbal_connection')),
+                new MenuEntry(
+                    $this->container->get('dbal_connection'),
+                    $this->container->get('shopware.plugin_manager')->getPluginByName('CseEightselectBasic')->getId()
+                )
             );
             $install->execute();
             $this->logMessages[] = 'Plugin components installed';
@@ -326,7 +351,11 @@ class CseEightselectBasic extends Plugin
             $uninstall = new Uninstall(
                 $context,
                 new EmotionComponents($this->container->get('shopware.emotion_component_installer'), $this->getName()),
-                new StatusExportDelta($this->container->get('dbal_connection'))
+                new StatusExportDelta($this->container->get('dbal_connection')),
+                new MenuEntry(
+                    $this->container->get('dbal_connection'),
+                    $this->container->get('shopware.plugin_manager')->getPluginByName('CseEightselectBasic')->getId()
+                )
             );
             $uninstall->execute();
             $this->logMessages[] = 'Plugin components uninstalled';
