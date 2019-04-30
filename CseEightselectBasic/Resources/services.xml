@@ -53,11 +53,6 @@
         </service>
         <service id="cse_eightselect_basic.export.helper.fields" class="CseEightselectBasic\Services\Export\Helper\Fields">
         </service>
-        <service id="cse_eightselect_basic.export.helper.mapper" class="CseEightselectBasic\Services\Export\Helper\Mapper">
-            <argument type="service" id="cse_eightselect_basic.export.helper.product_url"/>
-            <argument type="service" id="cse_eightselect_basic.export.helper.product_images"/>
-            <argument type="service" id="db"/>
-        </service>
 
         <service id="cse_eightselect_basic.export.status_export" class="CseEightselectBasic\Services\Export\StatusExport">
             <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
