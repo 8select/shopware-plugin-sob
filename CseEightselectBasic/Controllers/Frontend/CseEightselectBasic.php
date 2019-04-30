@@ -1,6 +1,6 @@
 <?php
 
-use CseEightselectBasic\Components\Export;
+use CseEightselectBasic\Services\Export\ExportInterface;
 use CseEightselectBasic\Services\Request\AuthException;
 use CseEightselectBasic\Services\Request\NotAuthorizedException;
 use Shopware\Components\CSRFWhitelistAware;
@@ -341,7 +341,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
     }
 
     /**
-     * @return Export
+     * @return ExportInterface
      */
     private function createExport($format)
     {
