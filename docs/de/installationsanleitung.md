@@ -6,62 +6,45 @@
 - Shop muss aus dem Internet erreichbar sein
 
 ## Vorbereitung
-- Wählen Sie ein **8select service package** auf der [8select website](https://www.8select.com/cse-pricing) und vervollständigen Sie Ihre Registrierung. Nach erfolgreicher Registrierung erhalten Sie eine E-Mail mit **zwei Freischaltcodes** für das 8select plugin für Shopware und einen **weiteren Aktivierungslink** für Ihre Zugangsdaten zu der 8select Management Console.
-- Aktivieren Sie Ihren **8select Management Console user account**, indem Sie auf den Link in der E-Mail klicken. Sie erhalten im Anschluss Ihre Zugangsdaten. Diese ermöglichen ihnen den Zugang zur Management Console, wo Sie weiterführende Einstellungen an dem 8select CSE Plugin vornehmen können.
-- Stellen Sie sicher, dass Sie die **Freischaltcodes** während des nachfolgendem Installationsprozess zur Hand haben.
+- Wählen Sie ein **Service Paket** auf [8select.com](https://www.8select.com/cse-pricing) und vervollständigen Sie Ihre Registrierung. Nach erfolgreicher Registrierung erhalten Sie eine E-Mail mit **zwei Freischaltcodes** für das 8select Plugin für Shopware und einen **weiteren Aktivierungslink** für Ihre **Zugangsdaten zu der 8select Management Console (MCON)**.
+- Aktivieren Sie Ihren **8select Management Console user account**, indem Sie auf den Link in der E-Mail klicken. Sie erhalten im Anschluss Ihre Zugangsdaten. 
+- In der Management Console (MCON) werden nach der Plugin Installation in Shopware alle weiteren Einstellungen am 8select CSE Plugin vorgenommen.
 
-## Installation des 8select Plugin
+## Installation des 8select Plugins
 
-1. **Download des 8select Plugin aus dem Shopware Store und Aktivierung**  
-  Sie können das Plugin [hier](https://store.shopware.com/detail/index/sArticle/164960) herunterladen. Bitte aktivieren Sie im Anschluss den Plugin in Ihrem Shopware Backend Plugin Manager, bevor Sie fortfahren.
+1. **Download des 8select Plugins aus dem Shopware Store und Aktivierung**  
+  
+    Sie können das Plugin [hier](https://store.shopware.com/detail/index/sArticle/164960) herunterladen. Bitte aktivieren Sie im Anschluss das Plugin in Ihrem Shopware Backend Plugin Manager, bevor Sie fortfahren.
 
 2. **Einfügen der Freischaltcodes und Aktivierung der Konfiguration**
-Sie haben die Freischaltcodes bereits per E-Mail erhalten, nachdem Sie erfolgreich Ihr Service Paket auf der [8select website](https://www.8select.com/cse-pricing) bestellt haben.  
-
-    Sie haben erhalten:
-    - **API ID** - zur sicheren Übertragung von Produktvorschlägen und Leistungstracking
-    - **Feed ID** - zur sichern Übertragung des Produkt Daten Feed  
+    
+    Sie finden die Freischaltcodes in der MCON unter [Settings -> Plugin](https://console.8select.io/settings/plugin)
 
     Gehen Sie in den Konfiguration Tab in Ihrem Shopware Plugin Manager und **tragen Sie die Freischaltcodes** in die dafür vorgesehenen Felder ein. Setzen Sie **„Aktiviert“** auf **„ja“** und speichern Sie Ihre Eingaben.
 
-   ![Plugin Konfiguration](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/de/config-de.png)
+    ![Plugin Konfiguration](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/de/config-de.png)
 
-3. **Definieren der Größenrelevanten Attributegruppen für den Produktdaten Feed**
-    - In Ihrem Shopware Backend gehen Sie auf „Artikel“ > „Übersicht“
-    - Wählen Sie ein Produkt aus und gehen Sie zu „Varianten“ > „Konfiguration“
-    - Klicken Sie auf das Editieren Icon einer relevanten Gruppe wie bspw. „Größe“ und aktivieren Sie „definiert Größe“
-    - Klicken Sie auf „Speichern“ und wiederholen Sie diesen Schritt für alle relevanten Attributgruppen dieses Produktes. Das können Sie bei allen Attributen wie „Gefäßgröße“, „Skigröße“ oder „Stocklänge“ machen.
-    - Sie müssen diese Änderungen nur exemplarisch für ein Produkt vornehmen. Ihre Änderungen werden in den allgemeinen Einstellungen gespeichert und für alle Produktvarianten automatisch übernommen.
-
-    [Variantenattribute für Größe Video](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/de/eng-installation-size-attributes.mp4)
-
-4. **Auswahl der Attribute für den Export Ihrer Produktdaten**
-    - Im Shopware Backen gehen Sie auf „Einstellungen“ > „8select“ > „Export Einstellungen“
-    - Doppelklicken Sie auf die Reihe mit „Farbe“ in der Spalte 8select Attribute Mapping
-    - Innerhalb dieser Reihe gehen Sie auf das Feld „Shopware Attribute“ und wählen Sie „Konfigurator-Gruppe: Farbvariante“ aus dem Dropdown Menü.
-    - Klicken Sie auf „update“ um Ihre Einstellungen zu speichern.
-
-     [Define Attribute Mapping](https://d3b0t4f30thpgq.cloudfront.net/plugins/shopware/de/eng-export-settings-farbvariant.mp4)
-
-5. **Start der Feed Verarbeitung**
+3. **Konfiguration der CSE**
     
-Sofern die Plugin-Konfiguration (2. und 3.) korrekt erfolg ist, werden die Produktdaten automatisch abgefragt.
+    Bevor die CSE Sets ausspielt, müssen sie je nach gewähltem Service Paket noch Einstellungen in der MCON vornehmen.
 
-    - 01:00 Uhr UTC ein voller Produktdatenexport 
-    - 01:30 Uhr UTC ein voller Propertydatenexport 
-    - alle 15 Minuten ein Status- und Preisexport aller geänderten Produkte seit dem letzten Export
+    Sie können hier auch das Aussehen der Widgets anpassen.
+
+    Sie finden die Konfiguration in der MCON unter [Settings](https://console.8select.io/settings).
     
-6. **Sie haben die 8select Curated Shopping Engine erfolgreich installiert**  
-    Sie können verifizieren ob Ihre Installation Erfolgreich war indem Sie den Vorschaumodus im 8select Plugin aufrufen.
-    - Rufen Sie eine Seite in Ihrem Shop auf wo das Widget angezeigt werden soll
+4. **Sie haben die 8select Curated Shopping Engine erfolgreich installiert**  
+    
+    Sie können verifizieren, ob Ihre Installation erfolgreich war, indem Sie den Vorschaumodus im 8select Plugin aufrufen.
+    - Rufen Sie eine Produktdetailseite in Ihrem Shop auf
     - Fügen Sie `?preview=1&8s_demo=1` ans Ende der URL hinzu.   
     Zum Beispiel: `http://meinshop.de/fashion/145/mein-produkt?preview=1&8s_demo=1`
-        - `preview=1` zeigt das Widget an wenn das Plugin im Preview-Modus ist
+        - `preview=1` zeigt das Widget an, wenn das Plugin im Preview-Modus ist
         - `8s_demo=1` zeigt das Demoset, solange ihre Produkte verarbeitet werden und noch nicht verfügbar sind
-    - Das Widget sollte nun im standard Design angezeigt werden.
-    - Um das Design anzupassen lesen Sie bitte unseren [konifgurationsanleitung](./customization.md) oder schauen Sie in unserer [Knowledge Base](https://knowledge.8select.com) nach.
-    - Um das Widget in Ihrem Shop „live“ zu stellen **deaktivieren Sie bitte den Vorschaumodus**.
+    - Das Widget sollte nun im Standard Design angezeigt werden.
+    - Das Design können Sie in der MCON anpassen.
+    - Um das Widget in Ihrem Shop „live“ zu stellen, **deaktivieren Sie bitte den Vorschaumodus**.
 
-7. **Vorschaumodus deaktivieren**
-    - In Ihrem Shopware Backend gehen Sie auf Einstellungen > Plugin Manager und wählen Sie das 8select CSE Plugin unter „installiert“ aus.
-    - Scrollen Sie zu dem Tab „Konfiguration“ und setzen Sie den **„Vorschaumodus an“** auf **„Nein“**.
+5. **Vorschaumodus deaktivieren**
+
+    - In Ihrem Shopware Backend gehen Sie auf "Einstellungen > Plugin Manager" und wählen Sie das 8select CSE Plugin unter „installiert“ aus.
+    - Scrollen Sie zum Tab „Konfiguration“ und setzen Sie den **„Vorschaumodus an“** auf **„Nein“**.
