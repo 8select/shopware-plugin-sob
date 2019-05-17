@@ -1,20 +1,12 @@
 # Change Log
 
-## [3.0.0](https://github.com/8select/shopware-plugin-sob/tree/3.0.0) (2019-4-30)
+## [3.0.1](https://github.com/8select/shopware-plugin-sob/tree/3.0.1) (2019-5-17)
 
-[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.7...3.0.0)
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/2.1.7...3.0.1)
 
 **Fixed Bugs:**
 
-- add supplier name to list of attributes [\#110](https://github.com/8select/shopware-plugin-sob/pull/110) ([akleiber](https://github.com/akleiber))
-
-**Implemented Features:**
-
-- [CSE-2058](https://8select.atlassian.net/browse/CSE-2058) api for product attributes and dimensions [\#106](https://github.com/8select/shopware-plugin-sob/pull/106) ([akleiber](https://github.com/akleiber))
-- [CSE-2056](https://8select.atlassian.net/browse/CSE-2056) return all product attributes in raw export [\#107](https://github.com/8select/shopware-plugin-sob/pull/107) ([akleiber](https://github.com/akleiber))
-- [CSE-2072](https://8select.atlassian.net/browse/CSE-2072) disable upgrade to 3.x [\#108](https://github.com/8select/shopware-plugin-sob/pull/108) ([akleiber](https://github.com/akleiber))
-- [CSE-2072](https://8select.atlassian.net/browse/CSE-2072) remove variant attribute config requirement [\#109](https://github.com/8select/shopware-plugin-sob/pull/109) ([akleiber](https://github.com/akleiber))
-- [CSE-2072](https://8select.atlassian.net/browse/CSE-2072) remove deprecated components [\#111](https://github.com/8select/shopware-plugin-sob/pull/111) ([voodoods](https://github.com/voodoods))
+- ignore unknown attributes and fallback to slug if label is empty [\#113](https://github.com/8select/shopware-plugin-sob/pull/113) ([akleiber](https://github.com/akleiber))
 
 ## [2.1.7](https://github.com/8select/shopware-plugin-sob/tree/2.1.7) (2019-3-22)
 
@@ -232,6 +224,7 @@
 
 **Fixed Bugs:**
 
+- [CSE-1592](https://8select.atlassian.net/browse/CSE-1592) export product deeplinks [\#66](https://github.com/8select/shopware-plugin-sob/pull/66) ([voodoods](https://github.com/voodoods))
 - [CSE-1621](https://8select.atlassian.net/browse/CSE-1621) wait for dom content to be loaded before activating tab [\#68](https://github.com/8select/shopware-plugin-sob/pull/68) ([voodoods](https://github.com/voodoods))
 
 **Implemented Features:**
