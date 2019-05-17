@@ -459,13 +459,13 @@ class RawExport implements ExportInterface
                 $detailsOfArticle = $detailsPerArticle[$detail['s_articles_details.ordernumber']];
             }
 
+            $detailSlug = $detailSlugPrefix . $detail['detailSlugSuffix'];
             $detailOfArticle = [
-                'label' => $detail['detailLabel'],
+                'label' => $this->getNonEmpty($detail['detailLabel'], $detailSlug),
             ];
             if ($isVariantDetail) {
                 $detailOfArticle['isVariantDetail'] = true;
             }
-            $detailSlug = $detailSlugPrefix . $detail['detailSlugSuffix'];
             if (array_key_exists($detailSlug, $detailsOfArticle)) {
                 $detailOfArticle = $detailsOfArticle[$detailSlug];
             }
@@ -556,5 +556,15 @@ class RawExport implements ExportInterface
         }
 
         return $attributes;
+    }
+
+    /**
+     * @param string $label
+     * @param string $name
+     * @return string
+     */
+    private function getNonEmpty($label, $name)
+    {
+        return strlen($label) === 0 ? $name : $label;
     }
 }

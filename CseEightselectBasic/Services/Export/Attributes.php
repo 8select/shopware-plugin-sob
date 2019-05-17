@@ -75,9 +75,10 @@ class Attributes
 
         $filterOptions = [];
         foreach ($this->connection->fetchAll($sql) as $filterOption) {
+            $name = 's_filter_options.id=' . $filterOption['nameSuffix'];
             $filterOptions[] = [
-                'name' => 's_filter_options.id=' . $filterOption['nameSuffix'],
-                'label' => $filterOption['label'],
+                'name' => $name,
+                'label' => $this->getNonEmpty($filterOption['label'], $name),
             ];
         }
 
@@ -89,7 +90,11 @@ class Attributes
      */
     public function getAttributeConfiguration()
     {
-        $sql = "
+        $attributeColumnsQuery = "SHOW COLUMNS FROM s_articles_attributes;";
+        $attributeColumns = $this->connection->fetchAll($attributeColumnsQuery);
+        $attributeColumnsIndexed = array_column($attributeColumns, 'Field', 'Field');
+
+        $attributesQuery = "
             SELECT
                 s_attribute_configuration.column_name as nameSuffix,
                 s_attribute_configuration.label
@@ -100,13 +105,27 @@ class Attributes
             ";
 
         $attributes = [];
-        foreach ($this->connection->fetchAll($sql) as $attribute) {
+        foreach ($this->connection->fetchAll($attributesQuery) as $attribute) {
+            if (!array_key_exists($attribute['nameSuffix'], $attributeColumnsIndexed)) {
+                continue;
+            }
+            $name = 's_articles_attributes.' . $attribute['nameSuffix'];
             $attributes[] = [
-                'name' => 's_articles_attributes.' . $attribute['nameSuffix'],
-                'label' => $attribute['label'],
+                'name' => $name,
+                'label' => $this->getNonEmpty($attribute['label'], $name),
             ];
         }
 
         return $attributes;
+    }
+
+    /**
+     * @param string $label
+     * @param string $name
+     * @return string
+     */
+    private function getNonEmpty($label, $name)
+    {
+        return strlen($label) === 0 ? $name : $label;
     }
 }
