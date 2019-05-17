@@ -89,7 +89,11 @@ class Attributes
      */
     public function getAttributeConfiguration()
     {
-        $sql = "
+        $attributeColumnsQuery = "SHOW COLUMNS FROM s_articles_attributes;";
+        $attributeColumns = $this->connection->fetchAll($attributeColumnsQuery);
+        $attributeColumnsIndexed = array_column($attributeColumns, 'Field', 'Field');
+
+        $attributesQuery = "
             SELECT
                 s_attribute_configuration.column_name as nameSuffix,
                 s_attribute_configuration.label
@@ -100,7 +104,10 @@ class Attributes
             ";
 
         $attributes = [];
-        foreach ($this->connection->fetchAll($sql) as $attribute) {
+        foreach ($this->connection->fetchAll($attributesQuery) as $attribute) {
+            if (!array_key_exists($attribute['nameSuffix'], $attributeColumnsIndexed)) {
+                continue;
+            }
             $attributes[] = [
                 'name' => 's_articles_attributes.' . $attribute['nameSuffix'],
                 'label' => $attribute['label'],
