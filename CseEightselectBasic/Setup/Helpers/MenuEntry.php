@@ -18,11 +18,6 @@ class MenuEntry
     /**
      * @var int
      */
-    private $menuParentId = 23; // Configuration / Einstellungen
-
-    /**
-     * @var int
-     */
     private $pluginId; // CseEightselectBasic Plugin
 
     /**
@@ -31,7 +26,6 @@ class MenuEntry
     public function __construct(Connection $connection, $pluginId)
     {
         $this->connection = $connection;
-        $this->menuParentId = $menuParentId;
         $this->pluginId = $pluginId;
     }
 
@@ -48,7 +42,6 @@ class MenuEntry
         }
         return $this->plugin;
     }
-
 
     /**
      * Returns shopware menu
@@ -81,7 +74,6 @@ class MenuEntry
     public function create()
     {
         try {
-            $parentMenu = $this->Menu()->findOneBy(array('id' => $menuParentId));
             $this->createMenuItem(
                 array(
                     'label' => '8select',
@@ -89,7 +81,7 @@ class MenuEntry
                     'action' => 'Index',
                     'onclick' => 'window.open("https://console.8select.io");',
                     'active' => 1,
-                    'parentId' => $parentMenu,
+                    'parent' => $this->Menu()->findOneBy(['id' => '23']),
                     'class' => 'eightselect--icon'
                 )
             );
