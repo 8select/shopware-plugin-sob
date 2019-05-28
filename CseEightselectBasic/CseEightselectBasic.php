@@ -161,12 +161,15 @@ class CseEightselectBasic extends Plugin
      */
     public function onPostDispatchBackendIndex(\Enlight_Controller_ActionEventArgs $args)
     {
+
         $controller = $args->getSubject();
         $view = $controller->View();
 
         try {
-            $view->addTemplateDir($this->getPath() . '/Resources/views/');
-            $view->extendsTemplate('backend/index/header.tpl');
+            if ($view->hasTemplate()) {
+                $view->addTemplateDir($this->getPath() . '/Resources/views/');
+                $view->extendsTemplate('backend/plugins/cse_eightselect_basic/index/header.tpl');
+            }
         } catch (\Exception $exception) {
             $this->logException('onPostDispatchBackendIndex', $exception);
             $this->getCseLogger()->log('operation', $this->logMessages, $this->hasLogError);
