@@ -34,6 +34,7 @@ class Install implements SetupInterface
      * @param InstallContext $context
      * @param EmotionComponents $emotionComponents
      * @param StatusExportDelta $statusExportDelta
+     * @param MenuEntry $menuEntry
      */
     public function __construct(
         InstallContext $context,
