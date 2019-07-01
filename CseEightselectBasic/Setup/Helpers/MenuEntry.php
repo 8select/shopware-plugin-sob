@@ -81,7 +81,7 @@ class MenuEntry
                     'action' => 'Index',
                     'onclick' => 'window.open("https://console.8select.io");',
                     'active' => 1,
-                    'parent' => $this->Menu()->findOneBy(['id' => '23']),
+                    'parent' => $this->Menu()->findOneBy(['controller' => 'ConfigurationMenu']),
                     'class' => 'eightselect--icon'
                 )
             );
