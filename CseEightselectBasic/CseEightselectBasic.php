@@ -14,6 +14,7 @@ use CseEightselectBasic\Setup\Install;
 use CseEightselectBasic\Setup\Uninstall;
 use CseEightselectBasic\Setup\Updates\Update_1_11_0;
 use CseEightselectBasic\Setup\Updates\Update_2_0_0;
+use CseEightselectBasic\Setup\Updates\Update_3_1_0;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\SchemaTool;
 use Shopware;
@@ -324,6 +325,15 @@ class CseEightselectBasic extends Plugin
                     $this->logMessages[] = 'Update_2_0_0 executed';
                     $this->connectCse();
                     // no break
+                case version_compare($context->getCurrentVersion(), '3.1.0', '<'):
+                    $update = new Update_3_1_0(
+                        new MenuEntry(
+                            $this->container->get('dbal_connection'),
+                            $this->container->get('shopware.plugin_manager')->getPluginByName('CseEightselectBasic')->getId()
+                        )
+                    );
+                    $update->execute();
+                    $this->logMessages[] = 'Update_3_1_0 executed';
             }
 
             $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
