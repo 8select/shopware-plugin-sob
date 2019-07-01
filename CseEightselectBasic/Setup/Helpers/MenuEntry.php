@@ -102,8 +102,8 @@ class MenuEntry
     public function remove()
     {
         $this->connection->executeUpdate(
-            'DELETE FROM s_core_menu WHERE `name` = ?',
-            ['8select']
+            'DELETE FROM s_core_menu WHERE `pluginID` = ?',
+            [$this->pluginId]
         );
     }
 }
