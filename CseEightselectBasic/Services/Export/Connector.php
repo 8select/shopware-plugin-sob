@@ -73,13 +73,14 @@ class Connector
      */
     public function getConnectDetails()
     {
+        $shopUrl = $this->provider->getShopUrl(true);
         return [
             'tenant' => [
                 'feedId' => $this->pluginConfig->get('CseEightselectBasicFeedId'),
                 'id' => $this->pluginConfig->get('CseEightselectBasicApiId'),
             ],
             'shop' => [
-                'url' => $this->provider->getShopUrl(),
+                'url' => $shopUrl,
                 'software' => 'Shopware',
                 'version' => $this->provider->getShopwareRelease(),
             ],
@@ -88,9 +89,11 @@ class Connector
                 'config' => $this->pluginConfig->getAll(),
             ],
             'api' => [
-                'attributes' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/attributes',
-                'products' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/products',
-                'variantDimensions' => $this->provider->getShopUrl(true) . '/cse-eightselect-basic/variant-dimensions',
+                'attributes' => $shopUrl . '/cse-eightselect-basic/attributes',
+                'products' => $shopUrl . '/cse-eightselect-basic/products',
+                'variantDimensions' => $shopUrl . '/cse-eightselect-basic/variant-dimensions',
+                'migrationAttributeMappings' => $shopUrl . '/cse-eightselect-basic/migration-attribute-mappings',
+                'migrationVariantDimensions' => $shopUrl . '/cse-eightselect-basic/migration-variant-dimensions',
             ],
         ];
     }

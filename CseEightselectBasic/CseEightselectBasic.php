@@ -330,6 +330,7 @@ class CseEightselectBasic extends Plugin
                         )
                     );
                     $update->execute();
+                    $this->connectCse();
                     $this->logMessages[] = 'Update_3_1_0 executed';
             }
 
