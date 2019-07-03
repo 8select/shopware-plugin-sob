@@ -91,5 +91,11 @@
             <argument type="service" id="cse_eightselect_basic.plugin_config.plugin_config"/>
             <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
         </service>
+
+        <!-- Migration 2.x to 3.x -->
+        <service id="cse_eightselect_basic.migration.attribute_mapping" class="CseEightselectBasic\Services\Migration\AttributeMapping">
+            <argument type="service" id="dbal_connection"/>
+            <argument type="service" id="cse_eightselect_basic.export.attributes"/>
+        </service>
     </services>
 </container>
