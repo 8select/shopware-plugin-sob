@@ -2,10 +2,10 @@
 
 namespace CseEightselectBasic\Setup\Helpers;
 
+use Doctrine\DBAL\Connection;
 use Shopware\Models\Menu\Menu;
 use Shopware\Models\Menu\Repository as MenuRepository;
 use Shopware\Models\Plugin\Plugin;
-use Doctrine\DBAL\Connection;
 
 class MenuEntry
 {
@@ -18,9 +18,15 @@ class MenuEntry
     /**
      * @var int
      */
-    private $pluginId; // CseEightselectBasic Plugin
+    private $pluginId;
 
     /**
+     * @var Plugin
+     */
+    private $plugin;
+
+    /**
+     * @param Connection $connection
      * @param Connection $connection
      */
     public function __construct(Connection $connection, $pluginId)
@@ -32,7 +38,7 @@ class MenuEntry
     /**
      * @return Plugin
      */
-    private function Plugin()
+    private function getPlugin()
     {
         if ($this->plugin === null) {
             /** @var Plugin $plugin */
@@ -40,22 +46,21 @@ class MenuEntry
                 ->findOneBy(['id' => $this->pluginId]);
             $this->plugin = $plugin;
         }
+
         return $this->plugin;
     }
 
     /**
-     * Returns shopware menu
-     *
      * @return MenuRepository
      */
-    private function Menu()
+    private function getParentMenu()
     {
-        return Shopware()->Models()->getRepository(Menu::class);
+        $repository = Shopware()->Models()->getRepository(Menu::class);
+
+        return $repository->findOneBy(['controller' => 'ConfigurationMenu']);
     }
 
     /**
-     * Create a new menu item instance
-     *
      * @return Menu|null
      */
     private function createMenuItem(array $options)
@@ -65,9 +70,10 @@ class MenuEntry
         }
         $item = new Menu();
         $item->fromArray($options);
-        $plugin = $this->Plugin();
+        $plugin = $this->getPlugin();
         $plugin->getMenuItems()->add($item);
         $item->setPlugin($plugin);
+
         return $item;
     }
 
@@ -81,8 +87,8 @@ class MenuEntry
                     'action' => 'Index',
                     'onclick' => 'window.open("https://console.8select.io");',
                     'active' => 1,
-                    'parent' => $this->Menu()->findOneBy(['controller' => 'ConfigurationMenu']),
-                    'class' => 'eightselect--icon'
+                    'parent' => $this->getParentMenu(),
+                    'class' => 'eightselect--icon',
                 )
             );
         } catch (\Exception $exception) {
