@@ -65,7 +65,12 @@ class Connector
             'json' => $this->getConnectDetails(),
         ];
 
-        $this->guzzleClient->put($this->getUrl('shops'), $content);
+        $path = sprintf(
+            '/shops/%s/%s',
+            $this->pluginConfig->get('CseEightselectBasicApiId'),
+            $this->pluginConfig->get('CseEightselectBasicFeedId')
+        );
+        $this->guzzleClient->put($this->getUrl($path), $content);
     }
 
     /**
@@ -75,10 +80,6 @@ class Connector
     {
         $shopUrl = $this->provider->getShopUrl(true);
         return [
-            'tenant' => [
-                'feedId' => $this->pluginConfig->get('CseEightselectBasicFeedId'),
-                'id' => $this->pluginConfig->get('CseEightselectBasicApiId'),
-            ],
             'shop' => [
                 'url' => $shopUrl,
                 'software' => 'Shopware',
