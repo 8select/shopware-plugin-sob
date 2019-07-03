@@ -319,8 +319,8 @@ class CseEightselectBasic extends Plugin
                         Shopware()->DocPath('files_8select')
                     );
                     $update->execute();
-                    $this->logMessages[] = 'Update_2_0_0 executed';
                     $this->connectCse();
+                    $this->logMessages[] = 'Update_2_0_0 executed';
                 // no break
                 case version_compare($context->getCurrentVersion(), '3.1.0', '<'):
                     $update = new Update_3_1_0(
