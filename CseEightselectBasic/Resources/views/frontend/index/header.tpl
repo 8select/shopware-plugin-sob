@@ -82,10 +82,14 @@
             };
 
             _eightselect_shop_plugin.dynamicallyInjectWidget = function(selector) {
+                if (typeof window._8select === "undefined") {
+                    return
+                }
+
                 var customCseContainer = document.createElement('div');
                 var customCseSnippet = document.createElement('div');
                 var target =  document.querySelector(selector);
-                var targetParent = document.querySelector(selector).parentNode;
+                var targetParent = target.parentNode;
 
                 customCseContainer.setAttribute('class', '-eightselect-widget-container');
                 customCseContainer.setAttribute('style', 'display: none;');
