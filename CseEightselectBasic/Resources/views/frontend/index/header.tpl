@@ -82,10 +82,6 @@
             };
 
             _eightselect_shop_plugin.dynamicallyInjectWidget = function(selector) {
-                if (typeof window._8select === "undefined") {
-                    return
-                }
-
                 var customCseContainer = document.createElement('div');
                 var customCseSnippet = document.createElement('div');
                 var target =  document.querySelector(selector);
@@ -103,6 +99,10 @@
                 {else}
                     targetParent.insertBefore(customCseContainer, target.nextSibling);
                 {/if}
+
+                if (typeof window._8select === "undefined") {
+                    return
+                }
 
                 window._8select.initCSE();
             };
