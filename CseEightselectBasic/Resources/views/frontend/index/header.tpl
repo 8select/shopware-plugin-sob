@@ -81,6 +81,28 @@
                 return;
             };
 
+            _eightselect_shop_plugin.dynamicallyInjectWidget = function(selector) {
+                var customCseContainer = document.createElement('div');
+                var customCseSnippet = document.createElement('div');
+                var target =  document.querySelector(selector);
+                var targetParent = document.querySelector(selector).parentNode;
+
+                customCseContainer.setAttribute('class', '-eightselect-widget-container');
+                customCseContainer.setAttribute('style', 'display: none;');
+                customCseSnippet.setAttribute('data-sku', '{$sArticle.ordernumber}' );
+                customCseSnippet.setAttribute('data-8select-widget-id', 'sys-psv');
+
+                customCseContainer.appendChild(customCseSnippet)
+
+                {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_before"}
+                    targetParent.insertBefore(customCseContainer, target);
+                {else}
+                    targetParent.insertBefore(customCseContainer, target.nextSibling);
+                {/if}
+
+                window._8select.initCSE();
+            };
+
             _eightselect_shop_plugin.addToCart = function (sku, quantity, Promise) {
                 try {
                     var eightselectCartForm = document.querySelector('#eightselect_cart_trigger_form');
@@ -103,6 +125,16 @@
                     return Promise.reject(error);
                 }
             };
+
+            {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
+                {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_css_selector"}
+                var injectWidget = function () {
+                    window.removeEventListener('DOMContentLoaded', injectWidget);
+                    _eightselect_shop_plugin.dynamicallyInjectWidget( '{config name="CseEightselectBasicSysPsvCssSelector"}' );
+                } 
+                window.addEventListener('DOMContentLoaded', injectWidget);
+                {/if}
+            {/if}
         </script>
 
         {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
