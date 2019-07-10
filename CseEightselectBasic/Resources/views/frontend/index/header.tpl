@@ -84,7 +84,12 @@
             _eightselect_shop_plugin.dynamicallyInjectWidget = function(selector) {
                 var customCseContainer = document.createElement('div');
                 var customCseSnippet = document.createElement('div');
-                var target =  document.querySelector(selector);
+                var target = document.querySelector(selector);
+
+                if (!target) {
+                    return console.warn('8select CSE Plugin v__VERSION__: CSS selector "%s" does not exist!', selector);
+                }
+
                 var targetParent = target.parentNode;
 
                 customCseContainer.setAttribute('class', '-eightselect-widget-container');
@@ -100,11 +105,13 @@
                     targetParent.insertBefore(customCseContainer, target.nextSibling);
                 {/if}
 
-                if (typeof window._8select === "undefined") {
-                    return
+                if (typeof _8select !== "undefined" && _8select.initCSE) {
+                    try {
+                        _8select.initCSE();
+                    } catch (error) {
+                        console.error(error);
+                    }
                 }
-
-                window._8select.initCSE();
             };
 
             _eightselect_shop_plugin.addToCart = function (sku, quantity, Promise) {
@@ -129,17 +136,19 @@
                     return Promise.reject(error);
                 }
             };
+        </script>
 
+        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_css_selector"}
             {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
-                {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_css_selector"}
+            <script type="text/javascript">
                 var injectWidget = function () {
                     window.removeEventListener('DOMContentLoaded', injectWidget);
                     _eightselect_shop_plugin.dynamicallyInjectWidget( '{config name="CseEightselectBasicSysPsvCssSelector"}' );
                 } 
                 window.addEventListener('DOMContentLoaded', injectWidget);
-                {/if}
+            </script>
             {/if}
-        </script>
+        {/if}
 
         {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
             {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
