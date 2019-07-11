@@ -87,7 +87,7 @@
                 var target = document.querySelector(selector);
 
                 if (!target) {
-                    return console.warn('8select CSE Plugin v__VERSION__: CSS selector "%s" does not exist!', selector);
+                    return console.warn('8select CSE Plugin __VERSION__: CSS selector "%s" does not exist!', selector);
                 }
 
                 var targetParent = target.parentNode;
