@@ -72,11 +72,23 @@
                     <label lang="en">Product tabs</label>
                 </option>
                 <option>
+                    <value>frontend_css_selector</value>
+                    <label lang="de">CSS Selektor</label>
+                    <label lang="en">CSS selector</label>
+                </option>
+                <option>
                     <value>none</value>
                     <label lang="de">Nicht automatisch einfügen</label>
                     <label lang="en">Do not insert automatically</label>
                 </option>
             </store>
+        </element>
+        <element type="text" required="false" scope="locale">
+            <name>CseEightselectBasicSysPsvCssSelector</name>
+            <label lang="de">CSS Selektor für Positionierung:</label>
+            <label lang="en">CSS selector for positioning:</label>
+            <description lang="de">CSS Selektor, an dem das SYS-PSV Widget platziert werden soll. Nur wirksam bei Position "CSS Selektor"!</description>
+            <description lang="en">CSS selector where the SYS-PSV widget should be placed. Only effective at position "CSS Selector"!</description>
         </element>
         <!-- WIDGET PLACEMENT-->
         <element type="select" required="true" scope="locale">
