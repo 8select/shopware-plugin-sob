@@ -84,7 +84,13 @@
             _eightselect_shop_plugin.dynamicallyInjectWidget = function(selector) {
                 var customCseContainer = document.createElement('div');
                 var customCseSnippet = document.createElement('div');
-                var target = document.querySelector(selector);
+                var target 
+
+                try {
+                    target = document.querySelector(selector);
+                } catch (error) {
+                    return console.warn('8select CSE Plugin __VERSION__: Position is "CSS selector" but none was provided.');
+                }
 
                 if (!target) {
                     return console.warn('8select CSE Plugin __VERSION__: CSS selector "%s" does not exist!', selector);
