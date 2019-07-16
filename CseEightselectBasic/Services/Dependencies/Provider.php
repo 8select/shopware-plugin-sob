@@ -87,6 +87,8 @@ class Provider
      */
     public function getShopUrl($withActiveCse = false)
     {
+        //__SHOP_URL_OVERRIDE__
+
         $shop = null;
         if ($withActiveCse) {
             $shop = $this->getShopWithActiveCSE();
