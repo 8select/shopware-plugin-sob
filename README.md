@@ -26,7 +26,7 @@ pandoc --standalone --toc --metadata=title:"8select Curated Shopping Engine - Mo
 ### 2. Write Code
 
 - Go to your local clone of this repository and write code
-- run `bin/copy2dev.sh [version] [profile] [docker container name]` to copy the current state of your repository to the plugins directory within your running `docker-shopware` container
+- run `bin/copy2dev.sh [version] [profile] [stage] [shopware-host] [docker container name]` to copy the current state of your repository to the plugins directory within your running `docker-shopware` container
     - name your version with a version number that is higher than the current stable release and prefix it with a release candidate
     - **Example** (if the current stable version is 1.5.3): `bin/copy2dev.sh 1.6.0-RC1 staging 5217-php7_shopware_1`
 - the above mentioned script will...
