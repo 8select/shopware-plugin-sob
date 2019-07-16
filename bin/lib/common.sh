@@ -11,3 +11,5 @@ CURRENT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 VERSION=${1}
 PROFILE=${2}
+STAGE=${3:-prod}
+SHOP_URL_OVERRIDE=${4:-default}
