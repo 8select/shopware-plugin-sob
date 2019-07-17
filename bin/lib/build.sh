@@ -14,6 +14,7 @@ echo "VERSION: ${VERSION}"
 echo "PROFILE: ${PROFILE}"
 echo "STAGE: ${STAGE}"
 echo "SHOP_CONNECTOR_URL: ${SHOP_CONNECTOR_URL}"
+echo "SHOP_URL_OVERRIDE: ${SHOP_URL_OVERRIDE}"
 echo "=========================="
 
 echo "Build at ${BUILD_DIR}"
@@ -28,6 +29,15 @@ sed -i '' "s@__VERSION__@${VERSION}@g" ${PLUGIN_DIR}/Setup/Helpers/Logger.php
 
 sed -i '' "s@__SHOP_CONNECTOR_URL__@${SHOP_CONNECTOR_URL}@g" ${PLUGIN_DIR}/Services/Export/Connector.php
 sed -i '' "s@__SHOP_CONNECTOR_URL__@${SHOP_CONNECTOR_URL}@g" ${PLUGIN_DIR}/Setup/Helpers/Logger.php
+
+if [ ${PROFILE} == 'production' ] || [ ${SHOP_URL_OVERRIDE} == 'default' ]
+then
+  SHOP_URL_RETURN=""
+else
+  SHOP_URL_RETURN="return '${SHOP_URL_OVERRIDE}';"
+fi
+
+sed -i '' "s@//__SHOP_URL_OVERRIDE__@${SHOP_URL_RETURN}@g" ${PLUGIN_DIR}/Services/Dependencies/Provider.php
 
 if [ ${PROFILE} == 'production' ]
 then

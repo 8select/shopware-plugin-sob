@@ -4,7 +4,7 @@
 if [ "$#" -lt 2 ]; then
     echo "Illegal number of parameters"
     echo "Usage:"
-    echo "bin/release.sh <version> <profile> [<stage>]"
+    echo "bin/release.sh <version> <profile> [<stage>] [<shop-url>]"
     exit 1
 fi
 

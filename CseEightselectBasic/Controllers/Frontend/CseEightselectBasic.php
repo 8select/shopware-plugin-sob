@@ -381,4 +381,100 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
             'validate',
         ];
     }
+
+    /**
+     * The API is available at /cse-eightselect-basic/migration-attribute-mappings
+     */
+    public function migrationAttributeMappingsAction()
+    {
+        try {
+            $auth = $this->container->get('cse_eightselect_basic.request.auth');
+            $auth->auth($this->Request());
+        } catch (NotAuthorizedException $exception) {
+            throw new \Enlight_Controller_Exception('hide export', 404);
+        } catch (AuthException $exception) {
+            $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+            $this->Response()->setHeader('Content-Type', 'application/json');
+            $this->Response()->setHttpResponseCode($exception->getCode());
+            $body = $this->httpBodyFromException($exception, 'AUTH_ERROR');
+            $this->Response()->setBody($body);
+
+            return;
+        }
+
+        $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+        $this->Response()->setHeader('Content-Type', 'application/json');
+
+        try {
+            $attributeMappingService = $this->container->get('cse_eightselect_basic.migration.attribute_mapping');
+            $attributeMapping = $attributeMappingService->get();
+
+            $response = json_encode(
+                [
+                    'limit' => count($attributeMapping),
+                    'offset' => 0,
+                    'total' => count($attributeMapping),
+                    'data' => $attributeMapping,
+                ]
+            );
+
+            $this->Response()->setBody($response);
+
+            return;
+        } catch (\Exception $exception) {
+            $this->Response()->setHttpResponseCode(500);
+            $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
+            $this->Response()->setBody($body);
+
+            return;
+        }
+    }
+
+    /**
+     * The API is available at /cse-eightselect-basic/migration-variant-dimensions
+     */
+    public function migrationVariantDimensionsAction()
+    {
+        try {
+            $auth = $this->container->get('cse_eightselect_basic.request.auth');
+            $auth->auth($this->Request());
+        } catch (NotAuthorizedException $exception) {
+            throw new \Enlight_Controller_Exception('hide export', 404);
+        } catch (AuthException $exception) {
+            $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+            $this->Response()->setHeader('Content-Type', 'application/json');
+            $this->Response()->setHttpResponseCode($exception->getCode());
+            $body = $this->httpBodyFromException($exception, 'AUTH_ERROR');
+            $this->Response()->setBody($body);
+
+            return;
+        }
+
+        $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+        $this->Response()->setHeader('Content-Type', 'application/json');
+
+        try {
+            $variantDimensionsService = $this->container->get('cse_eightselect_basic.migration.variant_dimensions');
+            $variantDimensions = $variantDimensionsService->get();
+
+            $response = json_encode(
+                [
+                    'limit' => count($variantDimensions),
+                    'offset' => 0,
+                    'total' => count($variantDimensions),
+                    'data' => $variantDimensions,
+                ]
+            );
+
+            $this->Response()->setBody($response);
+
+            return;
+        } catch (\Exception $exception) {
+            $this->Response()->setHttpResponseCode(500);
+            $body = $this->httpBodyFromException($exception, 'GENERAL_ERROR');
+            $this->Response()->setBody($body);
+
+            return;
+        }
+    }
 }

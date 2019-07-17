@@ -20,6 +20,7 @@ class Attributes
 
     /**
      * @param Connection $connection
+     * @param VariantDimensions $variantDimensions
      */
     public function __construct(Connection $connection, VariantDimensions $variantDimensions)
     {

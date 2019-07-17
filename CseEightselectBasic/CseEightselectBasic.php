@@ -8,8 +8,8 @@ use CseEightselectBasic\Services\Export\Connector;
 use CseEightselectBasic\Services\Export\StatusExportDelta;
 use CseEightselectBasic\Services\PluginConfig\PluginConfig as PluginConfigService;
 use CseEightselectBasic\Setup\Helpers\EmotionComponents;
-use CseEightselectBasic\Setup\Helpers\MenuEntry;
 use CseEightselectBasic\Setup\Helpers\Logger;
+use CseEightselectBasic\Setup\Helpers\MenuEntry;
 use CseEightselectBasic\Setup\Install;
 use CseEightselectBasic\Setup\Uninstall;
 use CseEightselectBasic\Setup\Updates\Update_1_11_0;
@@ -304,9 +304,6 @@ class CseEightselectBasic extends Plugin
             );
 
             switch (true) {
-                case version_compare($context->getCurrentVersion(), '3.0.0', '<'):
-                    throw new \Exception('Upgrade auf Version 3 erst mit Release 3.1.0 möglich. </br></br></br></br>Bitte aktivieren sie die aktuelle Version wieder!');
-                    break;
                 case version_compare($context->getCurrentVersion(), '1.11.0', '<='):
                     $update = new Update_1_11_0(
                         $this->container->get('config'),
@@ -322,9 +319,9 @@ class CseEightselectBasic extends Plugin
                         Shopware()->DocPath('files_8select')
                     );
                     $update->execute();
-                    $this->logMessages[] = 'Update_2_0_0 executed';
                     $this->connectCse();
-                    // no break
+                    $this->logMessages[] = 'Update_2_0_0 executed';
+                // no break
                 case version_compare($context->getCurrentVersion(), '3.1.0', '<'):
                     $update = new Update_3_1_0(
                         new MenuEntry(
@@ -333,6 +330,7 @@ class CseEightselectBasic extends Plugin
                         )
                     );
                     $update->execute();
+                    $this->connectCse();
                     $this->logMessages[] = 'Update_3_1_0 executed';
             }
 
