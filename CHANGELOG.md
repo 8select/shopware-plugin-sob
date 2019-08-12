@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.1.1](https://github.com/8select/shopware-plugin-sob/tree/3.1.1) (2019-8-12)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.0...3.1.1)
+
+**Fixed Bugs:**
+
+- export article categories that only have one level [\#120](https://github.com/8select/shopware-plugin-sob/pull/120) ([akleiber](https://github.com/akleiber))
+
 ## [3.1.0](https://github.com/8select/shopware-plugin-sob/tree/3.1.0) (2019-7-18)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.0.1...3.1.0)
