@@ -385,7 +385,7 @@ class RawExport implements ExportInterface
     {
         $sql = "SELECT
                 s_articles_details.ordernumber as `s_articles_details.ordernumber`,
-                CONCAT(s_articles_categories_ro.categoryID, deepestCategory.path) as `path`
+                IFNULL(CONCAT(s_articles_categories_ro.categoryID, deepestCategory.path), deepestCategory.id) as `path`
             FROM
                 s_articles_details
             INNER JOIN
