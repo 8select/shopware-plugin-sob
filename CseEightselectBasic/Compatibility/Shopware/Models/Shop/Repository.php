@@ -2,6 +2,7 @@
 
 namespace CseEightselectBasic\Compatibility\Shopware\Models\Shop;
 
+use Shopware\Models\Shop\DetachedShop;
 use Shopware\Models\Shop\Repository as LegacyRepository;
 
 class Repository
