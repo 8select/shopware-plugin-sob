@@ -2,20 +2,21 @@
 
 namespace CseEightselectBasic\Services\Request;
 
+use CseEightselectBasic\Services\PluginConfig\PluginConfig;
 use CseEightselectBasic\Services\Request\AuthException;
 use CseEightselectBasic\Services\Request\NotAuthorizedException;
 
 class Auth
 {
     /**
-     * @var PlugincConfig
+     * @var PluginConfig
      */
     private $pluginConfig;
 
     /**
-     * @param PlugincConfig $pluginConfig
+     * @param PluginConfig $pluginConfig
      */
-    public function __construct($pluginConfig)
+    public function __construct(PluginConfig $pluginConfig)
     {
         $this->pluginConfig = $pluginConfig;
     }

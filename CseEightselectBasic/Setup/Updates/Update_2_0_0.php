@@ -60,7 +60,7 @@ class Update_2_0_0 implements SetupInterface
                 }
 
                 if (is_dir($object)) {
-                    rrmdir($dir);
+                    $this->rrmdir($object);
                 } else {
                     unlink(sprintf('%s/%s', $dir, $object));
                 }
