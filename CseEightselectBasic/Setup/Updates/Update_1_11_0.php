@@ -14,7 +14,7 @@ class Update_1_11_0 implements SetupInterface
     private $config;
 
     /**
-     * @var ConfigWrite
+     * @var ConfigWriter
      */
     private $configWriter;
 
