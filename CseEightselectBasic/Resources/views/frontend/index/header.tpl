@@ -84,6 +84,8 @@
             _eightselect_shop_plugin.dynamicallyInjectWidget = function(selector) {
                 var customCseContainer = document.createElement('div');
                 var customCseSnippet = document.createElement('div');
+                var htmlContentBefore = `{include file="string:{$htmlContainer.0}"}`
+                var htmlContentAfter = `{include file="string:{$htmlContainer.1}"}`
                 var target 
 
                 try {
@@ -103,7 +105,9 @@
                 customCseSnippet.setAttribute('data-sku', '{$sArticle.ordernumber}' );
                 customCseSnippet.setAttribute('data-8select-widget-id', 'sys-psv');
 
+                customCseContainer.innerHTML = htmlContentBefore
                 customCseContainer.appendChild(customCseSnippet)
+                customCseContainer.innerHTML += htmlContentAfter
 
                 {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_before"}
                     targetParent.insertBefore(customCseContainer, target);
