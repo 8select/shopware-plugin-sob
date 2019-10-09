@@ -83,9 +83,9 @@
 
             _eightselect_shop_plugin.dynamicallyInjectWidget = function(selector) {
                 var customCseContainer = document.createElement('div');
+                customCseContainer.setAttribute('class', '-eightselect-widget-container')
+                
                 var customCseSnippet = `<div 
-                    style="display:none" 
-                    class="-eightselect-widget-container" 
                     data-sku={$sArticle.ordernumber} 
                     data-8select-widget-id="sys-psv">
                 </div>`;
