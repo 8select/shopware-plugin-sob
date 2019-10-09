@@ -83,10 +83,15 @@
 
             _eightselect_shop_plugin.dynamicallyInjectWidget = function(selector) {
                 var customCseContainer = document.createElement('div');
-                var customCseSnippet = document.createElement('div');
-                var htmlContentBefore = `{include file="string:{$htmlContainer.0}"}`
-                var htmlContentAfter = `{include file="string:{$htmlContainer.1}"}`
-                var target 
+                var customCseSnippet = `<div 
+                    style="display:none" 
+                    class="-eightselect-widget-container" 
+                    data-sku={$sArticle.ordernumber} 
+                    data-8select-widget-id="sys-psv">
+                </div>`;
+                var htmlContentBefore = `{include file="string:{$htmlContainer.0}"}`;
+                var htmlContentAfter = `{include file="string:{$htmlContainer.1}"}`;
+                var target;
 
                 try {
                     target = document.querySelector(selector);
@@ -100,14 +105,11 @@
 
                 var targetParent = target.parentNode;
 
-                customCseContainer.setAttribute('class', '-eightselect-widget-container');
-                customCseContainer.setAttribute('style', 'display: none;');
-                customCseSnippet.setAttribute('data-sku', '{$sArticle.ordernumber}' );
-                customCseSnippet.setAttribute('data-8select-widget-id', 'sys-psv');
-
-                customCseContainer.innerHTML = htmlContentBefore
-                customCseContainer.appendChild(customCseSnippet)
-                customCseContainer.innerHTML += htmlContentAfter
+                customCseContainer.insertAdjacentHTML('afterbegin', `
+                    ${ htmlContentBefore }
+                    ${ customCseSnippet }
+                    ${ htmlContentAfter }
+                `);
 
                 {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_before"}
                     targetParent.insertBefore(customCseContainer, target);
