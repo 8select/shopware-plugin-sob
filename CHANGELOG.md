@@ -1,5 +1,14 @@
 # Change Log
 
+## [3.1.2](https://github.com/8select/shopware-plugin-sob/tree/3.1.2) (2019-10-16)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.1...3.1.2)
+
+**Fixed Bugs:**
+
+- Fix warning from static code analysis [\#121](https://github.com/8select/shopware-plugin-sob/pull/121) ([akleiber](https://github.com/akleiber))
+- [CSE-2581](https://8select.atlassian.net/browse/CSE-2581) respect custom html container content in on position css selector [\#122](https://github.com/8select/shopware-plugin-sob/pull/122) ([voodoods](https://github.com/voodoods))
+
 ## [3.1.1](https://github.com/8select/shopware-plugin-sob/tree/3.1.1) (2019-8-12)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.0...3.1.1)
