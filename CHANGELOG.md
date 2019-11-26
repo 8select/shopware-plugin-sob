@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.1.3](https://github.com/8select/shopware-plugin-sob/tree/3.1.3) (2019-11-26)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.2...3.1.3)
+
+**Fixed Bugs:**
+
+- Shopware support ticket - [CSE-28886](https://8select.atlassian.net/browse/CSE-28886) - avoid clicking CSE tab on mobile [\#123](https://github.com/8select/shopware-plugin-sob/pull/123) ([akleiber](https://github.com/akleiber))
+
 ## [3.1.2](https://github.com/8select/shopware-plugin-sob/tree/3.1.2) (2019-10-16)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.1...3.1.2)
