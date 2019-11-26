@@ -84,9 +84,9 @@
             _eightselect_shop_plugin.dynamicallyInjectWidget = function(selector) {
                 var customCseContainer = document.createElement('div');
                 customCseContainer.setAttribute('class', '-eightselect-widget-container')
-                
-                var customCseSnippet = `<div 
-                    data-sku={$sArticle.ordernumber} 
+
+                var customCseSnippet = `<div
+                    data-sku={$sArticle.ordernumber}
                     data-8select-widget-id="sys-psv">
                 </div>`;
                 var htmlContentBefore = `{include file="string:{$htmlContainer.0}"}`;
@@ -156,7 +156,7 @@
                 var injectWidget = function () {
                     window.removeEventListener('DOMContentLoaded', injectWidget);
                     _eightselect_shop_plugin.dynamicallyInjectWidget( '{config name="CseEightselectBasicSysPsvCssSelector"}' );
-                } 
+                }
                 window.addEventListener('DOMContentLoaded', injectWidget);
             </script>
             {/if}
