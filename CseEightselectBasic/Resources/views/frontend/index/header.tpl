@@ -175,11 +175,18 @@
                                 }
                             )[0];
 
-                        if (tabToActivate) {
-                            tabToActivate.click();
+                        if (!tabToActivate || tabToActivate.offsetHeight === 0) {
+                            return;
                         }
+                        tabToActivate.click();
+
+
                         var cseTab = document.querySelector('a[data-tabname=cse]');
                         var cseContainer = document.querySelector('div.-eightselect-widget-sw-tab-container');
+
+                        if (!cseTab || !cseContainer || cseTab.offsetHeight === 0) {
+                            return;
+                        }
 
                         if (cseTab && cseTab.style.display !== 'none') {
                             cseTab.style.display = 'none';
