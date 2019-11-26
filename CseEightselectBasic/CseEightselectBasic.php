@@ -311,6 +311,7 @@ class CseEightselectBasic extends Plugin
                         $this->getPluginConfigService()
                     );
                     $update->execute();
+                    $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
                     $this->logMessages[] = 'Update_1_11_0 executed';
                 // no break
                 case version_compare($context->getCurrentVersion(), '2.0.0', '<'):
@@ -320,6 +321,7 @@ class CseEightselectBasic extends Plugin
                     );
                     $update->execute();
                     $this->connectCse();
+                    $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
                     $this->logMessages[] = 'Update_2_0_0 executed';
                 // no break
                 case version_compare($context->getCurrentVersion(), '3.1.0', '<'):
@@ -331,10 +333,11 @@ class CseEightselectBasic extends Plugin
                     );
                     $update->execute();
                     $this->connectCse();
+                    $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
                     $this->logMessages[] = 'Update_3_1_0 executed';
             }
 
-            $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
+            $context->scheduleClearCache([InstallContext::CACHE_TAG_HTTP]);
 
             $this->logMessages[] = 'Plugin update completed';
             $this->getCseLogger()->log('update', $this->logMessages, $this->hasLogError);
