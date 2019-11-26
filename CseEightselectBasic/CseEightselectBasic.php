@@ -337,7 +337,7 @@ class CseEightselectBasic extends Plugin
                     $this->logMessages[] = 'Update_3_1_0 executed';
             }
 
-            $context->scheduleClearCache([InstallContext::CACHE_TAG_HTTP]);
+            $context->scheduleClearCache(InstallContext::CACHE_LIST_FRONTEND);
 
             $this->logMessages[] = 'Plugin update completed';
             $this->getCseLogger()->log('update', $this->logMessages, $this->hasLogError);
