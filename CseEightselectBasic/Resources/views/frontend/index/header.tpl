@@ -198,7 +198,7 @@
                         var cseTab = document.querySelector('a[data-tabname=cse]');
                         var cseContainer = document.querySelector('div.-eightselect-widget-sw-tab-container');
 
-                        if (!cseTab || !cseContainer) {
+                        if (!cseTab || !cseContainer || cseTab.offsetHeight === 0) {
                             return;
                         }
 
