@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.1.4](https://github.com/8select/shopware-plugin-sob/tree/3.1.4) (2019-11-26)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.3...3.1.4)
+
+**Merged Pull Requests:**
+
+- Shopware support ticket - [CSE-28886](https://8select.atlassian.net/browse/CSE-28886) - avoid clicking CSE tab on mobile on hideSys event [\#124](https://github.com/8select/shopware-plugin-sob/pull/124) ([akleiber](https://github.com/akleiber))
+
 ## [3.1.3](https://github.com/8select/shopware-plugin-sob/tree/3.1.3) (2019-11-26)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.2...3.1.3)
@@ -37,7 +45,7 @@
 
 - reduce 8select menu [\#114](https://github.com/8select/shopware-plugin-sob/pull/114) ([voodoods](https://github.com/voodoods))
 - [CSE-2308](https://8select.atlassian.net/browse/CSE-2308) allow dynamic positioning for SYS-PSV [\#115](https://github.com/8select/shopware-plugin-sob/pull/115) ([voodoods](https://github.com/voodoods))
-- [CSE-24594](https://8select.atlassian.net/browse/CSE-24594) add text snippet to hidden cart form button [\#116](https://github.com/8select/shopware-plugin-sob/pull/116) ([voodoods](https://github.com/voodoods))
+- Shopware support ticket - [CSE-24594](https://8select.atlassian.net/browse/CSE-24594) add text snippet to hidden cart form button [\#116](https://github.com/8select/shopware-plugin-sob/pull/116) ([voodoods](https://github.com/voodoods))
 - [CSE-2072](https://8select.atlassian.net/browse/CSE-2072) migration from 2.x to 3.x [\#119](https://github.com/8select/shopware-plugin-sob/pull/119) ([akleiber](https://github.com/akleiber))
 
 ## [3.1.0-beta.0](https://github.com/8select/shopware-plugin-sob/tree/3.1.0-beta.0) (2019-7-17)
@@ -52,7 +60,7 @@
 
 - reduce 8select menu [\#114](https://github.com/8select/shopware-plugin-sob/pull/114) ([voodoods](https://github.com/voodoods))
 - [CSE-2308](https://8select.atlassian.net/browse/CSE-2308) allow dynamic positioning for SYS-PSV [\#115](https://github.com/8select/shopware-plugin-sob/pull/115) ([voodoods](https://github.com/voodoods))
-- [CSE-24594](https://8select.atlassian.net/browse/CSE-24594) add text snippet to hidden cart form button [\#116](https://github.com/8select/shopware-plugin-sob/pull/116) ([voodoods](https://github.com/voodoods))
+- Shopware support ticket - [CSE-24594](https://8select.atlassian.net/browse/CSE-24594) add text snippet to hidden cart form button [\#116](https://github.com/8select/shopware-plugin-sob/pull/116) ([voodoods](https://github.com/voodoods))
 - [CSE-2072](https://8select.atlassian.net/browse/CSE-2072) migration from 2.x to 3.x [\#119](https://github.com/8select/shopware-plugin-sob/pull/119) ([akleiber](https://github.com/akleiber))
 
 ## [3.0.1](https://github.com/8select/shopware-plugin-sob/tree/3.0.1) (2019-5-17)
