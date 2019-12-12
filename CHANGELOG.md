@@ -1,10 +1,18 @@
 # Change Log
 
+## [3.1.5](https://github.com/8select/shopware-plugin-sob/tree/3.1.5) (2019-12-12)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.4...3.1.5)
+
+**Fixed Bugs:**
+
+- [CSE-28886](https://8select.atlassian.net/browse/CSE-28886) "unhide" tab element before checking if it is visible [\#125](https://github.com/8select/shopware-plugin-sob/pull/125) ([akleiber](https://github.com/akleiber))
+
 ## [3.1.4](https://github.com/8select/shopware-plugin-sob/tree/3.1.4) (2019-11-26)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.3...3.1.4)
 
-**Merged Pull Requests:**
+**Fixed Bugs:**
 
 - Shopware support ticket - [CSE-28886](https://8select.atlassian.net/browse/CSE-28886) - avoid clicking CSE tab on mobile on hideSys event [\#124](https://github.com/8select/shopware-plugin-sob/pull/124) ([akleiber](https://github.com/akleiber))
 
