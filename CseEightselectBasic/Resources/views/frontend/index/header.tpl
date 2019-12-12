@@ -205,13 +205,17 @@
                         var cseTab = document.querySelector('a[data-tabname=cse]');
                         var cseContainer = document.querySelector('div.-eightselect-widget-sw-tab-container');
 
-                        if (!cseTab || !cseContainer || cseTab.offsetHeight === 0) {
+                        if (!cseTab || !cseContainer) {
                             return;
                         }
 
                         cseTab.style.display = '';
                         cseContainer.style.display = '';
-                        cseTab.click();
+
+                        // on mobile tabs are not visible and we only want to click on desktop devices
+                        if (cseTab.offsetHeight > 0) {
+                            cseTab.click();
+                        }
                     };
 
                     var domListener = function () {
