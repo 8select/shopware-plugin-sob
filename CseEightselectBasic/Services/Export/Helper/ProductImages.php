@@ -8,9 +8,9 @@ use Shopware\Components\DependencyInjection\Container;
 class ProductImages
 {
     /**
-     * @var \sExport
+     * @var \sArticles
      */
-    private $export;
+    private $articles;
 
     /**
      * @param Container $container
@@ -21,7 +21,7 @@ class ProductImages
         Provider $provider
     ) {
         $container->set('shop', $provider->getShopWithActiveCSE());
-        $this->export = Shopware()->Modules()->Export();
+        $this->articles = Shopware()->Modules()->sArticles();
     }
 
     /**
@@ -32,12 +32,30 @@ class ProductImages
      */
     public function getImageUrls($articleId, $ordernumber, $asArray = false)
     {
-        $imageUrls = $this->export->sGetArticleImageLinks($articleId, $ordernumber, 'original', '|');
+        $imageUrls = [];
+        $cover = $this->articles->sGetArticlePictures($articleId, true, null, $ordernumber);
+        $imageUrls[] = $this->getUrlOfBiggestValidImage($cover['src']);
 
-        if ($asArray) {
-            return explode('|', $imageUrls);
+        $images = $this->articles->sGetArticlePictures($articleId, false, null, $ordernumber);
+        foreach ($images as $image) {
+            $imageUrls[] = $this->getUrlOfBiggestValidImage($image['src']);
+        }
+
+        if ($asArray === false) {
+            return implode('|', $imageUrls);
         }
 
         return $imageUrls;
+    }
+
+    // for some SW configurations 'original' is null :-(
+    private function getUrlOfBiggestValidImage($images) {
+        $imageUrl = $images['original'];
+        if (is_null($imageUrl) || $imageUrl === '') {
+            unset($images['original']);
+            $imageUrl = end($images);
+        }
+
+        return $imageUrl;
     }
 }
