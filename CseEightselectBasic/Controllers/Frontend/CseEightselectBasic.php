@@ -13,6 +13,7 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
      */
     public function cartAction()
     {
+        $this->addPluginInfoHeaders();
         $this->Front()->Plugins()->ViewRenderer()->setNoRender();
         $this->Response()->setHeader('Content-Type', 'application/json');
         $this->Response()->setBody(
@@ -23,6 +24,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 
     public function validateAction()
     {
+        $this->addPluginInfoHeaders();
+
         try {
             $auth = $this->container->get('cse_eightselect_basic.request.auth');
             $auth->auth($this->Request());
@@ -78,6 +81,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
      */
     public function connectAction()
     {
+        $this->addPluginInfoHeaders();
+
         try {
             $auth = $this->container->get('cse_eightselect_basic.request.auth');
             $auth->auth($this->Request());
@@ -125,6 +130,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
      */
     public function attributesAction()
     {
+        $this->addPluginInfoHeaders();
+
         try {
             $auth = $this->container->get('cse_eightselect_basic.request.auth');
             $auth->auth($this->Request());
@@ -173,6 +180,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
      */
     public function variantDimensionsAction()
     {
+        $this->addPluginInfoHeaders();
+
         try {
             $auth = $this->container->get('cse_eightselect_basic.request.auth');
             $auth->auth($this->Request());
@@ -223,6 +232,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
      */
     public function productsAction()
     {
+        $this->addPluginInfoHeaders();
+
         try {
             $auth = $this->container->get('cse_eightselect_basic.request.auth');
             $auth->auth($this->Request());
@@ -387,6 +398,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
      */
     public function migrationAttributeMappingsAction()
     {
+        $this->addPluginInfoHeaders();
+
         try {
             $auth = $this->container->get('cse_eightselect_basic.request.auth');
             $auth->auth($this->Request());
@@ -435,6 +448,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
      */
     public function migrationVariantDimensionsAction()
     {
+        $this->addPluginInfoHeaders();
+
         try {
             $auth = $this->container->get('cse_eightselect_basic.request.auth');
             $auth->auth($this->Request());
@@ -476,5 +491,9 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 
             return;
         }
+    }
+
+    private function addPluginInfoHeaders() {
+        $this->Response()->setHeader('8select-com-plugin-version', '__VERSION__');
     }
 }
