@@ -1,10 +1,10 @@
 #!/usr/bin/env bash -e
 . $(dirname "$0")/lib/common.sh
 
-if [ "$#" -lt 2 ]; then
+if [ "$#" -lt 1 ]; then
     echo "Illegal number of parameters"
     echo "Usage:"
-    echo "bin/release.sh <version> <profile> [<stage>] [<shop-url>]"
+    echo "bin/release.sh <version> [<profile>] [<stage>] [<shop-connector-url>] [<shop-url>]"
     exit 1
 fi
 
