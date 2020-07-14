@@ -1,4 +1,9 @@
-SHOP_CONNECTOR_URL=$(aws --profile ${PROFILE} --region eu-central-1 cloudformation describe-stacks --stack-name shop-connector-${STAGE} --query 'Stacks[0].Outputs[?OutputKey==`CustomDomainName`].OutputValue' --output text)
+if [ ${SHOP_CONNECTOR_OVERRIDE} == 'default' ]
+then
+  SHOP_CONNECTOR_URL=$(aws --profile ${PROFILE} --region eu-central-1 cloudformation describe-stacks --stack-name shop-connector-${STAGE} --query 'Stacks[0].Outputs[?OutputKey==`CustomDomainName`].OutputValue' --output text)
+else
+  SHOP_CONNECTOR_URL=${SHOP_CONNECTOR_OVERRIDE}
+fi
 
 PLUGIN_NAME="CseEightselectBasic"
 
