@@ -287,13 +287,16 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
             $offset = filter_var($this->Request()->getParam('offset', 0), FILTER_VALIDATE_INT);
             $isDeltaExport = filter_var($this->Request()->getParam('delta', false), FILTER_VALIDATE_BOOLEAN);
             $fields = $this->Request()->getParam('fields');
+            $filter = $this->Request()->getParam('filter');
+            Shopware()->Container()->get('pluginlogger')->info('incoming request', ['filter' => $filter]);
+            $sku = $filter['sku'];
 
-            $data = $export->getProducts($limit, $offset, $isDeltaExport, $fields);
+            $data = $export->getProducts($limit, $offset, $isDeltaExport, $fields, $sku);
             $response = json_encode(
                 [
                     'limit' => $limit,
                     'offset' => $offset,
-                    'total' => $export->getTotal($isDeltaExport),
+                    'total' => $export->getTotal($isDeltaExport, $sku),
                     'data' => $data,
                 ]
             );

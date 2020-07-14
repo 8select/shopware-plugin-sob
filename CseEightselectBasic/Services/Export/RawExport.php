@@ -60,10 +60,16 @@ class RawExport implements ExportInterface
 
     /**
      * @param bool $isDeltaExport
+     * @param string $sku = null
      * @return int
      */
-    public function getTotal($isDeltaExport = true)
+    public function getTotal($isDeltaExport = true, $sku = null)
     {
+        $where = '';
+        if ($sku !== null) {
+            $where = sprintf('WHERE ordernumber = %s', $this->connection->quote($sku));
+        }
+
         $sqlTemplate = "
             SELECT
                 COUNT(s_articles_details.id)
@@ -78,10 +84,11 @@ class RawExport implements ExportInterface
                     categoryID = %s
                 GROUP BY
                     articleID
-            ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleID;
+            ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleID
+            %s;
         ";
         $activeShop = $this->provider->getShopWithActiveCSE();
-        $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId());
+        $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId(), $where);
 
         $count = $this->connection->fetchColumn($sql);
 
@@ -93,11 +100,12 @@ class RawExport implements ExportInterface
      * @param int $offset
      * @param bool $isDeltaExport = true
      * @param array $fields = null
+     * @param string $sku = null
      * @return array
      */
-    public function getProducts($limit, $offset, $isDeltaExport = true, $fields = null)
+    public function getProducts($limit, $offset, $isDeltaExport = true, $fields = null, $sku = null)
     {
-        $articleIds = $this->getArticleIds($limit, $offset);
+        $articleIds = $this->getArticleIds($limit, $offset, $sku);
 
         $rootData = $this->getRootData($articleIds, $fields);
 
@@ -151,9 +159,15 @@ class RawExport implements ExportInterface
     /**
      * @param integer $limit
      * @param integer $offset
+     * @param array $sku = null
      */
-    private function getArticleIds($limit, $offset)
+    private function getArticleIds($limit, $offset, $sku = null)
     {
+        $where = '';
+        if ($sku !== null) {
+            $where = sprintf('WHERE ordernumber = %s', $this->connection->quote($sku));
+        }
+
         $sqlTemplate = "
             SELECT
                 s_articles_details.id
@@ -169,10 +183,12 @@ class RawExport implements ExportInterface
                 GROUP BY
                     articleID
             ) categoryConstraint ON categoryConstraint.articleID = s_articles_details.articleID
+            %s
             LIMIT %d OFFSET %d;
         ";
+
         $activeShop = $this->provider->getShopWithActiveCSE();
-        $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId(), $limit, $offset);
+        $sql = sprintf($sqlTemplate, $activeShop->getCategory()->getId(), $where, $limit, $offset);
         $articlesIds = $this->connection->fetchAll($sql);
 
         $mapper = function ($row) {
