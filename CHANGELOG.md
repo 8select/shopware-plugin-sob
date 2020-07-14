@@ -1,5 +1,19 @@
 # Change Log
 
+## [3.2.0](https://github.com/8select/shopware-plugin-sob/tree/3.2.0) (2020-7-14)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.5...3.2.0)
+
+**Fixed Bugs:**
+
+- [HX-539](https://8select.atlassian.net/browse/HX-539) Add rounding of price values of purchase products [\#126](https://github.com/8select/shopware-plugin-sob/pull/126) ([ThomasKiec](https://github.com/ThomasKiec))
+- Missing images [\#127](https://github.com/8select/shopware-plugin-sob/pull/127) ([akleiber](https://github.com/akleiber))
+
+**Implemented Features:**
+
+- allow to override shop connector API [\#128](https://github.com/8select/shopware-plugin-sob/pull/128) ([akleiber](https://github.com/akleiber))
+- allow to filter for SKU [\#129](https://github.com/8select/shopware-plugin-sob/pull/129) ([akleiber](https://github.com/akleiber))
+
 ## [3.1.5](https://github.com/8select/shopware-plugin-sob/tree/3.1.5) (2019-12-12)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.4...3.1.5)
