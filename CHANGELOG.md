@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.2.1](https://github.com/8select/shopware-plugin-sob/tree/3.2.1) (2020-7-15)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.0...3.2.1)
+
+**Fixed Bugs:**
+
+- remove debug log output [\#130](https://github.com/8select/shopware-plugin-sob/pull/130) ([akleiber](https://github.com/akleiber))
+
 ## [3.2.0](https://github.com/8select/shopware-plugin-sob/tree/3.2.0) (2020-7-14)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.1.5...3.2.0)
