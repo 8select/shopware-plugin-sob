@@ -1,6 +1,6 @@
 **Jira Issue**
 
-https://8select.atlassian.net/browse/CSE-
+https://8select.atlassian.net/browse/HX-
 
 **Summary**
 
@@ -12,6 +12,5 @@ If you are confident that no critical system breaks you can merge without a revi
 -->
 **Checklist**
 
-- [ ] PR title is prefixed with Jira Issue Id - e.g. CSE-42
+- [ ] PR title is prefixed with Jira Issue Id - e.g. HX-42
 - [ ] Add feature / bug label
-- [ ] Unit tests for new / changed logic exist OR no logic changes are passing

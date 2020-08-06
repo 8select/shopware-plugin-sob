@@ -320,7 +320,6 @@ class CseEightselectBasic extends Plugin
                         Shopware()->DocPath('files_8select')
                     );
                     $update->execute();
-                    $this->connectCse();
                     $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
                     $this->logMessages[] = 'Update_2_0_0 executed';
                 // no break
@@ -332,15 +331,14 @@ class CseEightselectBasic extends Plugin
                         )
                     );
                     $update->execute();
-                    $this->connectCse();
                     $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
                     $this->logMessages[] = 'Update_3_1_0 executed';
+                default:
+                    $this->connectCse();
+                    $context->scheduleClearCache(InstallContext::CACHE_LIST_FRONTEND);
+                    $this->logMessages[] = 'Plugin update completed';
+                    $this->getCseLogger()->log('update', $this->logMessages, $this->hasLogError);
             }
-
-            $context->scheduleClearCache(InstallContext::CACHE_LIST_FRONTEND);
-
-            $this->logMessages[] = 'Plugin update completed';
-            $this->getCseLogger()->log('update', $this->logMessages, $this->hasLogError);
         } catch (\Exception $exception) {
             $this->logException('updating', $exception);
             $this->getCseLogger()->log('update', $this->logMessages, $this->hasLogError);
