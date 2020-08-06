@@ -14,3 +14,4 @@ If you are confident that no critical system breaks you can merge without a revi
 
 - [ ] PR title is prefixed with Jira Issue Id - e.g. HX-42
 - [ ] Add feature / bug label
+- [ ] Branch successfully tested on staging
