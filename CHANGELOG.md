@@ -1,5 +1,14 @@
 # Change Log
 
+## [3.2.3](https://github.com/8select/shopware-plugin-sob/tree/3.2.3) (2020-8-7)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.2...3.2.3)
+
+**Fixed Bugs:**
+
+- fix various complaints of the automated Shopware code review process [\#133](https://github.com/8select/shopware-plugin-sob/pull/133) ([akleiber](https://github.com/akleiber))
+- [HX-733](https://8select.atlassian.net/browse/HX-733) return default price if no other set [\#134](https://github.com/8select/shopware-plugin-sob/pull/134) ([akleiber](https://github.com/akleiber))
+
 ## [3.2.2](https://github.com/8select/shopware-plugin-sob/tree/3.2.2) (2020-8-6)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.1...3.2.2)
