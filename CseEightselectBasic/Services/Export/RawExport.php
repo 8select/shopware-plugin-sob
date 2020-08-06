@@ -235,24 +235,23 @@ class RawExport implements ExportInterface
             's_articles_details.active' => 's_articles_details.active as `s_articles_details.active`',
             's_articles.laststock' => 's_articles.laststock as `s_articles.laststock`',
             's_articles_details.instock' => 's_articles_details.instock as `s_articles_details.instock`',
-
             's_articles_prices.price' => 'CAST(
- s_articles_prices.price * (100 + s_core_tax.tax) AS DECIMAL(10,0)
-) as `s_articles_prices.price`',
-
+                    IFNULL(priceGroupPrice.price, defaultPrice.price) * (100 + s_core_tax.tax) AS DECIMAL(10,0)
+                ) as `s_articles_prices.price`',
             's_articles_prices.pseudoprice' => 'CAST(
- IF(
- s_articles_prices.pseudoprice = 0,
- s_articles_prices.price,
- s_articles_prices.pseudoprice
- ) * (100 + s_core_tax.tax) AS DECIMAL(10,0) ) as `s_articles_prices.pseudoprice`',
-
-            's_articles_details.isInStock' => 'IF (
- s_articles.active &&
- s_articles_details.active &&
- (!s_articles.laststock || s_articles_details.instock > 0),
- 1,
- 0 ) as `s_articles_details.isInStock`',
+                    IF(
+                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice) = 0,
+                        IFNULL(priceGroupPrice.price, defaultPrice.price),
+                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice)
+                    ) * (100 + s_core_tax.tax) AS DECIMAL(10,0)
+                ) as `s_articles_prices.pseudoprice`',
+            's_articles_details.isInStock' => 'IF(
+                    s_articles.active &&
+                    s_articles_details.active &&
+                    (!s_articles.laststock || s_articles_details.instock > 0),
+                    1,
+                    0
+                ) as `s_articles_details.isInStock`',
             's_articles.metaTitle' => 's_articles.metaTitle as `s_articles.metaTitle`',
             's_articles.keywords' => 's_articles.keywords as `s_articles.keywords`',
             's_articles.description' => 's_articles.description as `s_articles.description`',
@@ -272,10 +271,14 @@ class RawExport implements ExportInterface
                 s_articles_details
             INNER JOIN
                 s_articles ON s_articles.id = s_articles_details.articleID
-            LEFT JOIN s_articles_prices
-                ON s_articles_prices.articledetailsID = s_articles_details.id
-                AND s_articles_prices.from = 1
-                AND s_articles_prices.pricegroup = '%s'
+            LEFT JOIN s_articles_prices as priceGroupPrice
+                ON priceGroupPrice.articledetailsID = s_articles_details.id
+                AND priceGroupPrice.from = 1
+                AND priceGroupPrice.pricegroup = '%s'
+            LEFT JOIN s_articles_prices as defaultPrice
+                ON defaultPrice.articledetailsID = s_articles_details.id
+                AND defaultPrice.from = 1
+                AND defaultPrice.pricegroup = 'EK'
             LEFT JOIN s_core_tax
                 ON s_core_tax.id = s_articles.taxID
             LEFT JOIN
