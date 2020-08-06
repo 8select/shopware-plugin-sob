@@ -275,7 +275,7 @@ class RawExport implements ExportInterface
             LEFT JOIN s_articles_prices
                 ON s_articles_prices.articledetailsID = s_articles_details.id
                 AND s_articles_prices.from = 1
-                AND s_articles_prices.pricegroup = 'EK'
+                AND s_articles_prices.pricegroup = '%s'
             LEFT JOIN s_core_tax
                 ON s_core_tax.id = s_articles.taxID
             LEFT JOIN
@@ -286,7 +286,11 @@ class RawExport implements ExportInterface
                 s_articles_details.id IN (?);
         ";
 
-        $sql = sprintf($sqlTemplate, implode(',', $select));
+        $activeShop = $this->provider->getShopWithActiveCSE();
+        $customerGroup = $activeShop->getCustomerGroup();
+        $customerGroupKey = $customerGroup->getKey();
+
+        $sql = sprintf($sqlTemplate, implode(',', $select), $customerGroupKey);
         $articles = $this->connection->fetchAll(
             $sql,
             array($articleIds),
