@@ -1,40 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../../../engine/Shopware/Components/Plugin/schema/plugin.xsd">
+   <plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/plugin.xsd">
     <label lang="en">8select CSE</label>
     <label lang="de">8select CSE</label>
 
     <version>__VERSION__</version>
-    <copyright>Copyright (c) 8select Software GmbH</copyright>
+    <copyright>Copyright (c) 8SELECT GmbH</copyright>
     <license>proprietary</license>
-    <link>http://8select.com/</link>
-    <author>8select Software GmbH</author>
-    <description>
+    <link>https://www.8select.com/</link>
+    <author>8SELECT GmbH</author>
+    <description lang="de">
         <![CDATA[
-<h2>8select CSE</h2>
-<p>Curated Shopping as a Service</p>
+<h2>8SELECT®</h2>
+<p>Cross-Selling mittels Set-Erstellung</p>
 <p>Hier finden Sie die <a target="_blank" href="https://www.8select.com/8select-cse-installationsanleitung-shopware">Installationsanleitung</a>.</p>
 ]]>
     </description>
+    <description lang="en">
+        <![CDATA[
+<h2>8SELECT®</h2>
+<p>Cross-Selling with product set recommendations</p>
+<p>Please header over to our <a target="_blank" href="https://www.8select.com/en/8select-manual-shopware">installation manual</a>.</p>
+]]>
+    </description>
     <compatibility minVersion="5.2.17" />
-    <changelog version="1.2.1">
-        <changes lang="de">https://github.com/8select/shopware-plugin-sob/releases/tag/1.2.1</changes>
-        <changes lang="en">https://github.com/8select/shopware-plugin-sob/releases/tag/1.2.1</changes>
-    </changelog>
-    <changelog version="1.2.0">
-        <changes lang="de">https://github.com/8select/shopware-plugin-sob/releases/tag/1.2.0</changes>
-        <changes lang="en">https://github.com/8select/shopware-plugin-sob/releases/tag/1.2.0</changes>
-    </changelog>
-    <changelog version="1.1.0">
-        <changes lang="de">https://github.com/8select/shopware-plugin-sob/releases/tag/1.1.0</changes>
-        <changes lang="en">https://github.com/8select/shopware-plugin-sob/releases/tag/1.1.0</changes>
-    </changelog>
-    <changelog version="1.0.1">
-        <changes lang="de">Bugfixes am Produktexport;</changes>
-        <changes lang="en">Bugfixes regarding productexport;</changes>
-    </changelog>
-    <changelog version="1.0.0">
-        <changes lang="de">Erstveröffentlichung;</changes>
-        <changes lang="en">First release;</changes>
+    <changelog version="__VERSION__">
+        <changes lang="de">https://github.com/8select/shopware-plugin-sob/releases/tag/__VERSION__</changes>
+        <changes lang="en">https://github.com/8select/shopware-plugin-sob/releases/tag/__VERSION__</changes>
     </changelog>
 </plugin>
