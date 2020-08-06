@@ -151,13 +151,13 @@ class StatusExport implements ExportInterface
      */
     private function getFromQueryString()
     {
-        return 'FROM s_articles_details
+        $sqlTemplate = 'FROM s_articles_details
                     INNER JOIN s_articles
                         ON s_articles.id = s_articles_details.articleID
                     INNER JOIN s_articles_prices
                         ON s_articles_prices.articledetailsID = s_articles_details.id
                         AND s_articles_prices.from = 1
-                        AND s_articles_prices.pricegroup = "EK"
+                        AND s_articles_prices.pricegroup = "%s"
                     INNER JOIN s_core_tax
                         ON s_core_tax.id = s_articles.taxID
                     INNER JOIN (
@@ -167,6 +167,12 @@ class StatusExport implements ExportInterface
                         GROUP BY articleID
                     ) categoryConstraint
                         ON categoryConstraint.articleID = s_articles_details.articleID';
+
+        $activeShop = $this->provider->getShopWithActiveCSE();
+        $customerGroup = $activeShop->getCustomerGroup();
+        $customerGroupKey = $customerGroup->getKey();
+
+        return sprintf($sqlTemplate, $customerGroupKey);
     }
 
     /**
