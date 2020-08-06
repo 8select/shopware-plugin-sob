@@ -24,28 +24,8 @@
 ]]>
     </description>
     <compatibility minVersion="5.2.17" />
-    <changelog version="3.2.2">
-        <changes lang="de">https://github.com/8select/shopware-plugin-sob/releases/tag/3.2.2</changes>
-        <changes lang="en">https://github.com/8select/shopware-plugin-sob/releases/tag/3.2.2</changes>
-    </changelog>
-    <changelog version="1.2.1">
-        <changes lang="de">https://github.com/8select/shopware-plugin-sob/releases/tag/1.2.1</changes>
-        <changes lang="en">https://github.com/8select/shopware-plugin-sob/releases/tag/1.2.1</changes>
-    </changelog>
-    <changelog version="1.2.0">
-        <changes lang="de">https://github.com/8select/shopware-plugin-sob/releases/tag/1.2.0</changes>
-        <changes lang="en">https://github.com/8select/shopware-plugin-sob/releases/tag/1.2.0</changes>
-    </changelog>
-    <changelog version="1.1.0">
-        <changes lang="de">https://github.com/8select/shopware-plugin-sob/releases/tag/1.1.0</changes>
-        <changes lang="en">https://github.com/8select/shopware-plugin-sob/releases/tag/1.1.0</changes>
-    </changelog>
-    <changelog version="1.0.1">
-        <changes lang="de">Bugfixes am Produktexport;</changes>
-        <changes lang="en">Bugfixes regarding productexport;</changes>
-    </changelog>
-    <changelog version="1.0.0">
-        <changes lang="de">Erstveröffentlichung;</changes>
-        <changes lang="en">First release;</changes>
+    <changelog version="__VERSION__">
+        <changes lang="de">https://github.com/8select/shopware-plugin-sob/releases/tag/__VERSION__</changes>
+        <changes lang="en">https://github.com/8select/shopware-plugin-sob/releases/tag/__VERSION__</changes>
     </changelog>
 </plugin>
