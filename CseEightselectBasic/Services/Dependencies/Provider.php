@@ -79,7 +79,11 @@ class Provider
             return $this->container->get('shopware.release')->getVersion();
         }
 
-        return \Shopware::VERSION;
+        if (defined('Shopware::VERSION')) {
+            return \Shopware::VERSION;
+        }
+
+        return 'unknown';
     }
 
     /**
