@@ -1,5 +1,14 @@
 # Change Log
 
+## [3.2.2](https://github.com/8select/shopware-plugin-sob/tree/3.2.2) (2020-8-6)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.1...3.2.2)
+
+**Fixed Bugs:**
+
+- [HX-735](https://8select.atlassian.net/browse/HX-735) connect plugin to CSE on any update [\#131](https://github.com/8select/shopware-plugin-sob/pull/131) ([akleiber](https://github.com/akleiber))
+- [HX-733](https://8select.atlassian.net/browse/HX-733) use article price from customer group of active shop [\#132](https://github.com/8select/shopware-plugin-sob/pull/132) ([akleiber](https://github.com/akleiber))
+
 ## [3.2.1](https://github.com/8select/shopware-plugin-sob/tree/3.2.1) (2020-7-15)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.0...3.2.1)
