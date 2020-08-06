@@ -115,16 +115,16 @@ class StatusExport implements ExportInterface
                     s_articles_details.ordernumber as prop_sku,
                     ROUND(
                         CAST(
-                            s_articles_prices.price * (100 + s_core_tax.tax) / 100 AS DECIMAL(10,3)
+                            IFNULL(priceGroupPrice.price, defaultPrice.price) * (100 + s_core_tax.tax) / 100 AS DECIMAL(10,3)
                         ),
                         2
                     ) as prop_discountPrice,
                     ROUND(
                         CAST(
                             IF(
-                                s_articles_prices.pseudoprice = 0,
-                                s_articles_prices.price,
-                                s_articles_prices.pseudoprice
+                                IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice) = 0,
+                                IFNULL(priceGroupPrice.price, defaultPrice.price),
+                                IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice)
                             ) * (100 + s_core_tax.tax) / 100 AS DECIMAL(10,3)
                         ),
                         2
@@ -154,10 +154,6 @@ class StatusExport implements ExportInterface
         $sqlTemplate = 'FROM s_articles_details
                     INNER JOIN s_articles
                         ON s_articles.id = s_articles_details.articleID
-                    INNER JOIN s_articles_prices
-                        ON s_articles_prices.articledetailsID = s_articles_details.id
-                        AND s_articles_prices.from = 1
-                        AND s_articles_prices.pricegroup = "%s"
                     INNER JOIN s_core_tax
                         ON s_core_tax.id = s_articles.taxID
                     INNER JOIN (
@@ -166,7 +162,16 @@ class StatusExport implements ExportInterface
                         WHERE categoryID = :categoryId
                         GROUP BY articleID
                     ) categoryConstraint
-                        ON categoryConstraint.articleID = s_articles_details.articleID';
+                        ON categoryConstraint.articleID = s_articles_details.articleID
+                    LEFT JOIN s_articles_prices as priceGroupPrice
+                        ON priceGroupPrice.articledetailsID = s_articles_details.id
+                        AND priceGroupPrice.from = 1
+                        AND priceGroupPrice.pricegroup = "%s"
+                    LEFT JOIN s_articles_prices as defaultPrice
+                        ON defaultPrice.articledetailsID = s_articles_details.id
+                        AND defaultPrice.from = 1
+                        AND defaultPrice.pricegroup = "EK"
+                        ';
 
         $activeShop = $this->provider->getShopWithActiveCSE();
         $customerGroup = $activeShop->getCustomerGroup();
@@ -199,7 +204,7 @@ class StatusExport implements ExportInterface
                         delta.prop_discountPrice =
                             ROUND(
                                 CAST(
-                                    s_articles_prices.price * (100 + s_core_tax.tax) / 100 AS DECIMAL(10,3)
+                                    IFNULL(priceGroupPrice.price, defaultPrice.price) * (100 + s_core_tax.tax) / 100 AS DECIMAL(10,3)
                                 ),
                                 2
                             )
@@ -208,9 +213,9 @@ class StatusExport implements ExportInterface
                             ROUND(
                                 CAST(
                                     IF(
-                                        s_articles_prices.pseudoprice = 0,
-                                        s_articles_prices.price,
-                                        s_articles_prices.pseudoprice
+                                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice) = 0,
+                                        IFNULL(priceGroupPrice.price, defaultPrice.price),
+                                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice)
                                     ) * (100 + s_core_tax.tax) / 100 AS DECIMAL(10,3)
                                 ),
                                 2
