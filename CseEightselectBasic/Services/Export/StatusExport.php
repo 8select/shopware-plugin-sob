@@ -121,16 +121,16 @@ class StatusExport implements ExportInterface
                     s_articles_details.ordernumber as prop_sku,
                     ROUND(
                         CAST(
-                            IFNULL(priceGroupPrice.price, defaultPrice.price) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
+                            IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
                         ),
                         2
                     ) as prop_discountPrice,
                     ROUND(
                         CAST(
                             IF(
-                                IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice) = 0,
-                                IFNULL(priceGroupPrice.price, defaultPrice.price),
-                                IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice)
+                                IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0) = 0,
+                                IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0),
+                                IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
                             ) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
                         ),
                         2
@@ -212,7 +212,7 @@ class StatusExport implements ExportInterface
                         delta.prop_discountPrice =
                             ROUND(
                                 CAST(
-                                    IFNULL(priceGroupPrice.price, defaultPrice.price) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
+                                    IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
                                 ),
                                 2
                             )
@@ -221,9 +221,9 @@ class StatusExport implements ExportInterface
                             ROUND(
                                 CAST(
                                     IF(
-                                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice) = 0,
-                                        IFNULL(priceGroupPrice.price, defaultPrice.price),
-                                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice)
+                                        IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0) = 0,
+                                        IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0),
+                                        IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
                                     ) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
                                 ),
                                 2

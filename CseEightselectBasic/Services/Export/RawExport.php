@@ -236,13 +236,13 @@ class RawExport implements ExportInterface
             's_articles.laststock' => 's_articles.laststock as `s_articles.laststock`',
             's_articles_details.instock' => 's_articles_details.instock as `s_articles_details.instock`',
             's_articles_prices.price' => 'CAST(
-                    IFNULL(priceGroupPrice.price, defaultPrice.price) * (100 + IFNULL(customTax.tax, baseTax.tax)) AS DECIMAL(10,0)
+                    IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) AS DECIMAL(10,0)
                 ) as `s_articles_prices.price`',
             's_articles_prices.pseudoprice' => 'CAST(
                     IF(
-                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice) = 0,
-                        IFNULL(priceGroupPrice.price, defaultPrice.price),
-                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice)
+                        IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0) = 0,
+                        IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0),
+                        IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
                     ) * (100 + IFNULL(customTax.tax, baseTax.tax)) AS DECIMAL(10,0)
                 ) as `s_articles_prices.pseudoprice`',
             's_articles_details.isInStock' => 'IF(
