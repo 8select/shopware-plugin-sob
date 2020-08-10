@@ -277,8 +277,6 @@ class CseEightselectBasic extends Plugin
                 $context->getCurrentVersion()
             );
 
-            $this->disconnectCse();
-
             $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
 
             $this->logMessages[] = 'Plugin deactivation completed';
@@ -373,7 +371,6 @@ class CseEightselectBasic extends Plugin
             $this->logMessages[] = 'Plugin components uninstalled';
             $this->removeDatabase();
 
-            $this->disconnectCse();
             $context->scheduleClearCache(InstallContext::CACHE_LIST_ALL);
 
             $this->logMessages[] = 'Plugin deinstallation completed';
@@ -525,21 +522,6 @@ class CseEightselectBasic extends Plugin
             return;
         } catch (\Exception $exception) {
             $this->logException('connecting to cse', $exception);
-        }
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function disconnectCse()
-    {
-        try {
-            $this->getCseConnector()->disconnect();
-            $this->logMessages[] = 'Disconnected from CSE';
-
-            return;
-        } catch (\Exception $exception) {
-            $this->logException('disconnecting from cse', $exception);
         }
     }
 

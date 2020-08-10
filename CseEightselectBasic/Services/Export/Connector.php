@@ -100,22 +100,6 @@ class Connector
     }
 
     /**
-     * @throws CseCredentialsMissingException
-     */
-    public function disconnect()
-    {
-        if ($this->canConnect === false) {
-            throw new CseCredentialsMissingException();
-        }
-        $path = sprintf(
-            '/shops/%s/%s',
-            $this->pluginConfig->get('CseEightselectBasicApiId'),
-            $this->pluginConfig->get('CseEightselectBasicFeedId')
-        );
-        $this->guzzleClient->delete($this->getUrl($path));
-    }
-
-    /**
      * @return string
      */
     private function getUrl($path)
