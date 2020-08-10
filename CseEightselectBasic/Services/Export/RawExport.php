@@ -236,14 +236,14 @@ class RawExport implements ExportInterface
             's_articles.laststock' => 's_articles.laststock as `s_articles.laststock`',
             's_articles_details.instock' => 's_articles_details.instock as `s_articles_details.instock`',
             's_articles_prices.price' => 'CAST(
-                    IFNULL(priceGroupPrice.price, defaultPrice.price) * (100 + s_core_tax.tax) AS DECIMAL(10,0)
+                    IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) AS DECIMAL(10,0)
                 ) as `s_articles_prices.price`',
             's_articles_prices.pseudoprice' => 'CAST(
                     IF(
-                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice) = 0,
-                        IFNULL(priceGroupPrice.price, defaultPrice.price),
-                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice)
-                    ) * (100 + s_core_tax.tax) AS DECIMAL(10,0)
+                        IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0) = 0,
+                        IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0),
+                        IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
+                    ) * (100 + IFNULL(customTax.tax, baseTax.tax)) AS DECIMAL(10,0)
                 ) as `s_articles_prices.pseudoprice`',
             's_articles_details.isInStock' => 'IF(
                     s_articles.active &&
@@ -279,8 +279,15 @@ class RawExport implements ExportInterface
                 ON defaultPrice.articledetailsID = s_articles_details.id
                 AND defaultPrice.from = 1
                 AND defaultPrice.pricegroup = 'EK'
-            LEFT JOIN s_core_tax
-                ON s_core_tax.id = s_articles.taxID
+            LEFT JOIN s_core_tax as baseTax
+                ON baseTax.id = s_articles.taxID
+            LEFT JOIN s_core_tax_rules as customTax
+                ON customTax.groupID = s_articles.taxID
+                    AND customTax.areaID IS NULL
+                    AND customTax.countryID IS NULL
+                    AND customTax.stateID IS NULL
+                    AND customTax.active = 1
+                    AND customTax.customer_groupID = %d
             LEFT JOIN
                 s_core_units ON s_core_units.id = s_articles_details.unitID
             LEFT JOIN
@@ -291,9 +298,10 @@ class RawExport implements ExportInterface
 
         $activeShop = $this->provider->getShopWithActiveCSE();
         $customerGroup = $activeShop->getCustomerGroup();
+        $customerGroupId = $customerGroup->getId();
         $customerGroupKey = $customerGroup->getKey();
 
-        $sql = sprintf($sqlTemplate, implode(',', $select), $customerGroupKey);
+        $sql = sprintf($sqlTemplate, implode(',', $select), $customerGroupKey, $customerGroupId);
         $articles = $this->connection->fetchAll(
             $sql,
             array($articleIds),

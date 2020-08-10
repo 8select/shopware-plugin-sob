@@ -49,8 +49,11 @@ class StatusExport implements ExportInterface
             ]
         );
         $activeShop = $this->provider->getShopWithActiveCSE();
+        $customerGroup = $activeShop->getCustomerGroup();
         $params = [
             'categoryId' => $activeShop->getCategory()->getId(),
+            'customerGroupKey' => $customerGroup->getKey(),
+            'customerGroupId' => $customerGroup->getId(),
         ];
 
         $products = $this->connection->fetchAll($productsSql, $params);
@@ -88,8 +91,11 @@ class StatusExport implements ExportInterface
         );
 
         $activeShop = $this->provider->getShopWithActiveCSE();
+        $customerGroup = $activeShop->getCustomerGroup();
         $params = [
             'categoryId' => $activeShop->getCategory()->getId(),
+            'customerGroupKey' => $customerGroup->getKey(),
+            'customerGroupId' => $customerGroup->getId(),
         ];
 
         $count = $this->connection->fetchColumn($sql, $params);
@@ -115,17 +121,17 @@ class StatusExport implements ExportInterface
                     s_articles_details.ordernumber as prop_sku,
                     ROUND(
                         CAST(
-                            IFNULL(priceGroupPrice.price, defaultPrice.price) * (100 + s_core_tax.tax) / 100 AS DECIMAL(10,3)
+                            IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
                         ),
                         2
                     ) as prop_discountPrice,
                     ROUND(
                         CAST(
                             IF(
-                                IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice) = 0,
-                                IFNULL(priceGroupPrice.price, defaultPrice.price),
-                                IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice)
-                            ) * (100 + s_core_tax.tax) / 100 AS DECIMAL(10,3)
+                                IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0) = 0,
+                                IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0),
+                                IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
+                            ) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
                         ),
                         2
                     ) as prop_retailPrice,
@@ -151,33 +157,35 @@ class StatusExport implements ExportInterface
      */
     private function getFromQueryString()
     {
-        $sqlTemplate = 'FROM s_articles_details
-                    INNER JOIN s_articles
-                        ON s_articles.id = s_articles_details.articleID
-                    INNER JOIN s_core_tax
-                        ON s_core_tax.id = s_articles.taxID
-                    INNER JOIN (
-                        SELECT articleID
-                        FROM s_articles_categories_ro
-                        WHERE categoryID = :categoryId
-                        GROUP BY articleID
-                    ) categoryConstraint
-                        ON categoryConstraint.articleID = s_articles_details.articleID
-                    LEFT JOIN s_articles_prices as priceGroupPrice
-                        ON priceGroupPrice.articledetailsID = s_articles_details.id
-                        AND priceGroupPrice.from = 1
-                        AND priceGroupPrice.pricegroup = "%s"
-                    LEFT JOIN s_articles_prices as defaultPrice
-                        ON defaultPrice.articledetailsID = s_articles_details.id
-                        AND defaultPrice.from = 1
-                        AND defaultPrice.pricegroup = "EK"
-                        ';
-
-        $activeShop = $this->provider->getShopWithActiveCSE();
-        $customerGroup = $activeShop->getCustomerGroup();
-        $customerGroupKey = $customerGroup->getKey();
-
-        return sprintf($sqlTemplate, $customerGroupKey);
+        return 'FROM
+                    s_articles_details
+                INNER JOIN s_articles
+                    ON s_articles.id = s_articles_details.articleID
+                INNER JOIN (
+                    SELECT articleID
+                    FROM s_articles_categories_ro
+                    WHERE categoryID = :categoryId
+                    GROUP BY articleID
+                ) categoryConstraint
+                    ON categoryConstraint.articleID = s_articles_details.articleID
+                LEFT JOIN s_articles_prices as priceGroupPrice
+                    ON priceGroupPrice.articledetailsID = s_articles_details.id
+                    AND priceGroupPrice.from = 1
+                    AND priceGroupPrice.pricegroup = ":customerGroupKey"
+                LEFT JOIN s_articles_prices as defaultPrice
+                    ON defaultPrice.articledetailsID = s_articles_details.id
+                    AND defaultPrice.from = 1
+                    AND defaultPrice.pricegroup = "EK"
+                LEFT JOIN s_core_tax as baseTax
+                    ON baseTax.id = s_articles.taxID
+                LEFT JOIN s_core_tax_rules as customTax
+                    ON customTax.groupID = s_articles.taxID
+                        AND customTax.areaID IS NULL
+                        AND customTax.countryID IS NULL
+                        AND customTax.stateID IS NULL
+                        AND customTax.active = 1
+                        AND customTax.customer_groupID = :customerGroupId
+                    ';
     }
 
     /**
@@ -204,7 +212,7 @@ class StatusExport implements ExportInterface
                         delta.prop_discountPrice =
                             ROUND(
                                 CAST(
-                                    IFNULL(priceGroupPrice.price, defaultPrice.price) * (100 + s_core_tax.tax) / 100 AS DECIMAL(10,3)
+                                    IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
                                 ),
                                 2
                             )
@@ -213,10 +221,10 @@ class StatusExport implements ExportInterface
                             ROUND(
                                 CAST(
                                     IF(
-                                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice) = 0,
-                                        IFNULL(priceGroupPrice.price, defaultPrice.price),
-                                        IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice)
-                                    ) * (100 + s_core_tax.tax) / 100 AS DECIMAL(10,3)
+                                        IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0) = 0,
+                                        IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0),
+                                        IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
+                                    ) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
                                 ),
                                 2
                             )
