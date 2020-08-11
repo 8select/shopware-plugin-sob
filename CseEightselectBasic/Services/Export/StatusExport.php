@@ -171,7 +171,7 @@ class StatusExport implements ExportInterface
                 LEFT JOIN s_articles_prices as priceGroupPrice
                     ON priceGroupPrice.articledetailsID = s_articles_details.id
                     AND priceGroupPrice.from = 1
-                    AND priceGroupPrice.pricegroup = ":customerGroupKey"
+                    AND priceGroupPrice.pricegroup = :customerGroupKey
                 LEFT JOIN s_articles_prices as defaultPrice
                     ON defaultPrice.articledetailsID = s_articles_details.id
                     AND defaultPrice.from = 1
