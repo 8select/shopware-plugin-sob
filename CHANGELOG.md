@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.2.5](https://github.com/8select/shopware-plugin-sob/tree/3.2.5) (2020-8-11)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.4...3.2.5)
+
+**Fixed Bugs:**
+
+- [HX-740](https://8select.atlassian.net/browse/HX-740) remove duplicated quotes from doctrine query [\#137](https://github.com/8select/shopware-plugin-sob/pull/137) ([akleiber](https://github.com/akleiber))
+
 ## [3.2.4](https://github.com/8select/shopware-plugin-sob/tree/3.2.4) (2020-8-11)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.3...3.2.4)
