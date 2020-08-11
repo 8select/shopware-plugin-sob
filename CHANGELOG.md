@@ -1,5 +1,14 @@
 # Change Log
 
+## [3.2.4](https://github.com/8select/shopware-plugin-sob/tree/3.2.4) (2020-8-11)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.3...3.2.4)
+
+**Fixed Bugs:**
+
+- [HX-740](https://8select.atlassian.net/browse/HX-740) take tax rules into account [\#135](https://github.com/8select/shopware-plugin-sob/pull/135) ([akleiber](https://github.com/akleiber))
+- [HX-735](https://8select.atlassian.net/browse/HX-735) do not disconnect from CSE anymore [\#136](https://github.com/8select/shopware-plugin-sob/pull/136) ([akleiber](https://github.com/akleiber))
+
 ## [3.2.3](https://github.com/8select/shopware-plugin-sob/tree/3.2.3) (2020-8-7)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.2...3.2.3)
