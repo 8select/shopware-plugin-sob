@@ -211,7 +211,7 @@ class RawExport implements ExportInterface
             's_articles_details.ordernumber as `s_articles_details.ordernumber`',
         ];
 
-        $additionalSelectBase = [
+        $additionalSelect = [
             'url' => '"url" as `url`',
             'images' => '"images" as `images`',
             's_articles_details.ordernumber' => 's_articles_details.ordernumber as `s_articles_details.ordernumber`',
@@ -248,9 +248,9 @@ class RawExport implements ExportInterface
             's_articles.keywords' => 's_articles.keywords as `s_articles.keywords`',
             's_articles.description' => 's_articles.description as `s_articles.description`',
             's_articles.description_long' => 's_articles.description_long as `s_articles.description_long`',
+            $this->getLastStockColumn() => $this->getLastStockColumn() . ' as `' . $this->getLastStockColumn() . '`',
+            's_articles_details.isInStock' => $this->getIsInStockSelect(),
         ];
-
-        $additionalSelect = $additionalSelectBase + $this->getLastStockSelect() + $this->getIsInStockSelect();
 
         if (is_null($fields) || !is_array($fields)) {
             $filteredSelect = $additionalSelect;
@@ -305,29 +305,18 @@ class RawExport implements ExportInterface
         return array_map(array($this->mapper, 'map'), $articles);
     }
 
-    private function getLastStockSelect()
+    private function getLastStockColumn()
     {
-        $selects = [
-            's_articles.laststock' => 's_articles.laststock as `s_articles.laststock`'
-        ];
-
         // since SW 5.4 laststock is also supported on variant level
         if (version_compare($this->provider->getShopwareRelease(), '5.4.0', '>=')) {
-            $selects['s_articles_details.laststock'] = 's_articles_details.laststock as `s_articles_details.laststock`';
+            return 's_articles_details.laststock';
         }
 
-        return $selects;
+        return 's_articles.laststock';
     }
 
     private function getIsInStockSelect()
     {
-        $lastStockColumn = 's_articles.laststock';
-
-        // since SW 5.4 laststock is also supported on variant level
-        if (version_compare($this->provider->getShopwareRelease(), '5.4.0', '>=')) {
-            $lastStockColumn = 's_articles_details.laststock';
-        }
-
         $selectTemplate = 'IF(
             s_articles.active &&
             s_articles_details.active &&
@@ -335,9 +324,8 @@ class RawExport implements ExportInterface
             1,
             0
         ) as `s_articles_details.isInStock`';
-        $select = sprintf($selectTemplate, $lastStockColumn);
 
-        return ['s_articles_details.isInStock' => $select];
+        return sprintf($selectTemplate, $this->getLastStockColumn());
     }
 
     /**
