@@ -233,7 +233,6 @@ class RawExport implements ExportInterface
             's_articles_details.shippingtime' => 's_articles_details.shippingtime as `s_articles_details.shippingtime`',
             's_articles.active' => 's_articles.active as `s_articles.active`',
             's_articles_details.active' => 's_articles_details.active as `s_articles_details.active`',
-            's_articles.laststock' => 's_articles.laststock as `s_articles.laststock`',
             's_articles_details.instock' => 's_articles_details.instock as `s_articles_details.instock`',
             's_articles_prices.price' => 'CAST(
                     IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) AS DECIMAL(10,0)
@@ -245,17 +244,12 @@ class RawExport implements ExportInterface
                         IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
                     ) * (100 + IFNULL(customTax.tax, baseTax.tax)) AS DECIMAL(10,0)
                 ) as `s_articles_prices.pseudoprice`',
-            's_articles_details.isInStock' => 'IF(
-                    s_articles.active &&
-                    s_articles_details.active &&
-                    (!s_articles.laststock || s_articles_details.instock > 0),
-                    1,
-                    0
-                ) as `s_articles_details.isInStock`',
             's_articles.metaTitle' => 's_articles.metaTitle as `s_articles.metaTitle`',
             's_articles.keywords' => 's_articles.keywords as `s_articles.keywords`',
             's_articles.description' => 's_articles.description as `s_articles.description`',
             's_articles.description_long' => 's_articles.description_long as `s_articles.description_long`',
+            $this->getLastStockColumn() => $this->getLastStockColumn() . ' as `' . $this->getLastStockColumn() . '`',
+            's_articles_details.isInStock' => $this->getIsInStockSelect(),
         ];
 
         if (is_null($fields) || !is_array($fields)) {
@@ -263,7 +257,7 @@ class RawExport implements ExportInterface
         } else {
             $filteredSelect = array_intersect_key($additionalSelect, array_flip($fields));
         }
-        $select = array_merge($basicSelect, $filteredSelect);
+        $select = array_filter($basicSelect + $filteredSelect);
 
         $sqlTemplate = "SELECT
                 %s
@@ -309,6 +303,29 @@ class RawExport implements ExportInterface
         );
 
         return array_map(array($this->mapper, 'map'), $articles);
+    }
+
+    private function getLastStockColumn()
+    {
+        // since SW 5.4 laststock is also supported on variant level
+        if (version_compare($this->provider->getShopwareRelease(), '5.4.0', '>=')) {
+            return 's_articles_details.laststock';
+        }
+
+        return 's_articles.laststock';
+    }
+
+    private function getIsInStockSelect()
+    {
+        $selectTemplate = 'IF(
+            s_articles.active &&
+            s_articles_details.active &&
+            (!%s || s_articles_details.instock > 0),
+            1,
+            0
+        ) as `s_articles_details.isInStock`';
+
+        return sprintf($selectTemplate, $this->getLastStockColumn());
     }
 
     /**
