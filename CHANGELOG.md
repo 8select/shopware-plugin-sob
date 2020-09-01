@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.2.7](https://github.com/8select/shopware-plugin-sob/tree/3.2.7) (2020-9-1)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.6...3.2.7)
+
+**Fixed Bugs:**
+
+- [HX-811](https://8select.atlassian.net/browse/HX-811) respect s_articles_details.laststock for SW >= 5.4 [\#139](https://github.com/8select/shopware-plugin-sob/pull/139) ([akleiber](https://github.com/akleiber))
+
 ## [3.2.6](https://github.com/8select/shopware-plugin-sob/tree/3.2.6) (2020-8-31)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.5...3.2.6)
