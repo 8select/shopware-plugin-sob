@@ -138,7 +138,7 @@ class StatusExport implements ExportInterface
                     IF (
                         s_articles.active &&
                         s_articles_details.active &&
-                        (!s_articles.laststock || s_articles_details.instock > 0),
+                        (!%s || s_articles_details.instock > 0),
                         1,
                         0
                     ) as prop_isInStock';
@@ -149,7 +149,7 @@ class StatusExport implements ExportInterface
             $detailSelect = 's_articles_details.id as s_articles_details_id,';
         }
 
-        return sprintf($template, $detailSelect);
+        return sprintf($template, $detailSelect, $this->getLastStockColumn());
     }
 
     /**
@@ -204,7 +204,7 @@ class StatusExport implements ExportInterface
                         delta.prop_isInStock = IF (
                             s_articles.active &&
                             s_articles_details.active &&
-                            (!s_articles.laststock || s_articles_details.instock > 0),
+                            (!' . $this->getLastStockColumn() . ' || s_articles_details.instock > 0),
                             1,
                             0
                         )
@@ -229,6 +229,16 @@ class StatusExport implements ExportInterface
                                 2
                             )
                 WHERE delta.s_articles_details_id IS NULL';
+    }
+
+    private function getLastStockColumn()
+    {
+        // since SW 5.4 laststock is also supported on variant level
+        if (version_compare($this->provider->getShopwareRelease(), '5.4.0', '>=')) {
+            return 's_articles_details.laststock';
+        }
+
+        return 's_articles.laststock';
     }
 
     /**
