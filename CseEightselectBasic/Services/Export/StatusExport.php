@@ -119,21 +119,17 @@ class StatusExport implements ExportInterface
         $template = 'SELECT
                     %s
                     s_articles_details.ordernumber as prop_sku,
-                    ROUND(
-                        CAST(
-                            IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
-                        ),
-                        2
+                    CAST(
+                        IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) 
+                        AS DECIMAL(10,0)
                     ) as prop_discountPrice,
-                    ROUND(
-                        CAST(
-                            IF(
-                                IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0) = 0,
-                                IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0),
-                                IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
-                            ) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
-                        ),
-                        2
+                    CAST(
+                        IF(
+                            IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0) = 0,
+                            IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0),
+                            IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
+                        ) * (100 + IFNULL(customTax.tax, baseTax.tax)) 
+                        AS DECIMAL(10,0)
                     ) as prop_retailPrice,
                     IF (
                         s_articles.active &&
@@ -210,23 +206,19 @@ class StatusExport implements ExportInterface
                         )
                     AND
                         delta.prop_discountPrice =
-                            ROUND(
-                                CAST(
-                                    IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
-                                ),
-                                2
+                            CAST(
+                                IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0) * (100 + IFNULL(customTax.tax, baseTax.tax)) 
+                                AS DECIMAL(10,0)
                             )
                     AND
                         delta.prop_retailPrice =
-                            ROUND(
-                                CAST(
-                                    IF(
-                                        IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0) = 0,
-                                        IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0),
-                                        IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
-                                    ) * (100 + IFNULL(customTax.tax, baseTax.tax)) / 100 AS DECIMAL(10,3)
-                                ),
-                                2
+                            CAST(
+                                IF(
+                                    IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0) = 0,
+                                    IFNULL(IFNULL(priceGroupPrice.price, defaultPrice.price), 0),
+                                    IFNULL(IFNULL(priceGroupPrice.pseudoprice, defaultPrice.pseudoprice), 0)
+                                ) * (100 + IFNULL(customTax.tax, baseTax.tax)) 
+                                AS DECIMAL(10,0)
                             )
                 WHERE delta.s_articles_details_id IS NULL';
     }
