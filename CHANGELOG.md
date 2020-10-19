@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.3.0](https://github.com/8select/shopware-plugin-sob/tree/3.3.0) (2020-10-19)
+
+[Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.7...3.3.0)
+
+**Implemented Features:**
+
+- [HX-586](https://8select.atlassian.net/browse/HX-586) Harmonize product status updates process [\#140](https://github.com/8select/shopware-plugin-sob/pull/140) ([Wytrykus](https://github.com/Wytrykus))
+
 ## [3.2.7](https://github.com/8select/shopware-plugin-sob/tree/3.2.7) (2020-9-1)
 
 [Full Changelog](https://github.com/8select/shopware-plugin-sob/compare/3.2.6...3.2.7)
