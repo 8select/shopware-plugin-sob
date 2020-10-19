@@ -277,8 +277,8 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
 
         try {
             $format = $this->Request()->getParam('format', 'raw');
-            $export = $this->createExport($format);
-            if (!$format || !$export) {
+            $export = $this->container->get('cse_eightselect_basic.export.raw_export');
+            if ($format !== 'raw' || !$export) {
                 $this->Response()->setHttpResponseCode(204);
                 return;
             }
@@ -290,12 +290,13 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
             $filter = $this->Request()->getParam('filter');
             $sku = $filter['sku'];
 
+            $total = $export->getTotal($isDeltaExport, $sku);
             $data = $export->getProducts($limit, $offset, $isDeltaExport, $fields, $sku);
             $response = json_encode(
                 [
                     'limit' => $limit,
                     'offset' => $offset,
-                    'total' => $export->getTotal($isDeltaExport, $sku),
+                    'total' => $total,
                     'data' => $data,
                 ]
             );
@@ -351,21 +352,6 @@ class Shopware_Controllers_Frontend_CseEightselectBasic extends Enlight_Controll
         }
 
         return $skus;
-    }
-
-    /**
-     * @return ExportInterface
-     */
-    private function createExport($format)
-    {
-        switch ($format) {
-            case 'status':
-                return $this->container->get('cse_eightselect_basic.export.status_export');
-                break;
-            case 'raw':
-                return $this->container->get('cse_eightselect_basic.export.raw_export');
-                break;
-        }
     }
 
     /**

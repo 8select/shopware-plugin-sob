@@ -54,12 +54,17 @@
             <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
             <argument type="service" id="dbal_connection"/>
         </service>
+        
+        <service id="cse_eightselect_basic.export.status_export_mapper" class="CseEightselectBasic\Services\Export\StatusExportMapper">
+        </service>
 
         <service id="cse_eightselect_basic.export.raw_export" class="CseEightselectBasic\Services\Export\RawExport">
             <argument type="service" id="cse_eightselect_basic.dependencies.provider"/>
             <argument type="service" id="dbal_connection"/>
             <argument type="service" id="cse_eightselect_basic.export.attributes"/>
             <argument type="service" id="cse_eightselect_basic.export.raw_export_mapper"/>
+            <argument type="service" id="cse_eightselect_basic.export.status_export"/>
+            <argument type="service" id="cse_eightselect_basic.export.status_export_mapper"/>
             <argument type="service" id="cse_eightselect_basic.export.helper.fields"/>
         </service>
 
