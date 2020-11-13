@@ -45,7 +45,7 @@ class PluginConfig
     ) {
         $this->container = $container;
         $this->currentShop = $this->getCurrentShop();
-        $this->pluginConfig = $configReader->getByPluginName($pluginName);
+        $this->pluginConfig = $configReader->getByPluginName($pluginName, $this->getDefaultShop());
         $this->configWriter = $configWriter;
     }
 
@@ -103,18 +103,23 @@ class PluginConfig
             return $this->container->get('shop');
         }
 
+        return $this->getDefaultShop();
+    }
+
+    /**
+     * @return DetachedShop
+     */
+    private function getDefaultShop()
+    {
         /** @var ShopRepository $shopRepository */
         $shopRepository = $this->container->get('models')->getRepository(Shop::class);
 
-        return $shopRepository->getActiveDefault();
+        return $shopRepository->getDefault();
     }
 
     public function setDefaults()
     {
-        /** @var ShopRepository $shopRepository */
-        $shopRepository = $this->container->get('models')->getRepository(Shop::class);
-        $defaultShop = $shopRepository->getDefault();
-        $this->configWriter->save('CseEightselectBasicActiveShopId', $defaultShop->getId());
+        $this->configWriter->save('CseEightselectBasicActiveShopId', $this->getDefaultShop()->getId());
     }
 
     /**

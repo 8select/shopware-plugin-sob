@@ -2,11 +2,11 @@
 
 {block name='frontend_detail_index_header'}
     {if $isCseWidgetConfigValid}
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_index_header" && {config name="CseEightselectBasicSysPsvPosition"}=="widget_before"}
+        {if {$CseEightselectBasicSysPsvBlock} == "frontend_detail_index_header" && {$CseEightselectBasicSysPsvPosition}=="widget_before"}
             {include file="frontend/detail/custom/cse.tpl"}
         {/if}
         {$smarty.block.parent}
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_index_header" && {config name="CseEightselectBasicSysPsvPosition"}=="widget_after"}
+        {if {$CseEightselectBasicSysPsvBlock} == "frontend_detail_index_header" && {$CseEightselectBasicSysPsvPosition}=="widget_after"}
             {include file="frontend/detail/custom/cse.tpl"}
         {/if}
     {else}
@@ -16,11 +16,11 @@
 
 {block name="frontend_detail_index_detail"}
     {if $isCseWidgetConfigValid}
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_index_detail" && {config name="CseEightselectBasicSysPsvPosition"}=="widget_before"}
+        {if {$CseEightselectBasicSysPsvBlock} == "frontend_detail_index_detail" && {$CseEightselectBasicSysPsvPosition}=="widget_before"}
             {include file="frontend/detail/custom/cse.tpl"}
         {/if}
         {$smarty.block.parent}
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_index_detail" && {config name="CseEightselectBasicSysPsvPosition"}=="widget_after"}
+        {if {$CseEightselectBasicSysPsvBlock} == "frontend_detail_index_detail" && {$CseEightselectBasicSysPsvPosition}=="widget_after"}
             {include file="frontend/detail/custom/cse.tpl"}
         {/if}
     {else}
@@ -31,11 +31,11 @@
 {* Crossselling tab panel *}
 {block name="frontend_detail_index_tabs_cross_selling"}
     {if $isCseWidgetConfigValid}
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_index_tabs_cross_selling" && {config name="CseEightselectBasicSysPsvPosition"}=="widget_before"}
+        {if {$CseEightselectBasicSysPsvBlock} == "frontend_detail_index_tabs_cross_selling" && {$CseEightselectBasicSysPsvPosition}=="widget_before"}
             {include file="frontend/detail/custom/cse.tpl"}
         {/if}
         {$smarty.block.parent}
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_index_tabs_cross_selling" && {config name="CseEightselectBasicSysPsvPosition"}=="widget_after"}
+        {if {$CseEightselectBasicSysPsvBlock} == "frontend_detail_index_tabs_cross_selling" && {$CseEightselectBasicSysPsvPosition}== "widget_after"}
             {include file="frontend/detail/custom/cse.tpl"}
         {/if}
     {else}
@@ -45,19 +45,19 @@
 
 {block name="frontend_detail_tabs_navigation_inner"}
     {if $isCseWidgetConfigValid}
-        {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_after"}
+        {if {$CseEightselectBasicSysPsvPosition} == "widget_after"}
             {$smarty.block.parent}
         {/if}
 
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
+        {if {$CseEightselectBasicSysPsvBlock} == "frontend_detail_tabs"}
         {block name="frontend_detail_tabs_cse"}
-            {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
+            {if !{$CseEightselectBasicPreviewActive} || {$smarty.get.preview}}
                 <a href="#" class="tab--link" title="Dazu passt" data-tabName="cse" style="display: none;">Dazu passt</a>
             {/if}
         {/block}
         {/if}
 
-        {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_before"}
+        {if {$CseEightselectBasicSysPsvPosition} == "widget_before"}
             {$smarty.block.parent}
         {/if}
     {else}
@@ -67,13 +67,13 @@
 
 {block name="frontend_detail_tabs_content_inner"}
     {if $isCseWidgetConfigValid}
-        {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_after"}
+        {if {$CseEightselectBasicSysPsvPosition} == "widget_after"}
             {$smarty.block.parent}
         {/if}
 
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
+        {if {$CseEightselectBasicSysPsvBlock} == "frontend_detail_tabs"}
             {block name="frontend_detail_tabs_content_cse"}
-                {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
+                {if !{$CseEightselectBasicPreviewActive} || {$smarty.get.preview}}
 
                         <div class="tab--container -eightselect-widget-sw-tab-container" style="display: none;">
                         {block name="frontend_detail_tabs_content_cse_inner"}
@@ -114,7 +114,7 @@
             {/block}
         {/if}
 
-        {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_before"}
+        {if {$CseEightselectBasicSysPsvPosition} == "widget_before"}
             {$smarty.block.parent}
         {/if}
     {else}

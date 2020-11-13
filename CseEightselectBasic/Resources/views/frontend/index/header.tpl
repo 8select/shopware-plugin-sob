@@ -2,9 +2,9 @@
 
 {block name="frontend_index_header_css_screen"}
     {$smarty.block.parent}
-    {if $isCseWidgetConfigValid && {config name="CseEightselectBasicCustomCss"} != ""}
+    {if $isCseWidgetConfigValid && {$CseEightselectBasicCustomCss} != ""}
         <style>
-            {include file='string:{config name="CseEightselectBasicCustomCss"}'}
+            {include file='string:{$CseEightselectBasicCustomCss}'}
         </style>
     {/if}
 {/block}
@@ -58,7 +58,7 @@
                     };
                 }(w);
                 var script = d.createElement(s);
-                script.src = 'https://__SUBDOMAIN__.8select.io/{config name="CseEightselectBasicApiId"}/loader.js';
+                script.src = 'https://__SUBDOMAIN__.8select.io/{$CseEightselectBasicApiId}/loader.js';
 
                 if (!!getUrlParameter('8s_demo')) {
                     script.src = 'https://__SUBDOMAIN__.8select.io/db54750f-80fc-4818-9455-30ca233225dc/loader.js';
@@ -111,7 +111,7 @@
                     ${ htmlContentAfter }
                 `);
 
-                {if {config name="CseEightselectBasicSysPsvPosition"} == "widget_before"}
+                {if {$CseEightselectBasicSysPsvPosition} == "widget_before"}
                     targetParent.insertBefore(customCseContainer, target);
                 {else}
                     targetParent.insertBefore(customCseContainer, target.nextSibling);
@@ -150,20 +150,20 @@
             };
         </script>
 
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_css_selector"}
-            {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
+        {if {$CseEightselectBasicSysPsvBlock} == "frontend_css_selector"}
+            {if !{$CseEightselectBasicPreviewActive} || {$smarty.get.preview}}
             <script type="text/javascript">
                 var injectWidget = function () {
                     window.removeEventListener('DOMContentLoaded', injectWidget);
-                    _eightselect_shop_plugin.dynamicallyInjectWidget( '{config name="CseEightselectBasicSysPsvCssSelector"}' );
+                    _eightselect_shop_plugin.dynamicallyInjectWidget( '{$CseEightselectBasicSysPsvCssSelector}' );
                 }
                 window.addEventListener('DOMContentLoaded', injectWidget);
             </script>
             {/if}
         {/if}
 
-        {if {config name="CseEightselectBasicSysPsvBlock"} == "frontend_detail_tabs"}
-            {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
+        {if {$CseEightselectBasicSysPsvBlock} == "frontend_detail_tabs"}
+            {if !{$CseEightselectBasicPreviewActive} || {$smarty.get.preview}}
                 {* Activate description tab - SYS tab will be activated when CSE finds a set *}
                 <script type="text/javascript">
                     _eightselect_shop_plugin.hideSys = function () {
@@ -232,7 +232,7 @@
             {/if}
         {/if}
 
-        {if !{config name="CseEightselectBasicPreviewActive"} || {$smarty.get.preview}}
+        {if !{$CseEightselectBasicPreviewActive} || {$smarty.get.preview}}
             <script>
                 if (typeof _eightselect_shop_plugin === "undefined") {
                     var _eightselect_shop_plugin = {};
