@@ -1,6 +1,6 @@
 {block name="widgets_emotion_components_psp_psv"}
-    {if ($isCseWidgetConfigValid && !{config name="CseEightselectBasicPreviewActive"})
-        || ($isCseWidgetConfigValid&& {config name="CseEightselectBasicPreviewActive"} && {$smarty.get.preview})}
+    {if ($isCseWidgetConfigValid && !{$CseEightselectBasicPreviewActive})
+        || ($isCseWidgetConfigValid&& {$CseEightselectBasicPreviewActive} && {$smarty.get.preview})}
         <div class="-eightselect-widget-container" style="display: none;">
             <div
                 data-set-id="{$Data.psp_psv_set_id}"

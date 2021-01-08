@@ -129,6 +129,35 @@ class CseEightselectBasic extends Plugin
                 'htmlSysAccContainer',
                 explode('CSE_SYS', $this->getPluginConfigService()->get('CseEightselectBasicSysAccContainer'))
             );
+
+            $args->get('subject')->View()->assign(
+                'CseEightselectBasicApiId',
+                $this->getPluginConfigService()->get('CseEightselectBasicApiId')
+            );
+            $args->get('subject')->View()->assign(
+                'CseEightselectBasicPreviewActive',
+                $this->getPluginConfigService()->get('CseEightselectBasicPreviewActive')
+            );
+            $args->get('subject')->View()->assign(
+                'CseEightselectBasicSysAccActive',
+                $this->getPluginConfigService()->get('CseEightselectBasicSysAccActive')
+            );
+            $args->get('subject')->View()->assign(
+                'CseEightselectBasicSysPsvBlock',
+                $this->getPluginConfigService()->get('CseEightselectBasicSysPsvBlock')
+            );
+            $args->get('subject')->View()->assign(
+                'CseEightselectBasicSysPsvPosition',
+                $this->getPluginConfigService()->get('CseEightselectBasicSysPsvPosition')
+            );
+            $args->get('subject')->View()->assign(
+                'CseEightselectBasicCustomCss',
+                $this->getPluginConfigService()->get('CseEightselectBasicCustomCss')
+            );
+            $args->get('subject')->View()->assign(
+                'CseEightselectBasicSysPsvCssSelector',
+                $this->getPluginConfigService()->get('CseEightselectBasicSysPsvCssSelector')
+            );
         } catch (\Exception $exception) {
             $this->logException('onFrontendPostDispatch', $exception);
             $this->getCseLogger()->log('operation', $this->logMessages, $this->hasLogError);

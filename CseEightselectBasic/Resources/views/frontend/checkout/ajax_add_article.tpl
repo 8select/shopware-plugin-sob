@@ -3,8 +3,8 @@
 {block name='checkout_ajax_add_actions'}
     {$smarty.block.parent}
 
-    {if ($isCseWidgetConfigValid && {config name="CseEightselectBasicSysAccActive"} && !{config name="CseEightselectBasicPreviewActive"})
-        || ($isCseWidgetConfigValid && {config name="CseEightselectBasicSysAccActive"} && {config name="CseEightselectBasicPreviewActive"} && {$smarty.get.preview})}
+    {if ($isCseWidgetConfigValid && {$CseEightselectBasicSysAccActive} && !{$CseEightselectBasicPreviewActive})
+        || ($isCseWidgetConfigValid && {$CseEightselectBasicSysAccActive} && {$CseEightselectBasicPreviewActive} && {$smarty.get.preview})}
 
         <div class="modal--article block-group -eightselect-widget-container">
             <div class="eightselect-sysacc-html" style="display: none">{include file="string:{$htmlSysAccContainer.0}"}</div>
