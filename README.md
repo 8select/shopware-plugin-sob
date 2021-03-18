@@ -1,4 +1,4 @@
-# shopware-plugin-sob
+# 8SELECT - Plugin for Shopware 5
 
 ## Installation manual
 
